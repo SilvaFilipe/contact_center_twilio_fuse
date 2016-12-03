@@ -1,4 +1,6 @@
-require('dotenv').config({silent: true})
+if (!process.env.DYNO) {
+	require('dotenv').config({silent: true})
+}
 var express       = require('express')
 var bodyParser    = require('body-parser')
 var sessions      = require('express-session')
