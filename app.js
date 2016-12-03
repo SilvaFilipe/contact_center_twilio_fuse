@@ -1,3 +1,4 @@
+require('dotenv').config()
 var express       = require('express')
 var bodyParser    = require('body-parser')
 var sessions      = require('express-session')
@@ -21,7 +22,7 @@ app.use(sessions({resave: true,
 									saveUninitialized: false,
 									secret: 'keyboard cat',
 									name: 'twilio_call_center_session',
-									cookie: { expires: util.generateSessionExirationDate(3600)}
+									cookie: { expires: util.generateSessionExirationDate(86400)}
 								}))
 
 app.use(bodyParser.json({}))
