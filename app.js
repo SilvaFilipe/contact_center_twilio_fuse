@@ -98,6 +98,9 @@ var messagingAdapter = require('./controllers/messaging-adapter.js')
 router.route('/messaging-adapter/inbound').post(messagingAdapter.inbound)
 router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
 
+// workaround for https://www.twilio.com/console/sms/settings
+router.route('/').post(messagingAdapter.inbound)
+
 app.use('/api', router)
 app.use('/', express.static(__dirname + '/public'))
 

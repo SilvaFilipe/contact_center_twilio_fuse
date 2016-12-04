@@ -1,0 +1,39 @@
+<div class="sidebar" data-color="purple" data-image="/material_assets/img/sidebar-1.jpg">
+
+    <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+
+    <div class="logo">
+        <a href="http://www.creative-tim.com" class="simple-text">
+            Creative Tim
+        </a>
+    </div>
+
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            <li <% if (nav_active =='home'){ %> class="active" <% } %>>
+                <a href="/">
+                    <i class="material-icons">dashboard</i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            <li <% if (nav_active =='admin'){ %> class="active" <% } %>>
+                <a href="admin">
+                    <i class="material-icons">face</i>
+                    <p>Manage Agents</p>
+                </a>
+            </li>
+            <li <% if (nav_active =='workspace'){ %> class="active" <% } %>>
+                <a href="/workspace_login">
+                    <i class="material-icons">call</i>
+                    <p>Agent Console</p>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</div>

@@ -31,7 +31,8 @@
 .workflow-controller .reservations
 {
 	float: left;
-	width:505px;
+	//width:505px;
+	width: 100%;
 	margin-top: 10px;
 }
 
