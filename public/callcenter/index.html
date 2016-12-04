@@ -1,24 +1,24 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Twilio Contact Center: Call Agent Login</title>
+<!--<!DOCTYPE HTML>-->
+<!--<html>-->
+<!--<head>-->
+  <!--<meta charset="utf-8">-->
+  <!--<title>Twilio Contact Center: Call Agent Login</title>-->
 
-  <link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/default.css" type="text/css" />
+  <!--<link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />-->
+  <!--<link rel="stylesheet" href="/styles/default.css" type="text/css" />-->
 
-</head>
+<!--</head>-->
 
-<body class="container" ng-app="callcenterApplication" ng-cloak>
+<div class="container" ng-app="callcenterApplication" ng-cloak>
 
   <div class="row">
 
-    <div class=" col-md-6 col-md-offset-3">
+    <div class="col-md-12">
       <h2>Welcome Agent</h2>
       <p class="lead">Please log in with your agent name</p>
     </div>
 
-    <div ng-controller="LoginController" class="well col-md-6 col-md-offset-3">
+    <div ng-controller="LoginController" class="well col-md-6">
 
       <form ng-submit="login()" class="form-horizontal" name="loginForm">
 
@@ -53,7 +53,7 @@
 
   <script src="/scripts/angular.min.js"></script>
   <script src="/scripts/angular-messages.min.js"></script>
-  <script src="LoginController.js"></script>
+  <script src="/callcenter/LoginController.js"></script>
 
-  </body>
-  </html>
+  </div>
+  <!--</html>-->

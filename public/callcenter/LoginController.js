@@ -14,8 +14,9 @@ loginController.controller('LoginController', function ($scope, $http) {
     $http.post('/api/agents/login', { worker: $scope.worker, endpoint: endpoint })
 
       .then(function onSuccess(response) {
-        window.location.replace('/callcenter/workplace.html');   
-      }, function onError(response) { 
+        //window.location.replace('/callcenter/workplace.html');
+        window.location.replace('/workspace');
+      }, function onError(response) {
 
         if(response.status == 404){
           $scope.loginForm.$setValidity('notFound', false);

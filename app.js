@@ -18,7 +18,7 @@ if (process.env.DYNO) {
 var app = express()
 
 app.set('port', (process.env.PORT || 5000))
-
+app.set('view engine', 'ejs');
 app.use(compression())
 app.use(sessions({resave: true,
 									saveUninitialized: false,
@@ -100,6 +100,35 @@ router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
 
 app.use('/api', router)
 app.use('/', express.static(__dirname + '/public'))
+
+
+app.get('/', function(req, res) {
+	res.render('pages/index', {
+		nav_active: 'home'
+	});
+});
+
+app.get('/admin', function(req, res) {
+	res.render('pages/administration', {
+		nav_active: 'admin'
+	});
+
+});
+
+
+app.get('/workspace_login', function(req, res) {
+	res.render('pages/workspace_login', {
+		nav_active: 'workspace'
+	});
+});
+
+
+app.get('/workspace', function(req, res) {
+	res.render('pages/workspace', {
+		nav_active: 'workspace'
+	});
+});
+
 
 app.listen(app.get('port'), function () {
 	console.log('magic happens on port', app.get('port'))

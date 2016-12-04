@@ -200,7 +200,8 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
     if(reservation.task.attributes.channel == 'phone' && reservation.task.attributes.type == 'inbound_call'){
 
       $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
-      reservation.dequeue($scope.configuration.twilio.callerId);
+      //reservation.dequeue($scope.configuration.twilio.callerId);
+      reservation.dequeue($scope.configuration.twilio.callerId, null, 'record-from-answer');
 
     }
     

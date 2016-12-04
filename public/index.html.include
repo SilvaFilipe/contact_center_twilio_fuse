@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -10,13 +11,13 @@
 	type="text/css" rel="stylesheet" />
 
 </head>
-
+-->
 <body ng-app="indexApplication">
 	<div class="container" style="max-width:960px">
 
 		<div class="row">
-			<div class="page-header col-md-12">
-				<h1>Twilio Contact Center</h1>
+			<div class="col-md-12">
+				<h1>Personable Contact Center</h1>
 			</div>
 		</div>
 
@@ -76,6 +77,7 @@
 
 	<script src="/scripts/angular.min.js"></script>
 	<script src="IndexController.js"></script>
-
+<!--
 </body>
 </html>
+-->

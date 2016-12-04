@@ -1,21 +1,12 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Twilio Contact Center: Administration</title>
 
-  <link rel="stylesheet" href="/styles/bootstrap.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/default.css" type="text/css" />
 
-</head>
+<div ng-app="administrationApplication">
 
-<body ng-app="administrationApplication">
-
-  <div class="container" style="width:900px">
+  <div class="container" style="width:100%;">
 
     <section class="row" ng-controller="AdministrationController" ng-cloak data-ng-init="init()">
 
-      <h2 class="page-header">Twilio Contact Center: Administration</h2>
+      <h2 class="page-header">Contact Center: Administration</h2>
 
       <ul class="nav nav-tabs">
         <li role="presentation"  ng-click="setTab('agents')" ng-class="{active: tab == 'agents'}"><a href="#">Call Agents</a></li>
@@ -141,11 +132,10 @@
 
 <script src="/scripts/angular.min.js"></script>
 <script src="/scripts/checklist-model.js"></script>
-<script src="AdministrationController.js"></script>
+<script src="/administration/AdministrationController.js"></script>
 
 <script src="/scripts/directives/ClientNameDirective.js"></script>
 <script src="/scripts/directives/ConvertToNumberDirective.js"></script>
 
 
-</body>
-</html>
+</div>
