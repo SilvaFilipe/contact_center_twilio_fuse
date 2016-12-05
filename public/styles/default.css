@@ -286,7 +286,8 @@
 {
     height: 400px;
     margin: 0;
-    overflow-y: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .chat-canvas .message-list

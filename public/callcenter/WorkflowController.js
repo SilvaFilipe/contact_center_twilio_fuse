@@ -59,7 +59,7 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
       
       /* session is not valid anymore */
       if(response.status == 403){
-         window.location.replace('/callcenter/');
+         window.location.replace('/workspace_login');
       } else {
         alert(JSON.stringify(response));
       }
@@ -169,7 +169,7 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
       $scope.$apply();
 
       /* the worker token expired, the agent shoud log in again, token is generated upon log in */
-      window.location.replace('/callcenter/');
+      window.location.replace('/workspace_login');
 
     });
 
@@ -254,7 +254,7 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
 
      .then(function onSuccess(response) {
 
-      window.location.replace('/callcenter/index.html');
+      window.location.replace('/workspace_login');
 
     }, function onError(response) { 
 
