@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+
+<div class="wrapper">
+    <% include ../partials/sidebar %>
+
+
+    <div class="main-panel">
+
+        <% include ../partials/navbar %>
+
+        <div class="content">
+
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header" data-background-color="green">
+                                    <h4 class="title">Call Recordings</h4>
+                                    <p class="category">Listen to agent call recordings</p>
+                                </div>
+                                <div class="card-content table-responsive">
+                                    <table class="table">
+                                        <thead class="text-primary">
+                                        <th>Date</th>
+                                        <th>Duration</th>
+                                        <th>Audio Waveform</th>
+                                        <th>Play</th>
+                                        </thead>
+                                        <tbody>
+
+                                        <% calls.forEach(function(call) { %>
+
+
+                                        <tr>
+                                            <td><%= String(call.dateCreated).slice(0,25) %></td>
+                                            <td><%= call.duration %>s</td>
+                                            <td width="40%">
+
+
+                                                <div id="waveform<%= call.sid %>">
+
+
+
+                                                </div>
+
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary" onclick="wavesurfer<%= call.sid %>.playPause()">
+                                                    Play
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <% }); %>
+                                    </table>
+
+
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            <div class="container-fluid">
+                <div class="row">
+                    <table>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.0.52/wavesurfer.min.js"></script>
+<script>
+
+    <% calls.forEach(function(call) { %>
+
+
+    var wavesurfer<%= call.sid %> = WaveSurfer.create({
+        container: '#waveform<%= call.sid %>',
+        waveColor: 'blue',
+        progressColor: '#00acc1'
+    });
+    wavesurfer<%= call.sid %>.load('https://api.twilio.com<%= call.uri.replace(".json", ".wav"); %>');
+
+    <% }); %>
+
+</script>
+
+
+</body>
+<% include ../partials/libs %>
+</html>

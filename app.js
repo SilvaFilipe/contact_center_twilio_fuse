@@ -112,7 +112,8 @@ app.use('/', express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
 	res.render('pages/index', {
-		nav_active: 'home'
+		nav_active: 'home',
+		callerid: req.configuration.twilio.callerId
 	});
 });
 
@@ -135,6 +136,36 @@ app.get('/workspace', function(req, res) {
 	res.render('pages/workspace', {
 		nav_active: 'workspace'
 	});
+});
+
+
+app.get('/calls', function(req, res) {
+	const twilio 	= require('twilio')
+	const client = new twilio(
+		process.env.TWILIO_ACCOUNT_SID,
+		process.env.TWILIO_AUTH_TOKEN);
+
+
+	client.recordings.list(function(err, data) {
+
+		res.render('pages/calls', {
+			nav_active: 'calls',
+			calls: data.recordings
+		});
+	});
+
+	// client.calls.list(function(err, data) {
+    //
+	// 	res.render('pages/calls', {
+	// 		nav_active: 'calls',
+	// 		calls: data.calls
+	// 	});
+    //
+	// 	// data.calls.forEach(function(call) {
+	// 	// 	console.log(call.Direction);
+	// 	// });
+	// });
+
 });
 
 

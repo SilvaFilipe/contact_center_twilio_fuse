@@ -7,8 +7,8 @@
     -->
 
     <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text">
-            Creative Tim
+        <a href="/" class="simple-text">
+            Contact Center
         </a>
     </div>
 
@@ -32,8 +32,16 @@
                     <p>Agent Console</p>
                 </a>
             </li>
-        </ul>
 
+            <li <% if (nav_active =='calls'){ %> class="active" <% } %>>
+                <a href="/calls">
+                    <i class="material-icons">play_arrow</i>
+                    <p>Recordings</p>
+                </a>
+            </li>
+
+        </ul>
     </div>
+
 
 </div>
