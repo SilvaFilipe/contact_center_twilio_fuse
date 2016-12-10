@@ -15,14 +15,14 @@
 
     <div class="sidebar-wrapper">
         <ul class="nav">
-            <li <% if (nav_active =='home'){ %> class="active" <% } %>>
-                <a href="/">
+            <li <% if (nav_active =='dashboard'){ %> class="active" <% } %>>
+                <a href="/pages/dashboard">
                     <i class="material-icons">dashboard</i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li <% if (nav_active =='admin'){ %> class="active" <% } %>>
-                <a href="admin">
+                <a href="/admin">
                     <i class="material-icons">face</i>
                     <p>Manage Agents</p>
                 </a>
@@ -38,6 +38,13 @@
                 <a href="/calls">
                     <i class="material-icons">play_arrow</i>
                     <p>Recordings</p>
+                </a>
+            </li>
+
+            <li <% if (nav_active =='setup'){ %> class="active" <% } %>>
+                <a href="/">
+                    <i class="material-icons">settings</i>
+                    <p>Setup</p>
                 </a>
             </li>
 

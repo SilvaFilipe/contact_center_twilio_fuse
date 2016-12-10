@@ -61,6 +61,9 @@ var validate = require('./controllers/validate.js')
 router.route('/validate/setup').post(validate.validateSetup)
 router.route('/validate/phone-number').post(validate.validatePhoneNumber)
 
+
+
+
 var tasks = require('./controllers/tasks.js')
 
 router.route('/tasks/callback').post(tasks.createCallback)
@@ -101,18 +104,25 @@ router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
 
 app.use('/api', router)
 
+// pages router
+var pagesRouter = express.Router()
+var dashboard = require('./controllers/dashboard.js')
+pagesRouter.route('/dashboard').get(dashboard.index)
+app.use('/pages', pagesRouter)
+
+
 
 // workaround for https://www.twilio.com/console/sms/settings
 var router2 = express.Router()
 router2.route('/inbound').post(messagingAdapter.inbound)
 app.use('/messaging-adapter', router2)
-
 app.use('/', express.static(__dirname + '/public'))
+
 
 
 app.get('/', function(req, res) {
 	res.render('pages/index', {
-		nav_active: 'home',
+		nav_active: 'setup',
 		callerid: req.configuration.twilio.callerId
 	});
 });
