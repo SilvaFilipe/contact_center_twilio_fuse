@@ -42,7 +42,8 @@ module.exports.index = function (req, res) {
                     console.log(workspaceData);
                     module.exports.getWorkerStats(function (workerData){
 
-                    console.log('got worker data');
+                        console.log('worker data: ');
+                        console.log(workerData);
                     res.render('pages/dashboard', {
                         nav_active: 'dashboard',
                         workspaceData: JSON.parse(workspaceData.Data),
