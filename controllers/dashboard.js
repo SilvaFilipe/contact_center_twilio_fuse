@@ -4,6 +4,7 @@ const workspaceSid = process.env.TWILIO_WORKSPACE_SID;
 const request = require('request-promise');
 const bodyParser = require('body-parser');
 const twilio  = require('twilio');
+const async = require('async');
 
 const taskrouterClient = new twilio.TaskRouterClient(
     process.env.TWILIO_ACCOUNT_SID,
@@ -23,90 +24,44 @@ module.exports.index = function (req, res) {
     taskrouterClient.workspace.taskQueues(taskQueueSid).statistics.get({}, function(err, queueResponseData) {
         if(!err) {
             console.log('Queue data: ')
-            console.log(queueResponseData);
+            //console.log(queueResponseData);
 
+            taskrouterClient.workspace.statistics.get({}, function(err, workspaceData) {
 
-            taskrouterClient.workspace.workers.statistics.get({}, function(err, workerResponseData) {
-                if(!err) {
-                    console.log('Worker data: ')
-                    console.log(workerResponseData);
-                }
-                var workspaceData;
-                const workspaceStatsUrl = `https://${apiKey}:${apiSecret}@taskrouter.twilio.com/v1/Workspaces/${workspaceSid}/Statistics?Minutes=480`
-                request({ url: workspaceStatsUrl, method: 'GET' })
-                .then(response => {
+                console.log('workspaceData: ');
+                //console.log(workerData);
 
-                    const docName = 'WorkspaceStats';
-                    workspaceData = { Data : response }
-                    console.log('workspaceData: ')
-                    console.log(workspaceData);
-                    module.exports.getWorkerStats(function (workerData){
+                module.exports.getWorkerStats(function (workerData) {
+                    console.log('workerdata: ');
+                    console.log(workerData);
 
-                        console.log('worker data: ');
-                        console.log(workerData);
                     res.render('pages/dashboard', {
                         nav_active: 'dashboard',
-                        workspaceData: JSON.parse(workspaceData.Data),
+                        workspaceData: workspaceData,
                         queueData: queueResponseData,
-                        workersData: workerResponseData,
                         workerData: workerData
-                    });
-
-                    });
-
-
+                    })
+                })
             })
-                .then(response => {
-                    console.log('workspace stats sent to sync successfully')
-            })
-                .catch(err => {
-                    console.log('error posting workspaceStats to sync: ' + err)
-            })
-
-
-
-        })
-
-
-
         }
     });
 
 }
 
-
 module.exports.getWorkerStats = function (cb) {
-    result=[];
+
     taskrouterClient.workspace.workers.get( function (err, data) {
-        if (err) {
-            res.status(500).json(err)
-            return
-        }
 
-        for (var i = 0; i < data.workers.length; i++) {
-            var worker = data.workers[i];
-            //console.log(worker);
-            result.push(worker);
-        }
+        async.map(data.workers, getWorkerItemStats, function(err, results){
+            cb(results);
+        });
 
-
-        for (var i = 0; i < result.length; i++) {
-            var worker = result[i];
-            taskrouterClient.workspace.workers(worker.sid).statistics.get({}, function(err, responseData) {
-                if(!err) {
-                    // console.log("stats:");
-                    // console.log(responseData);
-                    worker.stats = responseData;
-                    console.log(responseData.cumulative)
-                    //result[i] = worker;
-                }
-                console.log('done gathering workers');
-                //console.log(result);
-                cb(result);
-
-            });
-
-        }
+        //cb(data.workers);
     });
-
+}
+var getWorkerItemStats = function(item, callback){
+    taskrouterClient.workspace.workers(item.sid).statistics.get({}, function(err, responseData) {
+        item.stats = responseData;
+        callback(null, item)
+    });
 }
