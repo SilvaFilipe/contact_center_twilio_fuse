@@ -36,7 +36,7 @@
                                 <% if (stat.friendly_name == 'Idle') { %><div class="card-header" data-background-color="green"><i class="material-icons">call_end</i></div><% } %>
 
                                 <div class="card-content">
-                                    <p class="category"><%= stat.friendly_name %></p>
+                                    <p class="category">Agents <%= stat.friendly_name %></p>
                                     <h3 class="title"><%= stat.workers %><small></small></h3>
                                 </div>
                                 <div class="card-footer">
@@ -55,12 +55,44 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <div class="card card-stats">
-                                <div class="card-header" data-background-color="orange">
-                                    <i class="material-icons">content_copy</i>
+                                <div class="card-header" data-background-color="green">
+                                    <i class="material-icons">people</i>
                                 </div>
                                 <div class="card-content">
-                                    <p class="category">Tasks Created</p>
-                                    <h3 class="title"><%= workspaceData.cumulative["tasks_created"] %><small></small></h3>
+                                    <p class="category">Available Agents</p>
+                                    <h3 class="title"><%= queueData.realtime["total_available_workers"] %><small></small></h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        <i class="material-icons">update</i> Just Updated
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="orange">
+                                    <i class="material-icons">storage</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Phone Queue Size</p>
+                                    <h3 class="title"><%= queueData.realtime["total_tasks"] %><small></small></h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        <i class="material-icons">update</i> Just Updated
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="green">
+                                    <i class="material-icons">check_circle</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Tasks Completed</p>
+                                    <h3 class="title"><%= workspaceData.cumulative["tasks_completed"] %><small></small></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
@@ -69,51 +101,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-header" data-background-color="green">
-                                    <i class="material-icons">store</i>
-                                </div>
-                                <div class="card-content">
-                                    <p class="category">Total Tasks</p>
-                                    <h3 class="title"><%= workspaceData.realtime["tasks_completed"] %><small></small></h3>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="stats">
-                                        <i class="material-icons">update</i> Just Updated
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-sm-6">
-                            <div class="card card-stats">
-                                <div class="card-header" data-background-color="red">
-                                    <i class="material-icons">info_outline</i>
-                                </div>
-                                <div class="card-content">
-                                    <p class="category">Total Workers</p>
-                                    <h3 class="title"><%= workspaceData.realtime["total_workers"] %><small></small></h3>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="stats">
-                                        <i class="material-icons">update</i> Just Updated
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="col-lg-3 col-md-6 col-sm-6">
                             <div class="card card-stats">
                                 <div class="card-header" data-background-color="blue">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="material-icons">alarm</i>
                                 </div>
                                 <div class="card-content">
-                                    <p class="category">Followers</p>
-                                    <h3 class="title"><%= workspaceData.realtime["activity_statistics"][0]["friendly_name"] %><small></small></h3>
+                                    <p class="category">Avg. Task Accept Time</p>
+                                    <h3 class="title"><%= workspaceData.cumulative["avg_task_acceptance_time"] %><small></small></h3>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
-                                        <i class="material-icons">update</i> Just Updated
+                                        <i class="material-icons">date_range</i> Last 8 Hours
                                     </div>
                                 </div>
                             </div>
@@ -121,14 +121,14 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header card-chart" data-background-color="green">
                                     <div class="ct-chart" id="dailySalesChart"></div>
                                 </div>
                                 <div class="card-content">
-                                    <h4 class="title">Daily Sales</h4>
-                                    <p class="category"><span class="text-success"><i class="fa fa-long-arrow-up"></i> 55%  </span> increase in today sales.</p>
+                                    <h4 class="title">Daily Tasks</h4>
+                                    <p class="category"><span class="text-success"><i class="fa fa-long-arrow-up"></i> 55%  </span> increase in tasks today.</p>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
@@ -138,36 +138,36 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header card-chart" data-background-color="orange">
-                                    <div class="ct-chart" id="emailsSubscriptionChart"></div>
-                                </div>
-                                <div class="card-content">
-                                    <h4 class="title">Email Subscriptions</h4>
-                                    <p class="category">Last Campaign Performance</p>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="stats">
-                                        <i class="material-icons">access_time</i> campaign sent 2 days ago
-                                    </div>
-                                </div>
+                        <!--<div class="col-md-4">-->
+                            <!--<div class="card">-->
+                                <!--<div class="card-header card-chart" data-background-color="orange">-->
+                                    <!--<div class="ct-chart" id="emailsSubscriptionChart"></div>-->
+                                <!--</div>-->
+                                <!--<div class="card-content">-->
+                                    <!--<h4 class="title">Email Subscriptions</h4>-->
+                                    <!--<p class="category">Last Campaign Performance</p>-->
+                                <!--</div>-->
+                                <!--<div class="card-footer">-->
+                                    <!--<div class="stats">-->
+                                        <!--<i class="material-icons">access_time</i> campaign sent 2 days ago-->
+                                    <!--</div>-->
+                                <!--</div>-->
 
-                            </div>
-                        </div>
+                            <!--</div>-->
+                        <!--</div>-->
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header card-chart" data-background-color="red">
                                     <div class="ct-chart" id="completedTasksChart"></div>
                                 </div>
                                 <div class="card-content">
                                     <h4 class="title">Completed Tasks</h4>
-                                    <p class="category">Last Campaign Performance</p>
+                                    <p class="category">Today, by hour</p>
                                 </div>
                                 <div class="card-footer">
                                     <div class="stats">
-                                        <i class="material-icons">access_time</i> campaign sent 2 days ago
+                                        <!--<i class="material-icons">access_time</i> campaign sent 2 days ago-->
                                     </div>
                                 </div>
                             </div>
@@ -175,265 +175,48 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-6 col-md-12">
-                            <div class="card card-nav-tabs">
-                                <div class="card-header" data-background-color="purple">
-                                    <div class="nav-tabs-navigation">
-                                        <div class="nav-tabs-wrapper">
-                                            <span class="nav-tabs-title">Tasks:</span>
-                                            <ul class="nav nav-tabs" data-tabs="tabs">
-                                                <li class="active">
-                                                    <a href="#profile" data-toggle="tab">
-                                                        <i class="material-icons">bug_report</i>
-                                                        Bugs
-                                                        <div class="ripple-container"></div></a>
-                                                </li>
-                                                <li class="">
-                                                    <a href="#messages" data-toggle="tab">
-                                                        <i class="material-icons">code</i>
-                                                        Website
-                                                        <div class="ripple-container"></div></a>
-                                                </li>
-                                                <li class="">
-                                                    <a href="#settings" data-toggle="tab">
-                                                        <i class="material-icons">cloud</i>
-                                                        Server
-                                                        <div class="ripple-container"></div></a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card-content">
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="profile">
-                                            <table class="table">
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes" checked>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Sign contract for "What are conference organizers afraid of?"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes" checked>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Create 4 Invisible User Experiences you Never Knew About</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="tab-pane" id="messages">
-                                            <table class="table">
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes" checked>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Sign contract for "What are conference organizers afraid of?"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="tab-pane" id="settings">
-                                            <table class="table">
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes" checked>
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
-                                                    </td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input type="checkbox" name="optionsCheckboxes">
-                                                            </label>
-                                                        </div>
-                                                    </td>
-                                                    <td>Sign contract for "What are conference organizers afraid of?"</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" title="Edit Task" class="btn btn-primary btn-simple btn-xs">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-12">
+                        <div class="col-lg-12 col-md-12">
                             <div class="card">
                                 <div class="card-header" data-background-color="orange">
-                                    <h4 class="title">Employees Stats</h4>
-                                    <p class="category">New employees on 15th September, 2016</p>
+                                    <h4 class="title">Agent Stats</h4>
+                                    <p class="category">Prior 15 minute period</p>
                                 </div>
                                 <div class="card-content table-responsive">
                                     <table class="table table-hover">
                                         <thead class="text-warning">
-                                        <th>ID</th>
                                         <th>Name</th>
-                                        <th>Salary</th>
-                                        <th>Country</th>
+                                        <th>Accepted</th>
+                                        <th>Rejected</th>
+                                        <th>Timed Out</th>
+
+
+                                        <% for(var j=0; j < workerData[0].stats.cumulative.activityDurations.length; j++) { %>
+                                        <% var activity = workerData[0].stats.cumulative.activityDurations[j] %>
+                                        <th>Avg <%= activity.friendlyName %></th>
+                                        <% } %>
+
                                         </thead>
                                         <tbody>
+                                        <% for(var i=0; i < workerData.length; i++) { %>
+                                        <% worker = workerData[i] %>
+
                                         <tr>
-                                            <td>1</td>
-                                            <td>Dakota Rice</td>
-                                            <td>$36,738</td>
-                                            <td>Niger</td>
+                                            <td><%= worker.friendlyName %></td>
+                                            <td><%= worker.stats.cumulative.reservationsAccepted %></td>
+                                            <td><%= worker.stats.cumulative.reservationsRejected %></td>
+                                            <td><%= worker.stats.cumulative.reservationsTimedOut %></td>
+
+
+                                                <% for(var j=0; j < worker.stats.cumulative.activityDurations.length; j++) { %>
+                                            <td>
+                                                <% var activity = worker.stats.cumulative.activityDurations[j] %>
+                                                     <%= activity.avg %>s
+                                                <% } %>
+                                            </td>
+
+
                                         </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Minerva Hooper</td>
-                                            <td>$23,789</td>
-                                            <td>Curaçao</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Sage Rodriguez</td>
-                                            <td>$56,142</td>
-                                            <td>Netherlands</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Philip Chaney</td>
-                                            <td>$38,735</td>
-                                            <td>Korea, South</td>
-                                        </tr>
+                                        <% } %>
                                         </tbody>
                                     </table>
                                 </div>
