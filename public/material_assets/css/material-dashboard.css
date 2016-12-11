@@ -3672,7 +3672,7 @@ footer .btn {
   box-shadow: 0 12px 20px -10px rgba(156, 39, 176, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(156, 39, 176, 0.2);
 }
 .card [data-background-color="blue"] {
-  background: linear-gradient(60deg, #26c6da, #00acc1);
+  background: linear-gradient(60deg, #2743b0, #1d3592);
   box-shadow: 0 12px 20px -10px rgba(0, 188, 212, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(0, 188, 212, 0.2);
 }
 .card [data-background-color="green"] {
