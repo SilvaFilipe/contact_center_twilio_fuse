@@ -459,3 +459,10 @@
 {
 	font-size:1em;
 }
+
+
+.btn-primary {
+	color: #ffffff;
+	background-color: #2743b0;
+	border-color: transparent;
+}

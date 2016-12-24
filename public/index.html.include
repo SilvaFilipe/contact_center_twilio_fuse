@@ -75,6 +75,10 @@
 
 	</div>
 
+
+    <script>var chatFrameUrl = 'https://personable.herokuapp.com/contact/chat_embed.html';</script>
+	<script src="/widgets/chatFrame.js"></script>
+
 	<script src="/scripts/angular.min.js"></script>
 	<script src="IndexController.js"></script>
 <!--
