@@ -12,7 +12,7 @@ module.exports.login = function (req, res) {
 	var friendlyName = req.body.worker.friendlyName
 
 	/* all token we generate are valid for 1 hour */
-	var lifetime = 3600
+	const lifetime = 3600
 
 	taskrouterClient.workspace.workers.get({FriendlyName: friendlyName}, function (err, data) {
 		if (err) {

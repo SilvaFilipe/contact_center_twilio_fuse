@@ -1,3 +1,5 @@
 .idea/*
 .env
 configuration.json
+node_modules
+.DS_Store
