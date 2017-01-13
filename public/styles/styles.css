@@ -1,0 +1,26 @@
+.login-page > .content, .lock-page > .content {
+    padding-top: 18vh;
+}
+.full-page > .content {
+    min-height: calc(100vh - 80px);
+}
+
+.navbar .navbar-nav > li > a,
+.navbar .navbar-nav > li > a:hover,
+.navbar .navbar-nav > li > a i{
+    color: #3C4858;
+}
+.login-page .card-login .card-header {
+    margin-top: -40px;
+    margin-bottom: 20px;
+}
+.card [data-background-color] {
+    color: #FFFFFF;
+    background-color: #2743b0;
+}
+
+.navbar .navbar-nav > .active > a,
+.navbar .navbar-nav > .active > a:hover,
+.navbar .navbar-nav > .active > a i{
+    color: #55acee;
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+<% include ../partials/navbar.guest.ejs %>
+
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page">
+        <div class="content">
+            <div class="container">
+                <% if (locals.message && message.length > 0){ %>
+                <div class="alert alert-danger"><%= message %></div>
+                <% } %>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3">
+                        <form class="form" method="post" action="/sign-in">
+                            <div class="card card-login">
+                                <div class="card-header text-center" data-background-color="rose">
+                                    <h4 class="card-title">Login</h4>
+                                    <div class="social-line">
+                                        <a href="#eugen" class="btn btn-just-icon btn-simple">
+                                            <i class="fa fa-google-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p class="category text-center">
+                                    Or Be Classical
+                                </p>
+                                <div class="card-content">
+                                    <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">email</i>
+                                            </span>
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Email address</label>
+                                            <input type="email" name="email" class="form-control">
+                                            <span class="material-input"></span></div>
+                                    </div>
+                                    <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">lock_outline</i>
+                                            </span>
+                                        <div class="form-group label-floating is-empty">
+                                            <label class="control-label">Password</label>
+                                            <input type="password" name="password" class="form-control">
+                                            <span class="material-input"></span></div>
+                                    </div>
+                                </div>
+                                <div class="footer text-center">
+                                    <button type="submit" class="btn btn-rose btn-simple btn-wd btn-lg">Let's go</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <p class="copyright pull-right">
+                    ©
+                    <script async="" src="//www.google-analytics.com/analytics.js"></script><script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    <a href="/">Personable</a>
+                </p>
+            </div>
+        </footer>
+        <div class="full-page-background" style="background-image: url() "></div>
+    </div>
+</div>
+
+</body>
+<% include ../partials/libs %>
+</html>

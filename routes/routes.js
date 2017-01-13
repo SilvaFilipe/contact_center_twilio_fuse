@@ -12,6 +12,7 @@ module.exports = function(app, passport){
 
     app.get('/calls', passport.passportMiddleware(), calls);
 
+    //Register
     app.get('/register', register);
 
     app.post('/register', passport.authenticate('local', {
@@ -20,6 +21,15 @@ module.exports = function(app, passport){
         failureFlash: true
     }));
 
+    //Login
+    app.get('/sign-in', signin);
+
+    app.post('/sign-in', passport.authenticate('local-login', {
+        successRedirect: '/calls',
+        failureRedirect: '/sign-in',
+        failureFlash: true
+    }));
+    
     app.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}))
     app.get('/auth/google/callback', passport.authenticate('google', {
         successRedirect: '/calls',
@@ -52,7 +62,14 @@ function calls(req, res) {
 function register(req, res) {
     res.render('pages/register', {
         nav_active: 'register',
-        registerMessage: req.flash('registerMessage')
+        message: req.flash('message')
+    });
+}
+
+function signin(req, res) {
+    res.render('pages/login', {
+        nav_active: 'login',
+        message: req.flash('message')
     });
 }
 

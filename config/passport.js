@@ -29,7 +29,7 @@ module.exports = function (passport) {
                         return authCheckDone(err);
                     }
                     if (user) {
-                        return authCheckDone(null, false, req.flash('registerMessage', 'Email already in use.'));
+                        return authCheckDone(null, false, req.flash('message', 'Email already in use.'));
                     }
                     var newUser = new User();
 
@@ -47,6 +47,29 @@ module.exports = function (passport) {
             })
         }
     ));
+
+    passport.use('local-login', new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    }, function(req, email, password, done){
+        User.findOne({'local.email' : email}, function (err, user) {
+            console.log('local login', err, user);
+            if(err){
+                return done(err);
+            }
+
+            if(!user){
+                return done(null, false, req.flash('message', 'No user found.'));
+            }
+
+            if(!user.validPassword(password)){
+                return done(null, false, req.flash('message', 'Wrong password.'))
+            }
+
+            return done(null, user);
+        })
+    }))
 
     passport.use('google', new GoogleStrategy({
             clientID: secrets.googleAuth.clientId,

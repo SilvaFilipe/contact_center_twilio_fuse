@@ -466,3 +466,10 @@
 	background-color: #2743b0;
 	border-color: transparent;
 }
+
+.login-page > .content, .lock-page > .content {
+	padding-top: 18vh;
+}
+.full-page > .content {
+	min-height: calc(100vh - 80px);
+}
