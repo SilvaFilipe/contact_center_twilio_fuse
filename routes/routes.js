@@ -37,6 +37,8 @@ module.exports = function(app, passport){
         failureFlash: true
     }))
 
+    app.get('/logout', logout);
+
     var pagesRouter = express.Router()
 
     var dashboard = require('../controllers/dashboard.js')
@@ -71,6 +73,11 @@ function signin(req, res) {
         nav_active: 'login',
         message: req.flash('message')
     });
+}
+
+function logout(req, res){
+    req.logout();
+    res.redirect('/sign-in');
 }
 
 function workspace(req, res) {
