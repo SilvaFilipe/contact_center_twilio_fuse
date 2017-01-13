@@ -29,7 +29,6 @@ module.exports = function (passport) {
                         return authCheckDone(err);
                     }
                     if (user) {
-                        console.log('???')
                         return authCheckDone(null, false, req.flash('registerMessage', 'Email already in use.'));
                     }
                     var newUser = new User();

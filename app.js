@@ -70,7 +70,7 @@ app.use('/', express.static(__dirname + '/public'))
 require('./routes/api.routes')(app)
 
 // Pages router
-require('./routes/routes')(app, passport);
+require('./routes/routes')(app, passport)
 
 app.listen(app.get('port'), function () {
     console.log('magic happens on port', app.get('port'))
