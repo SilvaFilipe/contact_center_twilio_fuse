@@ -1,0 +1,65 @@
+<div class="content" ng-app="profileApplication" ng-controller="ProfileController">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card card-profile-user">
+          <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">perm_identity</i>
+          </div>
+          <div class="card-content">
+            <h4 class="card-title">Edit Profile -
+              <small class="category">Complete your profile</small>
+            </h4>
+            <form ng-submit="updateProfile()">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group label-floating" is-empty>
+                    <label class="control-label">Email address</label>
+                    <input type="email" class="form-control" ng-model="model.email">
+                    <span class="material-input"></span></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group label-floating" is-empty>
+                    <label class="control-label">First Name</label>
+                    <input type="text" class="form-control" ng-model="model.firstName">
+                    <span class="material-input"></span></div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group label-floating" is-empty>
+                    <label class="control-label">Last Name</label>
+                    <input type="text" class="form-control" ng-model="model.lastName">
+                    <span class="material-input"></span></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group label-floating" is-empty>
+                    <label class="control-label">Phone</label>
+                    <input type="text" class="form-control" ng-model="model.phone">
+                    <span class="material-input"></span></div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-rose pull-right">Update Profile</button>
+              <div class="clearfix"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-profile">
+          <div class="card-avatar">
+            <a href="#pablo">
+              <img class="img" ng-src="{{model.imageUrl}}">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/scripts/angular.min.js"></script>
+<script src="/scripts/angular-messages.min.js"></script>
+<script src="/profile/ProfileController.js"></script>
+<script src="/scripts/directives/PhoneNumberDirective.js"></script>

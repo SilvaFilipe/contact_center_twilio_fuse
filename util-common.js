@@ -1,4 +1,4 @@
-module.exports.generateSessionExirationDate = function (seconds) {
+module.exports.generateSessionExpirationDate = function (seconds) {
 	// TODO, throw exception is parameter is not set
 	var now = new Date()
 	var offset = (now.getTimezoneOffset() * 60 * 1000) * -1

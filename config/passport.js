@@ -24,7 +24,6 @@ module.exports = function (passport) {
         function (req, email, password, authCheckDone) {
             process.nextTick(function () {
                 User.findOne({'local.email': email}, function (err, user) {
-                    console.log(err)
                     if (err) {
                         return authCheckDone(err);
                     }
@@ -54,7 +53,6 @@ module.exports = function (passport) {
         passReqToCallback: true
     }, function(req, email, password, done){
         User.findOne({'local.email' : email}, function (err, user) {
-            console.log('local login', err, user);
             if(err){
                 return done(err);
             }
@@ -84,11 +82,15 @@ module.exports = function (passport) {
                         return done(null, user);
                     } else{
                         var newUser = new User();
-
+                        console.log('profile', profile);
                         newUser.google.id = profile.id;
                         newUser.google.token = token;
                         newUser.google.name = profile.displayName;
                         newUser.google.email = profile.emails[0].value;
+                        newUser.firstName = profile.name.givenName;
+                        newUser.lastName = profile.name.familyName;
+                        newUser.email = profile.emails[0].value;
+                        newUser.imageUrl = profile.photos[0].value;
 
                         newUser.save(function (err) {
                             if(err) done(err);
@@ -101,6 +103,9 @@ module.exports = function (passport) {
             })
         }
     ));
+
+    //app.use(passport.initialize());
+    //app.use(passport.session()); // persistent login session
 
     passport.passportMiddleware = passportMiddleware;
 };

@@ -6,23 +6,26 @@
 
 <body>
 
-<div class="wrapper">
-    <% include ../partials/sidebar %>
+<% include ../partials/navbar.guest.ejs %>
 
-
-    <div class="main-panel">
-        <% include ../partials/navbar %>
-
+<div class="wrapper wrapper-full-page">
+    <div class="full-page login-page">
         <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-
-                    <% include ../../public/index.html.include%>
-
-                </div>
+            <div class="container">
             </div>
         </div>
-
+        <footer class="footer">
+            <div class="container">
+                <p class="copyright pull-right">
+                    ©
+                    <script async="" src="//www.google-analytics.com/analytics.js"></script><script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    <a href="/">Personable</a>
+                </p>
+            </div>
+        </footer>
+        <div class="full-page-background" style="background-image: url() "></div>
     </div>
 </div>
 

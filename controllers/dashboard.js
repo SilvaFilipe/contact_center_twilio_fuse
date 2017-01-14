@@ -39,7 +39,8 @@ module.exports.index = function (req, res) {
                         nav_active: 'dashboard',
                         workspaceData: workspaceData,
                         queueData: queueResponseData,
-                        workerData: workerData
+                        workerData: workerData,
+                        page_title: 'Dashboard'
                     })
                 })
             })

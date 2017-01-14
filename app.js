@@ -29,11 +29,11 @@ app.set('port', (process.env.PORT || 5000))
 app.set('view engine', 'ejs');
 app.use(compression())
 app.use(session({
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     secret: 'keyboard cat',
     name: 'twilio_call_center_session',
-    cookie: {expires: util.generateSessionExirationDate(86400)}
+    cookie: {expires: util.generateSessionExpirationDate(86400)}
 }))
 
 app.use(bodyParser.json({}))
@@ -46,6 +46,7 @@ require('./config/passport')(passport);
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login session
+
 app.use(flash()); // use connect-flash for flash messages
 
 

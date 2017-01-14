@@ -5,8 +5,8 @@ module.exports.convertToString = function (err) {
 	return uc.convertToString(err)
 }
 
-module.exports.generateSessionExirationDate = function (seconds) {
-	return uc.generateSessionExirationDate(seconds)
+module.exports.generateSessionExpirationDate = function (seconds) {
+	return uc.generateSessionExpirationDate(seconds)
 }
 
 module.exports.getConfiguration = function (callback) {

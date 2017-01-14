@@ -11,9 +11,8 @@
 	type="text/css" rel="stylesheet" />
 
 </head>
--->
-<body ng-app="indexApplication">
-	<div class="container" style="max-width:960px">
+<body>-->
+	<div class="container" style="max-width:960px" ng-app="indexApplication">
 
 		<div class="row">
 			<div class="col-md-12">

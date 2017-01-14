@@ -20,6 +20,8 @@ var messagingAdapter = require('../controllers/messaging-adapter.js')
 
 var workers = require('../controllers/workers.js')
 
+var users = require('../controllers/users.js')
+
 module.exports = function(app){
     router.route('/setup').get(setup.get)
     router.route('/setup').post(setup.update)
@@ -51,6 +53,19 @@ module.exports = function(app){
 
     router.route('/messaging-adapter/inbound').post(messagingAdapter.inbound)
     router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
+
+    //Users api
+    router.route('/users/me').get(users.me);
+
+    router.route('/users')
+        .post(users.create)
+        .get(users.all);
+
+    router.route('/users/:user_id')
+        .get(users.get)
+        .put(users.update)
+        .delete(users.delete);
+
 
     app.use('/api', router)
 
