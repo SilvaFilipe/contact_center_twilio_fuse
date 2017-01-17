@@ -110,8 +110,11 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
       $scope.task.completed = false;
       $scope.reservation = null;
       $scope.stopReservationCounter();
-
+      console.log(reservation.task.attributes);
+      caller_sid = reservation.task.attributes.call_sid
+      agent_sid = reservation.task.attributes.worker_call_sid
       $scope.$apply();
+      //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
 
     });
 
@@ -195,13 +198,26 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
 
         });
 
+
     }
 
     if(reservation.task.attributes.channel == 'phone' && reservation.task.attributes.type == 'inbound_call'){
 
       $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
       //reservation.dequeue($scope.configuration.twilio.callerId);
-      reservation.dequeue($scope.configuration.twilio.callerId, null, 'record-from-answer');
+      //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
+        reservation.accept(
+            function(error, reservation) {
+                if(error) {
+                    console.log(error.code);
+                    console.log(error.message);
+                    return;
+                }
+                console.log("reservation accepted");
+                console.log(reservation);
+                $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
+           }
+        );
 
     }
     

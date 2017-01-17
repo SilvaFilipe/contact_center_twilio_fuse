@@ -44,6 +44,8 @@ module.exports = function(app){
     router.route('/ivr/create-task').get(ivr.createTask)
 
     router.route('/taskrouter/assignment').post(taskrouter.assignment)
+    router.route('/taskrouter/moveToConference').post(taskrouter.moveToConference)
+    router.route('/taskrouter/agentToConference').post(taskrouter.agentToConference)
 
 
     router.route('/workers').get(workers.list)
