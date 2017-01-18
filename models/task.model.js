@@ -4,12 +4,16 @@ var bcrypt = require('bcrypt-nodejs');
 var taskSchema = mongoose.Schema({
     eventType: String,
     accountSid: String,
+    workspaceSid: String,
+    workflowSid: String,
+    taskQueueSid: String,
+    reservationSid: String,
     description: String,
     resourceType: String,
-    resourceSid: { type: String, index: { unique: true } },
+    resourceSid: String,
     eventDate: String,
     eventData: Object,
-    taskSid: String,
+    taskSid: { type: String, index: { unique: true } },
     taskAttributes: Object,
     taskEvents: [
         {

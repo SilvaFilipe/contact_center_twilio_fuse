@@ -245,7 +245,9 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
       $scope.$broadcast('DestroyChat');
     }
 
-    $scope.workerJS.update('ActivitySid', $scope.configuration.twilio.workerIdleActivitySid, function(err, worker) {
+      $scope.task.complete();
+
+      $scope.workerJS.update('ActivitySid', $scope.configuration.twilio.workerIdleActivitySid, function(err, worker) {
 
       if(err) {
         $log.error(err);
