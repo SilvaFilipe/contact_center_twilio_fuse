@@ -40,7 +40,8 @@ module.exports.index = function (req, res) {
                         workspaceData: workspaceData,
                         queueData: queueResponseData,
                         workerData: workerData,
-                        page_title: 'Dashboard'
+                        page_title: 'Dashboard',
+                        message: req.flash('message')
                     })
                 })
             })

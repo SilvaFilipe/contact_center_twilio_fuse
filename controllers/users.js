@@ -2,7 +2,6 @@ const User = require('../models/user.model');
 
 module.exports = {
     me: function (req, res) {
-        console.log('hitting /api/users/me', req)
         res.json(req.user);
     },
     create: function (req, res) {

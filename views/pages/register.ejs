@@ -14,79 +14,93 @@
                 <div class="alert alert-danger"><%= message %></div>
                 <% } %>
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6 col-md-offset-3">
                         <div class="card card-signup">
                             <h2 class="card-title text-center">Register</h2>
                             <div class="row">
-                                <div class="col-md-5 col-md-offset-1">
-                                    <div class="card-content">
-                                        <div class="info info-horizontal">
-                                            <div class="icon icon-rose">
-                                                <i class="material-icons">timeline</i>
-                                            </div>
-                                            <div class="description">
-                                                <h4 class="info-title">Marketing</h4>
-                                                <p class="description">
-                                                    We've created the marketing campaign of the website. It was a very interesting collaboration.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="info info-horizontal">
-                                            <div class="icon icon-primary">
-                                                <i class="material-icons">code</i>
-                                            </div>
-                                            <div class="description">
-                                                <h4 class="info-title">Fully Coded in HTML5</h4>
-                                                <p class="description">
-                                                    We've developed the website with HTML5 and CSS3. The client has access to the code using GitHub.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="info info-horizontal">
-                                            <div class="icon icon-info">
-                                                <i class="material-icons">group</i>
-                                            </div>
-                                            <div class="description">
-                                                <h4 class="info-title">Built Audience</h4>
-                                                <p class="description">
-                                                    There is also a Fully Customizable CMS Admin Dashboard for this product.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
+                                <div class="col-md-offset-0 col-md-12">
                                     <div class="social text-center">
                                         <a href="/auth/google" class="btn btn-just-icon btn-round btn-google">
                                             <i class="fa fa-google"></i>
                                         </a>
                                         <h4> or be classical </h4>
                                     </div>
-                                    <form class="form" method="post" action="/register">
+                                    <form class="form" method="post" action="/register" novalidate>
                                         <div class="card-content">
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">face</i>
                                                 </span>
-                                                <div class="form-group is-empty"><input type="text" class="form-control" name="firstName" placeholder="First Name..."><span class="material-input"></span></div>
+                                                <div class="form-group <% if(formData && !formData.firstName){ %>is-empty<% } %> <% if(errors && errors.firstName){ %>has-error<% } %>">
+                                                    <input type="text" class="form-control"
+                                                           name="firstName"
+                                                           value="<% if(formData && formData.firstName){ %><%= formData.firstName %><% } %>"
+                                                           placeholder="First Name..."
+                                                            required>
+                                                    <span class="material-input"></span>
+                                                    <% if(errors && errors.firstName){ %>
+                                                    <p class="help-text text-danger"><%= errors.firstName.message %></p>
+                                                    <% } %>
+                                                </div>
+
+                                                <div class="form-group <% if(formData && !formData.lastName){ %>is-empty<% } %> <% if(errors && errors.lastName){ %>has-error<% } %>">
+                                                    <input type="text" class="form-control"
+                                                           name="lastName"
+                                                           value="<% if(formData && formData.lastName){ %><%= formData.lastName %><% } %>"
+                                                           placeholder="Last Name..." required>
+                                                    <span class="material-input"></span>
+                                                    <% if(errors && errors.lastName){ %>
+                                                    <p class="help-text text-danger"><%= errors.lastName.message %></p>
+                                                    <% } %>
+                                                </div>
                                             </div>
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">email</i>
                                                 </span>
-                                                <div class="form-group is-empty"><input type="text" class="form-control" name="email" placeholder="Email..."><span class="material-input"></span></div>
+                                                <div class="form-group <% if(formData && !formData.email){ %>is-empty<% } %> <% if(errors && errors.email){ %>has-error<% } %>">
+                                                    <input type="text" class="form-control"
+                                                           name="email"
+                                                           value="<% if(formData && formData.email){ %><%= formData.email %><% } %>"
+                                                           placeholder="Email..." required>
+                                                    <span class="material-input"></span>
+                                                    <% if(errors && errors.email){ %>
+                                                    <p class="help-text text-danger"><%= errors.email.message %></p>
+                                                    <% } %>
+                                                </div>
                                             </div>
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock_outline</i>
                                                 </span>
-                                                <div class="form-group is-empty"><input type="password" name="password" placeholder="Password..." class="form-control"><span class="material-input"></span></div>
+                                                <div class="form-group is-empty">
+                                                    <input type="password"
+                                                           name="password"
+                                                           placeholder="Password..."
+                                                           class="form-control" required>
+                                                    <span class="material-input"></span>
+                                                </div>
                                             </div>
-                                            <!-- If you want to add a checkbox to this form, uncomment this code -->
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="material-icons">phone</i>
+                                                </span>
+                                                <div class="form-group <% if(formData && !formData.phone){ %>is-empty<% } %> <% if(errors && errors.phone){ %>has-error<% } %>">
+                                                    <input type="tel" name="phone"
+                                                           placeholder="phone..."
+                                                           value="<% if(formData && formData.phone){ %><%= formData.phone %><% } %>"
+                                                           class="form-control" required>
+                                                    <span class="material-input"></span>
+                                                    <% if(errors && errors.phone){ %>
+                                                    <p class="help-text text-danger"><%= errors.phone.message %></p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
                                             <div class="checkbox">
                                                 <label>
-                                                    <input type="checkbox" name="optionsCheckboxes" checked=""><span class="checkbox-material"><span class="check"></span></span> I agree to the
-                                                    <a href="#something">terms and conditions</a>.
+                                                    <input type="checkbox" name="optionsCheckboxes" checked="">
+                                                    I agree to the
+                                                    <a href="#">terms and conditions</a>.
                                                 </label>
                                             </div>
                                         </div>
@@ -105,7 +119,8 @@
             <div class="container">
                 <p class="copyright pull-right">
                     ©
-                    <script async="" src="//www.google-analytics.com/analytics.js"></script><script>
+                    <script async="" src="//www.google-analytics.com/analytics.js"></script>
+                    <script>
                         document.write(new Date().getFullYear())
                     </script>
                     <a href="/">Personable</a>
@@ -114,6 +129,9 @@
         </footer>
         <div class="full-page-background" style="background-image: url() "></div>
     </div>
+    <script>
+        var a = '<%- JSON.stringify(locals) %>';
+    </script>
 </div>
 </body>
 <% include ../partials/libs %>

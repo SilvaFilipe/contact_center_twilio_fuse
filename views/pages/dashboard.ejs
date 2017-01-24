@@ -15,6 +15,9 @@
 
         <div class="content">
             <div class="container-fluid">
+                <% if (locals.message && message.length > 0){ %>
+                <div class="alert alert-danger"><%- message %></div>
+                <% } %>
                 <div class="row">
 
 <%# begin page content  %>

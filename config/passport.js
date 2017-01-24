@@ -4,7 +4,9 @@ var User = require('../models/user.model.js');
 
 var secrets = require('./secrets');
 
-module.exports = function (passport) {
+var validator = require("email-validator");
+
+module.exports = function (passport, acl) {
     passport.serializeUser(function (user, done) {
         done(null, user.id)
     });
@@ -23,7 +25,7 @@ module.exports = function (passport) {
         },
         function (req, email, password, authCheckDone) {
             process.nextTick(function () {
-                User.findOne({'local.email': email}, function (err, user) {
+                User.findOne({'email': email}, function (err, user) {
                     if (err) {
                         return authCheckDone(err);
                     }
@@ -32,14 +34,38 @@ module.exports = function (passport) {
                     }
                     var newUser = new User();
 
+                    var hashedPassword = newUser.generateHash(password);
+                    newUser.firstName = req.body.firstName;
+                    newUser.lastName = req.body.lastName;
+                    newUser.email = email;
+                    newUser.phone = req.body.phone;
                     newUser.local.email = email;
-                    newUser.local.password = newUser.generateHash(password);
-                    newUser.firstName = req.body.firstName ? req.body.firstName : '';
-                    newUser.save(function (err) {
-                        if(err) return authCheckDone(err)
+                    newUser.password = hashedPassword;
+                    newUser.local.password = hashedPassword;
+                    var error = newUser.validateSync();
+                    if (error) {
+                        console.log(error);
+                        req.flash('message', 'Check form errors.');
+                        req.flash('registerFromErrors', error.errors);
+                        req.flash('formData', req.body);
+                        //req.session['registerFormErrors'] = error.errors;
+                        return authCheckDone(null, false);
+                    } else {
+                        newUser.save(function (err, savedUser) {
+                            if (err) return authCheckDone(err);
 
-                        return authCheckDone(null, newUser);
-                    })
+                            //add default roles
+                            acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
+                                if (err) return authCheckDone(err);
+                                acl.addUserRoles(savedUser._id.toString(), 'contact_center', function () {
+                                    if (err) return authCheckDone(err);
+
+                                    req.session.userId = savedUser._id;
+                                    return authCheckDone(null, savedUser);
+                                });
+                            });
+                        })
+                    }
 
 
                 });
@@ -51,19 +77,21 @@ module.exports = function (passport) {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true
-    }, function(req, email, password, done){
-        User.findOne({'local.email' : email}, function (err, user) {
-            if(err){
+    }, function (req, email, password, done) {
+        User.findOne({'email': email}, function (err, user) {
+            if (err) {
                 return done(err);
             }
 
-            if(!user){
+            if (!user) {
                 return done(null, false, req.flash('message', 'No user found.'));
             }
 
-            if(!user.validPassword(password)){
+            if (!user.validPassword(password)) {
                 return done(null, false, req.flash('message', 'Wrong password.'))
             }
+
+            req.session.userId = user._id;
 
             return done(null, user);
         })
@@ -75,28 +103,58 @@ module.exports = function (passport) {
             callbackURL: secrets.googleAuth.callbackURL
         }, function (token, refreshToken, profile, done) {
             process.nextTick(function () {
-                User.findOne({'google.id': profile.id}, function(err, user){
-                    if(err) return done(err)
+                User.findOne({'google.id': profile.id}, function (err, user) {
+                    if (err) return done(err);
 
-                    if(user){
+                    if (user) {
                         return done(null, user);
-                    } else{
+                    } else {
                         var newUser = new User();
-                        console.log('profile', profile);
                         newUser.google.id = profile.id;
                         newUser.google.token = token;
                         newUser.google.name = profile.displayName;
                         newUser.google.email = profile.emails[0].value;
-                        newUser.firstName = profile.name.givenName;
-                        newUser.lastName = profile.name.familyName;
+                        newUser.firstName = profile.name.givenName || '';
+                        newUser.lastName = profile.name.familyName || '';
+                        newUser.phone = 'Not set';
                         newUser.email = profile.emails[0].value;
                         newUser.imageUrl = profile.photos[0].value;
 
-                        newUser.save(function (err) {
-                            if(err) done(err);
+                        var error = newUser.validateSync();
+                        if (error) {
+                            console.log(error);
+                            req.flash('message', 'Check form errors.');
+                            req.flash('registerFromErrors', error.errors);
+                            req.flash('formData', req.body);
+                            //req.session['registerFormErrors'] = error.errors;
+                            return done(null, false);
+                        } else {
+                            newUser.save(function (err, savedUser) {
+                                if (err) return done(err);
 
-                            return done(null, newUser)
-                        });
+                                //add default roles
+                                //add default roles
+                                acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
+                                    if (err) return done(err);
+                                    acl.addUserRoles(savedUser._id.toString(), 'contact_center', function () {
+                                        if (err) return done(err);
+
+                                        req.session.userId = savedUser._id;
+                                        return done(null, savedUser);
+                                    });
+                                });
+                            })
+                        }
+
+                        //newUser.save(function (err, savedUser) {
+                        //    if (err) return done(err);
+                        //
+                        //    //add default roles
+                        //    acl.addUserRoles(savedUser._id, 'phone');
+                        //    acl.addUserRoles(savedUser._id, 'contact_center');
+                        //
+                        //    return done(null, savedUser)
+                        //});
 
                     }
                 })
@@ -110,10 +168,10 @@ module.exports = function (passport) {
     passport.passportMiddleware = passportMiddleware;
 };
 
-function passportMiddleware(){
+function passportMiddleware() {
     return function (req, res, next) {
-        if( req.isAuthenticated()){
-            return next()
+        if (req.isAuthenticated()) {
+            return next();
         }
         res.redirect('/')
     }

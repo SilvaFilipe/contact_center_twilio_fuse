@@ -28,6 +28,10 @@ app.controller('AdministrationController', function ($scope, $http, $log) {
         alert(response.data);
 
       });
+    $http.get('/api//users')
+      .then(function (response) {
+          $scope.users = response.data;
+      })
 
   };
 

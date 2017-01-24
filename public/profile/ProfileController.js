@@ -1,7 +1,6 @@
 var app = angular.module('profileApplication', ['ngMessages']);
 
 app.controller('ProfileController', function ($scope, $http, $q) {
-    console.log('?')
     $scope.model = {};
     $scope.updateProfile = updateProfile;
 
