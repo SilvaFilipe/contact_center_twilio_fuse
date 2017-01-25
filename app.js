@@ -62,9 +62,7 @@ mongoose.connection.on('connected', function (err) {
     require('./routes/routes')(app, passport, acl);
 
     app.use(function(err, req, res, next) {
-        // Move on if everything is alright
         if(!err) return next();
-        // Something is wrong, inform user
 
         if(err.errorCode === 401){
             return res.redirect('/sign-in');
@@ -119,9 +117,6 @@ app.use('/', express.static(__dirname + '/public'));
 
 // Twilio Event Listeners and Callbacks
 require('./routes/listener.routes')(app);
-
-// Pages router
-require('./routes/routes')(app, passport);
 
 app.listen(app.get('port'), function () {
     console.log('magic happens on port', app.get('port'))

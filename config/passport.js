@@ -95,7 +95,7 @@ module.exports = function (passport, acl) {
 
             return done(null, user);
         })
-    }))
+    }));
 
     passport.use('google', new GoogleStrategy({
             clientID: secrets.googleAuth.clientId,
