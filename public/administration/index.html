@@ -7,11 +7,12 @@
             <h2>Contact Center: Administration</h2>
 
             <ul class="nav nav-tabs">
-                <li role="presentation" ng-click="setTab('agents')" ng-class="{active: tab == 'agents'}"><a href="#">Call
-                    Agents</a></li>
-                <li role="presentation" ng-click="setTab('users')" ng-class="{active: tab == 'users'}"><a href="#">Users</a></li>
-                <li role="presentation" ng-click="setTab('ivr')" ng-class="{active: tab == 'ivr'}"><a href="#">IVR
-                    Menu</a></li>
+                <li role="presentation" ng-click="setTab('agents')" ng-class="{active: tab == 'agents'}">
+                    <a href="#">Call Agents</a></li>
+                <li role="presentation" ng-click="setTab('users')" ng-class="{active: tab == 'users'}">
+                    <a href="#">Users</a></li>
+                <li role="presentation" ng-click="setTab('ivr')" ng-class="{active: tab == 'ivr'}">
+                    <a href="#">IVR Menu</a></li>
             </ul>
 
             <div class="tab-content">
@@ -97,7 +98,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="tab-pane" ng-class="{active: tab == 'ivr'}" id="profile">
 
                     <div style="padding:8px">
@@ -148,13 +148,14 @@
                 </div>
                 <div class="tab-pane" ng-class="{active: tab == 'users'}" id="users">
 
-                    <table class="table table-striped table-hover" style="width:100%">
+                    <table class="table table-striped table-hover" ng-hide="shownEditUserForm" style="width:100%">
                         <thead>
                         <tr>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -163,9 +164,52 @@
                             <td>{{user.lastName}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.phone}}</td>
+                            <td class="text-right">
+                                <button class="btn btn-danger btn-xs" ng-click="showEditUserForm(user)">
+                                    edit
+                                </button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
+
+                    <div ng-show="shownEditUserForm">
+                        <form ng-submit="updateUser()">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating" is-empty>
+                                        <label class="control-label">Email address</label>
+                                        <input type="email" class="form-control" ng-model="editableUser.email">
+                                        <span class="material-input"></span></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" is-empty>
+                                        <label class="control-label">First Name</label>
+                                        <input type="text" class="form-control" ng-model="editableUser.firstName">
+                                        <span class="material-input"></span></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" is-empty>
+                                        <label class="control-label">Last Name</label>
+                                        <input type="text" class="form-control" ng-model="editableUser.lastName">
+                                        <span class="material-input"></span></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" is-empty>
+                                        <label class="control-label">Phone</label>
+                                        <input type="text" class="form-control" ng-model="editableUser.phone">
+                                        <span class="material-input"></span></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary pull-right">Update User</button>
+                            <button class="btn btn-rose pull-right" ng-click="hideEditUserForm()">Cancel</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
 
                 </div>
 
@@ -181,6 +225,7 @@
 
     <script src="/scripts/directives/ClientNameDirective.js"></script>
     <script src="/scripts/directives/ConvertToNumberDirective.js"></script>
+    <script src="/scripts/directives/IsEmptyDirective.js"></script>
 
 
 </div>

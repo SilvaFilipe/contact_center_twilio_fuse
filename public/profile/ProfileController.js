@@ -26,22 +26,4 @@ app.controller('ProfileController', function ($scope, $http, $q) {
 
     }
 
-})
-.directive('isEmpty', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element, attrs) {
-            //console.log(scope, element, attrs)
-            var ngModel = element.find('input').controller('ngModel');
-            scope.$watch(function () {
-                return ngModel.$modelValue
-            }, function (newVal) {
-                if(newVal && newVal.length){
-                    element.removeClass('is-empty');
-                }else{
-                    element.addClass('is-empty');
-                }
-            })
-        }
-    }
 });

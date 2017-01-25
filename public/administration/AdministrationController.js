@@ -180,4 +180,22 @@ app.controller('AdministrationController', function ($scope, $http, $log) {
 
   };
 
+  $scope.showEditUserForm = function (user) {
+    $scope.editableUser = user;
+    $scope.shownEditUserForm = true;
+  };
+
+  $scope.hideEditUserForm = function () {
+    $scope.shownEditUserForm = false;
+  };
+
+  $scope.updateUser = function () {
+    //$scope.editableUser = user;
+    $http.put('/api/users/' + $scope.editableUser._id, $scope.editableUser)
+      .then(function (response) {
+        console.info(response.message);
+        $scope.hideEditUserForm();
+      });
+  }
+
 }); 

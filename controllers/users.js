@@ -35,10 +35,10 @@ module.exports = {
         User.findById(req.params.user_id, function (err, user) {
             if(err) return res.send(err);
 
-            user.email = req.body.email;
-            user.firstName = req.body.firstName;
-            user.lastName = req.body.lastName;
-            user.phone = req.body.phone;
+            user.email = req.body.email || user.email;
+            user.firstName = req.body.firstName || user.firstName;
+            user.lastName = req.body.lastName || user.lastName;
+            user.phone = req.body.phone || user.phone;
 
             user.save(function(err){
                 if(err) return res.send(err);
