@@ -53,6 +53,8 @@ module.exports = function (passport, acl) {
                     } else {
                         newUser.save(function (err, savedUser) {
                             if (err) return authCheckDone(err);
+                            //create taskRouter worker
+                            savedUser.syncWorker();
 
                             //add default roles
                             acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
@@ -132,7 +134,9 @@ module.exports = function (passport, acl) {
                             newUser.save(function (err, savedUser) {
                                 if (err) return done(err);
 
-                                //add default roles
+                                //create taskrouter worker
+                                savedUser.syncWorker();
+
                                 //add default roles
                                 acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
                                     if (err) return done(err);

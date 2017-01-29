@@ -1,6 +1,16 @@
 var loginController = angular.module('callcenterApplication', ['ngMessages']);
 
 loginController.controller('LoginController', function ($scope, $http) {
+    $scope.init = function () {
+      console.log('init');
+
+        $http.get('/api/users/me')
+            .then(function (response) {
+              console.log(response.data);
+              $scope.worker =  {friendlyName: 'w' + response.data._id};
+              $scope.login();
+            })
+    }
 
   $scope.reset = function(){
     $scope.loginForm.$setValidity('notFound', true);

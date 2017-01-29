@@ -81,6 +81,13 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
 
     });
 
+
+      $http.get('/api/users/me')
+          .then(function (response) {
+              $scope.user = response.data;
+          })
+
+
     $scope.workerJS.on('reservation.created', function(reservation) {
 
       $log.log('TaskRouter Worker: reservation.created');

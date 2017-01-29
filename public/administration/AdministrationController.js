@@ -57,15 +57,19 @@ app.controller('AdministrationController', function ($scope, $http, $log) {
 
         worker.channelsFriendlyName = '';
 
-        for (i = 0; i < worker.attributes.channels.length; i++) {
-          worker.channelsFriendlyName += $scope.channels[worker.attributes.channels[i]];
-          
-          if(i < (worker.attributes.channels.length -1)){
-            worker.channelsFriendlyName += ', ';
-          }
+        if (worker.attributes.channels){
+            for (i = 0; i < worker.attributes.channels.length; i++) {
+                worker.channelsFriendlyName += $scope.channels[worker.attributes.channels[i]];
 
-        }    
-    
+                if(i < (worker.attributes.channels.length -1)){
+                    worker.channelsFriendlyName += ', ';
+                }
+
+            }
+
+        }
+
+
         $scope.workers.push(worker);
 
       });
