@@ -12,50 +12,51 @@
     </div>
 
     <div layout="row" layout-align="start center">
+      <md-menu-bar>
+        <md-menu class="language-menu" md-position-mode="left bottom">
+          <md-button class="language-button" ng-click="$mdOpenMenu()"
+                     aria-label="Language" md-menu-origin md-menu-align-target>
+            Admin
+          </md-button>
 
-      <md-menu class="language-menu" md-position-mode="left bottom">
-        <md-button class="language-button" ng-click="$mdOpenMenu()"
-                   aria-label="Language" md-menu-origin md-menu-align-target>
-          Admin
-        </md-button>
+          <md-menu-content width="3">
+            <md-menu-item class="md-indent" ui-sref="app.users">
+              <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
+              <md-button>Users</md-button>
+            </md-menu-item>
 
-        <md-menu-content width="3">
-          <md-menu-item class="md-indent" ui-sref="app.users">
-            <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
-            <md-button>Users</md-button>
-          </md-menu-item>
+            <md-menu-item class="md-indent" ui-sref="app.queues">
+              <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
+              <md-button>Queues</md-button>
+            </md-menu-item>
 
-          <md-menu-item class="md-indent" ui-sref="app.queues">
-            <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
-            <md-button>Queues</md-button>
-          </md-menu-item>
+            <md-menu-item class="md-indent" ui-sref="app.prompts">
+              <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
+              <md-button>Prompts</md-button>
+            </md-menu-item>
 
-          <md-menu-item class="md-indent" ui-sref="app.prompts">
-            <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
-            <md-button>Prompts</md-button>
-          </md-menu-item>
+            <md-menu-item class="md-indent" ui-sref="app.reporting">
+              <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
+              <md-button>Reporting</md-button>
+            </md-menu-item>
 
-          <md-menu-item class="md-indent" ui-sref="app.reporting">
-            <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
-            <md-button>Reporting</md-button>
-          </md-menu-item>
+            <md-menu-item class="md-indent" ui-sref="app.billing">
+              <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
+              <md-button>Billing</md-button>
+            </md-menu-item>
+          </md-menu-content>
 
-          <md-menu-item class="md-indent" ui-sref="app.billing">
-            <md-icon md-font-icon="icon-windows" class="icon"></md-icon>
-            <md-button>Billing</md-button>
-          </md-menu-item>
-        </md-menu-content>
-
-      </md-menu>
+        </md-menu>
+      </md-menu-bar>
 
 
       <div class="nav-separator"></div>
 
-        <md-progress-circular id="toolbar-progress" ng-if="$root.loadingProgress" class="md-accent"
-                              md-mode="indeterminate" md-diameter="32">
-        </md-progress-circular>
+      <md-progress-circular id="toolbar-progress" ng-if="$root.loadingProgress" class="md-accent"
+                            md-mode="indeterminate" md-diameter="32">
+      </md-progress-circular>
 
-        <div class="toolbar-separator"></div>
+      <div class="toolbar-separator"></div>
 
         <md-menu-bar id="user-menu">
             <md-menu md-position-mode="left bottom">
@@ -98,27 +99,29 @@
         </md-menu-bar>
 
         <div class="toolbar-separator"></div>
+        <md-menu-bar id="state_menu">
 
-        <md-menu class="language-menu" md-offset="0 72" md-position-mode="target-right target">
-            <md-button class="language-button" ng-click="$mdOpenMenu()"
-                       aria-label="Language" md-menu-origin md-menu-align-target>
-              <md-icon md-font-icon="{{vm.userStatus.icon}}" ng-style="{'color': vm.userStatus.color }"
-                       class="icon"></md-icon>
-            </md-button>
-
-            <md-menu-content width="3" id="language-menu-content">
-              <md-menu-item class="status md-indent"
-                            ng-class="{'selected': status === vm.userStatus}"
-                            ng-repeat="status in vm.userStatusOptions">
-                <md-icon md-font-icon="{{status.icon}}" ng-style="{'color': status.color }"
+          <md-menu class="language-menu" md-offset="0 72" md-position-mode="target-right target">
+              <md-button class="language-button" ng-click="$mdOpenMenu()"
+                         aria-label="Language" md-menu-origin md-menu-align-target>
+                <md-icon md-font-icon="{{vm.userStatus.icon}}" ng-style="{'color': vm.userStatus.color }"
                          class="icon"></md-icon>
-                <md-button ng-click="vm.setUserStatus(status)">
-                  {{status.title}}
-                </md-button>
-              </md-menu-item>
-            </md-menu-content>
+              </md-button>
 
-        </md-menu>
+              <md-menu-content width="3" id="language-menu-content">
+                <md-menu-item class="status md-indent"
+                              ng-class="{'selected': status === vm.userStatus}"
+                              ng-repeat="status in vm.userStatusOptions">
+                  <md-icon md-font-icon="{{status.icon}}" ng-style="{'color': status.color }"
+                           class="icon"></md-icon>
+                  <md-button ng-click="vm.setUserStatus(status)">
+                    {{status.title}}
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+
+          </md-menu>
+        </md-menu-bar>
 
         <div class="toolbar-separator"></div>
 
