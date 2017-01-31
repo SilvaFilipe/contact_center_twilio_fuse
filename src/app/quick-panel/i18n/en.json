@@ -18,6 +18,10 @@
         "CALL": "Call",
         "MORE": "More",
         "SEND_MESSAGE": "Send message",
-        "REPLY_PLACEHOLDER": "Type and hit enter to send message"
+        "REPLY_PLACEHOLDER": "Type and hit enter to send message",
+        "DIALPAD": "DIALPAD",
+        "CONTACTS": "CONTACTS",
+        "QUEUES": "QUEUES",
+        "DIRECTORY": "DIRECTORY"
     }
 }
