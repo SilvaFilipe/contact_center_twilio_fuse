@@ -1,0 +1,60 @@
+<div class="pad">
+  <div class="dial-pad">
+
+    <div class="phoneString">
+      <input type="text" disabled ng-value="phoneNumber">
+    </div>
+    <div class="digits">
+      <div class="dig number-dig" name="1" ng-click="addDigit('1', $event)">1</div>
+      <div class="dig number-dig" name="2" ng-click="addDigit('2', $event)">2
+        <div class="sub-dig">ABC</div>
+      </div>
+      <div class="dig number-dig" name="3" ng-click="addDigit('3', $event)">3
+        <div class="sub-dig">DEF</div>
+      </div>
+      <div class="dig number-dig" name="4" ng-click="addDigit('4', $event)">4
+        <div class="sub-dig">GHI</div>
+      </div>
+      <div class="dig number-dig" name="5" ng-click="addDigit('5', $event)">5
+        <div class="sub-dig">JKL</div>
+      </div>
+      <div class="dig number-dig" name="6" ng-click="addDigit('6', $event)">6
+        <div class="sub-dig">MNO</div>
+      </div>
+      <div class="dig number-dig" name="7" ng-click="addDigit('7', $event)">7
+        <div class="sub-dig">PQRS</div>
+      </div>
+      <div class="dig number-dig" name="8" ng-click="addDigit('8', $event)">8
+        <div class="sub-dig">TUV</div>
+      </div>
+      <div class="dig number-dig" name="9" ng-click="addDigit('9', $event)">9
+        <div class="sub-dig">WXYZ</div>
+      </div>
+      <div class="dig number-dig pound" name="*" ng-click="addDigit('*', $event)">*</div>
+      <div class="dig number-dig pound" name="0" ng-click="addDigit('0', $event)">0</div>
+      <div class="dig number-dig pound" name="#" ng-click="addDigit('#', $event)">#</div>
+    </div>
+    <div class="digits">
+      <div class="dig addPerson action-dig"></div>
+      <div class="dig-spacer"></div>
+      <div class="dig goBack action-dig" ng-click="goBack($event)"></div>
+    </div>
+
+  </div>
+
+  <div class="call action-dig" ng-click="call(phoneNumber, $event)">
+    <div class="call-change"><span></span></div>
+    <div class="call-icon" ></div>
+  </div>
+
+  <div class="status-dig">
+    <span class="status">Status: {{status}}</span>
+  </div>
+
+
+</div>
+
+<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js"></script>
+<script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.7/taskrouter.min.js"></script>
+<script src="https://media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.js"></script>
+<script src="https://media.twiliocdn.com/sdk/rtc/js/ip-messaging/v0.10/twilio-ip-messaging.js"></script>

@@ -6,11 +6,11 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
   $scope.connection;
 
-  $scope.$on('InitializePhone', function(event, data) { 
+  $scope.$on('InitializePhone', function(event, data) {
 
     $log.log('InitializePhone event received');
 
-    Twilio.Device.setup(data.token, {debug: true}); 
+    Twilio.Device.setup(data.token, {debug: true});
 
     Twilio.Device.ready(function (device) {
       $scope.status = 'Ready';
@@ -82,7 +82,7 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
     $timeout(function(){
       Twilio.Device.disconnectAll();
-    }); 
+    });
 
   };
 
@@ -103,7 +103,7 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
   };
 
-  $scope.$on('CallPhoneNumber', function(event, data) { 
+  $scope.$on('CallPhoneNumber', function(event, data) {
 
     $log.log('call: ' + data.phoneNumber);
     $scope.phoneNumber = data.phoneNumber;
@@ -114,4 +114,4 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
   });
 
-});      
+});
