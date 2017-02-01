@@ -11,7 +11,7 @@
     {
         $locationProvider.html5Mode(true);
 
-        $urlRouterProvider.otherwise('/sample');
+        $urlRouterProvider.otherwise('/workplace');
 
         /**
          * Layout Style Switcher

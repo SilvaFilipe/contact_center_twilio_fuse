@@ -21,9 +21,8 @@
             'app.quick-panel',
 
             // Sample
-            'app.sample',
 
             //callcenter Application
-            //'app.callcenterApplication'
+            'app.callcenterApplication'
         ]);
 })();

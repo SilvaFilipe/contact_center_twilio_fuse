@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.sample', [])
+        .module('app.callcenterApplication', ['ngMessages', 'luegg.directives'])
         .config(config);
 
     /** @ngInject */
@@ -11,12 +11,12 @@
     {
         // State
         $stateProvider
-            .state('app.sample', {
-                url    : '/sample',
+            .state('app.workspace', {
+                url    : '/workplace',
                 views  : {
                     'content@app': {
-                        templateUrl: 'app/main/sample/sample.html',
-                        controller : 'SampleController as vm'
+                        templateUrl: 'app/main/workspace/workspace.html',
+                        controller : 'WorkflowController as vm'
                     }
                 },
                 resolve: {
@@ -24,30 +24,30 @@
                     {
                         return msApi.resolve('sample@get');
                     }
-                }
+                },
+                bodyClass: 'workspace'
             });
 
         // Translation
-        $translatePartialLoaderProvider.addPart('app/main/sample');
+        $translatePartialLoaderProvider.addPart('app/main/workspace');
 
         // Api
         msApiProvider.register('sample', ['app/data/sample/sample.json']);
 
         // Navigation
         msNavigationServiceProvider.saveItem('fuse', {
-            title : 'SAMPLE',
+            title : 'Workspace',
             group : true,
             weight: 1
         });
 
-        msNavigationServiceProvider.saveItem('fuse.sample', {
-            title    : 'Sample',
+        msNavigationServiceProvider.saveItem('fuse.workspace', {
+            title    : 'Workplace',
             icon     : 'icon-tile-four',
-            state    : 'app.sample',
+            state    : 'app.workspace',
             /*stateParams: {
                 'param1': 'page'
              },*/
-            translate: 'SAMPLE.SAMPLE_NAV',
             weight   : 1
         });
     }
