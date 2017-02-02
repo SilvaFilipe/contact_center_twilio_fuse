@@ -29,7 +29,7 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log)
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout)
     {
       var vm = this;
 
@@ -60,10 +60,10 @@
             $scope.initWorker(response.data.tokens.worker);
 
             /* initialize Twilio client with token received from the backend */
-            $scope.$broadcast('InitializePhone', { token: response.data.tokens.phone});
+            $rootScope.$broadcast('InitializePhone', { token: response.data.tokens.phone});
 
             /* initialize Twilio IP Messaging client with token received from the backend */
-            $scope.$broadcast('InitializeChat', { token: response.data.tokens.chat, identity: response.data.worker.friendlyName});
+            $rootScope.$broadcast('InitializeChat', { token: response.data.tokens.chat, identity: response.data.worker.friendlyName});
 
           }, function onError(response) {
 
@@ -77,6 +77,10 @@
           });
 
       };
+
+      $timeout(function () { $scope.init(); }, 5000);
+
+
 
       $scope.initWorker = function(token) {
 
@@ -346,7 +350,7 @@
 
       });
 
-      $scope.$on('InitializeChat', function(event, data) {
+      $rootScope.$on('InitializeChat', function(event, data) {
 
         $log.log('InitializeChat event received');
         $log.log(data);

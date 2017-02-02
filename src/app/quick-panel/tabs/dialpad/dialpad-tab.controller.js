@@ -17,7 +17,7 @@
 
       $scope.connection;
 
-      $scope.$on('InitializePhone', function(event, data) {
+      $rootScope.$on('InitializePhone', function(event, data) {
 
         $log.log('InitializePhone event received');
 

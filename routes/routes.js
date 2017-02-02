@@ -24,6 +24,14 @@ module.exports = function (app, passport, acl) {
         failureFlash: true
     }));
 
+    app.post('/auth/sign-in', passport.authenticate('local-login', {
+      successRedirect: '/auth-me',
+      failureRedirect: '/sign-in',
+      failureFlash: true
+    }));
+
+
+
     app.get('/auth/google', passport.authenticate('google', {
         //scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
         scope: ['profile', 'email']
@@ -48,6 +56,7 @@ module.exports = function (app, passport, acl) {
 
     //app.get('/me', passport.passportMiddleware(), me);
     app.get('/me', acl.middleware(1), me);
+    app.get('/auth-me', authme);
 
     var pagesRouter = express.Router();
 
@@ -118,6 +127,10 @@ module.exports = function (app, passport, acl) {
             nav_active: 'profile',
             page_title: 'Profile'
         })
+    }
+
+    function authme(req, res) {
+      res.status(200).end('successfully login!');
     }
 
     function logout(req, res) {

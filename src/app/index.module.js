@@ -23,6 +23,10 @@
             // Sample
 
             //callcenter Application
-            'app.callcenterApplication'
+            'app.callcenterApplication',
+            //login
+            'app.pages.auth.login',
+            // Register
+            'app.pages.auth.register'
         ]);
 })();
