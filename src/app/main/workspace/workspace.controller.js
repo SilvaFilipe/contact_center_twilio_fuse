@@ -132,8 +132,8 @@
           $scope.reservation = null;
           $scope.stopReservationCounter();
           console.log(reservation.task.attributes);
-          caller_sid = reservation.task.attributes.call_sid
-          agent_sid = reservation.task.attributes.worker_call_sid
+          var caller_sid = reservation.task.attributes.call_sid
+          var agent_sid = reservation.task.attributes.worker_call_sid
           $scope.$apply();
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
 
@@ -227,6 +227,8 @@
           $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
           //reservation.dequeue($scope.configuration.twilio.callerId);
           //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
+          reservation.conference($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
+          /*
           reservation.accept(
             function(error, reservation) {
               if(error) {
@@ -239,6 +241,7 @@
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
             }
           );
+          */
 
         }
 
@@ -254,7 +257,7 @@
                 return;
               }
 
-              $scope.$broadcast('CallPhoneNumber', { phoneNumber: reservation.task.attributes.phone });
+              $rootScope.$broadcast('CallPhoneNumber', { phoneNumber: reservation.task.attributes.phone });
 
             });
         }
