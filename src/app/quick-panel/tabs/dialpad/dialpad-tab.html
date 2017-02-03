@@ -2,7 +2,7 @@
   <div class="dial-pad">
 
     <div class="phoneString">
-      <input type="text" disabled ng-value="phoneNumber">
+      <input type="text"  ng-model="phoneNumber">
     </div>
     <div class="digits">
       <div class="dig number-dig" name="1" ng-click="addDigit('1', $event)">1</div>
@@ -44,17 +44,25 @@
 
   <div class="call action-dig" ng-click="call(phoneNumber, $event)">
     <div class="call-change"><span></span></div>
-    <div class="call-icon" ></div>
+    <div class="call-icon"></div>
   </div>
 
   <div class="status-dig">
     <span class="status">Status: {{status}}</span>
+    <button class="button-hangup" ng-if="isActive == true" ng-click="hangup()">HANGUP</button>
+    <div id="volume-indicators">
+      <label>Mic Volume</label>
+      <div id="input-volume"></div><br/><br/>
+      <label>Speaker Volume</label>
+      <div id="output-volume"></div>
+    </div>
   </div>
-
-
 </div>
 
-<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js"></script>
+
+
+
+<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.4/twilio.min.js"></script>
 <!--
 <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.7/taskrouter.min.js"></script>
 <script src="https://media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.js"></script>

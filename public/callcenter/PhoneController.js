@@ -29,9 +29,9 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
     Twilio.Device.connect(function (conn) {
 
       $scope.connection = conn;
+      bindVolumeIndicators(conn);
       $scope.status = 'successfully established call';
       $scope.isActive = true;
-
       $timeout(function(){
         $scope.$apply();
       });
@@ -62,8 +62,8 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
     Twilio.Device.incoming(function (conn) {
       $scope.status = 'incoming connection from ' + conn.parameters.From;
       $scope.isActive = true;
-
       conn.accept();
+      bindVolumeIndicators(conn);
 
       conn.disconnect(function(conn) {
         $scope.status = 'call has ended';
@@ -113,5 +113,34 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
     $scope.state = 'isActive';
 
   });
+
+
+
+  function bindVolumeIndicators(connection) {
+    var inputVolumeBar = document.getElementById('input-volume');
+    var volumeIndicators = document.getElementById('volume-indicators');
+
+    connection.volume(function(inputVolume, outputVolume) {
+      var inputColor = 'red';
+      if (inputVolume < .50) {
+        inputColor = 'green';
+      } else if (inputVolume < .75) {
+        inputColor = 'yellow';
+      }
+
+      inputVolumeBar.style.width = Math.floor(inputVolume * 300) + 'px';
+      inputVolumeBar.style.background = inputColor;
+
+      var outputColor = 'red';
+      if (outputVolume < .50) {
+        outputColor = 'green';
+      } else if (outputVolume < .75) {
+        outputColor = 'yellow';
+      }
+
+      outputVolumeBar.style.width = Math.floor(outputVolume * 300) + 'px';
+      outputVolumeBar.style.background = outputColor;
+    });
+  }
 
 });
