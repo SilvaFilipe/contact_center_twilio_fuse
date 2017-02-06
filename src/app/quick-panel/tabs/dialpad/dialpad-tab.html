@@ -1,64 +1,80 @@
-<div class="pad">
-  <div class="dial-pad">
+<section layout="row" flex>
+  <div class="pad">
+    <div class="dial-pad">
 
-    <div class="phoneString">
-      <input type="text"  ng-model="phoneNumber">
+      <div class="phoneString">
+        <input type="text" ng-model="phoneNumber">
+      </div>
+      <div class="digits">
+        <div class="dig number-dig" name="1" ng-click="addDigit('1', $event)">1</div>
+        <div class="dig number-dig" name="2" ng-click="addDigit('2', $event)">2
+          <div class="sub-dig">ABC</div>
+        </div>
+        <div class="dig number-dig" name="3" ng-click="addDigit('3', $event)">3
+          <div class="sub-dig">DEF</div>
+        </div>
+        <div class="dig number-dig" name="4" ng-click="addDigit('4', $event)">4
+          <div class="sub-dig">GHI</div>
+        </div>
+        <div class="dig number-dig" name="5" ng-click="addDigit('5', $event)">5
+          <div class="sub-dig">JKL</div>
+        </div>
+        <div class="dig number-dig" name="6" ng-click="addDigit('6', $event)">6
+          <div class="sub-dig">MNO</div>
+        </div>
+        <div class="dig number-dig" name="7" ng-click="addDigit('7', $event)">7
+          <div class="sub-dig">PQRS</div>
+        </div>
+        <div class="dig number-dig" name="8" ng-click="addDigit('8', $event)">8
+          <div class="sub-dig">TUV</div>
+        </div>
+        <div class="dig number-dig" name="9" ng-click="addDigit('9', $event)">9
+          <div class="sub-dig">WXYZ</div>
+        </div>
+        <div class="dig number-dig pound" name="*" ng-click="addDigit('*', $event)">*</div>
+        <div class="dig number-dig pound" name="0" ng-click="addDigit('0', $event)">0</div>
+        <div class="dig number-dig pound" name="#" ng-click="addDigit('#', $event)">#</div>
+      </div>
+      <div class="digits">
+        <div class="dig addPerson action-dig"></div>
+        <div class="dig-spacer"></div>
+        <div class="dig goBack action-dig" ng-click="goBack($event)"></div>
+      </div>
+
     </div>
-    <div class="digits">
-      <div class="dig number-dig" name="1" ng-click="addDigit('1', $event)">1</div>
-      <div class="dig number-dig" name="2" ng-click="addDigit('2', $event)">2
-        <div class="sub-dig">ABC</div>
-      </div>
-      <div class="dig number-dig" name="3" ng-click="addDigit('3', $event)">3
-        <div class="sub-dig">DEF</div>
-      </div>
-      <div class="dig number-dig" name="4" ng-click="addDigit('4', $event)">4
-        <div class="sub-dig">GHI</div>
-      </div>
-      <div class="dig number-dig" name="5" ng-click="addDigit('5', $event)">5
-        <div class="sub-dig">JKL</div>
-      </div>
-      <div class="dig number-dig" name="6" ng-click="addDigit('6', $event)">6
-        <div class="sub-dig">MNO</div>
-      </div>
-      <div class="dig number-dig" name="7" ng-click="addDigit('7', $event)">7
-        <div class="sub-dig">PQRS</div>
-      </div>
-      <div class="dig number-dig" name="8" ng-click="addDigit('8', $event)">8
-        <div class="sub-dig">TUV</div>
-      </div>
-      <div class="dig number-dig" name="9" ng-click="addDigit('9', $event)">9
-        <div class="sub-dig">WXYZ</div>
-      </div>
-      <div class="dig number-dig pound" name="*" ng-click="addDigit('*', $event)">*</div>
-      <div class="dig number-dig pound" name="0" ng-click="addDigit('0', $event)">0</div>
-      <div class="dig number-dig pound" name="#" ng-click="addDigit('#', $event)">#</div>
-    </div>
-    <div class="digits">
-      <div class="dig addPerson action-dig"></div>
-      <div class="dig-spacer"></div>
-      <div class="dig goBack action-dig" ng-click="goBack($event)"></div>
+
+    <div class="call action-dig" ng-click="call(phoneNumber, $event)">
+      <div class="call-change"><span></span></div>
+      <div class="call-icon"></div>
     </div>
 
-  </div>
-
-  <div class="call action-dig" ng-click="call(phoneNumber, $event)">
-    <div class="call-change"><span></span></div>
-    <div class="call-icon"></div>
-  </div>
-
+    <div layout="row" layout-align="center center">
+      <md-button class="md-raised md-primary" ng-if="isActive == true" ng-click="hangup()">HANGUP</md-button>
+    </div>
+    <div layout="row" layout-align="center center">
+      <md-button ng-click="toggleRight()" class="md-primary"  ng-if="isActive == true">
+        Volume Monitor
+      </md-button>
+    </div>
+</div>
   <div class="status-dig">
     <span class="status">Status: {{status}}</span>
-    <button class="button-hangup" ng-if="isActive == true" ng-click="hangup()">HANGUP</button>
-    <div id="volume-indicators">
-      <label>Mic Volume</label>
-      <div id="input-volume"></div><br/><br/>
-      <label>Speaker Volume</label>
-      <div id="output-volume"></div>
-    </div>
   </div>
-</div>
 
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+    <md-toolbar class="md-theme-light">
+      <h1 class="md-toolbar-tools">Volume Monitor</h1>
+    </md-toolbar>
+    <md-content  layout-padding>
+      <div id="volume-indicators">
+        <label>Mic Volume</label>
+        <div id="input-volume"></div><br/><br/>
+        <label>Speaker Volume</label>
+        <div id="output-volume"></div>
+      </div>
+    </md-content>
+  </md-sidenav>
+</section>
 
 
 

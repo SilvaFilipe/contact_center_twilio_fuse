@@ -7,15 +7,17 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $rootScope, $http, $timeout, $log)
+    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast)
     {
       var vm = this;
 
       $scope.status = null;
       $scope.isActive = false;
       $scope.phoneNumber = '';
-
-      $scope.connection;
+      $scope.toggleRight = function() {
+        $mdSidenav('right').toggle();
+      };
+     $scope.connection;
 
 
       $rootScope.$on('InitializePhone', function(event, data) {
@@ -30,6 +32,14 @@
 
         Twilio.Device.error(function (error) {
           $scope.status = 'error: ' + error.code + ' - ' + error.message;
+
+          $mdToast.show({
+            template : '<md-toast><div class="md-toast-content error">' + $scope.status + '</div></md-toast>',
+            hideDelay: 7000,
+            position : 'top left',
+            parent   : '#layout-content-with-toolbar'
+          });
+
           $scope.isActive = false;
 
           $timeout(function(){
@@ -106,9 +116,11 @@
       };
 
       $scope.addDigit = function(digit, event){
+        $log.log('scope: ' + $scope.phoneNumber);
 
         $log.log('send digit: ' + digit);
-        $scope.phoneNumber = $scope.phoneNumber + digit;
+        //$scope.phoneNumber = $scope.phoneNumber + digit;
+
         addAnimationToButton(event.target);
 
         if($scope.connection){
@@ -147,13 +159,10 @@
 
 
       function bindVolumeIndicators(connection) {
-        console.log('bindVolume');
-        console.log(connection);
         connection.volume(function(inputVolume, outputVolume) {
           var inputVolumeBar = document.getElementById('input-volume');
           var volumeIndicators = document.getElementById('volume-indicators');
           var outputVolumeBar = document.getElementById('output-volume');
-          console.log(inputVolume);
           var inputColor = 'red';
           if (inputVolume < .50) {
             inputColor = 'green';

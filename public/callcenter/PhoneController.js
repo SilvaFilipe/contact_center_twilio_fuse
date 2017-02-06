@@ -1,4 +1,4 @@
-app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout, $log) {
+app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout, $log, $mdToast) {
 
   $scope.status = null;
   $scope.isActive = false;
@@ -7,9 +7,8 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
   $scope.connection;
 
   $scope.$on('InitializePhone', function(event, data) {
-
     $log.log('InitializePhone event received');
-
+    $log.log('client token: ' + data.token);
     Twilio.Device.setup(data.token, {debug: true});
 
     Twilio.Device.ready(function (device) {
@@ -18,6 +17,7 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
     Twilio.Device.error(function (error) {
       $scope.status = 'error: ' + error.code + ' - ' + error.message;
+      $mdToast.show($mdToast.simple().textContent($scope.status ));
       $scope.isActive = false;
 
       $timeout(function(){

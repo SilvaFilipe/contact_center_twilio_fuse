@@ -27,14 +27,15 @@
       .pad{
         width: 400px;
         height: 650px;
-        background-color: #232323;
+        //background-color: #232323;
+        background-color: rgba(3, 155, 229, 0.24);
         position: absolute;
         left: 0;
         top: 0;
         right: 0;
         bottom: 0;
         margin: auto;
-        margin-top: 70px;
+        margin-top: 10px;
         box-shadow: 0 30px 35px -25px black;
 
         animation: showPad 1s ease forwards 1;
@@ -128,7 +129,8 @@
           .phoneString{
             width: 100%;
             height: 80px;
-            background-color: $lightGray;
+            //background-color: $lightGray;
+            background-color: rgb(3,155,229);
             margin-top: 40px;
             input{
               background-color: transparent;
@@ -159,7 +161,8 @@
               color:white;
               font-size: 30px;
               float: left;
-              background-color: $lightGray;
+              //background-color: $lightGray;
+              background-color: rgb(23, 63, 83);
               text-align:center;
               width: 60px;
               height: 56px;
@@ -577,10 +580,11 @@
       }
 
       .status-dig {
-        margin-top: 20px;
-        margin-left: 20px;
+        position:absolute;
+        top: 20px;
+        left: 40px;
         span {
-          color: white
+          color: #ffffff;
         }
       }
     }
@@ -599,4 +603,8 @@ div#volume-indicators > div {
   display: block;
   height: 20px;
   width: 0;
+}
+
+.md-toast-content.error {
+  background-color: red;
 }
