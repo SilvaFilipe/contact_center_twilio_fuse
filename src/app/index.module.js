@@ -22,11 +22,10 @@
 
             // Sample
 
-            //callcenter Application
+            // callcenter Application
             'app.callcenterApplication',
-            //login
-            'app.pages.auth.login',
-            // Register
-            'app.pages.auth.register'
+            // Auth
+            'app.auth'
+
         ]);
 })();

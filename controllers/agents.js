@@ -63,12 +63,10 @@ module.exports.login = function (req, res) {
 					chat: accessToken.toJwt()
 				}
 
-				req.session.tokens = tokens
-				req.session.worker = worker
+				req.session.tokens = tokens;
+				req.session.worker = worker;
 
-				res.status(200).end()
-
-				return
+				return res.json(req.user);
 			}
 
 		}

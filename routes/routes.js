@@ -26,7 +26,7 @@ module.exports = function (app, passport, acl) {
 
     app.post('/auth/sign-in', passport.authenticate('local-login', {
       successRedirect: '/auth-me',
-      failureRedirect: '/sign-in',
+      failureRedirect: '/auth-failure',
       failureFlash: true
     }));
 
@@ -56,7 +56,8 @@ module.exports = function (app, passport, acl) {
 
     //app.get('/me', passport.passportMiddleware(), me);
     app.get('/me', acl.middleware(1), me);
-    app.get('/auth-me', authme);
+    app.get('/auth-me', acl.middleware(1), authme);
+    app.get('/auth-failure', authfailure);
 
     var pagesRouter = express.Router();
 
@@ -131,6 +132,10 @@ module.exports = function (app, passport, acl) {
 
     function authme(req, res) {
       res.status(200).end('successfully login!');
+    }
+
+    function authfailure(req, res) {
+      res.status(404).end('Authentication Failed!');
     }
 
     function logout(req, res) {

@@ -69,7 +69,7 @@
 
             /* session is not valid anymore */
             if(response.status == 403){
-              window.location.replace('/workspace_login');
+              window.location.replace('/login');
             } else {
               alert(JSON.stringify(response));
             }

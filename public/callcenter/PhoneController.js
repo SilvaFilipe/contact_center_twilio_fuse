@@ -1,4 +1,4 @@
-app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout, $log, $mdToast) {
+app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout, $log) {
 
   $scope.status = null;
   $scope.isActive = false;
@@ -17,7 +17,6 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
 
     Twilio.Device.error(function (error) {
       $scope.status = 'error: ' + error.code + ' - ' + error.message;
-      $mdToast.show($mdToast.simple().textContent($scope.status ));
       $scope.isActive = false;
 
       $timeout(function(){

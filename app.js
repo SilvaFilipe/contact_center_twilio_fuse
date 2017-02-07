@@ -34,7 +34,8 @@ mongoose.connection.on('connected', function (err) {
         {
             roles: ['phone', 'contact_center'],
             allows: [
-                {resources: ['/workspace_login', '/workspace', '/calls', '/me', '/pages/dashboard'], permissions: ['get', 'post', 'delete', 'view']}
+                {resources: ['/workspace_login', '/workspace', '/calls', '/me', '/pages/dashboard'], permissions: ['get', 'post', 'delete', 'view']},
+                {resources: ['/auth-me'], permissions: ['get', 'post']}
             ]
         },
         {

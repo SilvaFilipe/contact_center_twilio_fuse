@@ -7,31 +7,43 @@
         .run(runBlock);
 
     /** @ngInject */
-    function runBlock($rootScope, $timeout, $state)
-    {
-        // Activate loading indicator
-        var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function ()
-        {
-            $rootScope.loadingProgress = true;
-        });
+    function runBlock($rootScope, $timeout, $state, authService) {
 
-        // De-activate loading indicator
-        var stateChangeSuccessEvent = $rootScope.$on('$stateChangeSuccess', function ()
-        {
-            $timeout(function ()
-            {
-                $rootScope.loadingProgress = false;
-            });
-        });
+      window.authService = authService;
+      // Activate loading indicator
+      var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function (e, toState) {
+        $rootScope.loadingProgress = true;
+        var isLogin = (toState.name === 'app.auth_login') || (toState.name === 'app.auth_register');
+        if (isLogin) {
+          return;
+        }
 
-        // Store state in the root scope for easy access
-        $rootScope.state = $state;
+        if(!authService.isLoggedIn()) {
+          e.preventDefault(); // stop current execution
+          $state.go('app.auth_login'); // go to login
+        }
 
-        // Cleanup
-        $rootScope.$on('$destroy', function ()
-        {
-            stateChangeStartEvent();
-            stateChangeSuccessEvent();
+      });
+
+      // De-activate loading indicator
+      var stateChangeSuccessEvent = $rootScope.$on('$stateChangeSuccess', function () {
+        $timeout(function () {
+          $rootScope.loadingProgress = false;
         });
+      });
+
+      // Store state in the root scope for easy access
+      $rootScope.state = $state;
+
+      // Cleanup
+      $rootScope.$on('$destroy', function () {
+        stateChangeStartEvent();
+        stateChangeSuccessEvent();
+      });
+
+      $rootScope.setCurrentUser = function (user) {
+        $rootScope.currentUser = user;
+      };
+
     }
 })();
