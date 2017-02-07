@@ -55,7 +55,8 @@ module.exports = function (passport, acl) {
                             if (err) return authCheckDone(err);
                             //create taskRouter worker
                             savedUser.syncWorker();
-
+                            //give a phone extension
+                            savedUser.setExtension();
                             //add default roles
                             acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
                                 if (err) return authCheckDone(err);
@@ -136,6 +137,7 @@ module.exports = function (passport, acl) {
 
                                 //create taskrouter worker
                                 savedUser.syncWorker();
+                                savedUser.setExtension();
 
                                 //add default roles
                                 acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {

@@ -25,6 +25,9 @@ var userSchema = mongoose.Schema({
         type: String,
         required: [true, 'Required field.']
     },
+    extension: {
+        type: Number
+    },
     password: {
         type: String
         //min: [6, 'Password is too short.']
@@ -62,6 +65,49 @@ userSchema.methods.validPassword = function (password) {
 userSchema.methods.friendlyWorkerName = function () {
     return  'w' + this._id;
 };
+
+userSchema.methods.setExtension = function (extNumber) {
+  var user = this;
+  if ( extNumber == null) {
+    //assign the next available number
+    if (user.extension > 99){
+      console.log ('not changing extension ' + user.extension + ' for user ' + user.email);
+      return;
+    }
+
+    User.findOne({ extension: { $gt: 99} }).sort('-extension').exec(function (err, otherUser) {
+        if (err) {
+          console.log('setExtension err: ' + err);
+        }
+        if (user) {
+          console.log('setting extension ' + (otherUser.extension + 1) + ' for user: ' + user.email);
+          User.update({_id: user._id}, {
+            extension: otherUser.extension+1
+          }, function(err, affected, resp) {
+            console.log(resp);
+          })
+        } else {
+          console.log('setting extension 100 for user: ' + user.email);
+          User.update({_id: user._id}, {
+            extension: 100
+          }, function(err, affected, resp) {
+            console.log(resp);
+          })
+
+        }
+      });
+
+  } else {
+    console.log('setting extension ' + extNumber + ' for user: ' + user.email);
+
+    User.update({_id: user._id}, {
+      extension: extNumber
+    }, function(err, affected, resp) {
+      console.log(resp);
+    })
+  }
+
+}
 
 userSchema.methods.syncWorker = function () {
     var user = this;
