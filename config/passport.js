@@ -94,9 +94,11 @@ module.exports = function (passport, acl) {
                 return done(null, false, req.flash('message', 'Wrong password.'))
             }
 
-            req.session.userId = user._id;
-
-            return done(null, user);
+            acl.userRoles(user._id.toString(), function(err, roles){
+              req.session.roles = roles;
+              req.session.userId = user._id;
+              return done(null, user);
+            });
         })
     }));
 

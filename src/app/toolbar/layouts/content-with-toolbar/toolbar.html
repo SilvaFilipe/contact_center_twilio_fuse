@@ -12,7 +12,7 @@
     </div>
 
     <div layout="row" layout-align="start center">
-      <md-menu-bar>
+      <md-menu-bar ng-show="vm.isAdmin">
         <md-menu class="language-menu" md-position-mode="left bottom">
           <md-button class="language-button" ng-click="$mdOpenMenu()"
                      aria-label="Language" md-menu-origin md-menu-align-target>

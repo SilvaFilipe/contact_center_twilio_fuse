@@ -2,7 +2,8 @@ const User = require('../models/user.model');
 
 module.exports = {
     me: function (req, res) {
-        res.json(req.user);
+        var data = {user: req.user, roles: req.session.roles};
+        res.json(data);
     },
     create: function (req, res) {
         var user = new User();

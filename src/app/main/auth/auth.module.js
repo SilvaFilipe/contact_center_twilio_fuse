@@ -67,13 +67,12 @@
 
     var me = this;
 
-    var authData = {
-      isAdmin : false
-    };
+    var isAdmin = false;
+
 
     // Service interface
     return {
-      authData    : authData,
+      isAdmin    : isAdmin,
       login       : login,
       logout      : logout,
       isLoggedIn  : isLoggedIn
@@ -85,11 +84,13 @@
       var deferred = $q.defer();
       $http.post('/auth/sign-in', {email: email, password: password})
         .then(function(res) {
-          console.log(res.data);
           $http.get('/api/users/me')
             .then(function (response) {
               console.log(response.data);
-              var worker =  {friendlyName: 'w' + response.data._id};
+              if (response.data.roles.indexOf('admin')) {
+                  isAdmin = true;
+              }
+              var worker =  {friendlyName: 'w' + response.data.user._id};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
               $http.post('/api/agents/login', { worker: worker, endpoint: endpoint })

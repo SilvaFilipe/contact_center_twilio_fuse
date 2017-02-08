@@ -16,6 +16,8 @@
             search: ''
         };
 
+        vm.isAdmin = authService.isAdmin;
+
         vm.bodyEl = angular.element('body');
         vm.userStatusOptions = [
             {
