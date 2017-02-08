@@ -9,7 +9,7 @@ app.controller('ProfileController', function ($scope, $http, $q) {
     function activate() {
         $http.get('/api/users/me')
             .then(function (response) {
-                $scope.model = response.data;
+                $scope.model = response.data.user;
             })
     }
 

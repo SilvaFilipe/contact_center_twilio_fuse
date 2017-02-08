@@ -98,8 +98,8 @@
 
         $http.get('/api/users/me')
           .then(function (response) {
-            $scope.user = response.data;
-          })
+            $scope.user = response.data.user;
+        });
 
 
         $scope.workerJS.on('reservation.created', function(reservation) {

@@ -7,7 +7,7 @@
         .controller('ToolbarController', ToolbarController);
 
     /** @ngInject */
-    function ToolbarController($rootScope, $q, $state, $timeout, $mdSidenav, $translate, $mdToast, msNavigationService, authService)
+    function ToolbarController($rootScope, $q, $state, $timeout, $mdSidenav, $translate, $mdToast, msNavigationService, authService, $window)
     {
         var vm = this;
 
@@ -17,6 +17,11 @@
         };
 
         vm.isAdmin = authService.isAdmin;
+        var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+        vm.userName = currentUser.firstName + ' ' + currentUser.lastName;
+        vm.userName = vm.userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+          return letter.toUpperCase();
+        });
 
         vm.bodyEl = angular.element('body');
         vm.userStatusOptions = [

@@ -84,7 +84,7 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
 
       $http.get('/api/users/me')
           .then(function (response) {
-              $scope.user = response.data;
+              $scope.user = response.data.user;
           })
 
 
