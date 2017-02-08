@@ -473,3 +473,46 @@
 .full-page > .content {
   min-height: calc(100vh - 80px);
 }
+
+.status-div {
+  padding-top: 20px;
+  font-size: 16px;
+  .tag {
+    border-radius: 2px;
+    margin: -2px 4px 0 0;
+    padding: 3px 8px;
+    background-color: rgba(0, 0, 0, 0.08);
+
+    .label-success {
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background-color: rgb(56, 142, 60);
+    }
+    .label-danger {
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background-color: rgb(0,145,234);
+    }
+    .label-default{
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background-color: rgb(244, 67, 54);
+    }
+    .label-warning{
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background-color: rgb(255, 152, 0);
+    }
+  }
+
+}
+
+

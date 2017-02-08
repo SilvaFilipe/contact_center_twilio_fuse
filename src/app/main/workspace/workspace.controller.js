@@ -46,6 +46,11 @@
       /* TaskRouter Worker */
       $scope.workerJS;
 
+      $http.get('/api/users/me')
+        .then(function (response) {
+          $scope.user = response.data.user;
+      });
+
       /* request configuration data and tokens from the backend */
       $scope.init = function () {
 
@@ -78,7 +83,7 @@
 
       };
 
-      $timeout(function () { $scope.init(); }, 5000);
+      $timeout(function () { $scope.init(); }, 1000);
 
 
 
@@ -93,12 +98,6 @@
 
           $scope.worker = worker;
 
-        });
-
-
-        $http.get('/api/users/me')
-          .then(function (response) {
-            $scope.user = response.data.user;
         });
 
 

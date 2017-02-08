@@ -1,16 +1,20 @@
-<div class="page-layout simple fullwidth doc-page element-doc-page workflow-controller">
+<div class="page-layout simple fullwidth doc-page element-doc-page">
   <div class="header md-accent-bg" layout="row" layout-align="space-between">
     <div layout="column" layout-align="center start">
       <div class="title">{{user.firstName}}&#39;s Call Agent Interface</div>
     </div>
   </div>
 
-  <div>Status:&nbsp;<span style="font-size:1em" ng-class="{'label-success': worker.activityName == 'Idle', 'label-danger': worker.activityName == 'Busy', 'label-default': worker.activityName == 'Offline', 'label-warning': worker.activityName == 'Reserved'}" class="label">{{worker.activityName}}</span></div>
-
-
+  <div class="status-div" layout="row">
+      <div flex-offset="5">Status: &nbsp;</div>
+      <div class="tag" layout="row" layout-align="start center">
+        <div ng-class="{'label-success': worker.activityName == 'Idle', 'label-danger': worker.activityName == 'Busy', 'label-default': worker.activityName == 'Offline', 'label-warning':worker.activityName == 'Reserved'}"></div>
+        <div class="tag-label">{{worker.activityName}}</div>
+      </div>
+  </div>
   <div class="content">
 
-    <div class="simple-table-container md-whiteframe-4dp">
+    <div class="simple-table-container md-whiteframe-4dp workflow-controller">
       <div class="reservations">
 
         <!-- reservation is waiting for acceptance -->

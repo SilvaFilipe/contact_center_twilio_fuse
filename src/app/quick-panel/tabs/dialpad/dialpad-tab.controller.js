@@ -13,7 +13,7 @@
 
       $scope.status = null;
       $scope.isActive = false;
-      $scope.phoneNumber = '';
+      vm.phoneNumber = '';
       $scope.toggleRight = function() {
         $mdSidenav('right').toggle();
       };
@@ -96,7 +96,7 @@
           });
 
           $scope.connection = conn;
-          $scope.phoneNumber = conn.parameters.From;
+          vm.phoneNumber = conn.parameters.From;
 
         });
 
@@ -115,24 +115,23 @@
         $scope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber});
       };
 
-      $scope.addDigit = function(digit, event){
-        $log.log('scope: ' + $scope.phoneNumber);
+      $scope.addDigit = function(digit){
 
-        $log.log('send digit: ' + digit);
-        //$scope.phoneNumber = $scope.phoneNumber + digit;
+        vm.phoneNumber = vm.phoneNumber + digit;
 
         addAnimationToButton(event.target);
 
         if($scope.connection){
           $scope.connection.sendDigits(digit);
         }
+        $('.phoneNumberTxt').focus();
 
       };
 
       $scope.$on('CallPhoneNumber', function(event, data) {
 
         $log.log('call: ' + data.phoneNumber);
-        $scope.phoneNumber = data.phoneNumber;
+        vm.phoneNumber = data.phoneNumber;
 
         Twilio.Device.connect({'phone': data.phoneNumber});
 
@@ -151,8 +150,8 @@
 
       $scope.goBack = function (event) {
         addAnimationToButton(event.target);
-        $scope.phoneNumber = $scope.phoneNumber.substring(0, $scope.phoneNumber.length - 1);
-
+        vm.phoneNumber = vm.phoneNumber.substring(0, vm.phoneNumber.length - 1);
+        $('.phoneNumberTxt').focus();
       };
 
 
