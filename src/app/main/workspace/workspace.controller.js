@@ -134,6 +134,7 @@
           var caller_sid = reservation.task.attributes.call_sid
           var agent_sid = reservation.task.attributes.worker_call_sid
           $scope.$apply();
+          $scope.startWorkingCounter();
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
 
         });
@@ -146,6 +147,7 @@
           /* reset all data */
           $scope.reservation = null;
           $scope.task = null;
+          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -158,6 +160,7 @@
           /* reset all data */
           $scope.reservation = null;
           $scope.task = null;
+          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -169,6 +172,7 @@
 
           $scope.reservation = null;
           $scope.task = null;
+          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -189,6 +193,7 @@
 
           $scope.reservation = null;
           $scope.task = null;
+          $scope.stopWorkingCounter();
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
@@ -262,6 +267,7 @@
       };
 
       $scope.complete = function (reservation) {
+        $scope.stopWorkingCounter();
 
         if($scope.task.attributes.channel == 'chat'){
           $scope.$broadcast('DestroyChat');
@@ -289,6 +295,7 @@
       };
 
       $scope.logout = function () {
+        $scope.stopWorkingCounter();
 
         $http.post('/api/agents/logout')
 
@@ -323,6 +330,27 @@
         }
 
       };
+
+      $scope.startWorkingCounter = function() {
+
+        $log.log('start working counter');
+        $scope.workingCounter = $scope.task.age;
+
+        $scope.workingInterval = $interval(function() {
+          $scope.workingCounter ++;
+        }, 1000);
+
+      };
+
+      $scope.stopWorkingCounter = function() {
+        $log.log('stop working counter');
+        if (angular.isDefined($scope.workingInterval)) {
+          $interval.cancel($scope.workingInterval);
+          $scope.workingInterval = undefined;
+        }
+
+      };
+
     }
 
     function ChatController($scope, $rootScope, $http, $sce, $compile, $log) {

@@ -123,10 +123,39 @@
                     </div>
                   </div>
                 </md-toolbar>
+                <md-content class="md-blue-100-bg h-400">
+                  <div style="height: 70px;">
+                    <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
+                  </div>
+                  <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
+                  <div layout="row" layout-align="center center">
+                    <md-button class="md-fab md-primary rec" aria-label="Record">
+                      REC
+                    </md-button>
+                    <md-button class="md-fab md-primary mute" aria-label="Mute">
+                    </md-button>
+                    <md-button class="md-fab md-primary" aria-label="MuteOn">
+                      <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-primary keypad" aria-label="keypad">
+                    </md-button>
+                    <md-button class="md-fab md-primary" aria-label="hangup">
+                      <md-icon md-font-icon="icon-phone-missed" aria-label="icon-phone-missed"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-primary" aria-label="transfer">
+                      <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-primary" aria-label="holdOn">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+                  </div>
+                  <div style="text-align: center; margin-top: 20px">
+                    <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete()">Complete Task</md-button>
+                  </div>
+                </md-content>
               </md-tab>
 
-              <md-tab label="CALL">
-              </md-tab>
+
             </md-tabs>
           </div>
           <!-- chat -->

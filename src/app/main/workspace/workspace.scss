@@ -518,6 +518,7 @@
 }
 
 .reservations {
+
   .content {
     padding: 20px;
     background-color: #FFF;
@@ -551,6 +552,28 @@
     {
       text-align: center;
       padding: 20px;
+    }
+    .keypad {
+      background-image: url(http://s7.postimg.org/uxqt9hw5z/keypad.png);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 55% auto;
+    }
+    .mute {
+      background-image: url(http://s17.postimg.org/hzg2431gr/mic.png);
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 55% auto;
+    }
+    .rec {
+      font-size: 17px;
+      letter-spacing: 1px;
+    }
+    .workingTimer {
+      line-height: 50px;
+      font-size: 30px;
+      text-align: center;
+      margin-bottom: 20px;
     }
   }
 }
