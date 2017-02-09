@@ -34,7 +34,6 @@ module.exports.log_twiml_event = function (req) {
 
   console.log('TwiML event called: ' + callbackSource);
   Call.findOne({'callSid': callSid}, function (err, call) {
-    console.log(call);
     if (call == null){
       //insert new call
       console.log ('inserting new call: ' + callSid);
@@ -85,7 +84,6 @@ module.exports.call_events = function (req, res) {
 
   console.log('Call event called: ' + callbackSource);
   Call.findOne({'callSid': callSid}, function (err, call) {
-    console.log(call);
     if (call == null){
       //insert new call
       console.log ('inserting new call: ' + callSid);
