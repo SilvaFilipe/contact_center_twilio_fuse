@@ -14,107 +14,122 @@
   </div>
   <div class="content">
 
-    <div class="simple-table-container md-whiteframe-4dp workflow-controller">
+    <div class="simple-table-container md-whiteframe-4dp" flex-gt-md="70">
       <div class="reservations">
 
         <!-- reservation is waiting for acceptance -->
-        <div class="panel panel-default agent-reservation" ng-show="reservation != null">
-          <div class="panel-heading">
-            <h3 class="panel-title">Reservation</h3>
-          </div>
-          <div class="panel-body">
+        <div ng-show="reservation != null">
+          <md-toolbar>
+            <div class="md-toolbar-tools">
+              Reservation
+            </div>
+          </md-toolbar>
 
-            <table>
-              <tr>
-                <td>
-                  <div class="title">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
-                  <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
-                </td>
-                <td class="accept-panel"><button ng-click="acceptReservation(reservation)">Accept</button></td>
-              </tr>
-            </table>
+          <div class="content" layout="column">
+            <div class="title">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
+            <div layout="row" layout-align="space-between center">
+              <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
+              <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
+            </div>
 
           </div>
         </div>
         <!-- reservation is waiting for acceptance -->
 
         <!-- agent is waiting for new reservation -->
-        <div class="panel panel-default agent-waiting" ng-show="reservation == null && task == null">
-          <div class="panel-heading">
-            <h4 class="panel-title">Waiting for new task ...</h4>
+        <div ng-show="reservation == null && task == null">
+          <div class="content" style="text-align: center">
+            <span class="md-title">Waiting for new task ...</span>
           </div>
         </div>
         <!-- agent is waiting for new reservation -->
 
         <!-- agent is working on a task -->
-        <div class="panel panel-default agent-task" ng-show="task != null">
+        <div class="working-div" ng-show="task != null">
+          <div class="content">
+            <md-tabs md-dynamic-height>
+              <md-tab data-ng-if="!task.attributes.nameIsPhoneNumber" label="CHAT">
+                <md-toolbar>
+                  <div class="md-toolbar-tools">
+                    <div class="description">{{task.attributes.title}} from
+                      <span>{{task.attributes.name}}</span>
+                    </div>
+                  </div>
+                </md-toolbar>
 
-          <div class="panel-heading">
+                <div layout="row" layout-align="space-between center" style="padding: 10px">
+                  <div style="font-size: 16px">{{task.attributes.text}}</div>
+                  <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete()">Complete Task</md-button>
+                </div>
 
-            <button ng-show="task != null"  class="btn btn-primary complete-task" ng-click="complete()">Complete Task</button>
+                <!-- chat -->
+                <section ng-show="session.channelSid" class="chat-controller" ng-controller="ChatController" ng-cloak>
 
-          </div>
+                  <div class="load-indicator" ng-show="session.isLoading">
+                    <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
+                  </div>
 
-          <div class="panel-body">
-            <div class="description">{{task.attributes.title}} from
-              <span ng-show="!task.attributes.nameIsPhoneNumber">{{task.attributes.name}}</span>
+                  <div ng-show="session.isInitialized">
 
-              <a href="#" ng-click="callPhoneNumber('{{task.attributes.name}}')" ng-show="task.attributes.nameIsPhoneNumber">{{task.attributes.name}}</a>
-            </div>
-            {{task.attributes.text}}
-          </div>
+                    <div class="chat-canvas" scroll-glue>
 
-          <!-- chat -->
-          <section ng-show="session.channelSid" class="chat-controller" ng-controller="ChatController" ng-cloak>
+                      <ul class="message-list" >
 
-            <div class="load-indicator" ng-show="session.isLoading">
-              <i class="fa fa-refresh fa-spin"></i>
-            </div>
+                        <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
 
-            <div ng-show="session.isInitialized">
+                          <div>
 
-              <div class="chat-canvas" scroll-glue>
+                            <div class="body">
+                              <div class="needle"></div>
+                              <p dynamic="message.body">{{message.body}}</p>
+                            </div>
+                            <div class="footer">
+                              <div class="author">{{message.author}}</div>
+                              <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp | time}}</div>
+                            </div>
 
-                <ul class="message-list" >
+                          </div>
 
-                  <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
+                        </li>
 
-                    <div>
-
-                      <div class="body">
-                        <div class="needle"></div>
-                        <p dynamic="message.body">{{message.body}}</p>
-                      </div>
-                      <div class="footer">
-                        <div class="author">{{message.author}}</div>
-                        <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp | time}}</div>
-                      </div>
+                      </ul>
+                      <div id="bottom"></div>
 
                     </div>
 
-                  </li>
+                    <div class="typing-notification"><span>{{typingNotification}}</span></div>
 
-                </ul>
-                <div id="bottom"></div>
+                    <form class="chat-message-form form-horizontal" name="chatMessageForm">
+                      <div layout="row" layout-align="between-space center">
+                        <div flex="70">
+                          <md-input-container class="md-block">
+                            <input ng-model="message" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
+                          </md-input-container>
+                        </div>
+                        <div flex="30" class="mt-10">
+                          <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" ng-click="send()">Send</md-button>
+                        </div>
+                      </div>
+                    </form>
 
-              </div>
-
-              <div class="typing-notification"><span>{{typingNotification}}</span></div>
-
-              <form class="chat-message-form form-horizontal" name="chatMessageForm">
-                <div class="form-group">
-                  <div class="col-xs-8">
-                    <input ng-model="message" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text" class="form-control" placeholder="say something">
                   </div>
-                  <div class="col-xs-4">
-                    <button ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" class="btn btn-primary" ng-click="send()">Send</button>
+
+                </section>
+              </md-tab>
+              <md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
+                <md-toolbar>
+                  <div class="md-toolbar-tools">
+                    <div class="description">{{task.attributes.title}} from
+                      <a href="#" ng-click="callPhoneNumber('{{task.attributes.name}}')">{{task.attributes.name}}</a>
+                    </div>
                   </div>
-                </div>
-              </form>
+                </md-toolbar>
+              </md-tab>
 
-            </div>
-
-          </section>
+              <md-tab label="CALL">
+              </md-tab>
+            </md-tabs>
+          </div>
           <!-- chat -->
 
         </div>
