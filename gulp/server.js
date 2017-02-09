@@ -6,6 +6,7 @@ var conf = require('./conf');
 
 var browserSync = require('browser-sync');
 var browserSyncSpa = require('browser-sync-spa');
+var nodemon = require('gulp-nodemon');
 
 var util = require('util');
 
@@ -52,12 +53,9 @@ browserSync.use(browserSyncSpa({
 gulp.task('serve', ['watch'], function (cb)
 {
   browserSyncInit([path.join(conf.paths.tmp, '/serve'), conf.paths.src]);
-  exec('node app.js', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
+  nodemon({
+    script: 'app.js'
   });
-
 });
 
 gulp.task('serve:dist', ['build'], function ()

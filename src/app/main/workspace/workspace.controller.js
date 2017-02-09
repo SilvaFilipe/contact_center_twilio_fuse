@@ -226,8 +226,8 @@
           $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
           //reservation.dequeue($scope.configuration.twilio.callerId);
           //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
-          reservation.conference($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
-          /*
+          //reservation.conference($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
+
           reservation.accept(
             function(error, reservation) {
               if(error) {
@@ -240,7 +240,6 @@
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
             }
           );
-          */
 
         }
 
