@@ -52,7 +52,7 @@ browserSync.use(browserSyncSpa({
 gulp.task('serve', ['watch'], function (cb)
 {
   browserSyncInit([path.join(conf.paths.tmp, '/serve'), conf.paths.src]);
-  exec('node app.js', function (err, stdout, stderr) {
+  exec('nodemon app.js', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     cb(err);

@@ -1,6 +1,7 @@
 'use strict'
 
 const twilio = require('twilio')
+const listener = require('./event_listener.js')
 
 /* client for Twilio TaskRouter */
 const taskrouterClient = new twilio.TaskRouterClient(
@@ -9,7 +10,8 @@ const taskrouterClient = new twilio.TaskRouterClient(
 	process.env.TWILIO_WORKSPACE_SID)
 
 module.exports.welcome = function (req, res) {
-	var twiml = new twilio.TwimlResponse()
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
 
 	twiml.gather({
 		action: 'select-team',

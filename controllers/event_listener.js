@@ -1,5 +1,7 @@
 'use strict'
+const url = require('url');
 const Task = require('../models/task.model');
+const Call = require('../models/call.model');
 const twilio = require('twilio');
 const client = new twilio(
     process.env.TWILIO_ACCOUNT_SID,
@@ -8,6 +10,120 @@ const taskrouterClient = new twilio.TaskRouterClient(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN,
     process.env.TWILIO_WORKSPACE_SID)
+
+
+module.exports.log_twiml_event = function (req) {
+  console.log('logging twiml event');
+  var callStatus = req.query.CallStatus;
+  var from = req.query.From;
+  var direction = req.query.Direction;
+  var timestamp = req.query.Timestamp;
+  var accountSid = req.query.AccountSid;
+  var fromCountry = req.query.FromCountry;
+  var fromCity = req.query.FromCity;
+  var callSid = req.query.CallSid;
+  var to = req.query.To;
+  var fromZip = req.query.FromZip;
+  var fromState = req.query.FromState;
+
+  var url_parts = url.parse(req.url);
+  var callbackSource = url_parts.pathname;
+
+  var dbFields = { callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState };
+  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, timestamp: timestamp };
+
+  console.log('TwiML event called: ' + callbackSource);
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    console.log(call);
+    if (call == null){
+      //insert new call
+      console.log ('inserting new call: ' + callSid);
+      var newCall = new Call( Object.assign(dbFields, {callEvents: [callEvents]}) );
+      newCall.save(function (err) {
+        if(err){
+          console.log(err);
+          if (err.code && err.code === 11000) {
+            console.log("unique constraint error on call");
+            // try update again
+            Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+              if(err) console.log("Something wrong when updating call: " + err);
+              console.log('updated call(2) ' + call2.callSid);
+            });
+          }
+        }
+      });
+    } else {
+      console.log ('updating call: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+        if(err) console.log("Something wrong when updating call: " + err);
+        console.log('updated with TwuML ' + call2.callSid);
+      });
+    }
+  });
+}
+
+module.exports.call_events = function (req, res) {
+  console.log('Call event requested');
+  var callStatus = req.body.CallStatus;
+  var duration = req.body.Duration;
+  var from = req.body.From;
+  var direction = req.body.Direction;
+  var timestamp = req.body.Timestamp;
+  var accountSid = req.body.AccountSid;
+  var callbackSource = req.body.CallbackSource;
+  var fromCountry = req.body.FromCountry;
+  var fromCity = req.body.FromCity;
+  var sequenceNumber = req.body.SequenceNumber;
+  var callSid = req.body.CallSid;
+  var to = req.body.To;
+  var fromZip = req.body.FromZip;
+  var fromState = req.body.FromState;
+
+  var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState };
+  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, sequenceNumber: sequenceNumber, timestamp: timestamp };
+
+
+  console.log('Call event called: ' + callbackSource);
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    console.log(call);
+    if (call == null){
+      //insert new call
+      console.log ('inserting new call: ' + callSid);
+      var newCall = new Call( Object.assign(dbFields, {callEvents: [callEvents]}) );
+      newCall.save(function (err) {
+        if(err){
+          console.log(err);
+          if (err.code && err.code === 11000) {
+            console.log("unique constraint error on call");
+            // try update again
+            Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+              if(err) console.log("Something wrong when updating call: " + err);
+              console.log('updated call(2) ' + call2.callSid);
+            });
+          }
+        }
+      });
+    } else {
+      console.log ('updating call: ' + callSid);
+      if (call.sequenceNumber == undefined || sequenceNumber > call.sequenceNumber) {
+        Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+          if(err) console.log("Something wrong when updating call: " + err);
+          console.log('updated with correct sequence ' + call2.callSid);
+        });
+      } else {
+        // event received out of sequence, don't update top level properties
+        Call.findOneAndUpdate({'callSid': callSid}, {$push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+          if(err) console.log("Something wrong when updating call: " + err);
+          console.log('updated out of sequence ' + call2.callSid);
+        });
+      }
+    }
+  });
+  res.status(200);
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+}
 
 
 module.exports.conference_events = function (req, res) {
