@@ -23,12 +23,18 @@ var callSchema = mongoose.Schema({
       timestamp: String,
       conferenceSid: String,
       conferenceFriendlyName: String,
-      conferenceStatusCallbackEvent: String
+      conferenceStatusCallbackEvent: String,
+      muted: String,
+      hold: String,
+      updated_at: Date
     }
   ],
+  muted: String,
+  hold: String,
   conferenceSid: String,
   conferenceFriendlyName: String,
-  conferenceStatusCallbackEvent: String
+  conferenceStatusCallbackEvent: String,
+  updated_at: Date
 });
 
 module.exports = mongoose.model('Call', callSchema);

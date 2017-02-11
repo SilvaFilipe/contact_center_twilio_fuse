@@ -25,12 +25,13 @@ module.exports.log_twiml_event = function (req) {
   var to = req.query.To;
   var fromZip = req.query.FromZip;
   var fromState = req.query.FromState;
+  var updated_at = new Date();
 
   var url_parts = url.parse(req.url);
   var callbackSource = url_parts.pathname;
 
-  var dbFields = { callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState };
-  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, timestamp: timestamp };
+  var dbFields = { callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at : updated_at  };
+  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, timestamp: timestamp, updated_at: updated_at };
 
   console.log('TwiML event called: ' + callbackSource);
   Call.findOne({'callSid': callSid}, function (err, call) {
@@ -77,9 +78,10 @@ module.exports.call_events = function (req, res) {
   var to = req.body.To;
   var fromZip = req.body.FromZip;
   var fromState = req.body.FromState;
+  var updated_at = new Date();
 
-  var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState };
-  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, sequenceNumber: sequenceNumber, timestamp: timestamp };
+  var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at: updated_at };
+  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, sequenceNumber: sequenceNumber, timestamp: timestamp, updated_at: updated_at };
 
 
   console.log('Call event called: ' + callbackSource);
@@ -123,7 +125,6 @@ module.exports.call_events = function (req, res) {
   res.send("<Response/>")
 }
 
-
 module.exports.conference_events = function (req, res) {
     console.log('Conference event requested');
 
@@ -136,15 +137,18 @@ module.exports.conference_events = function (req, res) {
     var endConferenceOnExit = req.body.EndConferenceOnExit;
     var callSid = req.body.CallSid;
     var accountSid = req.body.AccountSid;
+    var updated_at = new Date();
+    var dbFields = { conferenceSid: conferenceSid, conferenceFriendlyName: friendlyName, conferenceStatusCallbackEvent: statusCallbackEvent, muted: muted, hold: hold, callSid: callSid, updated_at: updated_at }
 
     console.log('Conference event called: ' + statusCallbackEvent);
 
-    if (statusCallbackEvent == 'participant-join'){
+
+  if (statusCallbackEvent == 'participant-join'){
 
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
 
             if (task && task.call_sid != callSid) { // agent is joining conference (not caller)
-                var twiml = '<Response><Dial><Conference startConferenceOnEnter="true" statusCallbackEvent="start">' + friendlyName + '</Conference></Dial></Response>';
+                var twiml = '<Response><Dial><Conference startConferenceOnEnter="true" statusCallbackEvent="start end join leave mute hold">' + friendlyName + '</Conference></Dial></Response>';
                 var escaped_twiml = require('querystring').escape(twiml);
 
                 client.calls(task.call_sid).update({
@@ -185,6 +189,22 @@ module.exports.conference_events = function (req, res) {
         });
 
     }
+
+    if (callSid){
+      //Conference start and end evetns have no callSid
+      Call.findOne({'callSid': callSid}, function (err, call) {
+        if (call == null){
+          console.log ('Could not find call to update conference: ' + callSid);
+        } else {
+          console.log ('updating call: ' + callSid);
+          Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
+            if(err) console.log("Something wrong when updating call: " + err);
+            console.log('updated with conference info ' + call2.callSid);
+          });
+        }
+      });
+    }
+
     res.setHeader('Content-Type', 'application/xml')
     res.setHeader('Cache-Control', 'public, max-age=0')
     res.send("<Response/>")

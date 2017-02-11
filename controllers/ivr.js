@@ -28,6 +28,7 @@ module.exports.welcome = function (req, res) {
 }
 
 module.exports.selectTeam = function (req, res) {
+  listener.log_twiml_event(req);
 	var team = null
 
 	for (var i = 0; i < req.configuration.ivr.options.length; i++) {
