@@ -266,6 +266,11 @@
         }
       };
 
+
+      $scope.holdOn = function (reservation) {
+        $http.get('/api/callControl/holdOn?callSid=' + $scope.task.attributes.call_sid);
+      };
+
       $scope.complete = function (reservation) {
         $scope.stopWorkingCounter();
 

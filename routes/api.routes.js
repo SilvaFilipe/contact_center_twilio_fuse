@@ -15,6 +15,8 @@ var ivr = require('../controllers/ivr.js')
 /* routes called by the Twilio TaskRouter */
 var taskrouter = require('../controllers/taskrouter.js')
 
+var callController = require('../controllers/call-control.js')
+
 /* routes for messaging adapter */
 var messagingAdapter = require('../controllers/messaging-adapter.js')
 
@@ -46,6 +48,8 @@ module.exports = function(app){
     router.route('/taskrouter/assignment').post(taskrouter.assignment)
     router.route('/taskrouter/moveToConference').post(taskrouter.moveToConference)
     router.route('/taskrouter/agentToConference').post(taskrouter.agentToConference)
+
+    router.route('/callControl/holdOn').get(callController.holdOn)
 
 
     router.route('/workers').get(workers.list)
