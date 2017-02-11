@@ -75,20 +75,22 @@ userSchema.methods.setExtension = function (extNumber) {
       return;
     }
 
-    User.findOne({ extension: { $gt: 99} }).sort('-extension').exec(function (err, otherUser) {
+    this.model('User').findOne({ extension: { $gt: 99} }).sort('-extension').exec(function (err, otherUser) {
         if (err) {
           console.log('setExtension err: ' + err);
         }
-        if (user) {
+        if (otherUser) {
           console.log('setting extension ' + (otherUser.extension + 1) + ' for user: ' + user.email);
-          User.update({_id: user._id}, {
+          user.model('User').update({_id: user._id}, {
             extension: otherUser.extension+1
           }, function(err, affected, resp) {
-            console.log(resp);
+            if (err){
+              console.log(err);
+            }
           })
         } else {
           console.log('setting extension 100 for user: ' + user.email);
-          User.update({_id: user._id}, {
+          user.model('User').update({_id: user._id}, {
             extension: 100
           }, function(err, affected, resp) {
             console.log(resp);
@@ -100,7 +102,7 @@ userSchema.methods.setExtension = function (extNumber) {
   } else {
     console.log('setting extension ' + extNumber + ' for user: ' + user.email);
 
-    User.update({_id: user._id}, {
+    user.model('User').update({_id: user._id}, {
       extension: extNumber
     }, function(err, affected, resp) {
       console.log(resp);
