@@ -267,8 +267,25 @@
       };
 
 
+
+      $scope.hangup = function (reservation) {
+        $http.get('/api/callControl/hangup?callSid=' + $scope.task.attributes.call_sid);
+      };
+
       $scope.holdOn = function (reservation) {
         $http.get('/api/callControl/holdOn?callSid=' + $scope.task.attributes.call_sid);
+      };
+
+      $scope.holdOff = function (reservation) {
+        $http.get('/api/callControl/holdOff?callSid=' + $scope.task.attributes.call_sid);
+      };
+
+      $scope.muteOn = function (reservation) {
+        Twilio.Device.activeConnection().mute(true);
+      };
+
+      $scope.muteOff = function (reservation) {
+        Twilio.Device.activeConnection().mute(false);
       };
 
       $scope.complete = function (reservation) {

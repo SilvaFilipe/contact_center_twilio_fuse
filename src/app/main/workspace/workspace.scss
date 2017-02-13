@@ -483,7 +483,7 @@
     border-radius: 2px;
     margin: -8px 4px 0 0;
     padding: 3px 8px;
-    background-color: rgba(0, 0, 0, 0.08);
+    background-color: rgba(255, 255, 255, 0.4);
 
     .label-success {
       width: 8px;
@@ -544,6 +544,7 @@
       min-height: 50px !important;
     }
 
+
     .md-toolbar-tools {
       font-size: 19px;
     }
@@ -579,3 +580,6 @@
 }
 
 
+._md.md-default-theme._md-toolbar-transitions.reservation-bar {
+  background-color: rgb(29, 135, 187);
+}

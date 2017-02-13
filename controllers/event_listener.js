@@ -148,7 +148,7 @@ module.exports.conference_events = function (req, res) {
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
 
             if (task && task.call_sid != callSid) { // agent is joining conference (not caller)
-                var twiml = '<Response><Dial><Conference startConferenceOnEnter="true" statusCallbackEvent="start end join leave mute hold">' + friendlyName + '</Conference></Dial></Response>';
+                var twiml = '<Response><Dial><Conference beep="false" startConferenceOnEnter="true" statusCallbackEvent="start end join leave mute hold">' + friendlyName + '</Conference></Dial></Response>';
                 var escaped_twiml = require('querystring').escape(twiml);
 
                 client.calls(task.call_sid).update({
@@ -253,7 +253,7 @@ module.exports.workspace_events = function (req, res) {
         Task.findOneAndUpdate({'taskSid': taskSid}, {$set:dbFields, $push: {"taskEvents": eventHistory} }, {new: true}, function(err, task){
             if(err) console.log("Something wrong when updating task: " + err);
             if (task) {
-                console.log('updated task ' + task.taskSid);
+                console.log('updated task ' + task.taskSid + ': ' + eventType);
             } else {
                 console.log('creating new task ' + taskSid);
                 var newTask= new Task(dbFields);

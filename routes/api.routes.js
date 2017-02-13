@@ -50,7 +50,10 @@ module.exports = function(app){
     router.route('/taskrouter/agentToConference').post(taskrouter.agentToConference)
 
     router.route('/callControl/holdOn').get(callController.holdOn)
-
+    router.route('/callControl/holdOff').get(callController.holdOff)
+    router.route('/callControl/muteOn').get(callController.muteOn)
+    router.route('/callControl/muteOff').get(callController.muteOff)
+    router.route('/callControl/hangup').get(callController.hangup)
 
     router.route('/workers').get(workers.list)
     router.route('/workers').post(workers.create)
