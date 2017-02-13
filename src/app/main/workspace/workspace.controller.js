@@ -267,6 +267,13 @@
       };
 
 
+      $scope.recordOn = function (reservation) {
+        $http.get('/api/callControl/recordOn?callSid=' + $scope.task.attributes.call_sid);
+      };
+
+      $scope.recordOff = function (reservation) {
+        $http.get('/api/callControl/recordOff?callSid=' + $scope.task.attributes.call_sid);
+      };
 
       $scope.hangup = function (reservation) {
         $http.get('/api/callControl/hangup?callSid=' + $scope.task.attributes.call_sid);

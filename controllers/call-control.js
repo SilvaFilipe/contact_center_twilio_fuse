@@ -14,6 +14,65 @@ const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN)
 
+
+module.exports.recordOn = function (req, res) {
+  var callSid = req.query.callSid;
+
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      console.log ('Could not find call to start recording: ' + callSid);
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send("ERROR")
+    } else {
+      var twiml = '<Response><Dial recordingStatusCallback="https://node.ngrok.io/listener/recording_events" record="record-from-answer-dual"><Conference beep="false" statusCallback="https://node.ngrok.io/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
+      var escaped_twiml = require('querystring').escape(twiml);
+      client.calls(callSid).update({
+        url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+      }, function (err, call) {
+        if (err) {
+          console.log('Could not start recording: ' + callSid);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send("ERROR")
+        } else {
+          console.log('Started recording: ' + callSid);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send("OK")
+        }
+      });
+    }
+  });
+}
+
+
+module.exports.recordOff = function (req, res) {
+  var callSid = req.query.callSid;
+
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      console.log ('Could not find call to stop recording: ' + callSid);
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send("ERROR")
+    } else {
+      var twiml = '<Response><Dial record="do-not-record"><Conference beep="false" statusCallback="https://node.ngrok.io/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
+      var escaped_twiml = require('querystring').escape(twiml);
+      client.calls(callSid).update({
+        url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+      }, function (err, call) {
+        if (err) {
+          console.log('Could not stop recording: ' + callSid);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send("ERROR")
+        } else {
+          console.log('Stopped recording: ' + callSid);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send("OK")
+        }
+      });
+    }
+  });
+}
+
+
 module.exports.hangup = function (req, res) {
   var callSid = req.query.callSid;
 
@@ -136,3 +195,59 @@ module.exports.muteOff = function (req, res) {
     }
   });
 }
+
+
+module.exports.playRecording = function (req, res) {
+  var fs = require('fs'),
+    https = require('https'),
+    clips = [],
+    currentfile,
+    callSid = req.query.callSid;
+
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      console.log ('Could not find call to play recording: ' + callSid);
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send("ERROR")
+    } else {
+
+      for (let item of call.callEvents) {
+        if (item.recordingUrl && item.recordingUrl != undefined) {
+          //console.log('X: ' + item.recordingUrl);
+          clips.push(item.recordingUrl);
+        }
+      }
+
+      console.log('clips count: ' + clips.length);
+      res.writeHead(200, {
+        'Content-Type': 'audio/mpeg',
+//        'Content-Length': output.size
+      });
+
+      createRecording();
+
+      // console.log('Playing recording: ' + callSid);
+      // res.setHeader('Cache-Control', 'public, max-age=0')
+      // res.send("OK")
+    }
+  });
+
+  var createRecording = function () {
+    // recursive function
+    currentfile = clips.shift();
+    console.log('requesting ' + currentfile);
+    var request = https.get(currentfile + ".mp3", function(response) {
+      //response.pipe(output, {end: false});
+      response.pipe(res, {end: false});
+      if (!clips.length) {
+        response.on("end", function() {
+          console.log('done streaming recording');
+          res.end();
+        });
+      } else {
+        createRecording();
+      }
+    });
+  }
+}
+

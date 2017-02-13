@@ -12,6 +12,39 @@ const taskrouterClient = new twilio.TaskRouterClient(
     process.env.TWILIO_WORKSPACE_SID)
 
 
+
+module.exports.recording_events = function (req, res) {
+  console.log('logging recording event');
+  var accountSid = req.body.AccountSid;
+  var callSid = req.body.CallSid;
+  var recordingSid = req.body.RecordingSid;
+  var recordingUrl = req.body.RecordingUrl;
+  var recordingDuration = req.body.RecordingDuration;
+  var recordingChannels = req.body.RecordingChannels;
+  var updated_at = new Date();
+  var dbFields = { accountSid: accountSid, callSid: callSid, updated_at: updated_at, recordingSid: recordingSid, recordingUrl: recordingUrl, recordingDuration: recordingDuration, recordingChannels: recordingChannels};
+  console.log('recording event called: ' + callSid);
+
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      //insert new call
+      console.log ('null call with recording: ' + callSid);
+    } else {
+      console.log ('updating call with recording: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
+        if(err) console.log("Something wrong when updating recording: " + err);
+        console.log('updated with recording ' + call2.callSid);
+      });
+    }
+  });
+
+  res.status(200);
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+
+}
+
 module.exports.log_twiml_event = function (req) {
   console.log('logging twiml event');
   var callStatus = req.query.CallStatus;

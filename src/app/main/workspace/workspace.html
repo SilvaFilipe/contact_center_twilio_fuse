@@ -129,8 +129,11 @@
                   </div>
                   <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
                   <div layout="row" layout-align="center center">
-                    <md-button class="md-fab md-primary rec" aria-label="Record">
+                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()">
                       REC
+                    </md-button>
+                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOff()">
+                      OFF
                     </md-button>
                     <md-button class="md-fab md-primary mute" aria-label="Mute" ng-click="muteOff()">
                     </md-button>

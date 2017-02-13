@@ -6,5 +6,6 @@ module.exports = function(app){
     router.route('/workspace_events').post(listener.workspace_events)
     router.route('/call_events').post(listener.call_events)
     router.route('/conference_events').post(listener.conference_events)
+    router.route('/recording_events').get(listener.recording_events)
     app.use('/listener', router)
 }

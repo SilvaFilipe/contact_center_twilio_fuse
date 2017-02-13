@@ -26,7 +26,11 @@ var callSchema = mongoose.Schema({
       conferenceStatusCallbackEvent: String,
       muted: String,
       hold: String,
-      updated_at: Date
+      updated_at: Date,
+      recordingSid: String,
+      recordingUrl: String,
+      recordingDuration: String,
+      recordingChannels: String
     }
   ],
   muted: String,
@@ -34,7 +38,11 @@ var callSchema = mongoose.Schema({
   conferenceSid: String,
   conferenceFriendlyName: String,
   conferenceStatusCallbackEvent: String,
-  updated_at: Date
+  updated_at: Date,
+  recordingSid: String,
+  recordingUrl: String,
+  recordingDuration: String,
+  recordingChannels: String
 });
 
 module.exports = mongoose.model('Call', callSchema);

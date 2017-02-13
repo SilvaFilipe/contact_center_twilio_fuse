@@ -54,6 +54,9 @@ module.exports = function(app){
     router.route('/callControl/muteOn').get(callController.muteOn)
     router.route('/callControl/muteOff').get(callController.muteOff)
     router.route('/callControl/hangup').get(callController.hangup)
+    router.route('/callControl/recordOn').get(callController.recordOn)
+    router.route('/callControl/recordOff').get(callController.recordOff)
+    router.route('/callControl/playRecording').get(callController.playRecording)
 
     router.route('/workers').get(workers.list)
     router.route('/workers').post(workers.create)
