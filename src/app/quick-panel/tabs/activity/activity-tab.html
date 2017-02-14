@@ -10,9 +10,9 @@
                   ng-click="vm.openContactDialog($event, contact)"
                   ng-class="{'selected': vm.isSelected(contact)}">
 
-
-      <img class="md-avatar" ng-if="contact.avatar" alt="{{contact.name}}"
-           ng-src="{{contact.avatar}}"/>
+      <div class="status  {{contact.status}}"></div>
+      <img ng-src="{{contact.avatar}}" class="md-avatar" alt="{{contact.name}}"/>
+      <div class="status  {{contact.status}}"></div>
 
       <p class="text-truncate font-weight-600">{{contact.name}} {{contact.lastName}}</p>
 
@@ -20,40 +20,20 @@
       <p class="phone text-truncate hide show-gt-md">
         {{contact.phone}}
       </p>
-      <div class="actions" layout="row" layout-align="start center">
-        <md-button class="md-icon-button  hide show-gt-xs"
-                   ng-click="$event.stopPropagation();vm.toggleInArray(contact.id, vm.user.starred)"
-                   aria-label="Toggle starred" translate
-                   translate-attr-aria-label="CONTACTS.TOGGLE_STARRED">
-          <md-icon ng-if="vm.exists(contact.id,vm.user.starred)" md-font-icon="icon-star"
-                   class="amber-fg"></md-icon>
-          <md-icon ng-if="!vm.exists(contact.id,vm.user.starred)"
-                   md-font-icon="icon-star-outline"></md-icon>
-        </md-button>
+      <md-button class="md-icon-button" aria-label="Call" translate
+                 translate-attr-aria-label="QUICKPANEL.CALL">
+        <md-icon md-font-icon="icon-phone"></md-icon>
+      </md-button>
+      <md-button class="md-icon-button  hide show-gt-xs"
+                 ng-click="$event.stopPropagation();vm.toggleInArray(contact.id, vm.user.starred)"
+                 aria-label="Toggle starred" translate
+                 translate-attr-aria-label="CONTACTS.TOGGLE_STARRED">
+        <md-icon ng-if="vm.exists(contact.id,vm.user.starred)" md-font-icon="icon-star"
+                 class="amber-fg"></md-icon>
+        <md-icon ng-if="!vm.exists(contact.id,vm.user.starred)"
+                 md-font-icon="icon-star-outline"></md-icon>
+      </md-button>
 
-        <md-menu>
-          <md-button class="md-icon-button" aria-label="More" translate
-                     translate-attr-aria-label="CONTACTS.MORE">
-            <md-icon md-font-icon="icon-dots-vertical" ng-click="$mdOpenMenu($event)"></md-icon>
-          </md-button>
-
-          <md-menu-content width="3">
-            <md-divider ng-if="vm.user.groups"></md-divider>
-
-            <md-subheader class="md-no-sticky" ng-if="vm.user.groups">Groups</md-subheader>
-
-            <md-list-item ng-if="vm.user.groups" ng-repeat="group in vm.user.groups"
-                          ng-click="vm.toggleInArray(contact.id,group.contactIds)">
-              <p class="pl-8"
-                 ng-style="vm.exists(contact.id,group.contactIds) && {'font-weight':'500'}">
-                {{group.name}}
-              </p>
-            </md-list-item>
-
-          </md-menu-content>
-        </md-menu>
-
-      </div>
 
 
 

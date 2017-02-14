@@ -4,7 +4,7 @@
             {
                 "name": "Alice Freeman",
                 "avatar": "assets/images/avatars/alice.jpg",
-                "lastMessage": "Are you going to commit latest...",
+                "lastMessage": "Banking Services",
                 "status": "online",
                 "dialog": [
                     {
@@ -82,7 +82,7 @@
             {
                 "name": "Joyce Walters",
                 "avatar": "assets/images/avatars/joyce.jpg",
-                "lastMessage": "Something wrong with our servers...",
+                "lastMessage": "IT Support",
                 "status": "away",
                 "dialog": [
                     {
@@ -105,9 +105,8 @@
             {
                 "name": "Vincent Munoz",
                 "avatar": "assets/images/avatars/vincent.jpg",
-                "lastMessage": "Everybody, quickly gather in the...",
+                "lastMessage": "Lunch Catering",
                 "status": "online",
-                "unread": 3,
                 "dialog": [
                     {
                         "who": "contact",
