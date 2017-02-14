@@ -23,7 +23,7 @@ if (process.env.DYNO) {
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/personable');
+mongoose.connect(process.env.MONGO_URL);
 
 mongoose.connection.on('connected', function (err) {
     if (err) throw err;

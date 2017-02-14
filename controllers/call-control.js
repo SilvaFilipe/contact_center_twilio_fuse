@@ -24,7 +24,7 @@ module.exports.recordOn = function (req, res) {
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send("ERROR")
     } else {
-      var twiml = '<Response><Dial recordingStatusCallback="https://node.ngrok.io/listener/recording_events" record="record-from-answer-dual"><Conference beep="false" statusCallback="https://node.ngrok.io/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
+      var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
       var escaped_twiml = require('querystring').escape(twiml);
       client.calls(callSid).update({
         url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
@@ -53,7 +53,7 @@ module.exports.recordOff = function (req, res) {
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send("ERROR")
     } else {
-      var twiml = '<Response><Dial record="do-not-record"><Conference beep="false" statusCallback="https://node.ngrok.io/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
+      var twiml = '<Response><Dial record="do-not-record"><Conference beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + call.conferenceFriendlyName + '</Conference></Dial></Response>';
       var escaped_twiml = require('querystring').escape(twiml);
       client.calls(callSid).update({
         url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
