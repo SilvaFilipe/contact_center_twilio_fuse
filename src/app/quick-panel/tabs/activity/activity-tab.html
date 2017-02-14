@@ -1,51 +1,67 @@
+
 <md-list class="friends">
-    <md-subheader class="md-no-sticky">
-        <span translate="QUICKPANEL.FRIENDS">Friends</span>
-    </md-subheader>
 
-    <md-list-item class="friend md-3-line" ng-repeat="friend in vm.activities.friends">
-        <img ng-src="{{friend.avatar}}" class="md-avatar" alt="{{friend.name}}"/>
+  <!-- CONTACT LIST -->
+  <md-list class="contacts-list">
 
-        <div class="status {{friend.status}}"></div>
+    <!-- CONTACT ITEM -->
+    <md-list-item class="contact-item md-white-bg" md-ink-ripple
+                  ng-repeat="contact in vm.contacts | filter: vm.search | filter: global.search | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
+                  ng-click="vm.openContactDialog($event, contact)"
+                  ng-class="{'selected': vm.isSelected(contact)}">
 
-        <div ng-if="contact.unread" class="md-accent-bg unread-message-count">{{contact.unread}}</div>
 
-        <div class="md-list-item-text">
-            <h3 class="message">{{friend.message}}</h3>
-            <p class="time">{{friend.time}}</p>
-        </div>
+      <img class="md-avatar" ng-if="contact.avatar" alt="{{contact.name}}"
+           ng-src="{{contact.avatar}}"/>
+
+      <p class="text-truncate font-weight-600">{{contact.name}} {{contact.lastName}}</p>
+
+
+      <p class="phone text-truncate hide show-gt-md">
+        {{contact.phone}}
+      </p>
+      <div class="actions" layout="row" layout-align="start center">
+        <md-button class="md-icon-button  hide show-gt-xs"
+                   ng-click="$event.stopPropagation();vm.toggleInArray(contact.id, vm.user.starred)"
+                   aria-label="Toggle starred" translate
+                   translate-attr-aria-label="CONTACTS.TOGGLE_STARRED">
+          <md-icon ng-if="vm.exists(contact.id,vm.user.starred)" md-font-icon="icon-star"
+                   class="amber-fg"></md-icon>
+          <md-icon ng-if="!vm.exists(contact.id,vm.user.starred)"
+                   md-font-icon="icon-star-outline"></md-icon>
+        </md-button>
+
+        <md-menu>
+          <md-button class="md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="CONTACTS.MORE">
+            <md-icon md-font-icon="icon-dots-vertical" ng-click="$mdOpenMenu($event)"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+            <md-divider ng-if="vm.user.groups"></md-divider>
+
+            <md-subheader class="md-no-sticky" ng-if="vm.user.groups">Groups</md-subheader>
+
+            <md-list-item ng-if="vm.user.groups" ng-repeat="group in vm.user.groups"
+                          ng-click="vm.toggleInArray(contact.id,group.contactIds)">
+              <p class="pl-8"
+                 ng-style="vm.exists(contact.id,group.contactIds) && {'font-weight':'500'}">
+                {{group.name}}
+              </p>
+            </md-list-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      </div>
+
+
+
     </md-list-item>
+    <!-- CONTACT ITEM -->
+
+  </md-list>
+  <!-- / CONTACT LIST -->
+
 </md-list>
 
-<md-divider></md-divider>
-
-<md-list class="servers">
-    <md-subheader class="md-no-sticky">
-        <span translate="QUICKPANEL.APP_SERVERS">Application Servers</span>
-    </md-subheader>
-
-    <md-list-item class="server md-3-line" ng-repeat="server in vm.activities.servers">
-        <md-icon md-font-icon="icon-checkbox-blank-circle" class="s16 status" ng-class="server.status"></md-icon>
-
-        <div class="md-list-item-text">
-            <h3>{{server.location}}</h3>
-            <p>{{server.detail}}</p>
-        </div>
-    </md-list-item>
-</md-list>
-
-<md-divider></md-divider>
-
-<md-list class="stats">
-    <md-subheader class="md-no-sticky">
-        <span translate="QUICKPANEL.USER_STATS">User Stats</span>
-    </md-subheader>
-
-    <md-list-item class="stat md-2-line" ng-repeat="stat in vm.activities.stats">
-        <div class="md-list-item-text">
-            <span>{{stat.title}} ({{stat.current}} / {{stat.total}})</span>
-            <md-progress-linear ng-class="stat.status" md-mode="determinate"
-                                value="{{stat.percent}}"></md-progress-linear>
-        </div>
-    </md-list-item>
-</md-list>

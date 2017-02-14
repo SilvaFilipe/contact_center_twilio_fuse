@@ -12,15 +12,14 @@
             </md-tab-body>
         </md-tab>
         <md-tab>
-            <md-tab-label>
-                <span translate="QUICKPANEL.CONTACTS">CONTACTS</span>
-            </md-tab-label>
-            <md-tab-body>
-                <md-content class="chat-tab scrollable" ms-scroll
-                            ng-include="'app/quick-panel/tabs/chat/chat-tab.html'"
-                            ng-controller="ChatTabController as vm">
-                </md-content>
-            </md-tab-body>
+          <md-tab-label>
+            <span translate="QUICKPANEL.DIRECTORY">DIRECTORY</span>
+          </md-tab-label>
+          <md-tab-body>
+            <md-content class="activity-tab scrollable" ms-scroll
+                        ng-include="'app/quick-panel/tabs/activity/activity-tab.html'">
+            </md-content>
+          </md-tab-body>
         </md-tab>
         <md-tab>
             <md-tab-label>
@@ -34,11 +33,12 @@
         </md-tab>
         <md-tab>
           <md-tab-label>
-            <span translate="QUICKPANEL.DIRECTORY">DIRECTORY</span>
+            <span translate="QUICKPANEL.CONTACTS">CONTACTS</span>
           </md-tab-label>
           <md-tab-body>
-            <md-content class="activity-tab scrollable" ms-scroll
-                        ng-include="'app/quick-panel/tabs/activity/activity-tab.html'">
+            <md-content class="chat-tab scrollable" ms-scroll
+                        ng-include="'app/quick-panel/tabs/chat/chat-tab.html'"
+                        ng-controller="ChatTabController as vm">
             </md-content>
           </md-tab-body>
         </md-tab>

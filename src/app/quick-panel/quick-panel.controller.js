@@ -19,6 +19,23 @@
             retro : true
         };
 
+
+      msApi.request('quickPanel.directory@get', {},
+        // Success
+        function (response)
+        {
+          vm.contacts = response.data;
+        }
+      );
+
+      msApi.request('quickPanel.user@get', {},
+        // Success
+        function (response)
+        {
+          vm.user = response.data;
+        }
+      );
+
         msApi.request('quickPanel.activities@get', {},
             // Success
             function (response)

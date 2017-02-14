@@ -17,5 +17,7 @@
         msApiProvider.register('quickPanel.contacts', ['app/data/quick-panel/contacts.json']);
         msApiProvider.register('quickPanel.events', ['app/data/quick-panel/events.json']);
         msApiProvider.register('quickPanel.notes', ['app/data/quick-panel/notes.json']);
+        msApiProvider.register('quickPanel.directory', ['app/data/quick-panel/directory.json']);
+        msApiProvider.register('quickPanel.user', ['app/data/quick-panel/user.json']);
     }
 })();
