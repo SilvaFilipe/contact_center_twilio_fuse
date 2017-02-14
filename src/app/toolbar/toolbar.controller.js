@@ -26,22 +26,22 @@
         vm.bodyEl = angular.element('body');
         vm.userStatusOptions = [
             {
-                'title': 'Online',
+                'title': 'Available',
                 'icon' : 'icon-checkbox-marked-circle',
                 'color': '#4CAF50'
             },
             {
-                'title': 'Away',
+              'title': 'Working',
+              'icon' : 'icon-minus-circle',
+              'color': '#F44336'
+            },
+            {
+                'title': 'Working Offline',
                 'icon' : 'icon-clock',
                 'color': '#FFC107'
             },
             {
-                'title': 'Do not Disturb',
-                'icon' : 'icon-minus-circle',
-                'color': '#F44336'
-            },
-            {
-                'title': 'Invisible',
+                'title': 'On Break',
                 'icon' : 'icon-checkbox-blank-circle-outline',
                 'color': '#BDBDBD'
             },
