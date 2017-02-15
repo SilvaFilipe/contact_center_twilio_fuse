@@ -89,6 +89,10 @@
                     'quickPanel@app': {
                         templateUrl: 'app/quick-panel/quick-panel.html',
                         controller : 'QuickPanelController as vm'
+                    },
+                    'leftQuickPanel@app': {
+                      templateUrl: 'app/left-quick-panel/left-quick-panel.html',
+                      controller : 'LeftQuickPanelController as vm'
                     }
                 }
             });

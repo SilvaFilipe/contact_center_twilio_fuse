@@ -29,9 +29,13 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout)
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav)
     {
       var vm = this;
+
+      vm.toggleLeftSidenav = function(sidenavId) {
+        $mdSidenav(sidenavId).toggle();
+      };
 
       /* misc configuration data, for instance callerId for outbound calls */
       $scope.configuration;
@@ -571,6 +575,7 @@
         $scope.$apply();
 
       };
+
     }
 
 

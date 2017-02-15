@@ -19,8 +19,8 @@
 
             // Quick Panel
             'app.quick-panel',
-
-            // Sample
+            // Left Panel
+            'app.left-quick-panel',
 
             // callcenter Application
             'app.callcenterApplication',
