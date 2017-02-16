@@ -49,6 +49,7 @@
 
         <!-- agent is working on a task -->
         <div class="working-div" ng-show="task != null">
+        <!--<div class="working-div">-->
           <div class="content">
             <md-tabs md-dynamic-height>
               <md-tab data-ng-if="!task.attributes.nameIsPhoneNumber" label="CHAT">
@@ -120,6 +121,7 @@
                 </section>
               </md-tab>
               <md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
+              <!--<md-tab label="INCOMING CALL">-->
                 <md-toolbar>
                   <div class="md-toolbar-tools">
                     <div class="description">{{task.attributes.title}} from
@@ -133,27 +135,35 @@
                   </div>
                   <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
                   <div layout="row" layout-align="center center">
-                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()">
+
+                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!isRecording">
                       REC
                     </md-button>
-                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOff()">
-                      OFF
+                    <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="isRecording">
+                      REC
                     </md-button>
-                    <md-button class="md-fab md-primary mute" aria-label="Mute" ng-click="muteOff()">
-                    </md-button>
-                    <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()">
+
+                    <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()" ng-show="!isMuted">
                       <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
                     </md-button>
-                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()">
+                    <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="isMuted">
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!isHold">
                       <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
                     </md-button>
+                    <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="isHold">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+
                     <md-button class="md-fab md-primary" aria-label="transfer">
                       <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
                     </md-button>
+
                     <md-button class="md-fab md-primary keypad" aria-label="keypad">
                     </md-button>
-                    <md-button class="md-fab md-primary" aria-label="hangup" ng-click="hangup()">
-                      <md-icon md-font-icon="icon-phone-missed" aria-label="icon-phone-missed"></md-icon>
+
+                    <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
                   </div>
                   <div style="text-align: center; margin-top: 20px">

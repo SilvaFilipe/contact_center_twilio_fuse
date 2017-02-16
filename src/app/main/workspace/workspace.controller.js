@@ -29,7 +29,7 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav)
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, CallService)
     {
       var vm = this;
 
@@ -272,31 +272,60 @@
 
 
       $scope.recordOn = function (reservation) {
-        $http.get('/api/callControl/recordOn?callSid=' + $scope.task.attributes.call_sid);
+        CallService.recordOn($scope.task.attributes.call_sid)
+          .then(function (response) {
+            if (response.data === 'OK') {
+              $scope.isRecording = true;
+            }
+          })
       };
 
       $scope.recordOff = function (reservation) {
-        $http.get('/api/callControl/recordOff?callSid=' + $scope.task.attributes.call_sid);
+        CallService.recordOff($scope.task.attributes.call_sid)
+          .then(function (response) {
+            if (response.data === 'OK') {
+              $scope.isRecording = false;
+            }
+          })
       };
 
       $scope.hangup = function (reservation) {
-        $http.get('/api/callControl/hangup?callSid=' + $scope.task.attributes.call_sid);
+        CallService.hangup($scope.task.attributes.call_sid)
+          .then(function (response) {
+            console.log('hangup', response);
+          })
       };
 
       $scope.holdOn = function (reservation) {
-        $http.get('/api/callControl/holdOn?callSid=' + $scope.task.attributes.call_sid);
+        CallService.holdOn($scope.task.attributes.call_sid)
+          .then(function (response) {
+            if (response.data === 'OK') {
+              $scope.isHold = true;
+            }
+          })
       };
 
       $scope.holdOff = function (reservation) {
-        $http.get('/api/callControl/holdOff?callSid=' + $scope.task.attributes.call_sid);
+        CallService.holdOff($scope.task.attributes.call_sid)
+          .then(function (response) {
+            if (response.data === 'OK') {
+              $scope.isHold = false;
+            }
+          })
       };
 
       $scope.muteOn = function (reservation) {
-        Twilio.Device.activeConnection().mute(true);
+        CallService.muteOn()
+          .then(function () {
+            $scope.isMuted = true;
+          });
       };
 
       $scope.muteOff = function (reservation) {
-        Twilio.Device.activeConnection().mute(false);
+        CallService.muteOff()
+          .then(function () {
+            $scope.isMuted = false;
+          });
       };
 
       $scope.complete = function (reservation) {
