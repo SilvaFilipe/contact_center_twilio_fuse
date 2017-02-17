@@ -522,67 +522,66 @@
   .content {
     padding: 20px;
     background-color: #FFF;
-
-    .title {
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    .timer {
-      line-height: 50px;
-    }
-
-
   }
-  .working-div {
-    md-tabs {
-      border:2px solid #eae9e9;
-    }
-    md-toolbar {
-      height: 60px;
-      margin-top: 10px;
-      min-height: 50px !important;
-    }
 
-
-    .md-toolbar-tools {
-      font-size: 19px;
-    }
-
-    .load-indicator
-    {
-      text-align: center;
-      padding: 20px;
-    }
-    .keypad {
-      background-image: url(http://s7.postimg.org/uxqt9hw5z/keypad.png);
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: 55% auto;
-    }
-    .mute {
-      background-image: url(http://s17.postimg.org/hzg2431gr/mic.png);
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: 55% auto;
-    }
-    .hangup {
-      background-image: url(https://s16.postimg.org/tmkj40105/hangup.png);
-      background-position: center center;
-      background-repeat: no-repeat;
-      background-size: 55% auto;
-    }
-    .rec {
-      font-size: 17px;
-      letter-spacing: 1px;
-    }
-    .workingTimer {
-      line-height: 50px;
-      font-size: 30px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  .title {
+    font-size: 18px;
+    font-weight: 500;
   }
+
+  .timer {
+    line-height: 50px;
+  }
+
+  md-tabs {
+    border:2px solid #eae9e9;
+  }
+
+  md-toolbar {
+    height: 60px;
+    margin-top: 10px;
+    min-height: 50px !important;
+  }
+
+
+  .md-toolbar-tools {
+    font-size: 19px;
+  }
+
+  .load-indicator
+  {
+    text-align: center;
+    padding: 20px;
+  }
+  .keypad {
+    background-image: url(http://s7.postimg.org/uxqt9hw5z/keypad.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 55% auto;
+  }
+  .mute {
+    background-image: url(http://s17.postimg.org/hzg2431gr/mic.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 55% auto;
+  }
+  .hangup {
+    background-image: url(https://s16.postimg.org/tmkj40105/hangup.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 55% auto;
+  }
+  .rec {
+    font-size: 17px;
+    letter-spacing: 1px;
+  }
+  .workingTimer {
+    line-height: 50px;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
 }
 
 
