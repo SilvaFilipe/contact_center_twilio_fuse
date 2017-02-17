@@ -22,34 +22,38 @@
 
         <!-- reservation is waiting for acceptance -->
         <div ng-show="reservation != null">
-          <md-toolbar>
-            <div class="md-toolbar-tools">
-              Reservation
-            </div>
-          </md-toolbar>
-
-          <div class="content" layout="column">
-            <div class="title">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
-            <div layout="row" layout-align="space-between center">
-              <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
-              <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
-            </div>
-
-          </div>
+          <md-tabs md-dynamic-height>
+            <md-tab label="RESERVATION">
+              <md-toolbar class="mt-10">
+                <div class="md-toolbar-tools">
+                  <div class="description">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
+                </div>
+              </md-toolbar>
+              <div class="content">
+                <div layout="row" layout-align="space-between center">
+                  <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
+                  <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
+                </div>
+              </div>
+            </md-tab>
+          </md-tabs>
         </div>
         <!-- reservation is waiting for acceptance -->
 
         <!-- agent is waiting for new reservation -->
         <div ng-show="reservation == null && task == null">
-          <div class="content" style="text-align: center">
-            <span class="md-title">Waiting for new task ...</span>
-          </div>
+          <md-tabs md-dynamic-height>
+            <md-tab label="IDLE">
+              <div class="content" style="text-align: center">
+                <span class="md-title">Waiting for new task ...</span>
+              </div>
+            </md-tab>
+          </md-tabs>
         </div>
         <!-- agent is waiting for new reservation -->
 
         <!-- agent is working on a task -->
         <div class="working-div" ng-show="task != null">
-        <!--<div class="working-div">-->
           <div class="content">
             <md-tabs md-dynamic-height>
               <md-tab data-ng-if="!task.attributes.nameIsPhoneNumber" label="CHAT">
