@@ -1,34 +1,56 @@
-
-<md-list class="friends">
-
-  <!-- CONTACT LIST -->
-  <md-list class="contacts-list">
-
-    <!-- CONTACT ITEM -->
-    <md-list-item class="contact-item md-white-bg" md-ink-ripple
-                  ng-click="vm.openContactDialog($event, contact)"
-                  ng-class="{'selected': vm.isSelected(contact)}">
-
-
-      <p class="text-truncate font-weight-600">Queue 1</p>
-      <p class="phone text-truncate hide show-gt-md">
-        2 agents
-      </p>
-      <p class="phone text-truncate hide show-gt-md">
-        3 callers
-      </p>
-      <p class="phone text-truncate hide show-gt-md">
-        1:15 Avg Wait
-      </p>
+<table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+       dt-options="vm.dtOptions">
+  <thead>
+  <tr>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Queue Name</span>
       </div>
-
-
-
-    </md-list-item>
-    <!-- CONTACT ITEM -->
-
-  </md-list>
-  <!-- / CONTACT LIST -->
-
-</md-list>
+    </th>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Busy</span>
+      </div>
+    </th>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Available</span>
+      </div>
+    </th>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Waiting</span>
+      </div>
+    </th>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Avg. Wait</span>
+      </div>
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr >
+    <td>Claims</td>
+    <td>3</td>
+    <td>0</td>
+    <td>1</td>
+    <td>1:15</td>
+  </tr>
+  <tr >
+    <td>Payments</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0:31</td>
+  </tr>
+  <tr >
+    <td>Tech</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0:13</td>
+  </tr>
+  </tbody>
+</table>
 

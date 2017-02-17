@@ -1,0 +1,49 @@
+{
+    "ivr": {
+        "text": "Welcome to my call center, please press 1 for sales, press 2 for support",
+        "options": [
+            {
+                "friendlyName": "Sales",
+                "digit": 1,
+                "id": "sales"
+            },
+            {
+                "friendlyName": "Support",
+                "digit": 2,
+                "id": "support"
+            }
+        ]
+    },
+    "queues": [
+        {
+            "friendlyName": "Chat Queue",
+            "id": "chat",
+            "taskQueueSid": "WQ1ceca4ced95c6ecf75d1a33ea1c2b49a",
+            "expression": "channel == \"chat\"",
+            "targetWorkerExpression": ""
+        },
+        {
+            "friendlyName": "Phone Queue",
+            "id": "phone",
+            "taskQueueSid": "WQ3a58f21ec0b94e164fe6e3cf18308d63",
+            "expression": "channel == \"phone\"",
+            "targetWorkerExpression": "task.team == worker.team"
+        },
+        {
+            "friendlyName": "Video Queue",
+            "id": "video",
+            "taskQueueSid": "WQ5c0e1d78e1779d9e231642448e18c553",
+            "expression": "channel == \"video\"",
+            "targetWorkerExpression": ""
+        }
+    ],
+    "twilio": {
+        "workerOfflineActivitySid": "WA4ab8abeaea0d0d4e0baa6a7abc420293",
+        "workerIdleActivitySid": "WA32a784a1b85b55e1bffc0797284d7425",
+        "workerReservationActivitySid": "WA5d3185be2325a3e4efedf0d82cf36f2d",
+        "workerAssignmentActivitySid": "WA4bb67bef17c6e6798b4872c239e04559",
+        "callerId": "+420228883532",
+        "applicationSid": "AP831ceb32986c4b30a04c9c7027391298",
+        "workflowSid": "WW14dcf69f68931ac78f357a18428ca720"
+    }
+}
