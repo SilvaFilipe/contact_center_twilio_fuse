@@ -36,21 +36,14 @@
         <div class="dig number-dig pound" name="#" ng-click="addDigit('#', $event)">#</div>
       </div>
       <div class="digits">
-        <div class="dig addPerson action-dig"></div>
-        <div class="dig-spacer"></div>
-        <div class="dig goBack action-dig" ng-click="goBack($event)"></div>
+        <div class="dig callbtn newCall" ng-click="call(vm.phoneNumber)">
+        </div>
+        <div class="dig hangup" ng-style="{'visibility': isActive ?'visible':'hidden'}" ng-click="hangup()">
+        </div>
+        <div class="dig goBack" ng-click="goBack($event)">
+        </div>
       </div>
 
-    </div>
-
-    <div class="call action-dig" ng-if="isActive == false" ng-click="call(vm.phoneNumber, $event)">
-      <div class="call-change"><span></span></div>
-      <div class="call-icon"></div>
-    </div>
-
-    <div class="call action-dig"  ng-if="isActive == true" ng-click="hangup()">
-      <div class="call-change in-call"><span></span></div>
-      <div class="call-icon in-call"></div>
     </div>
 
     <div layout="row" layout-align="center center">

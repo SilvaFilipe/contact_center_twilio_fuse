@@ -152,11 +152,11 @@
             width: 60%;
             margin-left: 20%;
             margin-top: 20px;
-            .dig-spacer{
-              width: 60px;
-              margin: 10px calc(50% - 90px);
-              float: left;
-            }
+            //.dig-spacer{
+            //  width: 60px;
+            //  margin: 10px calc(50% - 90px);
+            //  float: left;
+            //}
             .dig{
               color:white;
               font-size: 30px;
@@ -193,14 +193,28 @@
                 position: relative;
                 top: -2px;
               }
-              &.addPerson, &.goBack{
+              &.addCall, &.goBack, &.newCall, &.hangup{
                 background-repeat: no-repeat;
                 background-position: center center;
                 background-size: 55% auto;
                 margin-bottom: 25px;
                 box-shadow: 0px  25px 30px -15px black;
               }
-              &.addPerson{
+              &.newCall{
+                background-color: #3DE066;
+                background-image: url(http://s13.postimg.org/sqno4q8sj/call.png);
+                &.clicked{
+                  animation: pulse-blue linear $pulseDuration 1;
+                }
+              }
+              &.hangup{
+                background-color: $red;
+                background-image: url(http://s13.postimg.org/sqno4q8sj/call.png);
+                &.clicked{
+                  animation: pulse-blue linear $pulseDuration 1;
+                }
+              }
+              &.addCall{
                 background-color: #285EFA;
                 background-image: url(http://s16.postimg.org/4u2rbu85t/add_Person.png);
                 &.clicked{

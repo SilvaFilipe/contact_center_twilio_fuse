@@ -102,16 +102,22 @@
 
       });
 
-      $scope.hangup = function (reservation) {
-
+      $scope.hangup = function () {
+        addAnimationToButton(event.target);
+        $(".callbtn").removeClass("addCall");
+        $(".callbtn").addClass("newCall");
         $timeout(function(){
           Twilio.Device.disconnectAll();
         });
 
       };
 
-      $scope.call = function (phoneNumber, event) {
-        addAnimationToButton($(event.target).parent());
+      $scope.call = function (phoneNumber) {
+        addAnimationToButton(event.target);
+        if (!$scope.isAcitve) {
+          $(".callbtn").removeClass("newCall");
+          $(".callbtn").addClass("addCall");
+        }
         $scope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber});
       };
 
