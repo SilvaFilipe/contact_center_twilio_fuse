@@ -43,6 +43,7 @@
       /* contains task data pushed by the TaskRouter JavaScript SDK */
       $scope.reservation;
       $scope.tasks;
+      $scope.outCallTasks = [];
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -355,6 +356,17 @@
       $scope.callPhoneNumber = function(phoneNumber){
         $rootScope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber });
       };
+
+      $scope.$on('NewOutBoundingCall', function(event, data) {
+        $log.log('call: ' + data.phoneNumber);
+        $scope.outCallTasks.push({number: data.phoneNumber});
+
+      });
+
+      $scope.$on('endAllOutCalls', function(event){
+        $log.log('end all outbounding calls');
+        $scope.outCallTasks = [];
+      });
 
       $scope.logout = function () {
         $scope.stopWorkingCounter();

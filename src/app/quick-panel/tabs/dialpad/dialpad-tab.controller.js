@@ -108,6 +108,7 @@
         $(".callbtn").addClass("newCall");
         $timeout(function(){
           Twilio.Device.disconnectAll();
+          $rootScope.$broadcast('endAllOutCalls');
         });
 
       };
@@ -118,6 +119,8 @@
           $(".callbtn").removeClass("newCall");
           $(".callbtn").addClass("addCall");
         }
+
+        // here we can put call's info
         $scope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber});
       };
 
@@ -140,6 +143,7 @@
         vm.phoneNumber = data.phoneNumber;
 
         Twilio.Device.connect({'phone': data.phoneNumber});
+        $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber });
 
         $scope.state = 'isActive';
 
