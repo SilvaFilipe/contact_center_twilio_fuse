@@ -98,7 +98,7 @@ module.exports.log_twiml_event = function (req) {
 module.exports.call_events = function (req, res) {
   console.log('Call event requested');
   var callStatus = req.body.CallStatus;
-  var duration = req.body.Duration;
+  var duration = req.body.Duration || 0;
   var from = req.body.From;
   var direction = req.body.Direction;
   var timestamp = req.body.Timestamp;
@@ -140,8 +140,11 @@ module.exports.call_events = function (req, res) {
       console.log ('updating call: ' + callSid);
       if (call.sequenceNumber == undefined || sequenceNumber > call.sequenceNumber) {
         Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
-          if(err) console.log("Something wrong when updating call: " + err);
-          console.log('updated with correct sequence ' + call2.callSid);
+          if(err){
+            console.log("Something wrong when updating call: " + err);
+          } else {
+            console.log('updated with correct sequence ' + call2.callSid);
+          }
         });
       } else {
         // event received out of sequence, don't update top level properties

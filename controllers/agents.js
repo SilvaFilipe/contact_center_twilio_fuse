@@ -120,9 +120,16 @@ module.exports.call = function (req, res) {
     client.calls.create({
     url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
     to: req.query.phone,
-    from: req.configuration.twilio.callerId
+    from: req.configuration.twilio.callerId,
+    statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',
+    statusCallbackMethod: "POST",
+    statusCallbackEvent: ["initiated", "answered", "completed"]
   }, function(err, call) {
-    process.stdout.write(call.sid);
+      if (err){
+        console.log(err);
+      } else {
+        console.log('created outbound call ' + call.sid);
+      }
   });
 
 
