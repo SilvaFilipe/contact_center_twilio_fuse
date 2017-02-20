@@ -144,7 +144,7 @@
         $log.log('call: ' + data.phoneNumber);
         vm.phoneNumber = data.phoneNumber;
 
-        Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName });
+        Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName, 'user_id': currentUser._id });
         $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber});
 
         $scope.state = 'isActive';
