@@ -224,7 +224,7 @@ module.exports.conference_events = function (req, res) {
     }
 
     if (callSid){
-      //Conference start and end evetns have no callSid
+      //Conference start and end events have no callSid
       Call.findOne({'callSid': callSid}, function (err, call) {
         if (call == null){
           console.log ('Could not find call to update conference: ' + callSid);

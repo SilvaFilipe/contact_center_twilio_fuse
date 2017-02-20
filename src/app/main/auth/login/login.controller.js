@@ -21,7 +21,7 @@
           },
           function(data) {
             console.log(data);
-            $("#login .title").html("Incorrect username or password.").addClass("error");
+            $("#login .title").html("Incorrect username or password.").addClass("error").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
           });
 
       };

@@ -1,6 +1,9 @@
 'use strict'
 
 const twilio = require('twilio')
+const client = new twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN)
 
 /* client for Twilio TaskRouter */
 const taskrouterClient = new twilio.TaskRouterClient(
@@ -108,9 +111,27 @@ module.exports.call = function (req, res) {
 	var twiml = new twilio.TwimlResponse()
 
 	twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
-		node.number(req.query.phone)
-	})
+		node.conference(req.query.workerName )
+	});
 
+
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+    client.calls.create({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+    to: req.query.phone,
+    from: req.configuration.twilio.callerId
+  }, function(err, call) {
+    process.stdout.write(call.sid);
+  });
+
+
+
+
+  //req.query.phone
+  // twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
+  //   node.number(req.query.phone)
+  // })
 	res.setHeader('Content-Type', 'application/xml')
 	res.setHeader('Cache-Control', 'public, max-age=0')
 	res.send(twiml.toString())

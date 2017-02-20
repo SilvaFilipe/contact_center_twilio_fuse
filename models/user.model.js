@@ -34,6 +34,7 @@ var userSchema = mongoose.Schema({
     },
     imageUrl: String,
     workerSid: String,
+    workerFriendlyName: String,
     local: {
         email: {
             type: String
@@ -63,7 +64,8 @@ userSchema.methods.validPassword = function (password) {
 };
 
 userSchema.methods.friendlyWorkerName = function () {
-    return  'w' + this._id;
+  //return (this.firstName + "_" + this.lastName).replace(/[^0-9a-z]/gi, '');
+  return  'w' + this._id;
 };
 
 userSchema.methods.setExtension = function (extNumber) {
@@ -134,7 +136,15 @@ userSchema.methods.syncWorker = function () {
 
     } else {
         //update worker
-        console.log('update worker');
+        console.log('update worker ' + this.workerSid );
+        taskrouterClient.workspace.workers(this.workerSid ).update({
+        friendlyName: user.friendlyWorkerName(),
+        attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName(), "channels":["phone","chat"],"team":"default", "email":user.email})
+      }, function(err, worker) {
+        if (err){
+            console.log(err);
+        }
+      });
     }
 
 };

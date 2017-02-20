@@ -7,9 +7,11 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast)
+    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window)
     {
       var vm = this;
+      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+      var workerName =  'w' + currentUser._id;
 
       $scope.status = null;
       $scope.isActive = false;
@@ -142,8 +144,8 @@
         $log.log('call: ' + data.phoneNumber);
         vm.phoneNumber = data.phoneNumber;
 
-        Twilio.Device.connect({'phone': data.phoneNumber});
-        $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber });
+        Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName });
+        $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber});
 
         $scope.state = 'isActive';
 

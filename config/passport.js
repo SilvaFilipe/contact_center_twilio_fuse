@@ -94,6 +94,9 @@ module.exports = function (passport, acl) {
                 return done(null, false, req.flash('message', 'Wrong password.'))
             }
 
+          // TODO - remove after worker definitions are done.
+          user.syncWorker();
+
             acl.userRoles(user._id.toString(), function(err, roles){
               req.session.roles = roles;
               req.session.userId = user._id;
