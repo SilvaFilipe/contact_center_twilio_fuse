@@ -11,6 +11,8 @@ const taskrouterClient = new twilio.TaskRouterClient(
 	process.env.TWILIO_AUTH_TOKEN,
 	process.env.TWILIO_WORKSPACE_SID)
 
+const Call = require('../models/call.model');
+
 module.exports.login = function (req, res) {
 	var friendlyName = req.body.worker.friendlyName
 
@@ -111,7 +113,7 @@ module.exports.call = function (req, res) {
 	var twiml = new twilio.TwimlResponse()
 
 	twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
-		node.conference(req.query.workerName )
+		node.conference(req.query.workerName)
 	});
 
 
@@ -129,11 +131,14 @@ module.exports.call = function (req, res) {
         console.log(err);
       } else {
         console.log('created outbound call ' + call.sid);
+        // insert into db
+        var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+        var newCall = new Call( Object.assign(dbFields) );
+        newCall.save(function (err) {
+          if(err){ console.log(err);}
+        });
       }
   });
-
-
-
 
   //req.query.phone
   // twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {

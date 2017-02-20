@@ -42,7 +42,8 @@ var callSchema = mongoose.Schema({
   recordingSid: String,
   recordingUrl: String,
   recordingDuration: String,
-  recordingChannels: String
+  recordingChannels: String,
+  user_id: String
 });
 
 module.exports = mongoose.model('Call', callSchema);
