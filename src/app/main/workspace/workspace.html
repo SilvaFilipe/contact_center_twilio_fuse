@@ -45,7 +45,7 @@
                 <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
               </div>
             </md-tab>
-            <md-tab ng-disabled="task == null || task.attributes.nameIsPhoneNumber"	 md-active="false" label="CHAT">
+            <md-tab ng-if="task != null && !task.attributes.nameIsPhoneNumber"	 md-active="false" label="CHAT">
               <md-toolbar>
                 <div class="md-toolbar-tools">
                   <div class="description">{{task.attributes.title}} from
@@ -60,7 +60,7 @@
               </div>
 
               <!-- chat -->
-              <section ng-show="session.channelSid" class="chat-controller" ng-controller="ChatController" ng-cloak>
+              <section ng-show="session.channelSid" class="chat-controller" ng-cloak>
 
                 <div class="load-indicator" ng-show="session.isLoading">
                   <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
@@ -100,7 +100,7 @@
                     <div layout="row" layout-align="between-space center">
                       <div flex="70">
                         <md-input-container class="md-block">
-                          <input ng-model="message" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
+                          <input ng-model="message" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
                         </md-input-container>
                       </div>
                       <div flex="30" class="mt-10">
@@ -114,7 +114,7 @@
               </section>
             </md-tab>
 
-            <md-tab ng-disabled="task == null || !task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
+            <md-tab ng-if="task != null && task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
               <md-toolbar>
                 <div class="md-toolbar-tools">
                   <div class="description">{{task.attributes.title}} from

@@ -5,7 +5,6 @@
     angular
         .module('app.callcenterApplication')
         .controller('WorkflowController', WorkflowController)
-        .controller('ChatController', ChatController)
         .directive('dynamic', dynamic)
         .filter('time', time);
 
@@ -136,8 +135,8 @@
           $scope.reservation = null;
           $scope.stopReservationCounter();
           console.log(reservation.task.attributes);
-          var caller_sid = reservation.task.attributes.call_sid
-          var agent_sid = reservation.task.attributes.worker_call_sid
+          var caller_sid = reservation.task.attributes.call_sid;
+          var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
           $scope.startWorkingCounter();
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
@@ -425,9 +424,8 @@
 
       };
 
-    }
+      // ChatController
 
-    function ChatController($scope, $rootScope, $http, $sce, $compile, $log) {
       $scope.channel;
       $scope.messages = [];
       $scope.session = {
