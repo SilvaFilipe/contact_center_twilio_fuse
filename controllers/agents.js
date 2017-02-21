@@ -113,9 +113,9 @@ module.exports.call = function (req, res) {
 	var twiml = new twilio.TwimlResponse()
 
 	twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
-		node.conference(req.query.workerName)
+		node.conference(req.query.workerName, {waitUrl: "/sounds/ringing.xml", waitMethod: "GET"})
 	});
-
+/*
 
   var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
   var escaped_twiml = require('querystring').escape(twiml);
@@ -144,7 +144,38 @@ module.exports.call = function (req, res) {
   // twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
   //   node.number(req.query.phone)
   // })
+  */
 	res.setHeader('Content-Type', 'application/xml')
 	res.setHeader('Cache-Control', 'public, max-age=0')
 	res.send(twiml.toString())
 }
+
+module.exports.outboundCall = function (req, res) {
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+  client.calls.create({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+    to: req.query.phone,
+    from: req.configuration.twilio.callerId,
+    statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',
+    statusCallbackMethod: "POST",
+    statusCallbackEvent: ["initiated", "answered", "completed"]
+  }, function(err, call) {
+    if (err){
+      console.log(err);
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send("ERROR")
+    } else {
+      console.log('created outbound call ' + call.sid);
+      // insert into db
+      var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+      var newCall = new Call( Object.assign(dbFields) );
+      newCall.save(function (err) {
+        if(err){ console.log(err);}
+      });
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send({call: call})
+    }
+  });
+}
+
