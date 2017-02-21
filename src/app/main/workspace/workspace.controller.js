@@ -253,14 +253,16 @@
                       $scope.callTasks.push($scope.currentCall);
                       $scope.stopWorkingCounter();
                       $scope.startWorkingCounter();
+                      console.log($scope.currentCall);
                     }
                   })
               }
               else {
-                $scope.currentCall = {fromNumber: reservation.task.attributed.from, type: 'inbound', duration: $scope.task.age, callSid: $scope.task.attributes.call_sid,
-                  onhold: false, recording: false, muted: false, taskSid: $scope.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active'};
+                $scope.currentCall = {fromNumber: reservation.task.attributes.from, type: 'inbound', duration: reservation.task.age, callSid: reservation.task.attributes.call_sid,
+                  onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active'};
                 $scope.callTasks.push($scope.currentCall);
                 $scope.startWorkingCounter();
+                console.log($scope.currentCall);
               }
 
             }
@@ -387,6 +389,7 @@
                 $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: '', onhold: false, recording: false, muted: false, taskSid: null,
                   direction: 'outbound',createdAt: new Date(), callStatus: 'active'};
                 $scope.callTasks.push($scope.currentCall);
+                console.log($scope.currentCall);
                 $scope.stopWorkingCounter();
                 $scope.startWorkingCounter();
               }

@@ -26,7 +26,7 @@
 
         $log.log('InitializePhone event received');
 
-        Twilio.Device.setup(data.token, {debug: true, closeProtection: true});
+        Twilio.Device.setup(data.token, {debug: true, closeProtection: false});
 
         Twilio.Device.ready(function (device) {
           $scope.status = 'Ready';
