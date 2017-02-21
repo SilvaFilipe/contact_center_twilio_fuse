@@ -22,10 +22,54 @@
 
         <div class="content">
           <md-tabs md-dynamic-height>
-            <md-tab data-ng-if="!outCallTasks.empty()" ng-repeat="task in outCallTasks" label="{{task.number}}">
-              <div class="content" style="text-align: center">
-                <span class="md-title">Now Calling ...</span>
-              </div>
+            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)">
+              <md-tab-label>
+                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
+                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
+              </md-tab-label>
+              <md-tab-body>
+                <md-content class="h-400" ng-class="(task.callStatus=='completed') ? 'callCompleted' : 'md-grey-100-bg'">
+                  <div style="height: 70px;">
+                    <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
+                  </div>
+                  <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
+                  <div layout="row" layout-align="center center">
+
+                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
+                      REC
+                    </md-button>
+                    <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="task.recording">
+                      REC
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()" ng-show="!task.muted">
+                      <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="task.muted">
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!task.onhold">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="task.onhold">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="transfer">
+                      <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
+                    </md-button>
+
+                    <md-button class="md-fab md-primary keypad" aria-label="keypad">
+                    </md-button>
+
+                    <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
+                    </md-button>
+                  </div>
+                  <div class="mt-30" layout="row" layout-align="center center" ng-show="task.callStatus == 'completed'">
+                    <md-button class="md-warn md-raised md-hue-2" ng-click="closeTab()">Close</md-button>
+                  </div>
+                </md-content>
+              </md-tab-body>
             </md-tab>
 
             <md-tab data-ng-if="reservation == null && task == null" label="IDLE">
@@ -113,58 +157,6 @@
 
               </section>
             </md-tab>
-
-            <md-tab ng-if="task != null && task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
-              <md-toolbar>
-                <div class="md-toolbar-tools">
-                  <div class="description">{{task.attributes.title}} from
-                    <a href="#" ng-click="callPhoneNumber('{{task.attributes.name}}')">{{task.attributes.name}}</a>
-                  </div>
-                </div>
-              </md-toolbar>
-              <md-content class="md-grey-100-bg h-400">
-                <div style="height: 70px;">
-                  <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
-                </div>
-                <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
-                <div layout="row" layout-align="center center">
-
-                  <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!isRecording">
-                    REC
-                  </md-button>
-                  <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="isRecording">
-                    REC
-                  </md-button>
-
-                  <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()" ng-show="!isMuted">
-                    <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
-                  </md-button>
-                  <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="isMuted">
-                  </md-button>
-
-                  <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!isHold">
-                    <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
-                  </md-button>
-                  <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="isHold">
-                    <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
-                  </md-button>
-
-                  <md-button class="md-fab md-primary" aria-label="transfer">
-                    <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
-                  </md-button>
-
-                  <md-button class="md-fab md-primary keypad" aria-label="keypad">
-                  </md-button>
-
-                  <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
-                  </md-button>
-                </div>
-                <div style="text-align: center; margin-top: 20px">
-                  <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete()">Complete Task</md-button>
-                </div>
-              </md-content>
-            </md-tab>
-
 
           </md-tabs>
         </div>

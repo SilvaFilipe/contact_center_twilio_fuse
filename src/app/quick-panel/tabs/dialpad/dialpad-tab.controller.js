@@ -148,6 +148,7 @@
         $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber});
 
         $scope.state = 'isActive';
+        $mdSidenav('quick-panel').toggle();
 
       });
 

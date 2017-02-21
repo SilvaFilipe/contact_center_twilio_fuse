@@ -42,7 +42,8 @@
       /* contains task data pushed by the TaskRouter JavaScript SDK */
       $scope.reservation;
       $scope.tasks;
-      $scope.outCallTasks = [];
+      $scope.callTasks = [];
+      $scope.currentCall;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -138,7 +139,6 @@
           var caller_sid = reservation.task.attributes.call_sid;
           var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
-          $scope.startWorkingCounter();
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
 
         });
@@ -151,7 +151,6 @@
           /* reset all data */
           $scope.reservation = null;
           $scope.task = null;
-          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -164,7 +163,6 @@
           /* reset all data */
           $scope.reservation = null;
           $scope.task = null;
-          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -176,7 +174,6 @@
 
           $scope.reservation = null;
           $scope.task = null;
-          $scope.stopWorkingCounter();
           $scope.$apply();
 
         });
@@ -197,7 +194,6 @@
 
           $scope.reservation = null;
           $scope.task = null;
-          $scope.stopWorkingCounter();
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
@@ -247,6 +243,26 @@
               console.log("reservation accepted");
               console.log(reservation);
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
+              if ($scope.currentCall) {
+                CallService.holdOn($scope.currentCall.callSid)
+                  .then(function (response) {
+                    if (response.data === 'OK') {
+                      $scope.currentCall.onhold = true;
+                      $scope.currentCall = {fromNumber: reservation.task.attributed.from, type: 'inbound', duration: $scope.task.age, callSid: $scope.task.attributes.call_sid,
+                        onhold: false, recording: false, muted: false, taskSid: $scope.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active'};
+                      $scope.callTasks.push($scope.currentCall);
+                      $scope.stopWorkingCounter();
+                      $scope.startWorkingCounter();
+                    }
+                  })
+              }
+              else {
+                $scope.currentCall = {fromNumber: reservation.task.attributed.from, type: 'inbound', duration: $scope.task.age, callSid: $scope.task.attributes.call_sid,
+                  onhold: false, recording: false, muted: false, taskSid: $scope.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active'};
+                $scope.callTasks.push($scope.currentCall);
+                $scope.startWorkingCounter();
+              }
+
             }
           );
 
@@ -271,60 +287,64 @@
       };
 
 
-      $scope.recordOn = function (reservation) {
-        CallService.recordOn($scope.task.attributes.call_sid)
+      $scope.recordOn = function () {
+        CallService.recordOn($scope.currentCall.callSid)
           .then(function (response) {
             if (response.data === 'OK') {
-              $scope.isRecording = true;
+              $scope.currentCall.recording = true;
             }
           })
       };
 
-      $scope.recordOff = function (reservation) {
-        CallService.recordOff($scope.task.attributes.call_sid)
+      $scope.recordOff = function () {
+        CallService.recordOff($scope.currentCall.callSid)
           .then(function (response) {
             if (response.data === 'OK') {
-              $scope.isRecording = false;
+              $scope.currentCall.recording = false;
             }
           })
       };
 
-      $scope.hangup = function (reservation) {
-        CallService.hangup($scope.task.attributes.call_sid)
+      $scope.hangup = function () {
+        CallService.hangup($scope.currentCall.callSid)
           .then(function (response) {
             console.log('hangup', response);
           })
       };
 
-      $scope.holdOn = function (reservation) {
-        CallService.holdOn($scope.task.attributes.call_sid)
+      $scope.holdOn = function () {
+        CallService.holdOn($scope.currentCall.callSid)
           .then(function (response) {
             if (response.data === 'OK') {
-              $scope.isHold = true;
+              $scope.currentCall.onhold = true;
             }
           })
       };
 
-      $scope.holdOff = function (reservation) {
-        CallService.holdOff($scope.task.attributes.call_sid)
+      $scope.holdOff = function () {
+        CallService.holdOff($scope.currentCall.callSid)
           .then(function (response) {
             if (response.data === 'OK') {
-              $scope.isHold = false;
+              $scope.currentCall.onhold = false;
             }
           })
       };
 
-      $scope.muteOn = function (reservation) {
+      $scope.muteOn = function () {
         CallService.muteOn()
           .then(function () {
-            $scope.isMuted = true;
+            $scope.callTasks.forEach(function(eachCall) {
+              eachCall.muted = true;
+            });
           });
       };
 
-      $scope.muteOff = function (reservation) {
+      $scope.muteOff = function () {
         CallService.muteOff()
           .then(function () {
-            $scope.isMuted = false;
+            $scope.callTasks.forEach(function(eachCall) {
+              eachCall.muted = false;
+            });
           });
       };
 
@@ -358,14 +378,71 @@
 
       $scope.$on('NewOutBoundingCall', function(event, data) {
         $log.log('call: ' + data.phoneNumber);
-        $scope.outCallTasks.push({number: data.phoneNumber});
+        // when new outbounding call is dialed and currently on call, currentCall should be on hold
+        if ($scope.currentCall) {
+          CallService.holdOn($scope.currentCall.callSid)
+            .then(function (response) {
+              if (response.data === 'OK') {
+                $scope.currentCall.onhold = true;
+                $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: '', onhold: false, recording: false, muted: false, taskSid: null,
+                  direction: 'outbound',createdAt: new Date(), callStatus: 'active'};
+                $scope.callTasks.push($scope.currentCall);
+                $scope.stopWorkingCounter();
+                $scope.startWorkingCounter();
+              }
+            })
+        }
+        else {
+          $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: '', onhold: false, recording: false, muted: false, taskSid: null,
+            direction: 'outbound',createdAt: new Date(), callStatus: 'active'};
+          $scope.callTasks.push($scope.currentCall);
+          $scope.startWorkingCounter();
+        }
 
       });
 
       $scope.$on('endAllOutCalls', function(event){
         $log.log('end all outbounding calls');
-        $scope.outCallTasks = [];
+        $scope.currentCall = null;
+        $scope.callTasks = $scope.callTasks.filter(function(callItem) {
+          return callItem.type != 'outbound';
+        });
       });
+
+      $scope.changeCurrentCall = function (selectedTask) {
+        // hold current call
+        CallService.holdOn($scope.currentCall.callSid)
+          .then(function (response) {
+            if (response.data === 'OK') {
+              $scope.currentCall.onhold = true;
+              // change currentCall to active tab's call and make it hold off
+              $scope.currentCall = selectedTask;
+              $scope.holdOff();
+              $scope.stopWorkingCounter();
+              $scope.startWorkingCounter();
+            }
+          })
+      };
+
+      $scope.$watch('currentCall.callStatus', function(newVal, oldVal){
+        if (newVal == 'completed') {
+          $scope.stopWorkingCounter();
+        }
+      });
+
+      $scope.closeTab = function () {
+        var index = $scope.callTasks.indexOf($scope.currentCall);
+        $scope.callTasks.splice(index, 1);
+        if (index == $scope.callTasks.length && index != 0) {
+          $scope.currentCall = $scope.callTasks[0];
+          $scope.holdOff();
+        }
+        else if ($scope.callTasks.length > 0) {
+          $scope.currentCall = $scope.callTasks[index];
+          $scope.holdOff();
+        }
+
+      };
 
       $scope.logout = function () {
         $scope.stopWorkingCounter();
@@ -407,8 +484,7 @@
       $scope.startWorkingCounter = function() {
 
         $log.log('start working counter');
-        $scope.workingCounter = $scope.task.age;
-
+        $scope.workingCounter = $scope.currentCall.duration;
         $scope.workingInterval = $interval(function() {
           $scope.workingCounter ++;
         }, 1000);
