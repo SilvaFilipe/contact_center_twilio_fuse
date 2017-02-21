@@ -403,10 +403,12 @@
 
       $scope.$on('endAllOutCalls', function(event){
         $log.log('end all outbounding calls');
-        $scope.currentCall = null;
         $scope.callTasks = $scope.callTasks.filter(function(callItem) {
           return callItem.type != 'outbound';
         });
+        if ($scope.callTasks.empty()) {
+          $scope.currentCall = null;
+        }
       });
 
       $scope.changeCurrentCall = function (selectedTask) {
