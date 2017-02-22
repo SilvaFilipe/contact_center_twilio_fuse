@@ -28,7 +28,7 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, CallService)
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService)
     {
       var vm = this;
 
@@ -333,6 +333,22 @@
             $scope.callTasks.forEach(function(eachCall) {
               eachCall.muted = false;
             });
+          });
+      };
+
+
+      $scope.transfer = function (ev) {
+        console.log(ev)
+          $mdDialog.show({
+            controller         : 'TransferDialogController',
+            controllerAs       : 'vm',
+            locals             : {
+              selectedMail: undefined
+            },
+            templateUrl        : 'app/main/workspace/dialogs/transfer.html',
+            parent             : angular.element($document.body),
+            targetEvent        : ev,
+            clickOutsideToClose: true
           });
       };
 

@@ -1,0 +1,68 @@
+<md-dialog class="transfer-dialog" aria-label="Call transfer and conference">
+  <form class="md-inline-form">
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">Call transfer and conference</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog">
+          <md-icon md-font-icon="icon-close"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block">
+        <md-select class="account-selection simplified" placeholder="Transfer Selection"
+                   ng-model="vm.selectedAction" ng-change="vm.onTransferChange()">
+          <md-option value="transfer-call">Transfer call</md-option>
+          <md-option value="join-lines">Join Lines</md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-tabs ng-if="vm.selectedAction === 'transfer-call'">
+        <md-tab label="Active Calls"></md-tab>
+        <md-tab label="Queues"></md-tab>
+        <md-tab label="Directory"></md-tab>
+        <md-tab label="Contacts"></md-tab>
+      </md-tabs>
+      <div ng-if="vm.selectedAction === 'join-lines'">
+        <div layout="row">
+          <md-input-container>
+            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">
+              Inbound call 1
+            </md-checkbox>
+          </md-input-container>
+        </div>
+        <div layout="row">
+          <md-input-container>
+            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 2" ng-value="2" aria-label="Finished?">
+              Outbound call (858) 371-3881
+            </md-checkbox>
+          </md-input-container>
+        </div>
+        <div layout="row">
+          <md-input-container>
+            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 3" ng-value="3" aria-label="Finished?">
+              Outbound Call (619 381-28111)
+            </md-checkbox>
+          </md-input-container>
+        </div>
+      </div>
+
+
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button ng-click="vm.closeDialog()" class="send-button md-accent md-raised" aria-label="Send">
+          SEND
+        </md-button>
+
+        <md-button class="md-icon-button" aria-label="Attach file"
+                   translate-attr-aria-label="MAIL.ATTACH_FILE">
+          <md-icon md-font-icon="icon-paperclip"></md-icon>
+          <md-tooltip><span translate="MAIL.ATTACH_FILE"></span></md-tooltip>
+        </md-button>
+      </div>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
