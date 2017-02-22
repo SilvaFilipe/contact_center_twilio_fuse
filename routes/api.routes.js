@@ -16,6 +16,7 @@ var ivr = require('../controllers/ivr.js')
 var taskrouter = require('../controllers/taskrouter.js')
 
 var callController = require('../controllers/call-control.js')
+var sync = require('../controllers/sync.js')
 
 /* routes for messaging adapter */
 var messagingAdapter = require('../controllers/messaging-adapter.js')
@@ -58,6 +59,8 @@ module.exports = function(app){
     router.route('/callControl/recordOn').get(callController.recordOn)
     router.route('/callControl/recordOff').get(callController.recordOff)
     router.route('/callControl/playRecording').get(callController.playRecording)
+
+    router.route('/sync/write').get(sync.write)
 
     router.route('/workers').get(workers.list)
     router.route('/workers').post(workers.create)
