@@ -139,6 +139,8 @@
 
       };
 
+
+
       $scope.$on('CallPhoneNumber', function(event, data) {
 
         $log.log('call: ' + data.phoneNumber);
@@ -147,12 +149,23 @@
           Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName, 'user_id': currentUser._id });
         }
 
-        $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
-          console.log(response);
-          $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber, callSid: response.data.call.sid});
-          $scope.state = 'isActive';
-          $mdSidenav('quick-panel').toggle();
-        });
+        $timeout(function () {
+
+          console.log('softphone callsid', Twilio.Device.activeConnection().parameters.CallSid);
+
+          $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
+            console.log(response);
+            $http.get('/api/agents/agentToConference?caller_sid=' + response.data.call.sid + '&roomName=' + Twilio.Device.activeConnection().parameters.CallSid).then(function (res) {
+              console.log(res);
+              $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
+              $scope.state = 'isActive';
+              $mdSidenav('quick-panel').toggle();
+            });
+
+          });
+        }, 2000);
+
+
 
 
       });
