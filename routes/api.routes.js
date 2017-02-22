@@ -42,6 +42,8 @@ module.exports = function(app){
     router.route('/agents/session').get(agents.getSession)
     router.route('/agents/call').get(agents.call)
     router.route('/agents/outboundCall').get(agents.outboundCall)
+    router.route('/agents/sendToCallSidConference').get(agents.sendToCallSidConference)
+    router.route('/agents/agentToConference').get(agents.agentToConference)
 
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/select-team').get(ivr.selectTeam)

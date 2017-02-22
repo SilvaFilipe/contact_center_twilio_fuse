@@ -43,8 +43,6 @@ module.exports.agentToConference = function (req, res) {
 
 }
 
-
-
 module.exports.moveToConference = function (req, res) {
 
     var agent_sid = req.query.agent_sid;

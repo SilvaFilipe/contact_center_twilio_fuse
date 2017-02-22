@@ -150,11 +150,47 @@ module.exports.call = function (req, res) {
 	res.send(twiml.toString())
 }
 
-module.exports.outboundCall = function (req, res) {
-  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
+module.exports.sendToCallSidConference = function (req, res) {
+  var callSid = req.query.CallSid;
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(twiml.toString())
+}
+
+
+module.exports.agentToConference = function (req, res) {
+
+  var roomName = req.query.roomName;
+  var caller_sid = req.query.caller_sid;
+  var twiml = '<Response><Dial><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + roomName + '</Conference></Dial></Response>';
   var escaped_twiml = require('querystring').escape(twiml);
+
+  client.calls(caller_sid).update({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+    method: "GET"
+  }, function(err, call) {
+    if (err){
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'ERROR' , null, 3))
+    } else {
+      console.log ("moved agent " + caller_sid + ' to room ' + roomName);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'OK' , null, 3))
+    }
+  });
+
+}
+
+
+module.exports.outboundCall = function (req, res) {
+
   client.calls.create({
-    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+    url: process.env.PUBLIC_HOST + "/api/agents/sendToCallSidConference",
+    method: "GET",
     to: req.query.phone,
     from: req.configuration.twilio.callerId,
     statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',

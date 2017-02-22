@@ -328,7 +328,6 @@ module.exports.workspace_events = function (req, res) {
   res.send("<Response/>")
 }
 
-
 module.exports.syncSave = function (mapName, key, data) {
   console.log('writing to sync doc ' + mapName + ' key: ' + key + ' data: ' + data);
 
