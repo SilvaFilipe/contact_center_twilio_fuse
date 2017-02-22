@@ -1,5 +1,6 @@
 'use strict'
 const url = require('url');
+const request = require('request-promise');
 const Task = require('../models/task.model');
 const Call = require('../models/call.model');
 const twilio = require('twilio');
@@ -310,80 +311,47 @@ module.exports.workspace_events = function (req, res) {
 
 
         });
-/*
-
-
-
-        Task.findOne({'resourceSid': resourceSid}, function (err, task) {
-
-            if (task) {
-                console.log('updating task ' + task.resourceSid);
-                task.eventType = eventType;
-                task.accountSid = accountSid;
-                task.resourceType = resourceType;
-                task.description = description;
-                task.resourceSid = resourceSid;
-                task.eventDate = eventDate;
-                task.taskSid = taskSid;
-                task.taskAttributes = taskAttributes;
-                task.taskAge = taskAge;
-                task.taskPriority = taskPriority;
-                task.taskAssignmentStatus = taskAssignmentStatus;
-                task.taskCanceledReason = taskCanceledReason;
-                task.taskCompletedReason = taskCompletedReason;
-                task.taskEvents.push(eventHistory);
-                task.to = to;
-                task.from = from;
-                task.call_status = call_status;
-                task.call_sid = call_sid;
-                task.call_type = call_type;
-                task.channel = channel;
-
-                task.save(function (err) {
-                    if(err){
-                        console.log(err);
-                    }
-                });
-            } else {
-
-                console.log('creating new task ' + resourceSid);
-                var newTask= new Task();
-
-                newTask.eventType = eventType;
-                newTask.accountSid = accountSid;
-                newTask.resourceType = resourceType;
-                newTask.description = description;
-                newTask.resourceSid = resourceSid;
-                newTask.eventDate = eventDate;
-                newTask.taskSid = taskSid;
-                newTask.taskAttributes = taskAttributes;
-                newTask.taskAge = taskAge;
-                newTask.taskPriority = taskPriority;
-                newTask.taskAssignmentStatus = taskAssignmentStatus;
-                newTask.taskCanceledReason = taskCanceledReason;
-                newTask.taskCompletedReason = taskCompletedReason;
-                newTask.taskEvents = [eventHistory];
-                newTask.to = to;
-                newTask.from = from;
-                newTask.call_status = call_status;
-                newTask.call_sid = call_sid;
-                newTask.call_type = call_type;
-                newTask.channel = channel;
-
-                newTask.save(function (err) {
-                    if(err){
-                        console.log(err);
-                    }
-                });
-            }
-
-        });
-**/
-
     }
 
+  if (resourceType=='worker'){
+    var workerName = req.body.WorkerName;
+    var activity = req.body.WorkerActivityName;
+    var activitySid = req.body.WorkerActivitySid;
+    var workerSid  = req.body.WorkerSid ;
+    var data = {activitySid: activitySid, activity: activity}
+    module.exports.syncSave('workers', workerName, data);
+  }
 
-    res.setHeader('Content-Type', 'application/xml')
-    res.setHeader('Cache-Control', 'public, max-age=0')
-    res.send("<Response/>")
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+}
+
+
+module.exports.syncSave = function (mapName, key, data) {
+  console.log('writing to sync doc ' + mapName + ' key: ' + key + ' data: ' + data);
+
+  var formData = { Data: JSON.stringify(data)};
+  var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items/' + key;
+  request({ url: url, method: 'POST', formData: formData })
+    .then(response => {
+    console.log('got sync response: ' + response);
+  })
+  .catch(err => {
+    console.log('error posting to sync: ' + err);
+
+    url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items';
+    console.log(url);
+    formData = { Key: key, Data: JSON.stringify(data)};
+    request({ url: url, method: 'POST', formData: formData })
+      .then(response => {
+        console.log('got sync response: ' + response);
+      })
+      .catch(err => {
+        console.log('error posting to sync: ' + err);
+      });
+
+  });
+
 }
