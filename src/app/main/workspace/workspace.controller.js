@@ -340,6 +340,14 @@
       $scope.complete = function (reservation) {
         $scope.stopWorkingCounter();
 
+        if ($scope.currentCall) {
+          if ($scope.currentCall.type == 'outbound') {
+            $scope.closeTab();
+            return;
+          }
+          $scope.closeTab();
+        }
+
         if($scope.task.attributes.channel == 'chat'){
           $scope.$broadcast('DestroyChat');
         }
