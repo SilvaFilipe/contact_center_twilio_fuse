@@ -152,7 +152,7 @@ module.exports.call = function (req, res) {
 
 module.exports.sendToCallSidConference = function (req, res) {
   var callSid = req.query.CallSid;
-  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
   res.setHeader('Content-Type', 'application/xml')
   res.setHeader('Cache-Control', 'public, max-age=0')
   res.send(twiml.toString())
@@ -163,7 +163,7 @@ module.exports.agentToConference = function (req, res) {
 
   var roomName = req.query.roomName;
   var caller_sid = req.query.caller_sid;
-  var twiml = '<Response><Dial><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + roomName + '</Conference></Dial></Response>';
+  var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + roomName + '</Conference></Dial></Response>';
   var escaped_twiml = require('querystring').escape(twiml);
 
   client.calls(caller_sid).update({
