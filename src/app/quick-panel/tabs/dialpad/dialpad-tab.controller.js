@@ -143,12 +143,17 @@
 
         $log.log('call: ' + data.phoneNumber);
         vm.phoneNumber = data.phoneNumber;
+        if (Twilio.Device.activeConnection() == undefined) {
+          Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName, 'user_id': currentUser._id });
+        }
 
-        Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName, 'user_id': currentUser._id });
-        $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber});
+        $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
+          console.log(response);
+          $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: data.phoneNumber, callSid: response.data.call.sid});
+          $scope.state = 'isActive';
+          $mdSidenav('quick-panel').toggle();
+        });
 
-        $scope.state = 'isActive';
-        $mdSidenav('quick-panel').toggle();
 
       });
 

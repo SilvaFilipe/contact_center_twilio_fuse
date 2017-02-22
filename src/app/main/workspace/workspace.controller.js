@@ -43,7 +43,7 @@
       $scope.reservation;
       $scope.tasks;
       $scope.callTasks = [];
-      $scope.currentCall;
+      $scope.currentCall = null;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -384,9 +384,10 @@
         if ($scope.currentCall) {
           CallService.holdOn($scope.currentCall.callSid)
             .then(function (response) {
+              console.log(response);
               if (response.data === 'OK') {
                 $scope.currentCall.onhold = true;
-                $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: '', onhold: false, recording: false, muted: false, taskSid: null,
+                $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, onhold: false, recording: false, muted: false, taskSid: null,
                   direction: 'outbound',createdAt: new Date(), callStatus: 'active'};
                 $scope.callTasks.push($scope.currentCall);
                 console.log($scope.currentCall);
@@ -396,7 +397,7 @@
             })
         }
         else {
-          $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: '', onhold: false, recording: false, muted: false, taskSid: null,
+          $scope.currentCall = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, onhold: false, recording: false, muted: false, taskSid: null,
             direction: 'outbound',createdAt: new Date(), callStatus: 'active'};
           $scope.callTasks.push($scope.currentCall);
           $scope.startWorkingCounter();
@@ -409,7 +410,8 @@
         $scope.callTasks = $scope.callTasks.filter(function(callItem) {
           return callItem.type != 'outbound';
         });
-        if ($scope.callTasks.empty()) {
+
+        if ($scope.callTasks.length == 0) {
           $scope.currentCall = null;
         }
       });
