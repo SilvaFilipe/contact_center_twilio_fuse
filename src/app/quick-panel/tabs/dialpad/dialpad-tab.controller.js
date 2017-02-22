@@ -155,7 +155,7 @@
 
           $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
             console.log(response);
-            $http.get('/api/agents/agentToConference?caller_sid=' + response.data.call.sid + '&roomName=' + Twilio.Device.activeConnection().parameters.CallSid).then(function (res) {
+            $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid).then(function (res) {
               console.log(res);
               $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
               $scope.state = 'isActive';
