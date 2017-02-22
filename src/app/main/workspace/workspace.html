@@ -22,7 +22,7 @@
 
         <div class="content">
           <md-tabs md-dynamic-height>
-            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)">
+            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>

@@ -249,7 +249,6 @@
               $scope.callTasks.push($scope.currentCall);
               $scope.stopWorkingCounter();
               $scope.startWorkingCounter();
-              console.log($scope.currentCall);
 
             }
           );
@@ -397,9 +396,19 @@
       });
 
       $scope.changeCurrentCall = function (selectedTask) {
-              $scope.currentCall = selectedTask;
-              $scope.stopWorkingCounter();
-              $scope.startWorkingCounter();
+          if ($scope.currentCall == selectedTask) {
+            return;
+          }
+          $scope.currentCall = selectedTask;
+          console.log($scope.currentCall);
+          $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.callSid);
+          $scope.stopWorkingCounter();
+          $scope.startWorkingCounter();
+
+      };
+
+      $scope.isActive = function (task) {
+        return ($scope.currentCall == task);
       };
 
       $scope.$watch('currentCall.callStatus', function(newVal, oldVal){
@@ -419,6 +428,7 @@
         }
         else {
           $scope.currentCall = null;
+          $rootScope.$broadcast('DisconnectSoftware');
         }
 
       };
