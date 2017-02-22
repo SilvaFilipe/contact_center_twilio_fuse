@@ -311,6 +311,7 @@
         CallService.hangup($scope.currentCall.callSid)
           .then(function (response) {
             console.log('hangup', response);
+            $scope.currentCall.callStatus = 'completed';
           })
       };
 
@@ -447,6 +448,9 @@
         else if ($scope.callTasks.length > 0) {
           $scope.currentCall = $scope.callTasks[index];
           $scope.holdOff();
+        }
+        else {
+          $scope.currentCall = null;
         }
 
       };
