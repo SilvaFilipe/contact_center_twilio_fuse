@@ -22,200 +22,51 @@
 
         <div class="content">
           <md-tabs md-dynamic-height>
-            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)"
-                    md-active="isActive(task)">
+            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
-                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon>
-                <span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
-                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon>
-                <span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
+                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
+                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
               </md-tab-label>
               <md-tab-body>
-                <md-content class="h-400"
-                            ng-class="(task.callStatus=='completed') ? 'callCompleted' : 'md-grey-100-bg'">
-                  <!-- reservation is waiting for acceptance -->
-                  <div ng-show="reservation != null">
-                    <md-toolbar>
-                      <div class="md-toolbar-tools">
-                        Reservation
-                      </div>
-                    </md-toolbar>
-
-                    <div class="content" layout="column">
-                      <div class="title">{{reservation.task.attributes.title}} from
-                        {{reservation.task.attributes.name}}
-                      </div>
-                      <div layout="row" layout-align="space-between center">
-                        <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter |
-                          counter }} ago
-                        </div>
-                        <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept
-                        </md-button>
-                      </div>
-
-                    </div>
+                <md-content class="h-400" ng-class="(task.callStatus=='completed') ? 'callCompleted' : 'md-grey-100-bg'">
+                  <div style="height: 70px;">
+                    <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
                   </div>
-                  <!-- reservation is waiting for acceptance -->
+                  <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
+                  <div layout="row" layout-align="center center">
 
-                  <!-- agent is waiting for new reservation -->
-                  <div ng-show="reservation == null && task == null">
-                    <div class="content" style="text-align: center">
-                      <span class="md-title">Waiting for new task ...</span>
-                    </div>
+                    <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
+                      REC
+                    </md-button>
+                    <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="task.recording">
+                      REC
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()" ng-show="!task.muted">
+                      <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="task.muted">
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!task.onhold">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="task.onhold">
+                      <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
+                    </md-button>
+
+                    <md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">
+                      <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
+                    </md-button>
+
+                    <md-button class="md-fab md-primary keypad" aria-label="keypad">
+                    </md-button>
+
+                    <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
+                    </md-button>
                   </div>
-                  <!-- agent is waiting for new reservation -->
-
-                  <!-- agent is working on a task -->
-                  <div class="working-div" ng-show="task != null">
-                    <div class="content">
-                      <md-tabs md-dynamic-height>
-                        <md-tab data-ng-if="!task.attributes.nameIsPhoneNumber" label="CHAT">
-                          <md-toolbar>
-                            <div class="md-toolbar-tools">
-                              <div class="description">{{task.attributes.title}} from
-                                <span>{{task.attributes.name}}</span>
-                              </div>
-                            </div>
-                          </md-toolbar>
-
-                          <div layout="row" layout-align="space-between center" style="padding: 10px">
-                            <div style="font-size: 16px">{{task.attributes.text}}</div>
-                            <md-button ng-show="task != null" class="md-raised md-accent" ng-click="complete()">Complete
-                              Task
-                            </md-button>
-                          </div>
-
-                          <!-- chat -->
-                          <section ng-show="session.channelSid" class="chat-controller" ng-controller="ChatController"
-                                   ng-cloak>
-
-                            <div class="load-indicator" ng-show="session.isLoading">
-                              <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
-                            </div>
-
-                            <div ng-show="session.isInitialized">
-
-                              <div class="chat-canvas" scroll-glue>
-
-                                <ul class="message-list">
-
-                                  <li ng-class="{'me': message.author == session.identity}" class="message"
-                                      ng-repeat="message in messages">
-
-                                    <div>
-
-                                      <div class="body">
-                                        <div class="needle"></div>
-                                        <p dynamic="message.body">{{message.body}}</p>
-                                      </div>
-                                      <div class="footer">
-                                        <div class="author">{{message.author}}</div>
-                                        <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp
-                                          | time}}
-                                        </div>
-                                      </div>
-
-                                    </div>
-
-                                  </li>
-
-                                </ul>
-                                <div id="bottom"></div>
-
-                              </div>
-
-                              <div class="typing-notification"><span>{{typingNotification}}</span></div>
-
-                              <form class="chat-message-form form-horizontal" name="chatMessageForm">
-                                <div layout="row" layout-align="between-space center">
-                                  <div flex="70">
-                                    <md-input-container class="md-block">
-                                      <input ng-model="message" ng-model-options="{ debounce: 250 }" ng-required="true"
-                                             autocomplete="off" ng-focus="focused()" name="text" type="text">
-                                    </md-input-container>
-                                  </div>
-                                  <div flex="30" class="mt-10">
-                                    <md-button class="md-raised md-deep-purple-500-bg" style="color: white"
-                                               ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine"
-                                               ng-click="send()">Send
-                                    </md-button>
-                                  </div>
-                                </div>
-                              </form>
-
-                          </section>
-                        </md-tab>
-                        <md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
-                          <md-toolbar>
-                            <div class="md-toolbar-tools">
-                              <div class="description">{{task.attributes.title}} from
-                                <a href="#" ng-click="callPhoneNumber('{{task.attributes.name}}')">{{task.attributes.name}}</a>
-                              </div>
-                            </div>
-                          </md-toolbar>
-                        </md-tab>
-                        <md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
-                          <md-toolbar>
-                            <div class="md-toolbar-tools">
-                              <div class="description">{{task.attributes.title}} from
-                                <a href="#" ng-click="callPhoneNumber('{{task.attributes.name}}')">{{task.attributes.name}}</a>
-                              </div>
-                            </div>
-                          </md-toolbar>
-                          <md-content class="md-grey-100-bg h-400">
-                            <div style="height: 70px;">
-                              <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;"
-                                       md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
-                            </div>
-                            <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter |
-                              counter }}
-                            </div>
-                            <div layout="row" layout-align="center center">
-
-                              <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()"
-                                         ng-show="!currentCall.recording">
-                                REC
-                              </md-button>
-                              <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()"
-                                         ng-show="currentCall.recording">
-                                REC
-                              </md-button>
-
-                              <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()"
-                                         ng-show="!currentCall.muted">
-                                <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
-                              </md-button>
-                              <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()"
-                                         ng-show="currentCall.muted">
-                              </md-button>
-
-                              <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()"
-                                         ng-show="!currentCall.onhold">
-                                <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
-                              </md-button>
-                              <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()"
-                                         ng-show="currentCall.onhold">
-                                <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
-                              </md-button>
-
-                              <md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">
-                                <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
-                              </md-button>
-
-                              <md-button class="md-fab md-primary keypad" aria-label="keypad">
-                              </md-button>
-
-                              <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
-                              </md-button>
-                            </div>
-                            <div class="mt-30" layout="row" layout-align="center center"
-                                 ng-show="currentCall.callStatus == 'completed'">
-                              <md-button class="md-warn md-raised md-hue-2" ng-click="closeTab()">Close</md-button>
-                            </div>
-                          </md-content>
-                        </md-tab>
-                      </md-tabs>
-                    </div>
+                  <div class="mt-30" layout="row" layout-align="center center" ng-show="task.callStatus == 'completed'">
+                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">Close</md-button>
                   </div>
                 </md-content>
               </md-tab-body>
@@ -224,22 +75,17 @@
             <md-tab data-ng-if="reservation != null" label="RESERVATION">
               <md-toolbar class="mt-10">
                 <div class="md-toolbar-tools">
-                  <div class="description">{{reservation.task.attributes.title}} from
-                    {{reservation.task.attributes.name}}
-                  </div>
+                  <div class="description">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
                 </div>
               </md-toolbar>
               <div layout="row" layout-align="space-between center" style="padding: 10px">
-                <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter
-                  }} ago
-                </div>
+                <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
                 <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
               </div>
             </md-tab>
-            <md-tab ng-if="task != null && !task.attributes.nameIsPhoneNumber" md-active="false" label="CHAT">
+            <md-tab ng-if="task != null && !task.attributes.nameIsPhoneNumber"	 md-active="false" label="CHAT">
               <md-toolbar>
                 <div class="md-toolbar-tools">
-                  {{task | json}}
                   <div class="description">{{task.attributes.title}} from
                     <span>{{task.attributes.name}}</span>
                   </div>
@@ -248,8 +94,7 @@
 
               <div layout="row" layout-align="space-between center" style="padding: 10px">
                 <div style="font-size: 16px">{{task.attributes.text}}</div>
-                <md-button ng-show="task != null" class="md-raised md-accent" ng-click="complete()">Complete Task
-                </md-button>
+                <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete()">Complete Task</md-button>
               </div>
 
               <!-- chat -->
@@ -263,10 +108,9 @@
 
                   <div class="chat-canvas" scroll-glue>
 
-                    <ul class="message-list">
+                    <ul class="message-list" >
 
-                      <li ng-class="{'me': message.author == session.identity}" class="message"
-                          ng-repeat="message in messages">
+                      <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
 
                         <div>
 
@@ -276,9 +120,7 @@
                           </div>
                           <div class="footer">
                             <div class="author">{{message.author}}</div>
-                            <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp
-                              | time}}
-                            </div>
+                            <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp | time}}</div>
                           </div>
 
                         </div>
@@ -296,15 +138,11 @@
                     <div layout="row" layout-align="between-space center">
                       <div flex="70">
                         <md-input-container class="md-block">
-                          <input ng-model="message" aria-label="msg" ng-model-options="{ debounce: 250 }"
-                                 ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
+                          <input ng-model="message" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
                         </md-input-container>
                       </div>
                       <div flex="30" class="mt-10">
-                        <md-button class="md-raised md-deep-purple-500-bg" style="color: white"
-                                   ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine"
-                                   ng-click="send()">Send
-                        </md-button>
+                        <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" ng-click="send()">Send</md-button>
                       </div>
                     </div>
                   </form>
@@ -318,6 +156,8 @@
         </div>
 
       </div>
+      <div>
+
+      </div>
+
     </div>
-  </div>
-</div>
