@@ -4,7 +4,7 @@ app.controller('PhoneController', function ($scope, $rootScope, $http, $timeout,
   $scope.isActive = false;
   $scope.phoneNumber = '';
 
-  $scope.connection;
+  $scope.connection = null;
 
   $scope.$on('InitializePhone', function(event, data) {
     $log.log('InitializePhone event received');

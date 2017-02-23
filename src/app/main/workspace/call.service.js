@@ -2,11 +2,11 @@
   'use strict';
 
   angular.module('app.callcenterApplication')
-    .factory('CallService', CallService)
+    .factory('CallService', CallService);
 
 
   /** @ngInject */
-  function CallService($http, $q) {
+  function CallService($timeout, $http, $q) {
 
     var CallService = {};
 
@@ -37,6 +37,16 @@
 
     CallService.hangup = function (call_sid) {
       return $http.get('/api/callControl/hangup?callSid=' + call_sid);
+    };
+
+    CallService.hangupDialpad = function () {
+      return $q.when($timeout(function(){
+        Twilio.Device.disconnectAll();
+      }));
+    };
+
+    CallService.setupDialpad = function () {
+      return $q.when(Twilio.Device.setup(data.token, {debug: true}));
     };
 
     return CallService;

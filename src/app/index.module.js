@@ -24,6 +24,8 @@
 
             // callcenter Application
             'app.callcenterApplication',
+
+            'app.services',
             // Auth
             'app.auth'
 

@@ -33,7 +33,6 @@
           </md-autocomplete>
         </md-tab>
         <md-tab label="Queues">
-          <md-tab label="Active Calls">
           <md-autocomplete
             md-selected-item="vm.selectedItem"
             md-items="item in vm.querySearch(vm.searchText)"
@@ -45,10 +44,8 @@
               <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
             </md-item-template>
           </md-autocomplete>
-        </md-tab>
         </md-tab>
         <md-tab label="Directory">
-          <md-tab label="Active Calls">
           <md-autocomplete
             md-selected-item="vm.selectedItem"
             md-items="item in vm.querySearch(vm.searchText)"
@@ -60,10 +57,28 @@
               <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
             </md-item-template>
           </md-autocomplete>
-        </md-tab>
+
+            <md-list class="contacts-list">
+              <!-- CONTACT ITEM -->
+              <md-list-item class="contact-item md-white-bg" md-ink-ripple ng-repeat="user in vm.users track by user._id " ng-class="{'selected': vm.isSelected(user)}">
+
+                <div class="status  {{user.status}}"></div>
+                <img ng-src="{{user.avatar}}" class="md-avatar" alt="{{user.firstName}}"/>
+                <div class="status  {{user.status}}"></div>
+                <p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>
+                <p class="phone text-truncate hide show-gt-md">
+                  {{user.phone}}
+                </p>
+                <md-button class="md-icon-button" aria-label="Call">
+                  <md-icon md-font-icon="icon-phone"></md-icon>
+                </md-button>
+                <md-button class="md-icon-button  hide show-gt-xs" aria-label="Toggle starred">
+                </md-button>
+              </md-list-item>
+              <!-- CONTACT ITEM -->
+            </md-list>
         </md-tab>
         <md-tab label="Contacts">
-          <md-tab label="Active Calls">
           <md-autocomplete
             md-selected-item="vm.selectedItem"
             md-items="item in vm.querySearch(vm.searchText)"
@@ -75,7 +90,6 @@
               <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
             </md-item-template>
           </md-autocomplete>
-        </md-tab>
         </md-tab>
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">

@@ -22,7 +22,8 @@
 
         <div class="content">
           <md-tabs md-dynamic-height>
-            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
+            <!--<md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">-->
+            <md-tab >
               <md-tab-label>
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
@@ -62,8 +63,8 @@
                   <!-- agent is waiting for new reservation -->
 
                   <!-- agent is working on a task -->
-                  <div class="working-div" ng-show="task != null">
-                  <!--<div class="working-div">-->
+                  <!--<div class="working-div" ng-show="task != null">-->
+                  <div class="working-div">
                     <div class="content">
                       <md-tabs md-dynamic-height>
                         <md-tab data-ng-if="!task.attributes.nameIsPhoneNumber" label="CHAT">
@@ -151,7 +152,8 @@
                               </div>
                             </md-toolbar>
                           </md-tab>
-                          <md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">
+                          <!--<md-tab data-ng-if="task.attributes.nameIsPhoneNumber" label="INCOMING CALL">-->
+                          <md-tab label="INCOMING CALL">
                             <md-toolbar>
                                 <div class="md-toolbar-tools">
                                   <div class="description">{{task.attributes.title}} from

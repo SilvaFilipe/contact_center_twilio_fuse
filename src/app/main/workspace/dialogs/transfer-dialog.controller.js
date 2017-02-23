@@ -8,10 +8,22 @@
     .factory('ToastTransferConfirmService', ToastTransferConfirmService);
 
   /** @ngInject */
-  function TransferDialogController($mdToast, $mdDialog, ToastTransferConfirmService) {
+  function TransferDialogController($mdToast, $mdDialog, ToastTransferConfirmService, UserService) {
     var vm = this;
+
     vm.selectedAction = vm.displayableAction = 'transfer-call';
+
     ToastTransferConfirmService.confirmed = false;
+
+    activate();
+
+    function activate(){
+      UserService.query().$promise
+        .then(function (users) {
+          console.log(users)
+          vm.users = users;
+        });
+    }
 
     vm.onTransferChange = function onTransferChange() {
       $mdToast.show({
