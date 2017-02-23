@@ -58,24 +58,37 @@
       $message.html('Sync initialized!');
 
 
-      syncClient.map('calls')
-        .then(function(map) {
+      syncClient.document('cCA22502b29ac98ad1687665f68c847cfc9')
+        .then(function(doc) {
+          $('#log').append('<li>found call ' + doc.value.callSid + ' ' + doc.value.callStatus);
+          doc.on('updated', function(data) {
+            console.log(data);
+            $('#log').append('<li>updated ' + data.value.callSid + ' ' + data.value.callStatus);
+          }, function onError(response) {
+            console.log(response.data);
+          });
+        });
 
+      syncClient.map('workers')
+        .then(function(map) {
+          $('#log').append('<li>found map items');
+          console.log(map);
           map.on('itemAddedRemotely', function(data) {
             console.log(data);
-            $('#log').append('<li>created ' + data.value.callSid + ' ' + data.value.callStatus);
+            $('#log').append('<li>created ' + data.key + ' ' + data.value.activity);
           }, function onError(response) {
             console.log(response.data);
           });
           map.on('itemUpdatedRemotely', function(data) {
             console.log(data);
-            $('#log').append('<li>updated ' + data.value.callSid + ' ' + data.value.callStatus);
+            $('#log').append('<li>updated ' + data.key + ' ' + data.value.activity);
           }, function onError(response) {
             console.log(response.data);
           });
 
 
         });
+
 
 
     });

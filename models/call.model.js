@@ -49,7 +49,8 @@ var callSchema = mongoose.Schema({
 });
 
 callSchema.methods.saveSync = function () {
-  sync.saveMap('calls', this.callSid, this);
+//  sync.saveMap('calls', this.callSid, this);
+  sync.saveDoc('c' + this.callSid, this);
 };
 
 module.exports = mongoose.model('Call', callSchema);
