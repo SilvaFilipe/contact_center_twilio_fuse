@@ -207,7 +207,11 @@ module.exports.outboundCall = function (req, res) {
       var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
       var newCall = new Call( Object.assign(dbFields) );
       newCall.save(function (err) {
-        if(err){ console.log(err);}
+        if(err){
+          console.log(err);
+        } else {
+          newCall.saveSync();
+        }
       });
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send({call: call})

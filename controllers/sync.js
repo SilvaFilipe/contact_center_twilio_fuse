@@ -1,5 +1,6 @@
 'use strict'
 const request = require('request-promise');
+const errors = require('request-promise/errors');
 
 
 module.exports.saveMap = function (mapName, key, data) {
@@ -9,17 +10,17 @@ module.exports.saveMap = function (mapName, key, data) {
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items/' + key;
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
-    console.log('got sync response: ' + response);
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
 })
   .catch(err => {
     console.log('error posting to sync: ' + err);
 
   url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items';
-  console.log(url);
+  //console.log(url);
   formData = { Key: key, Data: JSON.stringify(data)};
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
-    console.log('got sync response: ' + response);
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
 })
   .catch(err => {
     console.log('error posting to sync: ' + err);
@@ -31,21 +32,21 @@ module.exports.saveMap = function (mapName, key, data) {
 
 
 module.exports.saveDoc = function (docName, data) {
-  console.log('writing to sync doc' + docName);
+  console.log('writing to sync doc ' + docName);
   var formData = { Data: JSON.stringify(data)};
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents/' + docName;
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
-    console.log('got sync response: ' + response);
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
 })
   .catch(err => {
     console.log('error posting to sync: ' + err);
   url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents';
-  console.log(url);
+  //console.log(url);
   formData = { UniqueName: docName, Data: JSON.stringify(data)};
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
-    console.log('got sync response: ' + response);
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
 })
   .catch(err => {
     console.log('error posting to sync: ' + err);
@@ -73,7 +74,7 @@ module.exports.write = function (req, res) {
 
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
-      console.log('got sync response: ' + response);
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
       res.status(200);
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0');
