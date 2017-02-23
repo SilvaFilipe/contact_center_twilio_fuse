@@ -46,7 +46,9 @@
     };
 
     CallService.setupDialpad = function () {
-      return $q.when(Twilio.Device.setup(data.token, {debug: true}));
+      return $q.when(
+        Twilio.Device.setup(data.token, {debug: true})
+      );
     };
 
     return CallService;
