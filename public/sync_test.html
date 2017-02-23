@@ -7,9 +7,9 @@
 </head>
 <body>
 <header>
-  <a href="https://www.twilio.com/docs/api/sync/quickstart-js"
+  <a href="https://media.twiliocdn.com/sdk/js/sync/releases/0.3.0/docs/index.html"
      target="_blank">
-    Read the getting started guide
+    Read the docs
     <i class="fa fa-fw fa-external-link"></i>
   </a>
 </header>
@@ -19,6 +19,10 @@
 
   <div id="message">
     Welcome! Initializing Sync...
+  </div>
+
+  <div id="log">
+
   </div>
 </section>
 
@@ -56,12 +60,23 @@
 
       syncClient.map('calls')
         .then(function(map) {
+
           map.on('itemAddedRemotely', function(data) {
             console.log(data);
+            $('#log').append('<li>created ' + data.value.callSid + ' ' + data.value.callStatus);
           }, function onError(response) {
             console.log(response.data);
           });
+          map.on('itemUpdatedRemotely', function(data) {
+            console.log(data);
+            $('#log').append('<li>updated ' + data.value.callSid + ' ' + data.value.callStatus);
+          }, function onError(response) {
+            console.log(response.data);
+          });
+
+
         });
+
 
     });
 
