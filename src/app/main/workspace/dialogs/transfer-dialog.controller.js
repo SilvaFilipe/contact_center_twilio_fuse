@@ -4,33 +4,75 @@
   angular
     .module('app.callcenterApplication')
     .controller('TransferDialogController', TransferDialogController)
-    .controller('ToastTransferConfirmController', ToastTransferConfirmController);
+    .controller('ToastTransferConfirmController', ToastTransferConfirmController)
+    .factory('ToastTransferConfirmService', ToastTransferConfirmService);
 
   /** @ngInject */
-  function TransferDialogController($mdToast) {
+  function TransferDialogController($mdToast, $mdDialog, ToastTransferConfirmService) {
     var vm = this;
-    vm.selectedAction = 'transfer-call';
+    vm.selectedAction = vm.displayableAction = 'transfer-call';
+    ToastTransferConfirmService.confirmed = false;
 
-    vm.onTransferChange = function onTransferChange(e) {
-
+    vm.onTransferChange = function onTransferChange() {
       $mdToast.show({
-          template: '',
-          ok: 'Confirm',
-          cancel: 'Back',
+          template: (
+          '<md-toast>' +
+            '<div class="md-toast-content">' +
+              '<md-button class="md-accent" ng-click="vm.confirmChange()">Confirm</md-button>' +
+              '<md-button class="md-warn" ng-click="vm.cancelChange()">Cancel</md-button>' +
+            '</div>'+
+          '</md-toast>'
+          ),
           controller: ToastTransferConfirmController,
-          controllerAs: 'vm'
-      })
-        .then(function (r) {
-          console.log(r)
-        });
+          controllerAs: 'vm',
+          bindToController: true,
+          hideDelay: 0,
+          theme: 'accent'
+        })
+        .finally(function () {
 
-      return false;
-    }
+          if (ToastTransferConfirmService.confirmed) {
+            vm.displayableAction = vm.selectedAction;
+          } else {
+            vm.selectedAction = vm.displayableAction;
+          }
+
+          ToastTransferConfirmService.confirmed = false;
+        });
+    };
+
+    vm.closeDialog = function(){
+      $mdDialog.hide();
+    };
   }
 
   /** @ngInject */
-  function ToastTransferConfirmController() {
+  function ToastTransferConfirmController($mdToast, ToastTransferConfirmService) {
+    var vm = this;
 
+    vm.confirmChange = function () {
+      ToastTransferConfirmService.confirmed = true;
+      $mdToast.hide();
+    };
+
+    vm.cancelChange = function () {
+      ToastTransferConfirmService.confirmed = false;
+      $mdToast.cancel();
+    };
+  }
+
+
+  /** @ngInject */
+  function ToastTransferConfirmService() {
+    var ToastTransferConfirmService = {};
+
+    ToastTransferConfirmService.confirmed = false;
+
+    ToastTransferConfirmService.isConfirmed = function () {
+      return ToastTransferConfirmService.confirmed;
+    };
+
+    return ToastTransferConfirmService;
   }
 
 })();

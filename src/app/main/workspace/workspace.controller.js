@@ -297,6 +297,7 @@
           .then(function (response) {
             console.log('hangup', response);
             $scope.currentCall.callStatus = 'completed';
+            $scope.stopWorkingCounter();
           })
       };
 
