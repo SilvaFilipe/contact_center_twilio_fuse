@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+const sync = require('../controllers/sync.js');
+
 
 var callSchema = mongoose.Schema({
   accountSid: String,
@@ -45,5 +47,9 @@ var callSchema = mongoose.Schema({
   recordingChannels: String,
   user_id: String
 });
+
+callSchema.methods.saveSync = function () {
+  sync.saveMap('calls', this.callSid, this);
+};
 
 module.exports = mongoose.model('Call', callSchema);

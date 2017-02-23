@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sync test</title>
+  <link rel="shortcut icon" href="//www.twilio.com/marketing/bundles/marketing/img/favicons/favicon.ico">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<header>
+  <a href="https://www.twilio.com/docs/api/sync/quickstart-js"
+     target="_blank">
+    Read the getting started guide
+    <i class="fa fa-fw fa-external-link"></i>
+  </a>
+</header>
+
+<section>
+
+
+  <div id="message">
+    Welcome! Initializing Sync...
+  </div>
+</section>
+
+
+<script src="//media.twiliocdn.com/sdk/js/sync/v0.3/twilio-sync.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+<script>
+  $(function () {
+    var $message = $('#message');
+//Manages the state of our access token we got from the server
+    var accessManager;
+
+//Our interface to the Sync service
+    var syncClient;
+
+    var syncDoc;
+
+//Get an access token for the current user, passing a device ID
+//In browser-based apps, every tab is like its own unique device
+//synchronizing state -- so we'll use a random UUID to identify
+//this tab.
+    var tokenUrl = '/api/sync/token?identity=tester&device=' + getDeviceId();
+    $.getJSON(tokenUrl, {
+      device: getDeviceId()
+    }, function (tokenResponse) {
+        console.log(tokenResponse);
+//Initialize the Sync client
+      syncClient = new Twilio.Sync.Client(tokenResponse.token);
+
+//Let's pop a message on the screen to show that Sync is ready
+      $message.html('Sync initialized!');
+
+
+      syncClient.map('calls')
+        .then(function(map) {
+          map.on('itemAddedRemotely', function(data) {
+            console.log(data);
+          }, function onError(response) {
+            console.log(response.data);
+          });
+        });
+
+    });
+
+
+//Generate random UUID to identify this browser tab
+//For a more robust solution consider a library like
+//fingerprintjs2: https://github.com/Valve/fingerprintjs2
+    function getDeviceId() {
+      return 'browser-' +
+        'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+          return v.toString(16);
+        });
+    }
+
+  });
+</script>
+
+</body>
+</html>
+
+
+

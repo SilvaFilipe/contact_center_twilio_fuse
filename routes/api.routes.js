@@ -63,6 +63,7 @@ module.exports = function(app){
     router.route('/callControl/playRecording').get(callController.playRecording)
 
     router.route('/sync/write').get(sync.write)
+    router.route('/sync/token').get(sync.token)
 
     router.route('/workers').get(workers.list)
     router.route('/workers').post(workers.create)

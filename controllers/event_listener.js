@@ -33,8 +33,12 @@ module.exports.recording_events = function (req, res) {
     } else {
       console.log ('updating call with recording: ' + callSid);
       Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
-        if(err) console.log("Something wrong when updating recording: " + err);
-        console.log('updated with recording ' + call2.callSid);
+        if(err) {
+          console.log("Something wrong when updating recording: " + err);
+        } else {
+          console.log('updated with recording ' + call2.callSid);
+          call2.saveSync();
+        }
       });
     }
   });
@@ -80,10 +84,17 @@ module.exports.log_twiml_event = function (req) {
             console.log("unique constraint error on call");
             // try update again
             Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
-              if(err) console.log("Something wrong when updating call: " + err);
-              console.log('updated call(2) ' + call2.callSid);
+              if(err) {
+                console.log("Something wrong when updating call: " + err);
+              } else {
+                console.log('saved call(2) ' + call2.callSid);
+                call2.saveSync();
+              }
             });
           }
+        } else {
+          console.log('saved new call');
+          newCall.saveSync();
         }
       });
     } else {
@@ -91,6 +102,7 @@ module.exports.log_twiml_event = function (req) {
       Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
         if(err) console.log("Something wrong when updating call: " + err);
         console.log('updated with TwuML ' + call2.callSid);
+        call2.saveSync();
       });
     }
   });
@@ -117,7 +129,6 @@ module.exports.call_events = function (req, res) {
   var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at: updated_at };
   var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, sequenceNumber: sequenceNumber, timestamp: timestamp, updated_at: updated_at };
 
-
   console.log('Call event called: ' + callbackSource);
   Call.findOne({'callSid': callSid}, function (err, call) {
     if (call == null){
@@ -131,10 +142,17 @@ module.exports.call_events = function (req, res) {
             console.log("unique constraint error on call");
             // try update again
             Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
-              if(err) console.log("Something wrong when updating call: " + err);
-              console.log('updated call(2) ' + call2.callSid);
+              if(err) {
+                console.log("Something wrong when updating call: " + err);
+              } else {
+                console.log('updated call(2) ' + call2.callSid);
+                call2.saveSync();
+              }
             });
           }
+        } else {
+          console.log('called saved.');
+          newCall.saveSync();
         }
       });
     } else {
@@ -145,6 +163,7 @@ module.exports.call_events = function (req, res) {
             console.log("Something wrong when updating call: " + err);
           } else {
             console.log('updated with correct sequence ' + call2.callSid);
+            call2.saveSync();
           }
         });
       } else {
@@ -235,8 +254,12 @@ module.exports.conference_events = function (req, res) {
         } else {
           console.log ('updating call: ' + callSid);
           Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
-            if(err) console.log("Something wrong when updating call: " + err);
-            console.log('updated with conference info ' + call2.callSid);
+            if(err) {
+              console.log("Something wrong when updating call: " + err);
+            } else {
+              console.log('updated with conference info ' + call2.callSid);
+              call2.saveSync();
+            }
           });
         }
       });
@@ -329,7 +352,7 @@ module.exports.workspace_events = function (req, res) {
 }
 
 module.exports.syncSave = function (mapName, key, data) {
-  console.log('writing to sync doc ' + mapName + ' key: ' + key + ' data: ' + data);
+  console.log('writing to sync doc ' + mapName + ' key: ' + key);// + ' data: ' + data);
 
   var formData = { Data: JSON.stringify(data)};
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items/' + key;
