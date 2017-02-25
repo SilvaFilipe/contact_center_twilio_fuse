@@ -39,7 +39,8 @@
       $scope.configuration;
 
       /* contains task data pushed by the TaskRouter JavaScript SDK */
-      $scope.reservation;
+      $scope.reservation = null;
+      $scope.task = null;
       $scope.tasks;
       $scope.callTasks = [];
       $scope.currentCall = null;
@@ -426,6 +427,7 @@
 
       $scope.$on('endAllOutCalls', function (event) {
         $log.log('end all outbounding calls');
+        $scope.stopWorkingCounter();
         $scope.callTasks = $scope.callTasks.filter(function (callItem) {
           return callItem.type != 'outbound';
         });
@@ -513,9 +515,8 @@
       $scope.startWorkingCounter = function () {
 
         $log.log('start working counter');
-        $scope.workingCounter = $scope.currentCall.duration;
         $scope.workingInterval = $interval(function () {
-          $scope.workingCounter++;
+          $scope.currentCall.duration++;
         }, 1000);
 
       };

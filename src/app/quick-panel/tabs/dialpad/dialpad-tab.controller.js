@@ -161,6 +161,7 @@
             $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
             $scope.state = 'isActive';
             $mdSidenav('quick-panel').toggle();
+            vm.phoneNumber = '';
 
           });
         }, 2000);

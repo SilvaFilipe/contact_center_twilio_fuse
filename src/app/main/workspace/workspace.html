@@ -1,7 +1,6 @@
 <div class="page-layout simple fullwidth doc-page element-doc-page">
   <div class="header md-accent-bg" layout="row" layout-align="space-between">
-    <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')"
-               aria-label="Toggle Left Sidenav">
+    <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')" aria-label="Toggle Left Sidenav">
       <md-icon md-font-icon="icon-menu" class="icon"></md-icon>
     </md-button>
     <div class="title">{{user.firstName}}&#39;s Agent Interface</div>
@@ -19,10 +18,13 @@
 
     <div class="simple-table-container md-whiteframe-4dp">
       <div class="reservations">
+        <div style="text-align: center; padding: 30px; font-size: 28px" ng-hide="callTasks.length || reservation || task">
+          <h>Waiting for calls...</h>
+        </div>
 
-        <div class="content">
+        <div class="content" ng-show="callTasks.length || reservation || task">
           <md-tabs md-dynamic-height>
-            <md-tab data-ng-if="!callTasks.empty()" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
+            <md-tab data-ng-if="callTasks.length" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
@@ -32,7 +34,7 @@
                   <div style="height: 70px;">
                     <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
                   </div>
-                  <div class="workingTimer" ng-class='{"invisible": !workingCounter}'> {{ workingCounter | counter }} </div>
+                  <div class="workingTimer" ng-class='{"invisible": !task.duration}'> {{ task.duration | counter }} </div>
                   <div layout="row" layout-align="center center">
 
                     <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
@@ -156,8 +158,8 @@
         </div>
 
       </div>
-      <div>
+    <div>
 
-      </div>
+  </div>
 
-    </div>
+</div>
