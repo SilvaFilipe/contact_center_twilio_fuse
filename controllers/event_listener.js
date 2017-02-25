@@ -3,6 +3,7 @@ const url = require('url');
 const request = require('request-promise');
 const Task = require('../models/task.model');
 const Call = require('../models/call.model');
+const sync = require('../controllers/sync.js');
 const twilio = require('twilio');
 const client = new twilio(
     process.env.TWILIO_ACCOUNT_SID,
@@ -336,14 +337,25 @@ module.exports.workspace_events = function (req, res) {
         });
     }
 
-  if (resourceType=='worker'){
-    var workerName = req.body.WorkerName;
-    var activity = req.body.WorkerActivityName;
-    var activitySid = req.body.WorkerActivitySid;
-    var workerSid  = req.body.WorkerSid ;
-    var data = {activitySid: activitySid, activity: activity}
-    module.exports.syncSave('workers', workerName, data);
-  }
+    if (resourceType=='worker'){
+      var workerName = req.body.WorkerName;
+      var activity = req.body.WorkerActivityName;
+      var activitySid = req.body.WorkerActivitySid;
+      var workerSid  = req.body.WorkerSid ;
+      var data = {activitySid: activitySid, activity: activity}
+      //module.exports.syncSave('workers', workerName, data);
+      sync.saveMap('workers', workerName, data);
+    }
+
+    if ( taskQueueSid != undefined){
+
+      taskrouterClient.workspace.taskQueues(taskQueueSid).statistics.get({}, function(err, responseData) {
+        if(!err) {
+          //console.log(responseData);
+          sync.saveMap('taskQueues', 't' + taskQueueSid, responseData);
+        }
+      });
+    }
 
 
   res.setHeader('Content-Type', 'application/xml')
@@ -364,11 +376,11 @@ module.exports.syncSave = function (mapName, key, data) {
     console.log('error posting to sync: ' + err);
 
     url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items';
-    console.log(url);
+    //console.log(url);
     formData = { Key: key, Data: JSON.stringify(data)};
     request({ url: url, method: 'POST', formData: formData })
       .then(response => {
-        console.log('got sync response: ' + response);
+        console.log('got sync response: ');// + response);
       })
       .catch(err => {
         console.log('error posting to sync: ' + err);
