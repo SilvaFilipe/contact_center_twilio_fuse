@@ -248,7 +248,7 @@
               console.log(reservation);
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
 
-              $scope.currentCall = {
+              $scope.newInboundCall = {
                 fromNumber: reservation.task.attributes.from,
                 type: 'inbound',
                 duration: reservation.task.age,
@@ -259,9 +259,15 @@
                 taskSid: reservation.task.attributes.id,
                 direction: 'inbound',
                 createdAt: new Date(),
-                callStatus: 'active'
+                callStatus: 'active',
+                conferenceName: reservation.sid
               };
-              $scope.callTasks.push($scope.currentCall);
+              $scope.callTasks.push($scope.newInboundCall);
+              if ($scope.currentCall) {
+                $scope.currentCall = $scope.newInboundCall;
+                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
+              }
+              $scope.currentCall = $scope.newInboundCall;
               $scope.stopWorkingCounter();
               $scope.startWorkingCounter();
 
@@ -416,7 +422,8 @@
           taskSid: null,
           direction: 'outbound',
           createdAt: new Date(),
-          callStatus: 'active'
+          callStatus: 'active',
+          conferenceName: data.callSid
         };
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
@@ -442,8 +449,7 @@
           return;
         }
         $scope.currentCall = selectedTask;
-        console.log($scope.currentCall);
-        $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.callSid);
+        $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();
 
@@ -471,6 +477,10 @@
         else {
           $scope.currentCall = null;
           $rootScope.$broadcast('DisconnectSoftware');
+        }
+        if ($scope.currentCall) {
+          $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
+          $scope.startWorkingCounter();
         }
 
       };
