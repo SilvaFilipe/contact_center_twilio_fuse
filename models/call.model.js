@@ -45,7 +45,8 @@ var callSchema = mongoose.Schema({
   recordingUrl: String,
   recordingDuration: String,
   recordingChannels: String,
-  user_id: String
+  user_id: String,
+  callerName: String
 });
 
 callSchema.methods.saveSync = function () {
