@@ -26,8 +26,10 @@
           <md-tabs md-dynamic-height>
             <md-tab data-ng-if="callTasks.length" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
-                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.type == 'outbound'"></md-icon><span ng-show="task.type == 'outbound'">{{task.fromNumber}}</span>
-                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.type == 'inbound'"></md-icon><span ng-show="task.type == 'inbound'">{{task.fromNumber}}</span>
+                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.callStatus != 'completed' && task.type == 'outbound'"></md-icon>
+                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.callStatus != 'completed' && task.type == 'inbound'"></md-icon>
+                <md-icon ng-show="task.callStatus == 'completed'" md-font-icon="icon-close" ng-click="complete()"></md-icon>
+                <span>{{task.fromNumber}}</span>
               </md-tab-label>
               <md-tab-body>
                 <md-content class="h-400" ng-class="(task.callStatus=='completed') ? 'callCompleted' : 'md-grey-100-bg'">

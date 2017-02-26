@@ -3,7 +3,7 @@
     <div class="dial-pad">
 
       <div class="phoneString">
-        <input class="phoneNumberTxt" type="text" ng-model="vm.phoneNumber" placeholder="+..">
+        <input class="phoneNumberTxt" type="text" ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? call(vm.phoneNumber) : null" placeholder="+..">
       </div>
       <div class="digits">
         <div class="dig number-dig" name="1" ng-click="addDigit('1')">1</div>
