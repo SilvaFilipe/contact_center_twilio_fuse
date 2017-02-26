@@ -64,12 +64,13 @@ module.exports.log_twiml_event = function (req) {
   var to = req.query.To;
   var fromZip = req.query.FromZip;
   var fromState = req.query.FromState;
+  var callerName = req.query.CallerName;
   var updated_at = new Date();
 
   var url_parts = url.parse(req.url);
   var callbackSource = url_parts.pathname;
 
-  var dbFields = { callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at : updated_at  };
+  var dbFields = { callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at : updated_at, callerName: callerName };
   var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, timestamp: timestamp, updated_at: updated_at };
 
   console.log('TwiML event called: ' + callbackSource);
@@ -125,9 +126,10 @@ module.exports.call_events = function (req, res) {
   var to = req.body.To;
   var fromZip = req.body.FromZip;
   var fromState = req.body.FromState;
+  var callerName = req.body.CallerName;
   var updated_at = new Date();
 
-  var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at: updated_at };
+  var dbFields = { callStatus: callStatus, duration: duration, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, sequenceNumber: sequenceNumber,  callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at: updated_at, callerName: callerName };
   var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, sequenceNumber: sequenceNumber, timestamp: timestamp, updated_at: updated_at };
 
   console.log('Call event called: ' + callbackSource);
@@ -237,6 +239,7 @@ module.exports.conference_events = function (req, res) {
                         console.log(err);
                     } else {
                         console.log('Accepted reservation ' + friendlyName + ': ' + reservation.reservation_status + ' ' + reservation.worker_name);
+                        // TODO: update call with user_id
                     }
                 });
 

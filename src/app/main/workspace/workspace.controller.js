@@ -727,6 +727,20 @@
         $scope.$apply();
 
       };
+
+      $scope.$on('SetActivitySid', function(event, activitySid) {
+        console.log('set ActivitySid: ' + activitySid);
+        var selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
+        console.log(selectedActivitySid);
+        $scope.workerJS.update('ActivitySid', selectedActivitySid, function (err, worker) {
+          if (err) {
+            $log.error(err);
+            return;
+          }
+          $scope.$apply();
+        });
+      });
+
     }
 
 
