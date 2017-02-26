@@ -70,13 +70,13 @@
                     </md-button>
                   </div>
                   <div class="mt-30" layout="row" layout-align="center center" ng-show="task.callStatus == 'completed'">
-                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">Close</md-button>
+                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">Complete task</md-button>
                   </div>
                 </md-content>
               </md-tab-body>
             </md-tab>
 
-            <md-tab data-ng-if="reservation != null" label="RESERVATION">
+            <md-tab data-ng-if="reservation != null" label="{{reservation.task.attributes.team}} Caller">
               <md-toolbar class="mt-10">
                 <div class="md-toolbar-tools">
                   <div class="description">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
