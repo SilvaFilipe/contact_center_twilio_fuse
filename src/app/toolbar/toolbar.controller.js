@@ -28,27 +28,26 @@
             {
                 'title': 'Available',
                 'icon' : 'icon-checkbox-marked-circle',
-                'color': '#4CAF50'
+                'color': '#4CAF50',
+                'activitySid': 'workerIdleActivitySid'
             },
             {
               'title': 'Working',
               'icon' : 'icon-minus-circle',
-              'color': '#F44336'
+              'color': '#F44336',
+              'activitySid': 'workerAssignmentActivitySid'
             },
             {
                 'title': 'Working Offline',
                 'icon' : 'icon-clock',
-                'color': '#FFC107'
+                'color': '#FFC107',
+                'activitySid': 'workerWorkingOffline'
             },
             {
                 'title': 'On Break',
                 'icon' : 'icon-checkbox-blank-circle-outline',
-                'color': '#BDBDBD'
-            },
-            {
-                'title': 'Offline',
-                'icon' : 'icon-checkbox-blank-circle-outline',
-                'color': '#616161'
+                'color': '#BDBDBD',
+                'activitySid': 'workerOnBreak'
             }
         ];
         vm.languages = {
@@ -116,6 +115,7 @@
         function setUserStatus(status)
         {
             vm.userStatus = status;
+            $rootScope.$broadcast('SetActivitySid', status.activitySid);
         }
 
         /**
