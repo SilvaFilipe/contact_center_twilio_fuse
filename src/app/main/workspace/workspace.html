@@ -70,7 +70,10 @@
                     </md-button>
                   </div>
                   <div class="mt-30" layout="row" layout-align="center center" ng-show="task.callStatus == 'completed'">
-                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">Complete task</md-button>
+                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">
+                      <span ng-show="task.type != 'outbound'">Complete task</span>
+                      <span ng-show="task.type != 'inbound'">Close</span>
+                    </md-button>
                   </div>
                 </md-content>
               </md-tab-body>
