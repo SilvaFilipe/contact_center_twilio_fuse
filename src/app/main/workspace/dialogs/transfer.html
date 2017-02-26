@@ -20,48 +20,30 @@
 
       <md-tabs ng-if="vm.displayableAction === 'transfer-call'">
         <md-tab label="Active Calls">
-          <md-autocomplete
-            md-selected-item="vm.selectedItem"
-            md-items="item in vm.querySearch(vm.searchText)"
-            md-search-text="vm.searchText"
-            md-item-text="item.display"
-            md-min-length="0"
-            placeholder="Search">
-            <md-item-template>
-              <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-            </md-item-template>
-          </md-autocomplete>
+          <md-input-container class="md-icon-float md-icon-right md-block">
+            <label>Search</label>
+            <input ng-model="vm.searchText" type="text">
+            <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
+          </md-input-container>
         </md-tab>
         <md-tab label="Queues">
-          <md-autocomplete
-            md-selected-item="vm.selectedItem"
-            md-items="item in vm.querySearch(vm.searchText)"
-            md-search-text="vm.searchText"
-            md-item-text="item.display"
-            md-min-length="0"
-            placeholder="Search">
-            <md-item-template>
-              <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-            </md-item-template>
-          </md-autocomplete>
+          <md-input-container class="md-icon-float md-icon-right md-block">
+            <label>Search</label>
+            <input ng-model="vm.searchText" type="text">
+            <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
+          </md-input-container>
         </md-tab>
         <md-tab label="Directory">
-          <md-autocomplete
-            md-selected-item="vm.selectedItem"
-            md-items="item in vm.querySearch(vm.searchText)"
-            md-search-text="vm.searchText"
-            md-item-text="item.display"
-            md-min-length="0"
-            placeholder="Search">
-            <md-item-template>
-              <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-            </md-item-template>
-          </md-autocomplete>
+          <md-input-container class="md-icon-float md-icon-right md-block">
+            <label>Search</label>
+            <input ng-model="vm.searchText" type="text">
+            <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
+          </md-input-container>
 
             <md-list class="contacts-list">
               <!-- CONTACT ITEM -->
               <md-list-item class="contact-item md-white-bg"
-                            md-ink-ripple ng-repeat="user in vm.users | filter:{firstName: vm.searchText, lastName: vm.searchText} track by user._id"
+                            md-ink-ripple ng-repeat="user in vm.users | filter:vm.searchText track by user._id"
                             ng-click="vm.callUser(user)"
                             ng-class="{'selected': vm.isSelected(user)}">
 
@@ -82,17 +64,11 @@
             </md-list>
         </md-tab>
         <md-tab label="Contacts">
-          <md-autocomplete
-            md-selected-item="vm.selectedItem"
-            md-items="item in vm.querySearch(vm.searchText)"
-            md-search-text="vm.searchText"
-            md-item-text="item.display"
-            md-min-length="0"
-            placeholder="Search">
-            <md-item-template>
-              <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-            </md-item-template>
-          </md-autocomplete>
+          <md-input-container class="md-icon-float md-icon-right md-block">
+            <label>Search</label>
+            <input ng-model="vm.searchText" type="text">
+            <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
+          </md-input-container>
         </md-tab>
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">
