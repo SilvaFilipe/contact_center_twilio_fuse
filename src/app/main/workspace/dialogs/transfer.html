@@ -60,10 +60,13 @@
 
             <md-list class="contacts-list">
               <!-- CONTACT ITEM -->
-              <md-list-item class="contact-item md-white-bg" md-ink-ripple ng-repeat="user in vm.users track by user._id " ng-class="{'selected': vm.isSelected(user)}">
+              <md-list-item class="contact-item md-white-bg"
+                            md-ink-ripple ng-repeat="user in vm.users | filter:{firstName: vm.searchText, lastName: vm.searchText} track by user._id"
+                            ng-click="vm.callUser(user)"
+                            ng-class="{'selected': vm.isSelected(user)}">
 
                 <div class="status  {{user.status}}"></div>
-                <img ng-src="{{user.avatar}}" class="md-avatar" alt="{{user.firstName}}"/>
+                <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>
                 <div class="status  {{user.status}}"></div>
                 <p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>
                 <p class="phone text-truncate hide show-gt-md">

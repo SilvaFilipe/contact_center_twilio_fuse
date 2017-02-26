@@ -157,12 +157,14 @@
         $timeout(function () {
 
           $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
-            $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
-            $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
-            $scope.state = 'isActive';
-            $mdSidenav('quick-panel').toggle();
-            vm.phoneNumber = '';
+            if(response.data !== "ERROR"){
+              $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
+              $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
+              $scope.state = 'isActive';
+              $mdSidenav('quick-panel').toggle();
 
+            }
+            vm.phoneNumber = '';
           });
         }, 2000);
 

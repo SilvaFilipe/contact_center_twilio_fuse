@@ -8,7 +8,7 @@
     .factory('ToastTransferConfirmService', ToastTransferConfirmService);
 
   /** @ngInject */
-  function TransferDialogController($mdToast, $mdDialog, ToastTransferConfirmService, UserService) {
+  function TransferDialogController($rootScope, $log, $mdToast, $mdDialog, ToastTransferConfirmService, UserService) {
     var vm = this;
 
     vm.selectedAction = vm.displayableAction = 'transfer-call';
@@ -20,10 +20,14 @@
     function activate(){
       UserService.query().$promise
         .then(function (users) {
-          console.log(users)
           vm.users = users;
         });
     }
+
+    vm.callUser = function (user) {
+      $log.log('call inline number ' + user.phone);
+      //$rootScope.$broadcast('CallPhoneNumber', {phoneNumber: user.phone});
+    };
 
     vm.onTransferChange = function onTransferChange() {
       $mdToast.show({

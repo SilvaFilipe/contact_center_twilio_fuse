@@ -26,6 +26,8 @@
             'app.callcenterApplication',
 
             'app.services',
+
+            'app.directives',
             // Auth
             'app.auth'
 
