@@ -4,7 +4,7 @@ const errors = require('request-promise/errors');
 
 
 module.exports.saveMap = function (mapName, key, data) {
-  console.log('writing to sync map' + mapName + ' key: ' + key);// + ' data: ' + data);
+  console.log('writing to sync map ' + mapName + ' key: ' + key);// + ' data: ' + data);
 
   var formData = { Data: JSON.stringify(data)};
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items/' + key;
