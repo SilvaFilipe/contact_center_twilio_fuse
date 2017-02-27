@@ -44,21 +44,19 @@
               <!-- CONTACT ITEM -->
               <md-list-item class="contact-item md-white-bg"
                             md-ink-ripple ng-repeat="user in vm.users | filter:vm.searchText track by user._id"
-                            ng-click="vm.callUser(user)"
                             ng-class="{'selected': vm.isSelected(user)}">
 
                 <div class="status  {{user.status}}"></div>
                 <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>
                 <div class="status  {{user.status}}"></div>
                 <p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>
-                <p class="phone text-truncate hide show-gt-md">
+                <p class="phone text-truncate hide show-gt-md" ng-click="vm.callUser(user)">
                   {{user.phone}}
                 </p>
-                <md-button class="md-icon-button" aria-label="Call">
+                <md-button class="md-icon-button" aria-label="Call" ng-click="vm.callUser(user)">
                   <md-icon md-font-icon="icon-phone"></md-icon>
                 </md-button>
-                <md-button class="md-icon-button  hide show-gt-xs" aria-label="Toggle starred">
-                </md-button>
+                <md-icon md-font-icon="icon-star" ng-class="{'mber-fg': vm.isStarred(user)}" ng-click="vm.updatedStarredUser(user)"></md-icon>
               </md-list-item>
               <!-- CONTACT ITEM -->
             </md-list>

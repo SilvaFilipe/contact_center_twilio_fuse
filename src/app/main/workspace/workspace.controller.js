@@ -28,8 +28,17 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService) {
       var vm = this;
+
+      var func = function () {
+        UserService.usersWithStars()
+          .then(function (users) {
+            console.log(users);
+          });
+      };
+
+      func();
 
       vm.toggleLeftSidenav = function (sidenavId) {
         $mdSidenav(sidenavId).toggle();

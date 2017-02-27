@@ -15,7 +15,7 @@ module.exports = {
         user.save(function (err) {
             if(err) return res.send(err);
 
-            return res.json({message: 'User created.'});
+            return res.json(user);
         })
     },
     all: function (req, res) {
@@ -44,7 +44,34 @@ module.exports = {
             user.save(function(err){
                 if(err) return res.send(err);
 
-                return res.json({message: 'User updated.'});
+                return res.json(user);
+            });
+        })
+    },
+    starUser: function (req, res) {
+        User.findById(req.params.user_id, function (err, user) {
+            if(err) return res.send(err);
+
+
+            user.starredBy = user.starredBy || [];
+
+            var starredUser = user.starredBy.find(function (u) {
+              return u.userId == req.user._id;
+            });
+
+            if(starredUser){
+              starredUser.starred = req.body.starred;
+            }else{
+               user.starredBy.push({
+                 userId: req.user._id,
+                 starred: req.body.starred
+               });
+            }
+
+            user.save(function(err){
+                if(err) return res.send(err);
+
+                return res.json(user);
             });
         })
     },

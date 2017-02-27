@@ -18,11 +18,22 @@
     activate();
 
     function activate(){
-      UserService.query().$promise
+      UserService.usersWithStars()
         .then(function (users) {
+          console.log(users);
           vm.users = users;
         });
     }
+
+    vm.updatedStarredUser = function (user) {
+      UserService.starUser(user)
+        .then(function () {
+        });
+    };
+
+    vm.isStarred = function (user) {
+      return user.starred;
+    };
 
     vm.callUser = function (user) {
       $log.log('call inline number ' + user.phone);

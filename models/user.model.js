@@ -50,7 +50,16 @@ var userSchema = mongoose.Schema({
             type: String
         },
         name: String
-    }
+    },
+    starredBy: [
+      {
+        userId: {
+          type: mongoose.Schema.ObjectId,
+          ref: 'User'
+        },
+        starred: Boolean
+      }
+    ]
 });
 
 userSchema.methods.generateHash = function (password) {
