@@ -12,10 +12,12 @@
       usersWithStars: function () {
 
         return UserService.$resource.query().$promise
-          .then(function(users){
+          .then(function (users) {
             users = users.map(function (user) {
 
-              user.starred = user.starredBy.findIndex((starredBy) => starredBy.userId == req.user._id ) > -1;
+              user.starred = user.starredBy.findIndex(function (starredBy) {
+                  return starredBy.userId == req.user._id
+                }) > -1;
 
               return user;
             });
@@ -27,14 +29,14 @@
 
         user.starred = !user.starred;
         user.id = user._id;
-        user.$update(function(res){
+        user.$update(function (res) {
           defer.resolve(res)
         });
 
         return defer.promise;
       },
 
-      $resource:  $resource('/api/users/:id', {id: '@id'},
+      $resource: $resource('/api/users/:id', {id: '@id'},
         {
           star: {
             method: 'POST',
