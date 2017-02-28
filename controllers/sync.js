@@ -38,23 +38,25 @@ module.exports.saveDoc = function (docName, data) {
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
     console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
-})
-  .catch(err => {
-    console.log('error posting to sync: ' + err);
-  url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents';
-  //console.log(url);
-  formData = { UniqueName: docName, Data: JSON.stringify(data)};
-  request({ url: url, method: 'POST', formData: formData })
-    .then(response => {
-    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
-})
-  .catch(err => {
-    console.log('error posting to sync: ' + err);
-});
-});
+    })
+};
 
-}
 
+module.exports.createDoc = function (docName, data, cb) {
+
+    var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents';
+    //console.log(url);
+    var formData = { UniqueName: docName, Data: JSON.stringify(data)};
+    request({ url: url, method: 'POST', formData: formData })
+      .then(response => {
+        console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
+        cb(response);
+      })
+      .catch(err => {
+        console.log('error posting to sync: ' + err);
+        cb('err');
+      });
+};
 
 module.exports.write = function (req, res) {
   console.log('writing to sync');

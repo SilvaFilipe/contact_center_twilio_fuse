@@ -54,4 +54,9 @@ callSchema.methods.saveSync = function () {
   sync.saveDoc('c' + this.callSid, this);
 };
 
+callSchema.methods.createSync = function (cb) {
+//  sync.saveMap('calls', this.callSid, this);
+  sync.createDoc('c' + this.callSid, this, cb);
+};
+
 module.exports = mongoose.model('Call', callSchema);

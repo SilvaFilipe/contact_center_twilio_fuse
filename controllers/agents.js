@@ -256,11 +256,15 @@ module.exports.outboundCall = function (req, res) {
           if(err){
             console.log(err);
           } else {
-            newCall.saveSync();
+            newCall.createSync(function (response) {
+              if (response != 'err') {
+                res.setHeader('Cache-Control', 'public, max-age=0');
+                res.send({call: call, document: JSON.parse(response).unique_name})
+              }
+            });
           }
         });
-        res.setHeader('Cache-Control', 'public, max-age=0')
-        res.send({call: call})
+
       }
     });
   }
