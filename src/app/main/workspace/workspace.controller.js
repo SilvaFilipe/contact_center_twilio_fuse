@@ -40,6 +40,17 @@
 
       func();
 
+      //Generate random UUID to identify this browser tab
+      //For a more robust solution consider a library like
+      //fingerprintjs2: https://github.com/Valve/fingerprintjs2
+      var getDeviceId = function () {
+        return 'browser-' +
+          'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+          });
+      };
+
       vm.toggleLeftSidenav = function (sidenavId) {
         $mdSidenav(sidenavId).toggle();
       };
@@ -63,6 +74,16 @@
       $http.get('/api/users/me')
         .then(function (response) {
           $scope.user = response.data.user;
+          //Get an access token for the current user, passing a device ID
+          //In browser-based apps, every tab is like its own unique device
+          //synchronizing state -- so we'll use a random UUID to identify
+          //this tab.
+          $http.get('/api/sync/token?identity=' + 'w' + $scope.user._id + '&device=' + getDeviceId())
+            .then(function (res) {
+              $log.log(res);
+              $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
+              $log.log('Sync initialized!');
+            });
         });
 
       /* request configuration data and tokens from the backend */

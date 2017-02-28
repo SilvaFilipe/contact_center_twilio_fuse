@@ -45,5 +45,7 @@
         $rootScope.currentUser = user;
       };
 
+      $rootScope.syncClient = null;
+
     }
 })();
