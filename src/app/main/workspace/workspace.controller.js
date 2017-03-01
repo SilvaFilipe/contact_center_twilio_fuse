@@ -28,7 +28,7 @@
     }
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService) {
       var vm = this;
 
       var func = function () {
@@ -484,6 +484,17 @@
         $scope.startWorkingCounter();
 
       };
+
+      $scope.$on('callStatusChanged', function (event, data) {
+
+        $scope.callTasks.filter(function (callItem) {
+          if (callItem.callSid == data.callSid) {
+            callItem.callStatus = (typeof data.callEvent.callStatus != 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
+            $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
+          }
+        });
+
+      });
 
       $scope.isActive = function (task) {
         return ($scope.currentCall == task);

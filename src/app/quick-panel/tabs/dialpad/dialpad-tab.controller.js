@@ -163,6 +163,7 @@
                 .then(function(doc) {
                   doc.on('updated', function(data) {
                     console.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
                   }, function onError(response) {
                     console.log(response.data);
                   });
