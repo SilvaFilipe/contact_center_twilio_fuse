@@ -51,7 +51,6 @@ module.exports = {
     starUser: function (req, res) {
 
         User.findById(req.params.user_id, function (err, user) {
-          console.log(err);
             if(err) return res.send(err);
 
 

@@ -20,7 +20,6 @@
     function activate(){
       UserService.usersWithStars()
         .then(function (users) {
-          console.log(users);
           vm.users = users;
         });
     }
