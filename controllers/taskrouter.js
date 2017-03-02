@@ -13,6 +13,8 @@ const client = new twilio(
     process.env.TWILIO_ACCOUNT_SID,
     process.env.TWILIO_AUTH_TOKEN)
 
+const Call = require('../models/call.model');
+
 
 module.exports.assignment = function (req, res) {
 	res.setHeader('Content-Type', 'application/json')
@@ -42,6 +44,20 @@ module.exports.agentToConference = function (req, res) {
     });
 
 }
+
+module.exports.syncDocument = function (req, res) {
+  var call_sid = req.query.call_sid;
+  Call.findOne({'callSid': call_sid}, function (err, currentCall) {
+    if (!err) {
+      currentCall.createSync(function (response) {
+        if (response != 'err') {
+          res.send({document: JSON.parse(response).unique_name})
+        }
+      });
+    }
+  });
+
+};
 
 module.exports.moveToConference = function (req, res) {
 

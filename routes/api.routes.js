@@ -52,6 +52,7 @@ module.exports = function(app){
     router.route('/taskrouter/assignment').post(taskrouter.assignment)
     router.route('/taskrouter/moveToConference').post(taskrouter.moveToConference)
     router.route('/taskrouter/agentToConference').post(taskrouter.agentToConference)
+    router.route('/taskrouter/syncDocument').get(taskrouter.syncDocument)
 
     router.route('/callControl/holdOn').get(callController.holdOn)
     router.route('/callControl/holdOff').get(callController.holdOff)

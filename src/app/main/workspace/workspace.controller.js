@@ -173,6 +173,20 @@
           var caller_sid = reservation.task.attributes.call_sid;
           var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
+
+          $http.get('api/taskrouter/syncDocument?call_sid=' + caller_sid)
+            .then(function(response) {
+              // subscribe to updated events
+              $rootScope.syncClient.document(response.data.document)
+                .then(function(doc) {
+                  doc.on('updated', function(data) {
+                    console.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                  }, function onError(response) {
+                    console.log(response.data);
+                  });
+                });
+            });
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
           //$scope.currentCall.attributes = reservation.task.attributes;
 
@@ -402,7 +416,7 @@
         });
       };
 
-      $scope.complete = function (reservation) {
+      $scope.complete = function () {
         $scope.stopWorkingCounter();
 
         if ($scope.currentCall) {
@@ -490,6 +504,9 @@
         $scope.callTasks.filter(function (callItem) {
           if (callItem.callSid == data.callSid) {
             callItem.callStatus = (typeof data.callEvent.callStatus != 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
+            if (callItem.callStatus == 'participant-leave') {
+              callItem.callStatus = 'completed';
+            }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
           }
         });
