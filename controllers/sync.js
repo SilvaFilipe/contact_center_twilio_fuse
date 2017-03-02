@@ -8,15 +8,17 @@ module.exports.saveMap = function (mapName, key, data) {
 
   var formData = { Data: JSON.stringify(data)};
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items/' + key;
+  // update map
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
     console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
 })
   .catch(err => {
+    // Assuming 404 (expected if doc doesn't exist)
+    // TODO check status code and use seperate err handlers for 404 and other cases
     console.log('error posting to sync: ' + err);
-
-  url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items';
-  //console.log(url);
+    url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps/' + mapName + '/Items';
+    // create map
   formData = { Key: key, Data: JSON.stringify(data)};
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
@@ -35,10 +37,26 @@ module.exports.saveDoc = function (docName, data) {
   console.log('writing to sync doc ' + docName);
   var formData = { Data: JSON.stringify(data)};
   var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents/' + docName;
+  // update doc
   request({ url: url, method: 'POST', formData: formData })
     .then(response => {
     console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
-    })
+})
+  .catch(err => {
+    // Assuming 404 (expected if doc doesn't exist)
+    // TODO check status code and use seperate err handlers for 404 and other cases
+      console.log('error posting to sync: ' + err);
+      url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents';
+    //create new doc
+    formData = { UniqueName: docName, Data: JSON.stringify(data)};
+    request({ url: url, method: 'POST', formData: formData })
+      .then(response => {
+      console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
+      })
+    .catch(err => {
+      console.log('error posting to sync: ' + err);
+    });
+  });
 };
 
 

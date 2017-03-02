@@ -174,10 +174,8 @@
           var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
 
-          $http.get('api/taskrouter/syncDocument?call_sid=' + caller_sid)
-            .then(function(response) {
               // subscribe to updated events
-              $rootScope.syncClient.document(response.data.document)
+              $rootScope.syncClient.document('c' + caller_sid )
                 .then(function(doc) {
                   doc.on('updated', function(data) {
                     console.log(data);
@@ -186,7 +184,6 @@
                     console.log(response.data);
                   });
                 });
-            });
           //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
           //$scope.currentCall.attributes = reservation.task.attributes;
 
