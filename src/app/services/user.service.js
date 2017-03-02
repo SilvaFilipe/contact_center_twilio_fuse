@@ -6,7 +6,7 @@
   angular.module('app.services').factory('UserService', UserService);
 
   /** @ngInject */
-  function UserService($http, $resource, $q) {
+  function UserService($http, $resource, $q, authService) {
 
     var UserService = {
       usersWithStars: function usersWithStars() {
@@ -15,7 +15,8 @@
           users = users.map(function (user) {
 
             user.starred = user.starredBy.findIndex(function (starredBy) {
-                return starredBy.userId == req.user._id;
+                console.log(starredBy);
+                return starredBy.userId == authService.loggedInUser._id;
               }) > -1;
 
             return user;
@@ -23,23 +24,30 @@
           return users;
         });
       },
-      starUser: function starUser(user) {
+      starUser: function starUser(user, starStatus) {
         var defer = $q.defer();
 
         user.starred = !user.starred;
         user.id = user._id;
-        user.$update(function (res) {
-          defer.resolve(res);
+        user.$star({
+          id: user.id,
+          starred: starStatus
+        }, function (r) {
+          console.log(r)
+          defer.resolve(r);
+        }, function (r) {
+          console.log(r)
+          defer.reject(r);
         });
 
         return defer.promise;
       },
 
-      $resource: $resource('/api/users/:id', { id: '@id' }, {
+      $resource: $resource('/api/users/:id/:routeAction', { id: '@id', routeAction: '@routeAction' }, {
         star: {
           method: 'POST',
           params: {
-            star: true
+            routeAction: 'star'
           }
         },
         update: {

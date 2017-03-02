@@ -49,22 +49,25 @@ module.exports = {
         })
     },
     starUser: function (req, res) {
-        User.findById(req.params.user_id, function (err, user) {
+
+        console.log(req.body._id, req.query.starred);
+        User.findById(req.user._id, function (err, user) {
             if(err) return res.send(err);
 
 
             user.starredBy = user.starredBy || [];
 
             var starredUser = user.starredBy.find(function (u) {
-              return u.userId == req.user._id;
+              if(!u){ return false; }
+              return u.userId == req.body._id;
             });
 
             if(starredUser){
-              starredUser.starred = req.body.starred;
+              starredUser.starred = req.query.starred;
             }else{
                user.starredBy.push({
-                 userId: req.user._id,
-                 starred: req.body.starred
+                 userId: req.params.user_id,
+                 starred: req.query.starred
                });
             }
 

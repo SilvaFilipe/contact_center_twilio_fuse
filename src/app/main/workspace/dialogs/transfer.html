@@ -43,7 +43,7 @@
             <md-list class="contacts-list">
               <!-- CONTACT ITEM -->
               <md-list-item class="contact-item md-white-bg"
-                            md-ink-ripple ng-repeat="user in vm.users | filter:vm.searchText track by user._id"
+                            md-ink-ripple ng-repeat="user in vm.users | orderBy:'starred':false:vm.orderStarredUser | filter:vm.searchText track by user._id"
                             ng-class="{'selected': vm.isSelected(user)}">
 
                 <div class="status  {{user.status}}"></div>
@@ -56,7 +56,7 @@
                 <md-button class="md-icon-button" aria-label="Call" ng-click="vm.callUser(user)">
                   <md-icon md-font-icon="icon-phone"></md-icon>
                 </md-button>
-                <md-icon md-font-icon="icon-star" ng-class="{'mber-fg': vm.isStarred(user)}" ng-click="vm.updatedStarredUser(user)"></md-icon>
+                <md-icon md-font-icon="icon-star" ng-class="{'amber-fg': vm.isStarred(user)}" ng-click="vm.updatedStarredUser(user, !vm.isStarred(user))"></md-icon>
               </md-list-item>
               <!-- CONTACT ITEM -->
             </md-list>

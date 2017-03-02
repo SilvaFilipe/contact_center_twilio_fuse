@@ -86,8 +86,8 @@ module.exports = function(app){
         .put(users.update)
         .delete(users.delete);
 
-    router.route('/users/:user_id')
-        .put(users.starUser);
+    router.route('/users/:user_id/star')
+      .post(users.starUser);
 
     app.use('/api', router)
 

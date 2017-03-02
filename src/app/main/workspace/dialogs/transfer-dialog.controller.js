@@ -25,9 +25,10 @@
         });
     }
 
-    vm.updatedStarredUser = function (user) {
-      UserService.starUser(user)
-        .then(function () {
+    vm.updatedStarredUser = function (user, status) {
+      UserService.starUser(user, status)
+        .then(function (r) {
+          console.log(r);
         });
     };
 
@@ -38,6 +39,10 @@
     vm.callUser = function (user) {
       $log.log('call inline number ' + user.phone);
       //$rootScope.$broadcast('CallPhoneNumber', {phoneNumber: user.phone});
+    };
+
+    vm.orderStarredUser = function(user){
+      return !user.starred ? -1 : 1;
     };
 
     vm.onTransferChange = function onTransferChange() {
