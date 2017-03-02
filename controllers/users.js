@@ -50,8 +50,8 @@ module.exports = {
     },
     starUser: function (req, res) {
 
-        console.log(req.body._id, req.query.starred);
-        User.findById(req.user._id, function (err, user) {
+        User.findById(req.params.user_id, function (err, user) {
+          console.log(err);
             if(err) return res.send(err);
 
 
@@ -59,22 +59,20 @@ module.exports = {
 
             var starredUser = user.starredBy.find(function (u) {
               if(!u){ return false; }
-              return u.userId == req.body._id;
+              return u.userId.toString() == req.user._id;
             });
-
             if(starredUser){
-              starredUser.starred = req.query.starred;
+              starredUser.starred = req.body.starred;
             }else{
                user.starredBy.push({
-                 userId: req.params.user_id,
-                 starred: req.query.starred
+                 userId: req.user._id,
+                 starred: req.body.starred
                });
             }
-
             user.save(function(err){
                 if(err) return res.send(err);
 
-                return res.json(user);
+                return res.json({success: true});
             });
         })
     },
