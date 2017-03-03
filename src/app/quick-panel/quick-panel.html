@@ -16,8 +16,8 @@
             <span translate="QUICKPANEL.DIRECTORY">DIRECTORY</span>
           </md-tab-label>
           <md-tab-body>
-            <md-content class="activity-tab scrollable" ms-scroll
-                        ng-include="'app/quick-panel/tabs/activity/activity-tab.html'">
+            <md-content class="activity-tab scrollable" ms-scroll>
+              <contacts-directory users="vm.users"></contacts-directory>
             </md-content>
           </md-tab-body>
         </md-tab>

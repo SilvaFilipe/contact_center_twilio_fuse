@@ -24,38 +24,6 @@
         });
     }
 
-    vm.updateStarredUser = function (user, id) {
-      UserService.starUser(user, !user.starred)
-        .then(function () {
-          var index = 0;
-          for (var i = 0; i < vm.users.length; i++) {
-            var user = vm.users[i];
-            if(user._id == id){
-              index = i;
-              break;
-            }
-          }
-
-          vm.users[index].starred = !vm.users[index].starred;
-
-        }, function () {
-          console.log('failed');
-        });
-    };
-
-    vm.isStarred = function (user) {
-      return user.starred;
-    };
-
-    vm.callUser = function (user) {
-      $log.log('call inline number ' + user.phone);
-      //$rootScope.$broadcast('CallPhoneNumber', {phoneNumber: user.phone});
-    };
-
-    vm.orderStarredUser = function(user){
-      return user.starred ? -1 : 1;
-    };
-
     vm.onTransferChange = function onTransferChange() {
       $mdToast.show({
           template: (

@@ -28,6 +28,7 @@
             'app.services',
 
             'app.directives',
+            'app.components',
             // Auth
             'app.auth'
 

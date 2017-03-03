@@ -34,32 +34,34 @@
           </md-input-container>
         </md-tab>
         <md-tab label="Directory">
-          <md-input-container class="md-icon-float md-icon-right md-block">
-            <label>Search</label>
-            <input ng-model="vm.searchText" type="text">
-            <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
-          </md-input-container>
 
-            <md-list class="contacts-list">
-              <!-- CONTACT ITEM -->
-              <md-list-item class="contact-item md-white-bg"
-                            md-ink-ripple ng-repeat="user in vm.users | orderBy:'-starred' | filter:vm.searchText track by user._id"
-                            ng-class="{'selected': vm.isSelected(user)}">
+          <contacts-directory users="vm.users"></contacts-directory>
 
-                <div class="status  {{user.status}}"></div>
-                <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>
-                <div class="status  {{user.status}}"></div>
-                <p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>
-                <p class="phone text-truncate hide show-gt-md" ng-click="vm.callUser(user)">
-                  {{user.phone}}
-                </p>
-                <md-button class="md-icon-button" aria-label="Call" ng-click="vm.callUser(user)">
-                  <md-icon md-font-icon="icon-phone"></md-icon>
-                </md-button>
-                <md-icon md-font-icon="icon-star" ng-class="{'amber-fg': vm.isStarred(user)}" ng-click="vm.updateStarredUser(user, user._id)"></md-icon>
-              </md-list-item>
-              <!-- CONTACT ITEM -->
-            </md-list>
+          <!--<md-input-container class="md-icon-float md-icon-right md-block">-->
+            <!--<label>Search</label>-->
+            <!--<input ng-model="vm.searchText" type="text">-->
+            <!--<md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>-->
+          <!--</md-input-container>-->
+          <!--<md-list class="contacts-list">-->
+              <!--&lt;!&ndash; CONTACT ITEM &ndash;&gt;-->
+              <!--<md-list-item class="contact-item md-white-bg"-->
+                            <!--md-ink-ripple ng-repeat="user in vm.users | orderBy:'-starred' | filter:vm.searchText track by user._id"-->
+                            <!--ng-class="{'selected': vm.isSelected(user)}">-->
+
+                <!--<div class="status  {{user.status}}"></div>-->
+                <!--<img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>-->
+                <!--<div class="status  {{user.status}}"></div>-->
+                <!--<p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>-->
+                <!--<p class="phone text-truncate hide show-gt-md" ng-click="vm.callUser(user)">-->
+                  <!--{{user.phone}}-->
+                <!--</p>-->
+                <!--<md-button class="md-icon-button" aria-label="Call" ng-click="vm.callUser(user)">-->
+                  <!--<md-icon md-font-icon="icon-phone"></md-icon>-->
+                <!--</md-button>-->
+                <!--<md-icon md-font-icon="icon-star" ng-class="{'amber-fg': vm.isStarred(user)}" ng-click="vm.updateStarredUser(user, user._id)"></md-icon>-->
+              <!--</md-list-item>-->
+              <!--&lt;!&ndash; CONTACT ITEM &ndash;&gt;-->
+            <!--</md-list>-->
         </md-tab>
         <md-tab label="Contacts">
           <md-input-container class="md-icon-float md-icon-right md-block">
