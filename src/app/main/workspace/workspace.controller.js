@@ -27,6 +27,48 @@
       };
     }
 
+
+    // define call class
+    function Call (fromNumber, type, duration, callSid, isHold, isRecording, isMuted, taskSid, direction, date, callStatus, conferenceName) {
+      this.fromNumber = fromNumber;
+      this.type = type;
+      this.duration = duration;
+      this.callSid = callSid;
+      this.onhold = isHold;
+      this.recording = isRecording;
+      this.muted = isMuted;
+      this.taskSid = taskSid;
+      this.direction = direction;
+      this.createdAt = date;
+      this.callStatus = callStatus;
+      this.conferenceName = conferenceName;
+      this.showOutgoingIcon = showOutgoingIcon;
+      this.showIngoingIcon = showIngoingIcon;
+      this.isCompleted = isCompleted;
+      this.isInGoingCall = isInGoingCall;
+      this.isOutGoingCall = isOutGoingCall;
+    }
+
+    function showOutgoingIcon() {
+      return this.callStatus != 'completed' && this.type == 'outbound'
+    }
+
+    function showIngoingIcon() {
+      return this.callStatus != 'completed' && this.type == 'inbound';
+    }
+
+    function isCompleted() {
+      return this.callStatus == 'completed';
+    }
+
+    function isInGoingCall() {
+      return this.type == 'inbound';
+    }
+
+    function isOutGoingCall() {
+      return this.type == 'outbound';
+    }
+
     /** @ngInject */
     function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService) {
       var vm = this;
@@ -289,20 +331,8 @@
               console.log(reservation);
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
 
-              $scope.newInboundCall = {
-                fromNumber: reservation.task.attributes.from,
-                type: 'inbound',
-                duration: reservation.task.age,
-                callSid: reservation.task.attributes.call_sid,
-                onhold: false,
-                recording: false,
-                muted: false,
-                taskSid: reservation.task.attributes.id,
-                direction: 'inbound',
-                createdAt: new Date(),
-                callStatus: 'active',
-                conferenceName: reservation.sid
-              };
+              $scope.newInboundCall = new Call(reservation.task.attributes.from, 'inbound', reservation.task.age, reservation.task.attributes.call_sid,
+                false, false, false, reservation.task.attributes.id, 'inbound', new Date(), 'active', reservation.sid);
               $scope.callTasks.push($scope.newInboundCall);
               if ($scope.currentCall) {
                 $scope.currentCall = $scope.newInboundCall;
@@ -452,20 +482,8 @@
       $scope.$on('NewOutBoundingCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        $scope.currentCall = {
-          fromNumber: data.phoneNumber,
-          type: 'outbound',
-          duration: 0,
-          callSid: data.callSid,
-          onhold: false,
-          recording: false,
-          muted: false,
-          taskSid: null,
-          direction: 'outbound',
-          createdAt: new Date(),
-          callStatus: 'active',
-          conferenceName: data.callSid
-        };
+        $scope.currentCall = new Call(data.phoneNumber, 'outbound', 0, data.callSid, false, false, false, null, 'outbound', new Date(), 'active', data.callSid);
+
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();

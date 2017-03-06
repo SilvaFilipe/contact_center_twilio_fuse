@@ -26,13 +26,13 @@
           <md-tabs md-dynamic-height>
             <md-tab data-ng-if="callTasks.length" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
-                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.callStatus != 'completed' && task.type == 'outbound'"></md-icon>
-                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.callStatus != 'completed' && task.type == 'inbound'"></md-icon>
-                <md-icon ng-show="task.callStatus == 'completed'" md-font-icon="icon-close" ng-click="complete()"></md-icon>
+                <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.showOutgoingIcon()"></md-icon>
+                <md-icon md-font-icon="icon-phone-incoming" ng-show="task.showIngoingIcon()"></md-icon>
+                <md-icon ng-show="task.isCompleted()" md-font-icon="icon-close" ng-click="complete()"></md-icon>
                 <span>{{task.fromNumber}}</span>
               </md-tab-label>
               <md-tab-body>
-                <md-content class="h-400" ng-class="(task.callStatus=='completed') ? 'callCompleted' : 'md-grey-100-bg'">
+                <md-content class="h-400" ng-class="(task.isCompleted()) ? 'callCompleted' : 'md-grey-100-bg'">
                   <div style="height: 70px;">
                     <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
                   </div>
@@ -69,10 +69,10 @@
                     <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
                   </div>
-                  <div class="mt-30" layout="row" layout-align="center center" ng-show="task.callStatus == 'completed'">
+                  <div class="mt-30" layout="row" layout-align="center center" ng-show="task.isCompleted()">
                     <md-button class="md-warn md-raised md-hue-2" ng-click="complete()">
-                      <span ng-show="task.type != 'outbound'">Complete task</span>
-                      <span ng-show="task.type != 'inbound'">Close</span>
+                      <span ng-show="task.isInGoingCall()">Complete task</span>
+                      <span ng-show="task.isOutGoingCall()">Close</span>
                     </md-button>
                   </div>
                 </md-content>
