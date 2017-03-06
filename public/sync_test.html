@@ -72,7 +72,13 @@
       syncClient.map('workers')
         .then(function(map) {
           $('#log').append('<li>found map items');
-          console.log(map);
+          console.log('map');
+          map.getItems({ limit: 20 }).then(function(item) {
+            for (x=0; x<item.items.length; x++){
+                var worker = item.items[x];
+              $('#log').append('<li>' + worker.key + ': ' + worker.value["activity"]);
+            }
+          });
           map.on('itemAddedRemotely', function(data) {
             console.log(data);
             $('#log').append('<li>created ' + data.key + ' ' + data.value.activity);
@@ -89,6 +95,17 @@
 
         });
 
+
+      syncClient.list('m588afb463453f8afaf55912d').then(function(list) {
+        list.getItems({ limit: 20 }).then(function(page) {
+          console.log('Items retrieved!', page.items);
+          for (x=0; x<page.items.length; x++){
+            var message = page.items[x];
+            console.log(message);
+            $('#log').append('<li>' + message.value.type + ': ' + message.value.data.conferenceFriendlyName);
+          }
+        });
+      });
 
 
     });

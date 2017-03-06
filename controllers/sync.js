@@ -2,6 +2,36 @@
 const request = require('request-promise');
 const errors = require('request-promise/errors');
 
+module.exports.saveList = function (listName, data) {
+  console.log('writing to sync list ' + listName);
+  var formData = { Data: JSON.stringify(data)};
+  var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Lists/' + listName + '/Items/';
+  console.log(url);
+  // update list
+  request({ url: url, method: 'POST', formData: formData })
+    .then(response => {
+      console.log('got sync response a: ' + response);
+      console.log('got sync response: ' + JSON.parse(response).list_sid + " " + JSON.parse(response).revision);
+    })
+    .catch(err => {
+      // Assuming 404 (expected if listdoesn't exist)
+      // TODO check status code and use seperate err handlers for 404 and other cases
+      console.log('error updating sync list: ' + err);
+      url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Lists';
+      console.log(url);
+      //create new doc
+      formData = { UniqueName: listName, Data: JSON.stringify(data)};
+      request({ url: url, method: 'POST', formData: formData })
+        .then(response => {
+          console.log('got sync response b: ' + response);
+          console.log('got sync response: ' + JSON.parse(response).list_sid + " " + JSON.parse(response).revision);
+        })
+        .catch(err => {
+          console.log('error creating sync list: ' + err);
+        });
+    });
+};
+
 
 module.exports.saveMap = function (mapName, key, data) {
   console.log('writing to sync map ' + mapName + ' key: ' + key);// + ' data: ' + data);

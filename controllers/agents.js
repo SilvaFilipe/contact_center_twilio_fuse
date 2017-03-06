@@ -3,6 +3,7 @@
 const async 	= require('async')
 const twilio = require('twilio')
 const uuidV1 = require('uuid/v1');
+const sync = require('../controllers/sync.js');
 const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN)
@@ -209,7 +210,7 @@ module.exports.outboundCall = function (req, res) {
               console.log ('found user ' + thisUser._id);
               var confName = 'ex_' + req.query.phone + '_' + thisUser._id;
               // insert into db
-              var dbFields = { callSid: uuidV1(), callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'outbound_extension'};
+              var dbFields = { callSid: uuidV1(), callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
               var newCall = new Call( Object.assign(dbFields) );
               newCall.save(function (err) {
                 if(err){
@@ -217,8 +218,11 @@ module.exports.outboundCall = function (req, res) {
                   res.setHeader('Cache-Control', 'public, max-age=0')
                   res.send("ERROR")
                 } else {
+                  console.log('saved new extension call ' + newCall.callSid);
                   newCall.saveSync();
                   // create sync item in userMessages
+                  var mData = {type: 'inboundCall', data: {callSid: newCall.callSid, conferenceFriendlyName: confName, callerName: newCall.callerName}};
+                  sync.saveList ('m' + userToDial._id, mData);
                   res.setHeader('Cache-Control', 'public, max-age=0')
                   res.send({call: newCall})
                 }
