@@ -197,7 +197,7 @@ module.exports.outboundCall = function (req, res) {
       if (err) {
         console.log ('error finding user by extension: ' + err);
         res.setHeader('Cache-Control', 'public, max-age=0')
-        res.send("ERROR")
+        return res.send("ERROR")
       } else {
         if (userToDial != null) {
           console.log('userToDial: ' + userToDial._id);
@@ -212,6 +212,10 @@ module.exports.outboundCall = function (req, res) {
               // insert into db
               var dbFields = { callSid: uuidV1(), callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
               var newCall = new Call( Object.assign(dbFields) );
+
+              newCall.addUserId(req.query.user_id);
+              newCall.addUserId(userToDial._id);
+
               newCall.save(function (err) {
                 if(err){
                   console.log(err);
@@ -256,6 +260,7 @@ module.exports.outboundCall = function (req, res) {
         // insert into db
         var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
         var newCall = new Call( Object.assign(dbFields) );
+        newCall.addUserId(req.query.user_id);
         newCall.save(function (err) {
           if(err){
             console.log(err);

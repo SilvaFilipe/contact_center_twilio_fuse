@@ -4,7 +4,7 @@ const sync = require('../controllers/sync.js');
 var callSchema = mongoose.Schema({
   accountSid: String,
   duration: Number,
-  callSid: { type: String, index: { unique: true } },
+  callSid: {type: String, index: {unique: true}},
   callStatus: String,
   callbackSource: String,
   direction: String,
@@ -45,6 +45,7 @@ var callSchema = mongoose.Schema({
   recordingDuration: String,
   recordingChannels: String,
   user_id: String,
+  user_ids: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
   callerName: String
 });
 
@@ -56,6 +57,17 @@ callSchema.methods.saveSync = function () {
 callSchema.methods.createSync = function (cb) {
 //  sync.saveMap('calls', this.callSid, this);
   sync.createDoc('c' + this.callSid, this, cb);
+};
+
+/**
+ * Add a non-duplicate user id to current call instance (doesn't save)
+ * @param userId
+ */
+callSchema.methods.addUserId = function (userId) {
+  var index = this.user_ids.findIndex(user_id => user_id.toString() == userId);
+  if (index == -1) {
+    this.user_ids.push(userId);
+  }
 };
 
 module.exports = mongoose.model('Call', callSchema);
