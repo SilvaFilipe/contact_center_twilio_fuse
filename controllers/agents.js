@@ -1,12 +1,13 @@
-'use strict'
+'use strict';
 
-const async 	= require('async')
-const twilio = require('twilio')
+const colors = require('colors');
+const async 	= require('async');
+const twilio = require('twilio');
 const uuidV1 = require('uuid/v1');
 const sync = require('../controllers/sync.js');
 const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN)
+  process.env.TWILIO_AUTH_TOKEN);
 
 /* client for Twilio TaskRouter */
 const taskrouterClient = new twilio.TaskRouterClient(
@@ -213,8 +214,9 @@ module.exports.outboundCall = function (req, res) {
               var dbFields = { callSid: uuidV1(), callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
               var newCall = new Call( Object.assign(dbFields) );
 
-              newCall.addUserId(req.query.user_id);
-              newCall.addUserId(userToDial._id);
+              console.log('using addUserIds'.underline.red);
+
+              newCall.addUserIds([req.query.user_id, userToDial._id]);
 
               newCall.save(function (err) {
                 if(err){
@@ -260,7 +262,9 @@ module.exports.outboundCall = function (req, res) {
         // insert into db
         var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
         var newCall = new Call( Object.assign(dbFields) );
-        newCall.addUserId(req.query.user_id);
+        console.log('using addUserIds'.underline.red);
+
+        newCall.addUserIds(req.query.user_id);
         newCall.save(function (err) {
           if(err){
             console.log(err);

@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 const sync = require('../controllers/sync.js');
+const lodash = require('lodash');
+
 
 var callSchema = mongoose.Schema({
   accountSid: String,
@@ -61,13 +63,18 @@ callSchema.methods.createSync = function (cb) {
 
 /**
  * Add a non-duplicate user id to current call instance (doesn't save)
- * @param userId
+ * @param userIds
  */
-callSchema.methods.addUserId = function (userId) {
-  var index = this.user_ids.findIndex(user_id => user_id.toString() == userId);
-  if (index == -1) {
-    this.user_ids.push(userId);
+callSchema.methods.addUserIds = function addUserIds(userIds) {
+  if(!Array.isArray(userIds)){
+    userIds = [userIds];
   }
+  userIds = lodash.difference(userIds, this.user_ids.map( user_id => user_id.toString() ));
+
+  if(userIds.length > 0){
+    this.user_ids.push(userIds);
+  }
+
 };
 
 module.exports = mongoose.model('Call', callSchema);
