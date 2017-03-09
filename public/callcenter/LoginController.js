@@ -7,7 +7,7 @@ loginController.controller('LoginController', function ($scope, $http) {
         $http.get('/api/users/me')
             .then(function (response) {
               console.log(response.data.user);
-              $scope.worker =  {friendlyName: 'w' + response.data.user._id};
+              $scope.worker =  {friendlyName: response.data.user.friendlyWorkerName};
               $scope.login();
             })
     }

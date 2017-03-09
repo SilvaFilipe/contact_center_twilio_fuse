@@ -90,7 +90,7 @@
               if (response.data.roles.indexOf('admin')) {
                   isAdmin = true;
               }
-              var worker =  {friendlyName: 'w' + response.data.user._id};
+              var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
               $http.post('/api/agents/login', { worker: worker, endpoint: endpoint })

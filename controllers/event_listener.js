@@ -4,6 +4,7 @@ const url = require('url');
 const request = require('request-promise');
 const Task = require('../models/task.model');
 const Call = require('../models/call.model');
+const User = require('../models/user.model');
 const sync = require('../controllers/sync.js');
 const twilio = require('twilio');
 const client = new twilio(
@@ -283,7 +284,7 @@ module.exports.conference_events = function (req, res) {
     }
 
     if (statusCallbackEvent == 'conference-start'){
-
+      console.log('conference-start')
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
             if (task) {
                 taskrouterClient.workspace.tasks(task.taskSid).reservations(friendlyName).update({
@@ -294,6 +295,41 @@ module.exports.conference_events = function (req, res) {
                     } else {
                         console.log('Accepted reservation ' + friendlyName + ': ' + reservation.reservation_status + ' ' + reservation.worker_name);
                         // TODO: update call with user_id
+                      console.log('todo')
+                      User.findByFriendlyName(reservation.worker_name, function (err, user) {
+                        if (err){
+                          console.log(err);
+                        }
+                        console.log('user?', user);
+                          if (callSid){
+                            //Conference start and end events have no callSid
+                            Call.findOne({'callSid': callSid}, function (err, call) {
+                              if (call == null){
+                                console.log ('Could not find call to update conference: ' + callSid);
+                              } else {
+                                console.log ('updating call: ' + callSid);
+
+                                if(user){
+                                  console.log('adding user to call and saving');
+                                  call.addUserIds(user._id);
+                                  call.saveSync();
+                                }
+
+
+                                Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
+                                  if(err) {
+                                    console.log("Something wrong when updating call: " + err);
+                                  } else {
+                                    console.log('updated with conference info ' + call2.callSid);
+                                    call2.saveSync();
+                                  }
+                                });
+                              }
+                            });
+                          }
+
+                      })
+
                     }
                 });
 
@@ -304,7 +340,7 @@ module.exports.conference_events = function (req, res) {
 
     }
 
-    if (callSid){
+    if (callSid && statusCallbackEvent != 'conference-start'){
       //Conference start and end events have no callSid
       Call.findOne({'callSid': callSid}, function (err, call) {
         if (call == null){
@@ -326,7 +362,7 @@ module.exports.conference_events = function (req, res) {
     res.setHeader('Content-Type', 'application/xml')
     res.setHeader('Cache-Control', 'public, max-age=0')
     res.send("<Response/>")
-}
+};
 
 module.exports.workspace_events = function (req, res) {
 

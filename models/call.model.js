@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 const sync = require('../controllers/sync.js');
 const lodash = require('lodash');
 
-
 var callSchema = mongoose.Schema({
   accountSid: String,
   duration: Number,

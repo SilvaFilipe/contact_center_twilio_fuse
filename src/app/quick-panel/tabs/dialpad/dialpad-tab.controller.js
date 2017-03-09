@@ -11,7 +11,7 @@
     {
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-      var workerName =  'w' + currentUser._id;
+      var workerName =  currentUser.friendlyWorkerName;
 
       $scope.status = null;
       $scope.isActive = false;

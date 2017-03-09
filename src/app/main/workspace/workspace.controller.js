@@ -122,7 +122,7 @@
           //In browser-based apps, every tab is like its own unique device
           //synchronizing state -- so we'll use a random UUID to identify
           //this tab.
-          $http.get('/api/sync/token?identity=' + 'w' + $scope.user._id + '&device=' + getDeviceId())
+          $http.get('/api/sync/token?identity=' + $scope.user.friendlyWorkerName + '&device=' + getDeviceId())
             .then(function (res) {
               $log.log(res);
               $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
