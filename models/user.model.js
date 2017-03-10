@@ -77,6 +77,10 @@ userSchema.methods.friendlyWorkerName = function () {
   return  'w' + this._id;
 };
 
+userSchema.virtual('fullName').get(function () {
+  return this.firstName + " " + this.lastName
+});
+
 userSchema.methods.setExtension = function (extNumber) {
   var user = this;
   if ( extNumber == null) {

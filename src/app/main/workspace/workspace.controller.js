@@ -34,44 +34,44 @@
       this.type = callParams.type;
       this.duration = callParams.duration;
       this.callSid = callParams.callSid;
-      this.onhold = callParams.isHold;
-      this.recording = callParams.isRecording;
-      this.muted = callParams.isMuted;
+      this.onhold = callParams.onhold;
+      this.recording = callParams.recording;
+      this.muted = callParams.muted;
       this.taskSid = callParams.taskSid;
       this.direction = callParams.direction;
-      this.createdAt = callParams.date;
+      this.createdAt = callParams.createdAt;
       this.callStatus = callParams.callStatus;
       this.conferenceName = callParams.conferenceName;
-      this.showOutgoingIcon = showOutgoingIcon;
-      this.showIngoingIcon = showIngoingIcon;
-      this.isCompleted = isCompleted;
-      this.isInGoingCall = isInGoingCall;
-      this.isOutGoingCall = isOutGoingCall;
+      if (typeof callParams.callerName != undefined) {
+        this.callerName = callParams.callerName;
+      }
     }
 
-    function showOutgoingIcon() {
+    Call.prototype.showOutgoingIcon = function() {
       return this.callStatus != 'completed' && this.type == 'outbound'
-    }
+    };
 
-    function showIngoingIcon() {
+    Call.prototype.showIngoingIcon = function() {
       return this.callStatus != 'completed' && this.type == 'inbound';
-    }
+    };
 
-    function isCompleted() {
+    Call.prototype.isCompleted = function() {
       return this.callStatus == 'completed';
-    }
+    };
 
-    function isInGoingCall() {
+    Call.prototype.isInGoingCall = function() {
       return this.type == 'inbound';
-    }
+    };
 
-    function isOutGoingCall() {
+    Call.prototype.isOutGoingCall = function() {
       return this.type == 'outbound';
-    }
+    };
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService, $window) {
       var vm = this;
+      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+      var workerName =  'w' + currentUser._id;
 
       var func = function () {
         UserService.usersWithStars()
@@ -106,6 +106,8 @@
       $scope.tasks;
       $scope.callTasks = [];
       $scope.currentCall = null;
+      $scope.extensionCallTask = null;
+      $scope.isOnExtension = false;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -125,6 +127,19 @@
               $log.log(res);
               $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
               $log.log('Sync initialized!');
+              $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
+                list.on("itemAdded", function(item) {
+                  console.log("List item added!", item);
+                  if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
+                    var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', duration: 0, callSid: item.value.data.callSid, callerName: item.value.data.callerName,
+                      onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: item.value.data.conferenceFriendlyName};
+                    $scope.extensionCallTask = new Call(callParams);
+                    $scope.stopWorkingCounter();
+                    $scope.startExtensionCounter();
+                  }
+
+                });
+              });
             });
         });
 
@@ -332,7 +347,7 @@
 
               $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
               var callParams = {fromNumber: reservation.task.attributes.from, type: 'inbound', duration: reservation.task.age, callSid: reservation.task.attributes.call_sid,
-                isHold: false, isRecording: false, isMuted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', date: new Date(), callStatus: 'active', conferenceName: reservation.sid};
+                onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active', conferenceName: reservation.sid};
               $scope.newInboundCall = new Call(callParams);
               $scope.callTasks.push($scope.newInboundCall);
               if ($scope.currentCall) {
@@ -364,6 +379,30 @@
             });
         }
       };
+
+      $scope.acceptInboundCall = function () {
+        $scope.isOnExtension = true;
+        $scope.currentCall = $scope.extensionCallTask;
+        $scope.callTasks.push($scope.currentCall);
+        if (Twilio.Device.activeConnection() == undefined) {
+          Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
+        }
+        $timeout(function () {
+          $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
+
+          // subscribe to updated events
+          $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
+            .then(function(doc) {
+              doc.on('updated', function(data) {
+                console.log(data);
+                $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+              }, function onError(response) {
+                console.log(response.data);
+              });
+            });
+        }, 2000);
+
+      }
 
 
       $scope.recordOn = function () {
@@ -452,6 +491,13 @@
             $scope.closeTab();
             return;
           }
+          if ($scope.currentCall.direction == 'extension') {
+            $scope.extensionCallTask = null;
+            $scope.isOnExtension = false;
+            $scope.stopExtensionCounter();
+            $scope.closeTab();
+            return;
+          }
           $scope.closeTab();
         }
 
@@ -484,12 +530,23 @@
         $log.log('call: ' + data.phoneNumber);
 
         var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid,
-          isHold: false, isRecording: false, isMuted: false, taskSid: null, direction: 'outbound', date: new Date(), callStatus: 'active', conferenceName: data.callSid};
+          onhold: false, recording: false, muted: false, taskSid: null, direction: 'outbound', createdAt: new Date(), callStatus: 'active', conferenceName: data.callSid};
         $scope.currentCall = new Call(callParams);
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();
 
+      });
+
+      $scope.$on('NewExtensionCall', function (event, data) {
+        $log.log('call: ' + data.phoneNumber);
+
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid,
+          onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: data.conferenceName};
+        $scope.currentCall = new Call(callParams);
+        $scope.callTasks.push($scope.currentCall);
+        $scope.stopWorkingCounter();
+        $scope.startWorkingCounter();
 
       });
 
@@ -593,6 +650,24 @@
         if (angular.isDefined($scope.reservationInterval)) {
           $interval.cancel($scope.reservationInterval);
           $scope.reservationInterval = undefined;
+        }
+
+      };
+
+      $scope.startExtensionCounter = function () {
+
+        $log.log('start working counter');
+        $scope.extensionInterval = $interval(function () {
+          $scope.extensionCallTask.duration++;
+        }, 1000);
+
+      };
+
+      $scope.stopExtensionCounter = function () {
+        $log.log('stop working counter');
+        if (angular.isDefined($scope.extensionInterval)) {
+          $interval.cancel($scope.extensionInterval);
+          $scope.extensionInterval = undefined;
         }
 
       };

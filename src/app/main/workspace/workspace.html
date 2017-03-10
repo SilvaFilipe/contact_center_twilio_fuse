@@ -18,11 +18,11 @@
 
     <div class="simple-table-container md-whiteframe-4dp">
       <div class="reservations">
-        <div style="text-align: center; padding: 30px; font-size: 28px" ng-hide="callTasks.length || reservation || task">
+        <div style="text-align: center; padding: 30px; font-size: 28px" ng-hide="callTasks.length || reservation || task || extensionCallTask != null">
           <h>Waiting for calls...</h>
         </div>
 
-        <div class="content" ng-show="callTasks.length || reservation || task">
+        <div class="content" ng-show="callTasks.length || reservation || task || extensionCallTask != null">
           <md-tabs md-dynamic-height>
             <md-tab data-ng-if="callTasks.length" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
@@ -88,6 +88,20 @@
               <div layout="row" layout-align="space-between center" style="padding: 10px">
                 <div class="timer" ng-class='{"invisible": !reservationCounter}'>created {{ reservationCounter | counter }} ago</div>
                 <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
+              </div>
+            </md-tab>
+            <md-tab data-ng-if="extensionCallTask != null && !isOnExtension" label="{{extensionCallTask.callerName}}">
+              <md-toolbar class="mt-10">
+                <div class="md-toolbar-tools">
+                  <div class="description">InboundCall from {{extensionCallTask.callerName}}</div>
+                </div>
+              </md-toolbar>
+              <div layout="row" layout-align="space-between center" style="padding: 10px">
+                <div class="timer" ng-class='{"invisible": !extensionCallTask.duration}'>created {{ extensionCallTask.duration | counter }} ago</div>
+                <div layout="row" layout-align="space-between center">
+                  <md-button class="md-raised md-accent" ng-click="acceptInboundCall()">Accept</md-button>
+                  <md-button class="md-raised md-primary" ng-click="declineInboundCall()">Decline</md-button>
+                </div>
               </div>
             </md-tab>
             <md-tab ng-if="task != null && !task.attributes.nameIsPhoneNumber"	 md-active="false" label="CHAT">

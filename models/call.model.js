@@ -72,7 +72,7 @@ callSchema.methods.addUserIds = function addUserIds(userIds) {
   userIds = lodash.difference(userIds, this.user_ids.map( user_id => user_id.toString() ));
 
   if(userIds.length > 0){
-    this.user_ids.push(userIds);
+    this.user_ids = userIds;
   }
 
 };

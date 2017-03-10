@@ -227,7 +227,7 @@ module.exports.outboundCall = function (req, res) {
                   console.log('saved new extension call ' + newCall.callSid);
                   newCall.saveSync();
                   // create sync item in userMessages
-                  var mData = {type: 'inboundCall', data: {callSid: newCall.callSid, conferenceFriendlyName: confName, callerName: newCall.callerName}};
+                  var mData = {type: 'inboundCall', data: {callSid: newCall.callSid, conferenceFriendlyName: confName, callerName: newCall.callerName, fromNumber: newCall.from}};
                   sync.saveList ('m' + userToDial._id, mData);
                   res.setHeader('Cache-Control', 'public, max-age=0')
                   res.send({call: newCall})
