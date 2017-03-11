@@ -83,12 +83,17 @@
                         <md-button>My Profile</md-button>
                     </md-menu-item>
 
-                    <md-menu-item class="md-indent" ui-sref="app.voiceMail">
-                        <md-icon md-font-icon="icon-email" class="icon"></md-icon>
-                        <md-button>Voicemail</md-button>
-                    </md-menu-item>
+                  <md-menu-item class="md-indent" ui-sref="app.voiceMail">
+                    <md-icon md-font-icon="icon-email" class="icon"></md-icon>
+                    <md-button>Voicemail</md-button>
+                  </md-menu-item>
 
-                    <md-menu-divider></md-menu-divider>
+                  <md-menu-item class="md-indent" ui-sref="app.voiceMail">
+                    <md-icon md-font-icon="icon-phone" class="icon"></md-icon>
+                    <md-button>{{vm.userExtension}}</md-button>
+                  </md-menu-item>
+
+                  <md-menu-divider></md-menu-divider>
 
                     <md-menu-item class="md-indent">
                         <md-icon md-font-icon="icon-logout" class="icon"></md-icon>

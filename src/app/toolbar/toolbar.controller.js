@@ -22,6 +22,7 @@
         vm.userName = vm.userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
           return letter.toUpperCase();
         });
+        vm.userExtension = currentUser.extension;
 
         vm.bodyEl = angular.element('body');
         vm.userStatusOptions = [
