@@ -1,4 +1,5 @@
 'use strict'
+const util = require('util')
 const url = require('url');
 const request = require('request-promise');
 const Task = require('../models/task.model');
@@ -15,14 +16,45 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 
 
+module.exports.transcription_events = function (req, res) {
+  console.log('logging transcription event');
+  //console.log(req.body);
+  //console.log(util.inspect(res, false, null))
+  var data = req.body;
+  var transcriptionText =req.body.media.transcripts.text;
+  console.log(transcriptionText);
+  var callSid = req.query.callSid;
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      console.log ('Could not find call to update transcription: ' + callSid);
+    } else {
+      console.log ('updating transcription: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText}}, {new: true}, function(err, call2){
+        if(err) {
+          console.log("Something wrong when updating call: " + err);
+        } else {
+          console.log('updated with transcription' + call2.callSid);
+          call2.saveSync();
+        }
+      });
+    }
+  });
+
+  res.status(200);
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+
+}
+
 module.exports.recording_events = function (req, res) {
   console.log('logging recording event');
-  var accountSid = req.body.AccountSid;
-  var callSid = req.body.CallSid;
-  var recordingSid = req.body.RecordingSid;
-  var recordingUrl = req.body.RecordingUrl;
-  var recordingDuration = req.body.RecordingDuration;
-  var recordingChannels = req.body.RecordingChannels;
+  var accountSid = req.query.AccountSid;
+  var callSid = req.query.CallSid;
+  var recordingSid = req.query.RecordingSid;
+  var recordingUrl = req.query.RecordingUrl;
+  var recordingDuration = req.query.RecordingDuration;
+  var recordingChannels = req.query.RecordingChannels;
   var updated_at = new Date();
   var dbFields = { accountSid: accountSid, callSid: callSid, updated_at: updated_at, recordingSid: recordingSid, recordingUrl: recordingUrl, recordingDuration: recordingDuration, recordingChannels: recordingChannels};
   console.log('recording event called: ' + callSid);
@@ -43,6 +75,28 @@ module.exports.recording_events = function (req, res) {
       });
     }
   });
+
+  // send for transcription
+
+
+  console.log ('recordingUrl: ' + recordingUrl);
+
+  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '",  "method" : "POST",  "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] } } "ingest":{ "channels":{ "left":{ "speaker":"agent" }, "right":{ "speaker":"caller" } } } }'
+  console.log(configuration);
+
+  request.post({
+    url:'https://apis.voicebase.com/v2-beta/media',
+    formData: { media:recordingUrl + ".wav", configuration: configuration},
+    headers: {
+      'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
+    }
+  }, function(err,httpResponse,body){
+    console.log('voicebase response');
+    console.log('err: '+ err);
+    //console.log(util.inspect(httpResponse, false, null))
+    console.log('body' + body);
+
+  })
 
   res.status(200);
   res.setHeader('Content-Type', 'application/xml')

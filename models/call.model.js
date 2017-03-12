@@ -48,7 +48,8 @@ var callSchema = mongoose.Schema({
   recordingChannels: String,
   user_id: String,
   user_ids: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
-  callerName: String
+  callerName: String,
+  transcription: String
 });
 
 callSchema.methods.saveSync = function () {

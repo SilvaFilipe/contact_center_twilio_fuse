@@ -23,7 +23,6 @@ module.exports.login = function (req, res) {
 
   /* all token we generate are valid for 1 hour */
   const lifetime = 3600
-
   taskrouterClient.workspace.workers.get({FriendlyName: friendlyName}, function (err, data) {
     if (err) {
       res.status(500).json(err)
@@ -157,7 +156,7 @@ module.exports.call = function (req, res) {
 
 module.exports.sendToCallSidConference = function (req, res) {
   var callSid = req.query.CallSid;
-  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
   res.setHeader('Content-Type', 'application/xml')
   res.setHeader('Cache-Control', 'public, max-age=0')
   res.send(twiml.toString())
