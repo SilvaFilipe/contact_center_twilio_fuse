@@ -163,11 +163,38 @@ module.exports.sendToCallSidConference = function (req, res) {
 }
 
 
+module.exports.toCallEnded = function (req, res) {
+
+  var caller_sid = req.query.caller_sid;
+  var twiml = '<Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/call-terminated.wav</Play><Pause length="60"/> <Redirect/></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+
+  client.calls(caller_sid).update({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+    method: "GET"
+  }, function(err, call) {
+    if (err){
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'ERROR' , null, 3))
+    } else {
+      console.log ("moved agent " + caller_sid + ' silence');
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'OK' , null, 3))
+    }
+  });
+
+}
+
+
+
 module.exports.agentToConference = function (req, res) {
 
   var roomName = req.query.roomName;
   var caller_sid = req.query.caller_sid;
-  var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + roomName + '</Conference></Dial></Response>';
+  var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + roomName + '</Conference></Dial></Response>';
   var escaped_twiml = require('querystring').escape(twiml);
 
   client.calls(caller_sid).update({
@@ -186,7 +213,6 @@ module.exports.agentToConference = function (req, res) {
       res.send(JSON.stringify( 'OK' , null, 3))
     }
   });
-
 }
 
 

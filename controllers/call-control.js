@@ -72,23 +72,51 @@ module.exports.recordOff = function (req, res) {
   });
 }
 
+module.exports.play_ringing = function (req, res) {
+  res.status(200);
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send('<?xml version="1.0" encoding="UTF-8"?> <Response><Play>/sounds/ring.wav</Play><Redirect method="POST"/></Response>');
+}
 
 module.exports.hangup = function (req, res) {
   var callSid = req.query.callSid;
 
-  client.calls(callSid).update({
-    status: "completed"
-  }, function (err, call) {
-    if (err) {
-      console.log('Could not end call: ' + callSid);
-      res.setHeader('Cache-Control', 'public, max-age=0')
-      res.send("ERROR")
-    } else {
-      console.log('Disconnected: ' + callSid);
-      res.setHeader('Cache-Control', 'public, max-age=0')
-      res.send("OK")
-    }
-  });
+  if (callSid.substring(0,2).toLowerCase()=='ca'){
+    // Twilio CallSid
+    client.calls(callSid).update({
+      status: "completed"
+    }, function (err, call) {
+      if (err) {
+        console.log('Could not end call: ' + callSid);
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send("ERROR")
+      } else {
+        console.log('Disconnected: ' + callSid);
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send("OK")
+      }
+    });
+  } else {
+    // Internal extension call
+    console.log("disconnecting internal call: " + callSid);
+    var dbFields = {callStatus: 'Completed'};
+    Call.findOneAndUpdate({'callSid': callSid}, {$set: dbFields}, {new: true}, function (err, call2) {
+      if (err) {
+        console.log("Something wrong when updating call: " + err);
+        console.log('Could not end call: ' + callSid);
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send("ERROR")
+      } else {
+        console.log('updated call(2) ' + call2.callSid);
+        call2.saveSync();
+        console.log('Disconnected: ' + callSid);
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send("OK")
+      }
+    });
+  }
+
 }
 
 module.exports.holdOn = function (req, res) {

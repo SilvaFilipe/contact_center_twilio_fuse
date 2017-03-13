@@ -44,6 +44,7 @@ module.exports = function(app){
     router.route('/agents/outboundCall').get(agents.outboundCall)
     router.route('/agents/sendToCallSidConference').get(agents.sendToCallSidConference)
     router.route('/agents/agentToConference').get(agents.agentToConference)
+    router.route('/agents/toCallEnded').get(agents.toCallEnded)
 
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/select-team').get(ivr.selectTeam)
@@ -61,6 +62,7 @@ module.exports = function(app){
     router.route('/callControl/recordOn').get(callController.recordOn)
     router.route('/callControl/recordOff').get(callController.recordOff)
     router.route('/callControl/playRecording').get(callController.playRecording)
+    router.route('/callControl/play_ringing').post(callController.play_ringing)
 
     router.route('/sync/write').get(sync.write)
     router.route('/sync/token').get(sync.token)
