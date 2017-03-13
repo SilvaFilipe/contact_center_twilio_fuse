@@ -12,9 +12,9 @@
                 ng-class="{'selected': $ctrl.isSelected(user)}">
 
     <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>
-    <p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>
+    <p class="text-truncate font-weight-600" ng-click="$ctrl.callUser(user)">{{user.firstName}} {{user.lastName}}</p>
     <p class="phone text-truncate hide show-gt-md" ng-click="$ctrl.callUser(user)">
-      {{user.phone}}
+      {{user.extension}}
     </p>
     <md-button class="md-icon-button" aria-label="Call" ng-click="$ctrl.callUser(user)">
       <md-icon md-font-icon="icon-phone"></md-icon>

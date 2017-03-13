@@ -8,7 +8,7 @@ angular.module('app.components')
   });
 
 /** @ngInject */
-function ContactsDirectoryController($log, UserService){
+function ContactsDirectoryController($log, $rootScope, UserService){
   var $ctrl = this;
 
   $ctrl.updateStarredUser = function (user, id) {
@@ -37,6 +37,7 @@ function ContactsDirectoryController($log, UserService){
   $ctrl.callUser = function (user) {
     $log.log('call inline number ' + user.phone);
     //$rootScope.$broadcast('CallPhoneNumber', {phoneNumber: user.phone});
+    $rootScope.$broadcast('CallPhoneNumber', { phoneNumber: user.extension });
   };
 
   $ctrl.orderStarredUser = function(user){
