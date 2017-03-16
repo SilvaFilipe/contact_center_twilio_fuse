@@ -77,11 +77,11 @@ UserSchema.methods.validPassword = function (password) {
 };
 
 
-userSchema.virtual('fullName').get(function () {
+UserSchema.virtual('fullName').get(function () {
   return this.firstName + " " + this.lastName
 });
 
-userSchema.methods.setExtension = function (extNumber) {
+UserSchema.methods.setExtension = function (extNumber) {
   var user = this;
   if ( extNumber == null) {
     //assign the next available number
