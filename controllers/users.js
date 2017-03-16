@@ -1,4 +1,6 @@
 const User = require('../models/user.model');
+const Call = require('../models/call.model');
+
 
 module.exports = {
     me: function (req, res) {
@@ -27,6 +29,13 @@ module.exports = {
     },
     get: function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
+            if(err) return res.send(err);
+
+            return res.json(user);
+        })
+    },
+    getCalls: function (req, res) {
+        User.findById(req.user._id, function (err, user) {
             if(err) return res.send(err);
 
             return res.json(user);

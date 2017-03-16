@@ -138,14 +138,14 @@ UserSchema.methods.syncWorker = function () {
         taskrouterClient.workspace.workers.create(newWorkerData)
             .then(function (newWorker) {
                 console.log('created worker: ' + JSON.stringify(newWorker, null, 4));
-                User.update({_id: user._id}, {
+                user.model('User').update({_id: user._id}, {
                     workerSid: newWorker.sid
                 }, function(err, affected, resp) {
-                    console.log(resp);
+                    console.log('updated user sid:'.green, newWorker.sid,resp);
                 })
             })
             .catch(function (err) {
-              console.log('worker creation error: ' + JSON.stringify(err, null, 4));
+              console.log('worker creation error: '.red + JSON.stringify(err, null, 4));
             })
 
     } else {
@@ -169,15 +169,18 @@ UserSchema.static('findByFriendlyName', function (name, callback) {
 
 UserSchema.pre('save', function(next) {
   //set friendlyWorkerName field dynamically if not found
+
+  const join_symbol = "_";
+
   if(!this.friendlyWorkerName){
     console.log('friendly name not found');
-      let friendlyNameCandidate = [this.firstName, this.lastName].join(" ");
+      let friendlyNameCandidate = [createCompliantString(this.firstName), createCompliantString(this.lastName)].join(join_symbol);
 
     this.constructor.findByFriendlyName(friendlyNameCandidate, (err, user) => {
       if (err) console.log('findByFriendlyName err, called with: '.error, friendlyNameCandidate);
 
       if (user) {
-        this.friendlyWorkerName = [friendlyNameCandidate, this.email].join(" ");
+        this.friendlyWorkerName = [friendlyNameCandidate, this.email].join(join_symbol);
       } else {
         this.friendlyWorkerName = friendlyNameCandidate
       }
@@ -186,6 +189,11 @@ UserSchema.pre('save', function(next) {
   }else{
     next();
   }
+
+  function createCompliantString(str){
+    return str.split(" ").join(join_symbol);
+  }
+
 });
 
 module.exports = mongoose.model('User', UserSchema);

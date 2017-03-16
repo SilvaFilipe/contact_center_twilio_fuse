@@ -88,6 +88,9 @@ module.exports = function(app){
         .put(users.update)
         .delete(users.delete);
 
+    router.route('/users/:user_id/calls')
+        .get(users.getCalls)
+
     router.route('/users/:user_id/star')
       .post(users.starUser);
 

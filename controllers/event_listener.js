@@ -408,7 +408,8 @@ module.exports.workspace_events = function (req, res) {
             if(err) console.log("Something wrong when updating task: " + err);
             if (task) {
                 console.log('updated task ' + task.taskSid + ': ' + eventType);
-            } else {
+            }
+            if (!task){
                 console.log('creating new task ' + taskSid);
                 var newTask= new Task(dbFields);
                 newTask.save(function (err) {
