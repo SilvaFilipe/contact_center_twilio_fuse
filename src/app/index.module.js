@@ -26,6 +26,7 @@
             'app.callcenterApplication',
 
             'app.services',
+            'app.filters',
 
             'app.directives',
             'app.components',

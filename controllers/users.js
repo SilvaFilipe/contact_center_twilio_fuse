@@ -35,10 +35,12 @@ module.exports = {
         })
     },
     getCalls: function (req, res) {
-        User.findById(req.user._id, function (err, user) {
+        Call.find({
+          user_ids: req.user._id
+        }).sort('-timestamp').exec(function (err, calls) {
             if(err) return res.send(err);
 
-            return res.json(user);
+            return res.json(calls);
         })
     },
     update: function (req, res) {

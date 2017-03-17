@@ -7,7 +7,7 @@
         .controller('LeftQuickPanelController', LeftQuickPanelController);
 
     /** @ngInject */
-    function LeftQuickPanelController(msApi)
+    function LeftQuickPanelController(CallService)
     {
         var vm = this;
 
@@ -20,6 +20,16 @@
         };
 
 
+        activate();
+
+
+        function activate(){
+          CallService.getOwnCalls()
+            .then(function(calls){
+              console.log(calls);
+              vm.calls = calls;
+            })
+        }
         // Methods
 
         //////////

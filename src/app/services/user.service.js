@@ -9,6 +9,11 @@
   function UserService($http, $resource, $q, authService) {
 
     var UserService = {
+
+      getCurrentUser: function getCurrentUser() {
+        return authService.loggedInUser || null;
+      },
+
       usersWithStars: function usersWithStars() {
 
         return UserService.$resource.query().$promise.then(function (users) {

@@ -5,9 +5,8 @@
                 <span>HISTORY</span>
             </md-tab-label>
             <md-tab-body>
-                <md-content class="today-tab scrollable" ms-scroll
-                            ng-include="'app/left-quick-panel/tabs/history/history-tab.html'"
-                            >
+                <md-content class="today-tab scrollable" ms-scroll>
+                  <history-call calls="vm.calls"></history-call>
                 </md-content>
             </md-tab-body>
         </md-tab>

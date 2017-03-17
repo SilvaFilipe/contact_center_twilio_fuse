@@ -2,7 +2,7 @@ const Call = require('../models/call.model');
 
 module.exports = {
     all: function (req, res) {
-        Call.find({req.body.query},function (err, users) {
+        Call.find({},function (err, users) {
             if(err) return res.send(err);
 
             return res.json(users);
