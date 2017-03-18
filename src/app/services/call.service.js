@@ -3,12 +3,12 @@
 (function () {
   'use strict';
 
-  angular.module('app.services').factory('CallService', CallService);
+  angular.module('app.services').factory('CustomCallService', CustomCallService);
 
   /** @ngInject */
-  function CallService($http, $resource, $q, UserService) {
+  function CustomCallService($http, $resource, $q, UserService) {
 
-    var CallService = {
+    var CustomCallService = {
       getOwnCalls: function getOwnCalls() {
 
         return $http({
@@ -21,6 +21,6 @@
       }
     };
 
-    return CallService;
+    return CustomCallService;
   }
 })();
