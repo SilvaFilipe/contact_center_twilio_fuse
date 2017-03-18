@@ -9,7 +9,7 @@
           <md-icon md-font-icon="icon-magnify" class="icon s18">
           </md-icon>
 
-          <input flex ng-model="vm.chatSearch" type="text" placeholder="Search">
+          <input flex ng-model="$ctrl.historySearch" type="text" placeholder="Search">
 
         </div>
       </div>
@@ -26,22 +26,17 @@
 
           <md-menu-content width="3">
             <md-menu-item>
-              <md-button>
+              <md-button ng-click="$ctrl.callFilterType = 'all'">
                 All
               </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-click="">
-                Missed
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button>
+              <md-button ng-click="$ctrl.callFilterType = 'received'">
                 Received
               </md-button>
             </md-menu-item>
             <md-menu-item>
-              <md-button ng-click="">
+              <md-button ng-click="$ctrl.callFilterType = 'placed'">
                 Placed
               </md-button>
             </md-menu-item>
@@ -54,17 +49,17 @@
 
   <md-content>
     <md-list>
-      <md-list-item class="md-3-line" ng-repeat="call in $ctrl.calls" ng-if="$ctrl.calls.length > 0">
+      <md-list-item class="md-3-line" ng-repeat="call in $ctrl.calls | filter:$ctrl.historySearch | filter:$ctrl.filterCalls() " ng-if="$ctrl.calls.length > 0">
           <div class="md-list-item-text">
             <h3>{{$ctrl.getNumberByDirection(call)}}</h3>
             <p style="margin-top:14px;">{{call.direction}}</p>
           </div>
           <div class="md-list-item-text">
             <div>
-              <span>{{call.timestamp | tsToEpoch | date : 'MM/dd/yyyy h:mm a'}}</span>
+              <span>{{call.timestamp | tsToEpoch | date : 'MM/dd/yyyy h:mm a' }}</span>
             </div>
             <div>
-              <span>Duration: {{ call.duration }}</span>&nbsp;
+              <span>Duration: {{ call.duration | secsToDuration }}</span>
               <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
             </div>
           </div>

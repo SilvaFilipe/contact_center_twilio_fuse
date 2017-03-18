@@ -11,13 +11,33 @@ angular.module('app.components')
 function HistoryController() {
   var $ctrl = this;
 
+  $ctrl.$onInit = function () {
+    console.log('$ctrl.callFilterType')
+    $ctrl.callFilterType = 'all';
+  };
+
   $ctrl.getNumberByDirection = function (call) {
     if (call.direction === 'inbound-api') {
       return call.from;
-    } else if(call.direction === 'outbound-api') {
+    } else if (call.direction === 'outbound-api') {
       return call.to;
-    } else{
+    } else {
       return call.to + ' - ' + call.from;
+    }
+  };
+
+  $ctrl.filterCalls = function () {
+
+    return function (call) {
+      if ($ctrl.callFilterType == 'all') {
+        return true;
+      }
+
+      if ($ctrl.callFilterType == 'received') {
+        return call.direction == 'inbound-api';
+      } else if ($ctrl.callFilterType == 'placed') {
+        return call.direction != 'inbound-api';
+      }
     }
   }
 }
