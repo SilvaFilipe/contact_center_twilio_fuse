@@ -346,16 +346,16 @@
               console.log("reservation accepted");
               console.log(reservation);
 
-              $http.post('/api/taskrouter/agentToConference?task_sid=' + reservation.task.sid + '&agent_uri=' + $scope.worker.attributes.contact_uri + '&caller_number=' + reservation.task.attributes.from + '&reservation_sid=' + reservation.sid);
               var callParams = {fromNumber: reservation.task.attributes.from, type: 'inbound', duration: reservation.task.age, callSid: reservation.task.attributes.call_sid,
                 onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active', conferenceName: reservation.sid};
-              $scope.newInboundCall = new Call(callParams);
-              $scope.callTasks.push($scope.newInboundCall);
-              if ($scope.currentCall) {
-                $scope.currentCall = $scope.newInboundCall;
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
+              $scope.currentCall = new Call(callParams);
+              $scope.callTasks.push($scope.currentCall);
+              if (Twilio.Device.activeConnection() == undefined) {
+                Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
               }
-              $scope.currentCall = $scope.newInboundCall;
+              $timeout(function () {
+                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
+              }, 2000);
               $scope.stopWorkingCounter();
               $scope.startWorkingCounter();
 
@@ -484,11 +484,10 @@
         });
       };
 
-      $scope.complete = function () {
-        $scope.stopWorkingCounter();
-
-        if ($scope.currentCall) {
+      $scope.complete = function (isChat) {
+        if ($scope.currentCall && !isChat) {
           if ($scope.currentCall.type == 'outbound') {
+            $scope.stopWorkingCounter();
             $scope.closeTab();
             return;
           }
@@ -500,6 +499,7 @@
             return;
           }
           $scope.closeTab();
+
         }
 
         if ($scope.task.attributes.channel == 'chat') {
