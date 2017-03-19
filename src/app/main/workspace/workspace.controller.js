@@ -60,11 +60,15 @@
     };
 
     Call.prototype.isInGoingCall = function() {
-      return this.type == 'inbound';
+      return this.type == 'inbound' && this.direction != 'extension';
     };
 
     Call.prototype.isOutGoingCall = function() {
       return this.type == 'outbound';
+    };
+
+    Call.prototype.isExtensionCall = function() {
+      return this.direction == 'extension';
     };
 
     /** @ngInject */
@@ -385,7 +389,9 @@
             .then(function(doc) {
               doc.on('updated', function(data) {
                 console.log(data);
-                $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                if (data.callEvents.length > 0) {
+                  $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                }
               }, function onError(response) {
                 console.log(response.data);
               });

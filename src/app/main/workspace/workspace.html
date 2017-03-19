@@ -42,7 +42,7 @@
                     <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
                       REC
                     </md-button>
-                    <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="task.recording">
+                    <md-button class="md-fab md-warn rec" aria-label="Record" ng-click="recordOff()" ng-show="task.recording && !task.isExtensionCall()">
                       REC
                     </md-button>
 
@@ -52,10 +52,10 @@
                     <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="task.muted">
                     </md-button>
 
-                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!task.onhold">
+                    <md-button class="md-fab md-primary" aria-label="holdOn" ng-click="holdOn()" ng-show="!task.onhold && !task.isExtensionCall()">
                       <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
                     </md-button>
-                    <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="task.onhold">
+                    <md-button class="md-fab md-warn" aria-label="holdOn" ng-click="holdOff()" ng-show="task.onhold && !task.isExtensionCall()">
                       <md-icon md-font-icon="icon-phone-paused" aria-label="icon-phone-paused"></md-icon>
                     </md-button>
 
@@ -72,7 +72,7 @@
                   <div class="mt-30" layout="row" layout-align="center center" ng-show="task.isCompleted()">
                     <md-button class="md-warn md-raised md-hue-2" ng-click="complete(false)">
                       <span ng-show="task.isInGoingCall()">Complete task</span>
-                      <span ng-show="task.isOutGoingCall()">Close</span>
+                      <span ng-show="task.isOutGoingCall() || task.isExtensionCall()">Close</span>
                     </md-button>
                   </div>
                 </md-content>

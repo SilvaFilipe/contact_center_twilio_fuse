@@ -104,7 +104,7 @@
 
       });
 
-      $scope.hangup = function () {
+      $scope.hangup = function (event) {
         addAnimationToButton(event.target);
         $(".callbtn").removeClass("addCall");
         $(".callbtn").addClass("newCall");
@@ -120,7 +120,7 @@
         Twilio.Device.disconnectAll();
       });
 
-      $scope.call = function (phoneNumber) {
+      $scope.call = function (phoneNumber, event) {
         addAnimationToButton(event.target);
         if (!$scope.isAcitve) {
           $(".callbtn").removeClass("newCall");
@@ -131,7 +131,7 @@
         $scope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber});
       };
 
-      $scope.addDigit = function(digit){
+      $scope.addDigit = function(digit, event){
 
         vm.phoneNumber = vm.phoneNumber + digit;
 
@@ -152,7 +152,6 @@
         vm.phoneNumber = data.phoneNumber;
 
         CallService.getActiveConnSid(function(ActiveConnSid) {
-          console.log(ActiveConnSid);
           $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
             if(response.data !== "ERROR"){
               if (response.data.call.direction == 'extension') {
@@ -160,7 +159,9 @@
                   .then(function(doc) {
                     doc.on('updated', function(data) {
                       console.log(data);
-                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                      if (data.callEvents.length > 0) {
+                        $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                      }
                     }, function onError(response) {
                       console.log(response.data);
                     });
