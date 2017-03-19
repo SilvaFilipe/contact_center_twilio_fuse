@@ -168,7 +168,7 @@ module.exports.log_twiml_event = function (req) {
 module.exports.call_events = function (req, res) {
   console.log('Call event requested');
   var callStatus = req.body.CallStatus;
-  var duration = req.body.Duration || 0;
+  var duration = req.body.CallDuration || 0;
   var from = req.body.From;
   var direction = req.body.Direction;
   var timestamp = req.body.Timestamp;

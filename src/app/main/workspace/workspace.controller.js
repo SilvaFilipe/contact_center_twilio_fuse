@@ -127,6 +127,7 @@
               $log.log(res);
               $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
               $log.log('Sync initialized!');
+              $rootScope.$broadcast('syncClientReady');
               $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
                 list.on("itemAdded", function(item) {
                   console.log("List item added!", item);

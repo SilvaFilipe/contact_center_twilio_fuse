@@ -6,7 +6,7 @@
     .controller('QuickPanelController', QuickPanelController);
 
   /** @ngInject */
-  function QuickPanelController(msApi, UserService) {
+  function QuickPanelController(msApi, UserService, $rootScope, $scope, $log) {
     var vm = this;
 
     // Data
@@ -25,7 +25,25 @@
         .then(function (users) {
           vm.users = users;
         });
+
+
+
     }
+
+
+
+      $scope.$on('syncClientReady', function (event, data) {
+        $rootScope.syncClient.map('taskQueues' )
+          .then(function(map) {
+            console.log(map);
+            map.on('itemUpdated', function(data) {
+              $log.log('UPDATED taskQueues');
+              console.log(data);
+            }, function onError(response) {
+              console.log(response.data);
+            });
+          });
+      });
 
     msApi.request('quickPanel.directory@get', {},
       // Success
