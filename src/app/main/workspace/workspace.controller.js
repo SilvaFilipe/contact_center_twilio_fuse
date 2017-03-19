@@ -70,9 +70,6 @@
     /** @ngInject */
     function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService, $window) {
       var vm = this;
-      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-      var workerName =  'w' + currentUser._id;
-
       var func = function () {
         UserService.usersWithStars()
           .then(function (users) {
@@ -350,15 +347,11 @@
                 onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active', conferenceName: reservation.sid};
               $scope.currentCall = new Call(callParams);
               $scope.callTasks.push($scope.currentCall);
-              if (Twilio.Device.activeConnection() == undefined) {
-                Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
-              }
-              $timeout(function () {
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
-              }, 2000);
-              $scope.stopWorkingCounter();
-              $scope.startWorkingCounter();
-
+              CallService.getActiveConnSid(function(ActiveConnSid) {
+                  $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+                  $scope.stopWorkingCounter();
+                  $scope.startWorkingCounter();
+                });
             }
           );
 
@@ -385,12 +378,8 @@
         $scope.isOnExtension = true;
         $scope.currentCall = $scope.extensionCallTask;
         $scope.callTasks.push($scope.currentCall);
-        if (Twilio.Device.activeConnection() == undefined) {
-          Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
-        }
-        $timeout(function () {
-          $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
-
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
           // subscribe to updated events
           $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
             .then(function(doc) {
@@ -401,7 +390,7 @@
                 console.log(response.data);
               });
             });
-        }, 2000);
+        });
 
       }
 
@@ -568,10 +557,11 @@
           return;
         }
         $scope.currentCall = selectedTask;
-        $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
-        $scope.stopWorkingCounter();
-        $scope.startWorkingCounter();
-
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+          $scope.stopWorkingCounter();
+          $scope.startWorkingCounter();
+        });
       };
 
       $scope.$on('callStatusChanged', function (event, data) {
@@ -612,8 +602,10 @@
           $rootScope.$broadcast('DisconnectSoftware');
         }
         if ($scope.currentCall) {
-          $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + $scope.currentCall.conferenceName);
-          $scope.startWorkingCounter();
+          CallService.getActiveConnSid(function(ActiveConnSid) {
+            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+            $scope.startWorkingCounter();
+          });
         }
 
       };

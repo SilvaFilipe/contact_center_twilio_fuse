@@ -7,7 +7,7 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window)
+    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window, CallService)
     {
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
@@ -150,12 +150,9 @@
 
         $log.log('call: ' + data.phoneNumber);
         vm.phoneNumber = data.phoneNumber;
-        if (Twilio.Device.activeConnection() == undefined) {
-          Twilio.Device.connect({'phone': data.phoneNumber, 'workerName': workerName, 'user_id': currentUser._id });
-        }
 
-        $timeout(function () {
-
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          console.log(ActiveConnSid);
           $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
             if(response.data !== "ERROR"){
               if (response.data.call.direction == 'extension') {
@@ -168,7 +165,7 @@
                       console.log(response.data);
                     });
                   });
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName);
+                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.conferenceFriendlyName);
                 $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
               }
               else {
@@ -183,7 +180,7 @@
                     });
                   });
 
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
+                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.sid);
                 $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
 
               }
@@ -193,7 +190,8 @@
             }
             vm.phoneNumber = '';
           });
-        }, 2000);
+
+        });
 
       });
 
