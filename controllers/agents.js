@@ -117,8 +117,9 @@ module.exports.call = function (req, res) {
   var twiml = new twilio.TwimlResponse()
 
   twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
-    node.conference(req.query.workerName, {waitUrl: "/sounds/ringing.xml", waitMethod: "GET"})
+    node.conference(req.query.workerName, {waitUrl: process.env.PUBLIC_HOST  + "/api/callControl/play_ringing", waitMethod: "POST"})
   });
+
   /*
 
    var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
