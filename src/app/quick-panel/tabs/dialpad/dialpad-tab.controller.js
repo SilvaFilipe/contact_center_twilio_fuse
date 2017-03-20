@@ -189,8 +189,10 @@
 
         $log.log('call: ' + data.phoneNumber);
         vm.phoneNumber = data.phoneNumber;
-
-        CallService.getActiveConnSid(function(ActiveConnSid) {
+        if (Twilio.Device.activeConnection() == undefined) {
+          Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
+        }
+        $timeout(function () {
           $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
             if(response.data !== "ERROR"){
               if (response.data.call.direction == 'extension') {
@@ -202,9 +204,10 @@
                     }, function onError(response) {
                       console.log(response.data);
                     });
-                });
-                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.conferenceFriendlyName);
+                  });
+                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName);
                 $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
+
               }
               else {
                 // subscribe to updated events
@@ -217,8 +220,7 @@
                       console.log(response.data);
                     });
                   });
-
-                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.sid);
+                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
                 $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
 
               }
@@ -229,7 +231,9 @@
             vm.phoneNumber = '';
           });
 
-        });
+        }, 2000);
+
+
 
       });
 

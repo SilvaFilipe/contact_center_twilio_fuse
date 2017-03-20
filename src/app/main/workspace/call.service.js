@@ -54,14 +54,14 @@
       );
     };
 
-    CallService.getActiveConnSid = function (cb) {
+    CallService.getActiveConnSid = function (callback) {
       if (Twilio.Device.activeConnection() == undefined) {
         Twilio.Device.connect({'workerName': workerName, 'user_id': currentUser._id });
         Twilio.Device.connect(function (conn) {
-          cb(Twilio.Device.activeConnection().parameters.CallSid);
+           callback(Twilio.Device.activeConnection().parameters.CallSid);
         });
       } else {
-         cb(Twilio.Device.activeConnection().parameters.CallSid);
+        callback(Twilio.Device.activeConnection().parameters.CallSid);
       }
 
     };

@@ -288,6 +288,7 @@ module.exports.outboundCall = function (req, res) {
         var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
         var newCall = new Call( Object.assign(dbFields) );
         console.log('using addUserIds'.underline.red);
+        console.log('call to: ', req.query.phone);
 
         newCall.addUserIds(req.query.user_id);
         newCall.save(function (err) {
@@ -301,9 +302,12 @@ module.exports.outboundCall = function (req, res) {
                 } else {
                   console.log('updated call(2) ' + call2.callSid);
                   call2.addUserIds(req.query.user_id);
-                  call2.saveSync();
-                  res.setHeader('Cache-Control', 'public, max-age=0');
-                  res.send({call: call2})
+                  call2.createSync(function (response) {
+                    if (response != 'err') {
+                      res.setHeader('Cache-Control', 'public, max-age=0');
+                      res.send({call: call, document: JSON.parse(response).unique_name})
+                    }
+                  });
                 }
               });
 
