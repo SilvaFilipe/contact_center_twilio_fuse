@@ -19,7 +19,7 @@
       $scope.toggleRight = function() {
         $mdSidenav('right').toggle();
       };
-     $scope.connection;
+      $scope.connection;
 
 
       $rootScope.$on('InitializePhone', function(event, data) {
@@ -104,21 +104,20 @@
 
       });
 
+      $scope.$on('DisconnectSoftware', function () {
+        console.log('disconnect the softphone');
+        Twilio.Device.disconnectAll();
+      });
+
       $scope.hangup = function (event) {
         addAnimationToButton(event.target);
         $(".callbtn").removeClass("addCall");
         $(".callbtn").addClass("newCall");
         $timeout(function(){
-          Twilio.Device.disconnectAll();
           $rootScope.$broadcast('endAllOutCalls');
         });
 
       };
-
-      $scope.$on('DisconnectSoftware', function () {
-        console.log('disconnect the softphone');
-        Twilio.Device.disconnectAll();
-      });
 
       $scope.call = function (phoneNumber, event) {
         addAnimationToButton(event.target);
@@ -144,57 +143,11 @@
 
       };
 
-
-
-      $scope.$on('CallPhoneNumber', function(event, data) {
-
-        $log.log('call: ' + data.phoneNumber);
-        vm.phoneNumber = data.phoneNumber;
-
-        CallService.getActiveConnSid(function(ActiveConnSid) {
-          $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
-            if(response.data !== "ERROR"){
-              if (response.data.call.direction == 'extension') {
-                $rootScope.syncClient.document('c'+ response.data.call.callSid)
-                  .then(function(doc) {
-                    doc.on('updated', function(data) {
-                      console.log(data);
-                      if (data.callEvents.length > 0) {
-                        $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
-                      }
-                    }, function onError(response) {
-                      console.log(response.data);
-                    });
-                  });
-                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.conferenceFriendlyName);
-                $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
-              }
-              else {
-                // subscribe to updated events
-                $rootScope.syncClient.document(response.data.document)
-                  .then(function(doc) {
-                    doc.on('updated', function(data) {
-                      console.log(data);
-                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
-                    }, function onError(response) {
-                      console.log(response.data);
-                    });
-                  });
-
-                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.sid);
-                $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
-
-              }
-              $scope.state = 'isActive';
-              $mdSidenav('quick-panel').toggle();
-
-            }
-            vm.phoneNumber = '';
-          });
-
-        });
-
-      });
+      $scope.goBack = function (event) {
+        addAnimationToButton(event.target);
+        vm.phoneNumber = vm.phoneNumber.substring(0, vm.phoneNumber.length - 1);
+        $('.phoneNumberTxt').focus();
+      };
 
       var addAnimationToButton = function(thisButton){
         //add animation
@@ -204,15 +157,6 @@
           $(_this).addClass('clicked');
         },1);
       };
-
-      $scope.goBack = function (event) {
-        addAnimationToButton(event.target);
-        vm.phoneNumber = vm.phoneNumber.substring(0, vm.phoneNumber.length - 1);
-        $('.phoneNumberTxt').focus();
-      };
-
-
-
 
       function bindVolumeIndicators(connection) {
         connection.volume(function(inputVolume, outputVolume) {
@@ -240,6 +184,54 @@
           outputVolumeBar.style.background = outputColor;
         });
       }
+
+      $scope.$on('CallPhoneNumber', function(event, data) {
+
+        $log.log('call: ' + data.phoneNumber);
+        vm.phoneNumber = data.phoneNumber;
+
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
+            if(response.data !== "ERROR"){
+              if (response.data.call.direction == 'extension') {
+                $rootScope.syncClient.document('c'+ response.data.call.callSid)
+                  .then(function(doc) {
+                    doc.on('updated', function(data) {
+                      $log.log(data);
+                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+                    }, function onError(response) {
+                      console.log(response.data);
+                    });
+                });
+                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.conferenceFriendlyName);
+                $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
+              }
+              else {
+                // subscribe to updated events
+                $rootScope.syncClient.document(response.data.document)
+                  .then(function(doc) {
+                    doc.on('updated', function(data) {
+                      $log.log(data);
+                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                    }, function onError(response) {
+                      console.log(response.data);
+                    });
+                  });
+
+                $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + response.data.call.sid);
+                $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
+
+              }
+              $scope.state = 'isActive';
+              $mdSidenav('quick-panel').toggle();
+
+            }
+            vm.phoneNumber = '';
+          });
+
+        });
+
+      });
 
     }
 

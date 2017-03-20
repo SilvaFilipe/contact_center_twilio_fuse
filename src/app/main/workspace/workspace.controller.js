@@ -104,7 +104,6 @@
       /* contains task data pushed by the TaskRouter JavaScript SDK */
       $scope.reservation = null;
       $scope.task = null;
-      $scope.tasks;
       $scope.callTasks = [];
       $scope.currentCall = null;
       $scope.extensionCallTask = null;
@@ -228,7 +227,6 @@
           $scope.task.completed = false;
           $scope.reservation = null;
           $scope.stopReservationCounter();
-          console.log(reservation.task.attributes);
           var caller_sid = reservation.task.attributes.call_sid;
           var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
@@ -237,14 +235,12 @@
               $rootScope.syncClient.document('c' + caller_sid )
                 .then(function(doc) {
                   doc.on('updated', function(data) {
-                    console.log(data);
+                    $log.log(data);
                     $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
                   }, function onError(response) {
                     console.log(response.data);
                   });
                 });
-          //$http.post('/api/taskrouter/moveToConference?task_sid=' + reservation.task.sid + '&caller_sid=' + caller_sid +'&agent_sid=' + agent_sid);
-          //$scope.currentCall.attributes = reservation.task.attributes;
 
         });
 
@@ -333,9 +329,6 @@
         if (reservation.task.attributes.channel == 'phone' && reservation.task.attributes.type == 'inbound_call') {
 
           $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
-          //reservation.dequeue($scope.configuration.twilio.callerId);
-          //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
-          //reservation.conference($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
 
           reservation.accept(
             function (error, reservation) {
@@ -344,9 +337,7 @@
                 console.log(error.message);
                 return;
               }
-              console.log("reservation accepted");
-              console.log(reservation);
-
+              $log.log("reservation accepted");
               var callParams = {fromNumber: reservation.task.attributes.from, type: 'inbound', duration: reservation.task.age, callSid: reservation.task.attributes.call_sid,
                 onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active', conferenceName: reservation.sid};
               $scope.currentCall = new Call(callParams);
@@ -355,7 +346,7 @@
                   $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
                   $scope.stopWorkingCounter();
                   $scope.startWorkingCounter();
-                });
+              });
             }
           );
 
@@ -388,10 +379,9 @@
           $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
             .then(function(doc) {
               doc.on('updated', function(data) {
-                console.log(data);
-                if (data.callEvents.length > 0) {
-                  $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
-                }
+                $log.log(data);
+                $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+
               }, function onError(response) {
                 console.log(response.data);
               });
@@ -548,13 +538,24 @@
 
       $scope.$on('endAllOutCalls', function (event) {
         $log.log('end all outbounding calls');
-        $scope.stopWorkingCounter();
+        if ($scope.currentCall && $scope.currentCall.isOutGoingCall()) {
+          $scope.stopWorkingCounter();
+          $scope.currentCall = null;
+
+        }
         $scope.callTasks = $scope.callTasks.filter(function (callItem) {
           return callItem.type != 'outbound';
         });
 
         if ($scope.callTasks.length == 0) {
-          $scope.currentCall = null;
+          $rootScope.$broadcast('DisconnectSoftware');
+        }
+        else if ($scope.currentCall == null) {
+          $scope.currentCall = $scope.callTasks[0];
+          CallService.getActiveConnSid(function(ActiveConnSid) {
+            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+            $scope.startWorkingCounter();
+          });
         }
       });
 
@@ -574,9 +575,14 @@
 
         $scope.callTasks.filter(function (callItem) {
           if (callItem.callSid == data.callSid) {
-            callItem.callStatus = (typeof data.callEvent.callStatus != 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
-            if (callItem.callStatus == 'participant-leave') {
+            if (callItem.isExtensionCall() && data.callEvent.callStatus == 'Completed') {
               callItem.callStatus = 'completed';
+            }
+            else {
+              callItem.callStatus = (typeof data.callEvent.callStatus != 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
+              if (callItem.callStatus == 'participant-leave') {
+                callItem.callStatus = 'completed';
+              }
             }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
           }
