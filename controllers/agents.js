@@ -293,6 +293,21 @@ module.exports.outboundCall = function (req, res) {
         newCall.save(function (err) {
           if(err){
             console.log(err);
+            if (err.code && err.code === 11000) {
+              console.log("unique constraint error on call");
+              Call.findOneAndUpdate({'callSid': call.sid}, {$set:dbFields}, function(err, call2){
+                if(err) {
+                  console.log("Something wrong when updating call: " + err);
+                } else {
+                  console.log('updated call(2) ' + call2.callSid);
+                  call2.addUserIds(req.query.user_id);
+                  call2.saveSync();
+                  res.setHeader('Cache-Control', 'public, max-age=0');
+                  res.send({call: call2})
+                }
+              });
+
+            }
           } else {
             newCall.createSync(function (response) {
               if (response != 'err') {
