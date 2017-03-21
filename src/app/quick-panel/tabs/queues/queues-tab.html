@@ -9,7 +9,7 @@
     </th>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Busy</span>
+        <span class="column-title">Total</span>
       </div>
     </th>
     <th class="secondary-text">
@@ -19,38 +19,19 @@
     </th>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Waiting</span>
-      </div>
-    </th>
-    <th class="secondary-text">
-      <div class="table-header">
-        <span class="column-title">Avg. Wait</span>
+        <span class="column-title">Longest Wait</span>
       </div>
     </th>
   </tr>
   </thead>
   <tbody>
-  <tr >
-    <td>Claims</td>
-    <td>3</td>
-    <td>0</td>
-    <td>1</td>
-    <td>1:15</td>
+  <tr ng-repeat="queue in queueData">
+    <td>{{queue.key}}</td>
+    <td>{{queue.value.realtime.total_tasks}}</td>
+    <td>{{queue.value.realtime.total_available_workers}}</td>
+    <td>{{queue.value.realtime.longestTaskWaitingAge}}</td>
   </tr>
-  <tr >
-    <td>Payments</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0:31</td>
-  </tr>
-  <tr >
-    <td>Tech</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0</td>
-    <td>0:13</td>
-  </tr>
+
   </tbody>
 </table>
 

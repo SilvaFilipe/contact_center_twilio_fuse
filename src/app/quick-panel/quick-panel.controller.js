@@ -11,6 +11,7 @@
 
     // Data
     vm.date = new Date();
+    vm.queueData = {};
     vm.settings = {
       notify: true,
       cloud: false,
@@ -29,21 +30,6 @@
 
 
     }
-
-
-
-      $scope.$on('syncClientReady', function (event, data) {
-        $rootScope.syncClient.map('taskQueues' )
-          .then(function(map) {
-            console.log(map);
-            map.on('itemUpdated', function(data) {
-              $log.log('UPDATED taskQueues');
-              console.log(data);
-            }, function onError(response) {
-              console.log(response.data);
-            });
-          });
-      });
 
     msApi.request('quickPanel.directory@get', {},
       // Success

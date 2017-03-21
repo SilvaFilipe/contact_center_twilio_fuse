@@ -27,7 +27,8 @@
             </md-tab-label>
             <md-tab-body>
                 <md-content class="activity-tab scrollable" ms-scroll
-                            ng-include="'app/quick-panel/tabs/activity/queues-tab.html'">
+                            ng-include="'app/quick-panel/tabs/queues/queues-tab.html'"
+                            ng-controller="QueueTabController as vm">
                 </md-content>
             </md-tab-body>
         </md-tab>
