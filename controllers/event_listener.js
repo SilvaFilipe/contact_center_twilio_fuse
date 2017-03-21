@@ -19,18 +19,18 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 module.exports.transcription_events = function (req, res) {
   console.log('logging transcription event');
-  //console.log(req.body);
-  //console.log(util.inspect(res, false, null))
   var data = req.body;
   var transcriptionText =req.body.media.transcripts.text;
-  console.log(transcriptionText);
+  var voiceBaseMediaId = req.body.media.mediaId;
+  console.log('mediaID: ' + voiceBaseMediaId);
+  //console.log(transcriptionText);
   var callSid = req.query.callSid;
   Call.findOne({'callSid': callSid}, function (err, call) {
     if (call == null){
       console.log ('Could not find call to update transcription: ' + callSid);
     } else {
       console.log ('updating transcription: ' + callSid);
-      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText}}, {new: true}, function(err, call2){
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId}}, function(err, call2){
         if(err) {
           console.log("Something wrong when updating call: " + err);
         } else {
@@ -81,9 +81,8 @@ module.exports.recording_events = function (req, res) {
 
 
   console.log ('recordingUrl: ' + recordingUrl);
-
-  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '",  "method" : "POST",  "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] } } "ingest":{ "channels":{ "left":{ "speaker":"agent" }, "right":{ "speaker":"caller" } } } }'
-  console.log(configuration);
+  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+//  console.log(configuration);
 
   request.post({
     url:'https://apis.voicebase.com/v2-beta/media',
@@ -92,10 +91,10 @@ module.exports.recording_events = function (req, res) {
       'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
     }
   }, function(err,httpResponse,body){
-    console.log('voicebase response');
+    //console.log('voicebase response');
     console.log('err: '+ err);
     //console.log(util.inspect(httpResponse, false, null))
-    console.log('body' + body);
+    //console.log('body' + body);
 
   })
 
