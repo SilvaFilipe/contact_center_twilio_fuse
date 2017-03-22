@@ -52,8 +52,11 @@
         });
 
         Twilio.Device.connect(function (conn) {
+          $scope.connection = conn;
+          bindVolumeIndicators(conn);
+          $scope.status = 'successfully established call';
+          $scope.isActive = true;
           if ($scope.isOutboundCall) {
-            $scope.isActive = true;
             $scope.directCall();
             $scope.isOutboundCall = false;
           }

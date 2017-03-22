@@ -19,10 +19,6 @@
             map.getItems({ limit: 20 }).then(function(item) {
               for (var x=0; x<item.items.length; x++){
                 var queue = item.items[x];
-                console.log( 'LOOKING AT ' )
-                console.log(queue);
-                console.log(queue.value);
-                console.log(queue.value.task_queue_sid);
                 $scope.queueData.push(queue);
               }
               $scope.$apply();

@@ -508,7 +508,7 @@
       $scope.$on('NewExtensionCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid,
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, callerName: data.phoneNumber,
           onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: data.conferenceName};
         $scope.currentCall = new Call(callParams);
         $scope.callTasks.push($scope.currentCall);
@@ -576,11 +576,19 @@
           return;
         }
         $scope.currentCall = selectedTask;
-        CallService.getActiveConnSid(function(ActiveConnSid) {
-          $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+        if ($scope.currentCall.callStatus == 'completed') {
           $scope.stopWorkingCounter();
-          $scope.startWorkingCounter();
-        });
+          if (Twilio.Device.activeConnection() == undefined) {
+            $http.get('/api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid);
+          }
+        }
+        else {
+          CallService.getActiveConnSid(function(ActiveConnSid) {
+            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+            $scope.stopWorkingCounter();
+            $scope.startWorkingCounter();
+          });
+        }
       };
 
       $scope.$on('callStatusChanged', function (event, data) {
@@ -609,6 +617,10 @@
       $scope.$watch('currentCall.callStatus', function (newVal, oldVal) {
         if (newVal == 'completed') {
           $scope.stopWorkingCounter();
+          if (Twilio.Device.activeConnection() == undefined) {
+            $http.get('/api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid);
+          }
+
         }
       });
 

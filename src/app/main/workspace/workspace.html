@@ -29,7 +29,8 @@
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.showOutgoingIcon()"></md-icon>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.showIngoingIcon()"></md-icon>
                 <md-icon ng-show="task.isCompleted()" md-font-icon="icon-close" ng-click="complete(false)"></md-icon>
-                <span>{{task.fromNumber}}</span>
+                <span ng-hide="task.isExtensionCall()">{{task.fromNumber}}</span>
+                <span ng-show="task.isExtensionCall()">{{task.callerName}}</span>
               </md-tab-label>
               <md-tab-body>
                 <md-content class="h-400" ng-class="(task.isCompleted()) ? 'callCompleted' : 'md-grey-100-bg'">
