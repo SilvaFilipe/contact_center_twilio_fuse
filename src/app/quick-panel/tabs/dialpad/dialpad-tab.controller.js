@@ -20,6 +20,7 @@
         $mdSidenav('right').toggle();
       };
       $scope.connection;
+      $scope.isOutboundCall = false;
 
 
       $rootScope.$on('InitializePhone', function(event, data) {
@@ -51,15 +52,11 @@
         });
 
         Twilio.Device.connect(function (conn) {
-
-          $scope.connection = conn;
-          bindVolumeIndicators(conn);
-          $scope.status = 'successfully established call';
-          $scope.isActive = true;
-
-          $timeout(function(){
-            $scope.$apply();
-          });
+          if ($scope.isOutboundCall) {
+            $scope.isActive = true;
+            $scope.directCall();
+            $scope.isOutboundCall = false;
+          }
 
         });
 
@@ -103,6 +100,47 @@
         });
 
       });
+
+      $scope.directCall = function () {
+        $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
+          if(response.data !== "ERROR"){
+            if (response.data.call.direction == 'extension') {
+              $rootScope.syncClient.document('c'+ response.data.call.callSid)
+                .then(function(doc) {
+                  doc.on('updated', function(data) {
+                    $log.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+                  }, function onError(response) {
+                    console.log(response.data);
+                  });
+                });
+              $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName);
+              $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
+
+            }
+            else {
+              // subscribe to updated events
+              $rootScope.syncClient.document(response.data.document)
+                .then(function(doc) {
+                  doc.on('updated', function(data) {
+                    $log.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
+                  }, function onError(response) {
+                    console.log(response.data);
+                  });
+                });
+              $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
+              $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
+
+            }
+            $scope.state = 'isActive';
+            $mdSidenav('quick-panel').toggle();
+
+          }
+          vm.phoneNumber = '';
+        });
+
+      };
 
       $scope.$on('DisconnectSoftware', function () {
         console.log('disconnect the softphone');
@@ -188,52 +226,14 @@
       $scope.$on('CallPhoneNumber', function(event, data) {
 
         $log.log('call: ' + data.phoneNumber);
+        $scope.isOutboundCall = true;
         vm.phoneNumber = data.phoneNumber;
         if (Twilio.Device.activeConnection() == undefined) {
           Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
         }
-        $timeout(function () {
-          $http.get('/api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
-            if(response.data !== "ERROR"){
-              if (response.data.call.direction == 'extension') {
-                $rootScope.syncClient.document('c'+ response.data.call.callSid)
-                  .then(function(doc) {
-                    doc.on('updated', function(data) {
-                      $log.log(data);
-                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
-                    }, function onError(response) {
-                      console.log(response.data);
-                    });
-                  });
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName);
-                $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid});
-
-              }
-              else {
-                // subscribe to updated events
-                $rootScope.syncClient.document(response.data.document)
-                  .then(function(doc) {
-                    doc.on('updated', function(data) {
-                      $log.log(data);
-                      $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data.callEvents[data.callEvents.length-1]});
-                    }, function onError(response) {
-                      console.log(response.data);
-                    });
-                  });
-                $http.get('/api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
-                $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
-
-              }
-              $scope.state = 'isActive';
-              $mdSidenav('quick-panel').toggle();
-
-            }
-            vm.phoneNumber = '';
-          });
-
-        }, 2000);
-
-
+        else {
+          $scope.directCall();
+        }
 
       });
 

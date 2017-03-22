@@ -343,9 +343,11 @@
               $scope.currentCall = new Call(callParams);
               $scope.callTasks.push($scope.currentCall);
               CallService.getActiveConnSid(function(ActiveConnSid) {
+                if ($scope.currentCall) {
                   $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
                   $scope.stopWorkingCounter();
                   $scope.startWorkingCounter();
+                }
               });
             }
           );
@@ -368,27 +370,6 @@
             });
         }
       };
-
-      $scope.acceptInboundCall = function () {
-        $scope.isOnExtension = true;
-        $scope.currentCall = $scope.extensionCallTask;
-        $scope.callTasks.push($scope.currentCall);
-        CallService.getActiveConnSid(function(ActiveConnSid) {
-          $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
-          // subscribe to updated events
-          $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
-            .then(function(doc) {
-              doc.on('updated', function(data) {
-                $log.log(data);
-                $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
-
-              }, function onError(response) {
-                console.log(response.data);
-              });
-            });
-        });
-
-      }
 
 
       $scope.recordOn = function () {
@@ -535,6 +516,37 @@
         $scope.startWorkingCounter();
 
       });
+
+      $scope.acceptInboundCall = function () {
+        $scope.isOnExtension = true;
+        $scope.currentCall = $scope.extensionCallTask;
+        $scope.callTasks.push($scope.currentCall);
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          if ($scope.currentCall) {
+            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+            // subscribe to updated events
+            $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
+              .then(function(doc) {
+                doc.on('updated', function(data) {
+                  $log.log(data);
+                  $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+
+                }, function onError(response) {
+                  console.log(response.data);
+                });
+              });
+          }
+        });
+
+      };
+
+      $scope.declineInboundCall = function () {
+        CallService.hangup($scope.extensionCallTask.callSid)
+          .then(function (response) {
+            $scope.extensionCallTask = null;
+            $scope.stopExtensionCounter();
+          })
+      };
 
       $scope.$on('endAllOutCalls', function (event) {
         $log.log('end all outbounding calls');
