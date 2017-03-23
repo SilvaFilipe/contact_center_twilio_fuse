@@ -237,7 +237,7 @@ module.exports.outboundCall = function (req, res) {
               console.log ('found user ' + thisUser._id);
               var confName = 'ex_' + req.query.phone + '_' + thisUser._id;
               // insert into db
-              var dbFields = { callSid: uuidV1(), callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
+              var dbFields = { callSid: uuidV1(), recipientName: userToDial.fullName, callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
               var newCall = new Call( Object.assign(dbFields) );
 
               console.log('using addUserIds'.underline.red);

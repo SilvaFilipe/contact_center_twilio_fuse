@@ -48,6 +48,7 @@ var callSchema = mongoose.Schema({
   user_id: String,
   user_ids: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
   callerName: String,
+  recipientName: String,
   transcription: String,
   voiceBaseMediaId: String
 });
