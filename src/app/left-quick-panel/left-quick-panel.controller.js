@@ -7,7 +7,7 @@
         .controller('LeftQuickPanelController', LeftQuickPanelController);
 
     /** @ngInject */
-    function LeftQuickPanelController(CustomCallService)
+    function LeftQuickPanelController(UserService)
     {
         var vm = this;
 
@@ -24,11 +24,7 @@
 
 
         function activate(){
-          CustomCallService.getOwnCalls()
-            .then(function(calls){
-              console.log(calls);
-              vm.calls = calls;
-            })
+
         }
         // Methods
 

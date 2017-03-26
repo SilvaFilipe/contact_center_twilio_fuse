@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 const sync = require('../controllers/sync.js');
 const lodash = require('lodash');
 
@@ -40,6 +41,7 @@ var callSchema = mongoose.Schema({
   conferenceSid: String,
   conferenceFriendlyName: String,
   conferenceStatusCallbackEvent: String,
+  created_at: { type: Date, default: Date.now },
   updated_at: Date,
   recordingSid: String,
   recordingUrl: String,
@@ -78,5 +80,7 @@ callSchema.methods.addUserIds = function addUserIds(userIds) {
   }
 
 };
+
+callSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Call', callSchema);

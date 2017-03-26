@@ -88,7 +88,7 @@ module.exports = function(app){
         .put(users.update)
         .delete(users.delete);
 
-    router.route('/users/:user_id/calls')
+    router.route('/users/:user_id/calls/:page')
         .get(users.getCalls)
 
     router.route('/users/:user_id/star')
