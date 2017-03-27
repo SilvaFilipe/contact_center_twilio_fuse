@@ -6,7 +6,10 @@
 
 
   /** @ngInject */
-  function CallService($timeout, $http, $q) {
+  function CallService($timeout, $http, $q, $window) {
+
+    var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+    var workerName =  'w' + currentUser._id;
 
     var CallService = {};
 
@@ -49,6 +52,18 @@
       return $q.when(
         Twilio.Device.setup(data.token, {debug: true})
       );
+    };
+
+    CallService.getActiveConnSid = function (callback) {
+      if (Twilio.Device.activeConnection() == undefined) {
+        Twilio.Device.connect({'workerName': workerName, 'user_id': currentUser._id });
+        Twilio.Device.connect(function (conn) {
+          callback(Twilio.Device.activeConnection().parameters.CallSid);
+        });
+      } else {
+        callback(Twilio.Device.activeConnection().parameters.CallSid);
+      }
+
     };
 
     return CallService;
