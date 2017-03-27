@@ -35,12 +35,21 @@ module.exports = {
         })
     },
     getCalls: function (req, res) {
-        Call.find({
-          user_ids: req.user._id
-        }).sort('-timestamp').exec(function (err, calls) {
-            if(err) return res.send(err);
-
+        Call.paginate({
+          user_ids: req.user._id,
+        }, {
+          sort: {
+            created_at: -1
+          },
+          //select: 'recordingUrl created_at to from direction duration',
+          lean: true,
+          limit: 4,
+          page: req.params.page ? req.params.page : 1
+        }).then(function (calls) {
             return res.json(calls);
+        })
+        .catch(function (err) {
+          if(err) return res.send(err);
         })
     },
     update: function (req, res) {

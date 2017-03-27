@@ -4,29 +4,7 @@
 
     angular
         .module('app.callcenterApplication')
-        .controller('WorkflowController', WorkflowController)
-        .directive('dynamic', dynamic)
-        .filter('time', time);
-
-    function time() {
-      return function(value) {
-        return moment(value).format('HH:mm');
-      };
-    }
-
-    function dynamic($compile) {
-      return {
-        restrict: 'A',
-        replace: true,
-        link: function (scope, ele, attrs) {
-          scope.$watch(attrs.dynamic, function(html) {
-            ele.html(html);
-            $compile(ele.contents())(scope);
-          });
-        }
-      };
-    }
-
+        .controller('WorkflowController', WorkflowController);
 
     // define call class
     function Call (callParams) {

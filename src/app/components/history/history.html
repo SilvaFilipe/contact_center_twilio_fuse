@@ -54,9 +54,9 @@
             <h3>{{$ctrl.getNumberByDirection(call)}}</h3>
             <p style="margin-top:14px;">{{call.direction}}</p>
           </div>
-          <div class="md-list-item-text">
+          <div class="md-list-item-text" ng-click="$ctrl.openRecordingDialog(call)">
             <div>
-              <span>{{call.timestamp | tsToEpoch | date : 'MM/dd/yyyy h:mm a' }}</span>
+              <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
             </div>
             <div>
               <span>Duration: {{ call.duration | secsToDuration }}</span>
