@@ -28,6 +28,10 @@ module.exports.transcription_events = function (req, res) {
   Call.findOne({'callSid': callSid}, function (err, call) {
     if (call == null){
       console.log ('Could not find call to update transcription: ' + callSid);
+      res.status(404);
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      return res.send("<Response/>")
     } else {
       console.log ('updating transcription: ' + callSid);
       Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId}}, function(err, call2){
@@ -37,14 +41,13 @@ module.exports.transcription_events = function (req, res) {
           console.log('updated with transcription' + call2.callSid);
           call2.saveSync();
         }
+        res.status(200);
+        res.setHeader('Content-Type', 'application/xml')
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        return res.send("<Response/>");
       });
     }
   });
-
-  res.status(200);
-  res.setHeader('Content-Type', 'application/xml')
-  res.setHeader('Cache-Control', 'public, max-age=0')
-  res.send("<Response/>")
 
 }
 
@@ -103,7 +106,7 @@ module.exports.recording_events = function (req, res) {
   res.setHeader('Cache-Control', 'public, max-age=0')
   res.send("<Response/>")
 
-}
+};
 
 module.exports.log_twiml_event = function (req) {
   console.log('logging twiml event');

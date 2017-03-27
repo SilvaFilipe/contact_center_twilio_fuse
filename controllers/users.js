@@ -41,7 +41,7 @@ module.exports = {
           sort: {
             created_at: -1
           },
-          select: 'recordingUrl created_at to from direction duration',
+          //select: 'recordingUrl created_at to from direction duration',
           lean: true,
           limit: 4,
           page: req.params.page ? req.params.page : 1
