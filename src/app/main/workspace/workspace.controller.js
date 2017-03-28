@@ -113,7 +113,6 @@
                     var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', duration: 0, callSid: item.value.data.callSid, callerName: item.value.data.callerName,
                       onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: item.value.data.conferenceFriendlyName};
                     $scope.extensionCallTask = new Call(callParams);
-                    $scope.stopWorkingCounter();
                     $scope.startExtensionCounter();
                   }
 
@@ -438,7 +437,6 @@
           if ($scope.currentCall.direction == 'extension') {
             $scope.extensionCallTask = null;
             $scope.isOnExtension = false;
-            $scope.stopExtensionCounter();
             $scope.closeTab();
             return;
           }
@@ -486,7 +484,7 @@
       $scope.$on('NewExtensionCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, callerName: data.phoneNumber,
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, callerName: data.recipientName,
           onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: data.conferenceName};
         $scope.currentCall = new Call(callParams);
         $scope.callTasks.push($scope.currentCall);
@@ -497,6 +495,7 @@
 
       $scope.acceptInboundCall = function () {
         $scope.isOnExtension = true;
+        $scope.stopExtensionCounter();
         $scope.currentCall = $scope.extensionCallTask;
         $scope.callTasks.push($scope.currentCall);
         CallService.getActiveConnSid(function(ActiveConnSid) {
@@ -515,6 +514,9 @@
               });
           }
         });
+
+        $scope.stopWorkingCounter();
+        $scope.startWorkingCounter();
 
       };
 
