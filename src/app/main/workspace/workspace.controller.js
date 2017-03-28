@@ -181,12 +181,15 @@
 
           $scope.reservation = reservation;
           $scope.$apply();
-
           $scope.startReservationCounter();
 
         });
 
         $scope.workerJS.on('reservation.accepted', function (reservation) {
+          $http.post('/api/callControl/inbound_ringing').then(function(res) {
+            var audio = new Audio(res.data);
+            audio.play();
+          });
 
           $log.log('TaskRouter Worker: reservation.accepted');
           $log.log(reservation);
@@ -491,6 +494,10 @@
       });
 
       $scope.acceptInboundCall = function () {
+        $http.post('/api/callControl/inbound_ringing').then(function(res) {
+          var audio = new Audio(res.data);
+          audio.play();
+        });
         $scope.stopExtensionCounter();
         $scope.currentCall = angular.copy($scope.extensionCallTask);
         $scope.extensionCallTask = null;
