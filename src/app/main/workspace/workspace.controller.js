@@ -85,7 +85,6 @@
       $scope.callTasks = [];
       $scope.currentCall = null;
       $scope.extensionCallTask = null;
-      $scope.isOnExtension = false;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -435,8 +434,6 @@
             return;
           }
           if ($scope.currentCall.direction == 'extension') {
-            $scope.extensionCallTask = null;
-            $scope.isOnExtension = false;
             $scope.closeTab();
             return;
           }
@@ -494,29 +491,31 @@
       });
 
       $scope.acceptInboundCall = function () {
-        $scope.isOnExtension = true;
         $scope.stopExtensionCounter();
-        $scope.currentCall = $scope.extensionCallTask;
-        $scope.callTasks.push($scope.currentCall);
-        CallService.getActiveConnSid(function(ActiveConnSid) {
-          if ($scope.currentCall) {
-            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
-            // subscribe to updated events
-            $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
-              .then(function(doc) {
-                doc.on('updated', function(data) {
-                  $log.log(data);
-                  $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+        $scope.currentCall = angular.copy($scope.extensionCallTask);
+        $scope.extensionCallTask = null;
+        setTimeout(function(){
+          $scope.callTasks.push($scope.currentCall);
+          CallService.getActiveConnSid(function(ActiveConnSid) {
+            if ($scope.currentCall) {
+              $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+              // subscribe to updated events
+              $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
+                .then(function(doc) {
+                  doc.on('updated', function(data) {
+                    $log.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
 
-                }, function onError(response) {
-                  console.log(response.data);
+                  }, function onError(response) {
+                    console.log(response.data);
+                  });
                 });
-              });
-          }
-        });
+            }
+          });
 
-        $scope.stopWorkingCounter();
-        $scope.startWorkingCounter();
+          $scope.stopWorkingCounter();
+          $scope.startWorkingCounter();
+        }, 1000);
 
       };
 
