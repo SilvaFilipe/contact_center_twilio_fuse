@@ -6,51 +6,8 @@
         .module('app.callcenterApplication')
         .controller('WorkflowController', WorkflowController);
 
-    // define call class
-    function Call (callParams) {
-      this.fromNumber = callParams.fromNumber;
-      this.type = callParams.type;
-      this.duration = callParams.duration;
-      this.callSid = callParams.callSid;
-      this.onhold = callParams.onhold;
-      this.recording = callParams.recording;
-      this.muted = callParams.muted;
-      this.taskSid = callParams.taskSid;
-      this.direction = callParams.direction;
-      this.createdAt = callParams.createdAt;
-      this.callStatus = callParams.callStatus;
-      this.conferenceName = callParams.conferenceName;
-      if (typeof callParams.callerName != undefined) {
-        this.callerName = callParams.callerName;
-      }
-    }
-
-    Call.prototype.showOutgoingIcon = function() {
-      return this.callStatus != 'completed' && this.type == 'outbound'
-    };
-
-    Call.prototype.showIngoingIcon = function() {
-      return this.callStatus != 'completed' && this.type == 'inbound';
-    };
-
-    Call.prototype.isCompleted = function() {
-      return this.callStatus == 'completed';
-    };
-
-    Call.prototype.isInGoingCall = function() {
-      return this.type == 'inbound' && this.direction != 'extension';
-    };
-
-    Call.prototype.isOutGoingCall = function() {
-      return this.type == 'outbound';
-    };
-
-    Call.prototype.isExtensionCall = function() {
-      return this.direction == 'extension';
-    };
-
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $filter, $mdSidenav, $mdDialog, $document, CallService, UserService, $window) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall) {
       var vm = this;
       var func = function () {
         UserService.usersWithStars()
@@ -85,7 +42,6 @@
       $scope.callTasks = [];
       $scope.currentCall = null;
       $scope.extensionCallTask = null;
-      $scope.isOnExtension = false;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker;
@@ -110,11 +66,14 @@
                 list.on("itemAdded", function(item) {
                   console.log("List item added!", item);
                   if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
-                    var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', duration: 0, callSid: item.value.data.callSid, callerName: item.value.data.callerName,
-                      onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: item.value.data.conferenceFriendlyName};
-                    $scope.extensionCallTask = new Call(callParams);
-                    $scope.stopWorkingCounter();
-                    $scope.startExtensionCounter();
+                    $http.post('/api/callControl/inbound_ringing').then(function(res) {
+                      var audio = new Audio(res.data);
+                      audio.play();
+                      var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
+                        conferenceName: item.value.data.conferenceFriendlyName};
+                      $scope.extensionCallTask = new ExtensionCall(callParams);
+                      $scope.startExtensionCounter();
+                    });
                   }
 
                 });
@@ -181,10 +140,12 @@
           $log.log('TaskRouter Worker: reservation.created');
           $log.log(reservation);
 
-          $scope.reservation = reservation;
-          $scope.$apply();
-
-          $scope.startReservationCounter();
+          $http.post('/api/callControl/inbound_ringing').then(function(res) {
+            var audio = new Audio(res.data);
+            audio.play();
+            $scope.reservation = reservation;
+            $scope.startReservationCounter();
+          });
 
         });
 
@@ -316,9 +277,8 @@
                 return;
               }
               $log.log("reservation accepted");
-              var callParams = {fromNumber: reservation.task.attributes.from, type: 'inbound', duration: reservation.task.age, callSid: reservation.task.attributes.call_sid,
-                onhold: false, recording: false, muted: false, taskSid: reservation.task.attributes.id, direction: 'inbound', createdAt: new Date(), callStatus: 'active', conferenceName: reservation.sid};
-              $scope.currentCall = new Call(callParams);
+              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: reservation.task.attributes.call_sid, conferenceName: reservation.sid};
+              $scope.currentCall = new InboundCall(callParams);
               $scope.callTasks.push($scope.currentCall);
               CallService.getActiveConnSid(function(ActiveConnSid) {
                 if ($scope.currentCall) {
@@ -435,10 +395,7 @@
             $scope.closeTab();
             return;
           }
-          if ($scope.currentCall.direction == 'extension') {
-            $scope.extensionCallTask = null;
-            $scope.isOnExtension = false;
-            $scope.stopExtensionCounter();
+          if ($scope.currentCall.isExtensionCall()) {
             $scope.closeTab();
             return;
           }
@@ -474,9 +431,8 @@
       $scope.$on('NewOutBoundingCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid,
-          onhold: false, recording: false, muted: false, taskSid: null, direction: 'outbound', createdAt: new Date(), callStatus: 'active', conferenceName: data.callSid};
-        $scope.currentCall = new Call(callParams);
+        var callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid};
+        $scope.currentCall = new OutboundCall(callParams);
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();
@@ -486,9 +442,8 @@
       $scope.$on('NewExtensionCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', duration: 0, callSid: data.callSid, callerName: data.phoneNumber,
-          onhold: false, recording: false, muted: false, taskSid: null, direction: 'extension', createdAt: new Date(), callStatus: 'active', conferenceName: data.conferenceName};
-        $scope.currentCall = new Call(callParams);
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName};
+        $scope.currentCall = new ExtensionCall(callParams);
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();
@@ -496,25 +451,31 @@
       });
 
       $scope.acceptInboundCall = function () {
-        $scope.isOnExtension = true;
-        $scope.currentCall = $scope.extensionCallTask;
-        $scope.callTasks.push($scope.currentCall);
-        CallService.getActiveConnSid(function(ActiveConnSid) {
-          if ($scope.currentCall) {
-            $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
-            // subscribe to updated events
-            $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
-              .then(function(doc) {
-                doc.on('updated', function(data) {
-                  $log.log(data);
-                  $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
+        $scope.stopExtensionCounter();
+        $scope.currentCall = angular.copy($scope.extensionCallTask);
+        $scope.extensionCallTask = null;
+        setTimeout(function(){
+          $scope.callTasks.push($scope.currentCall);
+          CallService.getActiveConnSid(function(ActiveConnSid) {
+            if ($scope.currentCall) {
+              $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
+              // subscribe to updated events
+              $rootScope.syncClient.document('c' + $scope.currentCall.callSid )
+                .then(function(doc) {
+                  doc.on('updated', function(data) {
+                    $log.log(data);
+                    $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
 
-                }, function onError(response) {
-                  console.log(response.data);
+                  }, function onError(response) {
+                    console.log(response.data);
+                  });
                 });
-              });
-          }
-        });
+            }
+          });
+
+          $scope.stopWorkingCounter();
+          $scope.startWorkingCounter();
+        }, 1000);
 
       };
 
@@ -554,10 +515,10 @@
           return;
         }
         $scope.currentCall = selectedTask;
-        if ($scope.currentCall.callStatus == 'completed') {
+        if ($scope.currentCall.isCompleted()) {
           $scope.stopWorkingCounter();
-          if (Twilio.Device.activeConnection() == undefined) {
-            $http.get('/api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid);
+          if (Twilio.Device.activeConnection() != undefined) {
+            $http.get('/api/agents/agentToSilence?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid);
           }
         }
         else {
@@ -595,7 +556,7 @@
       $scope.$watch('currentCall.callStatus', function (newVal, oldVal) {
         if (newVal == 'completed') {
           $scope.stopWorkingCounter();
-          if (Twilio.Device.activeConnection() == undefined) {
+          if (Twilio.Device.activeConnection() != undefined) {
             $http.get('/api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid);
           }
 

@@ -91,7 +91,7 @@
                 <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
               </div>
             </md-tab>
-            <md-tab data-ng-if="extensionCallTask != null && !isOnExtension" label="{{extensionCallTask.callerName}}">
+            <md-tab data-ng-if="extensionCallTask != null" label="{{extensionCallTask.callerName}}">
               <md-toolbar class="mt-10">
                 <div class="md-toolbar-tools">
                   <div class="description">Inbound Call from {{extensionCallTask.callerName}}</div>

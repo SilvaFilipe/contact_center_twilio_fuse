@@ -4,31 +4,38 @@
   <tr>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Queue Name</span>
+        <span class="column-title">Name</span>
       </div>
     </th>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Total</span>
+        <span class="column-title">AgntBusy</span>
       </div>
     </th>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Available</span>
+        <span class="column-title">AgntAvail</span>
       </div>
     </th>
     <th class="secondary-text">
       <div class="table-header">
-        <span class="column-title">Longest Wait</span>
+        <span class="column-title">Callers</span>
+      </div>
+    </th>
+    <th class="secondary-text">
+      <div class="table-header">
+        <span class="column-title">Longest</span>
       </div>
     </th>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="queue in queueData">
-    <td>{{queue.key}}</td>
-    <td>{{queue.value.realtime.total_tasks}}</td>
-    <td>{{queue.value.realtime.total_available_workers}}</td>
+    <!--<td>{{queue.key}}</td>-->
+    <td>Phone</td>
+    <td>{{queue.value.realtime.activityStatistics[4].workers}}</td>
+    <td>{{queue.value.realtime.activityStatistics[5].workers + queue.value.realtime.activityStatistics[1].workers}}</td>
+    <td>{{queue.value.realtime.total_tasks - queue.value.realtime.tasksByStatus.completed}}</td>
     <td>{{queue.value.realtime.longestTaskWaitingAge}}</td>
   </tr>
 

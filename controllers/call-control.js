@@ -79,6 +79,11 @@ module.exports.play_ringing = function (req, res) {
   res.send('<?xml version="1.0" encoding="UTF-8"?> <Response><Play>/sounds/ring.wav</Play><Redirect method="POST"/></Response>');
 }
 
+module.exports.inbound_ringing = function (req, res) {
+  var ringUrl = process.env.PUBLIC_HOST + '/sounds/chime.mp3';
+  res.send(ringUrl);
+}
+
 module.exports.hangup = function (req, res) {
   var callSid = req.query.callSid;
 
