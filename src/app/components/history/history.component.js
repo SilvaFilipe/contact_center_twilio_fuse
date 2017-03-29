@@ -53,6 +53,14 @@ function HistoryController($scope, $mdDialog, UserService) {
     }
   };
 
+  $ctrl.getDirection = function (call) {
+    if (call.direction === 'inbound-api') {
+      return 'inbound';
+    } else if (call.direction === 'outbound-api') {
+      return 'outbound';
+    }
+  };
+
   $ctrl.openRecordingDialog = function (call) {
     $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
@@ -67,19 +75,12 @@ function HistoryController($scope, $mdDialog, UserService) {
             $mdDialog.cancel();
           };
 
-          $scope.answer = function(answer) {
-            $mdDialog.hide(answer);
-          };
         },
         templateUrl: 'app/components/history/history.recoding.dialog.html',
         parent: angular.element(document.body),
         clickOutsideToClose:true
       })
-      .then(function(answer) {
-        $scope.status = 'You said the information was "' + answer + '".';
-      }, function() {
-        $scope.status = 'You cancelled the dialog.';
-      });
+      .then(function() {}, function() {});
   };
 
   $ctrl.filterCalls = function () {

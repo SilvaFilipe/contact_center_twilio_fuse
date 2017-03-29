@@ -52,7 +52,7 @@
       <md-list-item class="md-3-line" ng-repeat="call in $ctrl.calls | filter:$ctrl.historySearch | filter:$ctrl.filterCalls() " ng-if="$ctrl.calls.length > 0">
           <div class="md-list-item-text">
             <h3>{{$ctrl.getNumberByDirection(call)}}</h3>
-            <p style="margin-top:14px;">{{call.direction}}</p>
+            <p>{{$ctrl.getDirection(call)}}</p>
           </div>
           <div class="md-list-item-text" ng-click="$ctrl.openRecordingDialog(call)">
             <div>
