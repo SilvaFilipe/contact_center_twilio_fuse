@@ -5565,13 +5565,13 @@ voiceBase = (function(VB, $) {
                 $player.jPlayer("pause");
             };
             me.play_state = function() {
-                return $player.data('jPlayer').status.paused ? "PAUSED" : "PLAYING";
+                return ($player.data('jPlayer') && $player.data('jPlayer').status && $player.data('jPlayer').status.paused) ? "PAUSED" : "PLAYING";
             };
             me.position = function() {
-                return $player.data('jPlayer').status.currentTime || 0;
+                return ($player.data('jPlayer') && $player.data('jPlayer').status && $player.data('jPlayer').status.currentTime) || 0;
             };
             me.duration = function() {
-                return $player.data('jPlayer').status.duration || 0;
+                return ($player.data('jPlayer') && $player.data('jPlayer').status) ? ($player.data('jPlayer').status.duration || 0) : 0;
             };
             me.seek = function(position) { // in seconds
                 position = parseInt(position);
@@ -5587,10 +5587,10 @@ voiceBase = (function(VB, $) {
                 $('#jplayer').jPlayer("volume", volume / 100);
             };
             me.isVideo = function(){
-                return $player.data('jPlayer').status.video;
+                return ($player.data('jPlayer') && $player.data('jPlayer').status) ? $player.data('jPlayer').status.video : false;
             };
             me.getGui = function(){
-                return $($player.data('jPlayer').ancestorJq);
+                return $player.data('jPlayer') ? $($player.data('jPlayer').ancestorJq) : false;
             };
             me.initEvents = function(){
                 $player.bind($.jPlayer.event.volumechange, function(){
@@ -7090,79 +7090,79 @@ voiceBase = (function(VB, $) {
     ;__output += "<div class=\"vbs-disabler\"></div>";
     return __output.trim();
   };
-  
+
   templates['common/editWrapper']  = templates['common/editWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var classes = voiceBase.data.vclass; ;__output += "\n\n<div id=\"vbs-edit-wrap\"  class=\"";;__output += escape(classes);__output += "\">\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['common/loader']  = templates['common/loader.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-loader\"></div>";
     return __output.trim();
   };
-  
+
   templates['common/mainDiv']  = templates['common/mainDiv.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div id=\"vbs-media\"></div>\n<div id=\"vbs-controls\"></div>\n\n";; if(!voiceBase.settings.tabView) { ;__output += "\n\n<div id=\"vbs-keywords\"></div>\n\n    ";; if(voiceBase.settings.showNewsBlock) { ;__output += "\n    <div id=\"vbs-news\"></div>\n    ";; } ;__output += "\n\n<div id=\"vbs-transcript\"></div>\n<div id=\"vbs-predictions\"></div>\n<div id=\"vbs-comments\"></div>\n\n";; } else { ;__output += "\n\n<div class=\"vbs-not-media-sections vbs-tabs-view\">\n    <div class=\"vbs-tabs-links vbs-clearfix\">\n\n        ";; if(voiceBase.settings.showKeywordsBlock) { ;__output += "\n        <a href=\"javascript:void(0)\" data-href=\".vbs-keywords-block\" class=\"vbs-active\">Keywords</a>\n        ";; } ;__output += "\n        ";; if(voiceBase.settings.showTranscriptBlock) { ;__output += "\n        <a href=\"javascript:void(0)\" data-href=\".vbs-transcript-block\">Transcript</a>\n        ";; } ;__output += "\n        ";; if(voiceBase.settings.showTranscriptBlock) { ;__output += "\n        <a href=\"javascript:void(0)\" data-href=\".vbs-comments-block\">Comments</a>\n        ";; } ;__output += "\n\n    </div>\n    <div id=\"vbs-keywords\"></div>\n    <div id=\"vbs-transcript\"></div>\n    <div id=\"vbs-comments\"></div>\n\n</div>\n\n";; } ;__output += "\n\n";
     return __output.trim();
   };
-  
+
   templates['common/mediaBlock']  = templates['common/mediaBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-media-block\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\">\n            <span class=\"vbs-section-name vbs-sna\">audio</span>\n            <span class=\"vbs-section-name vbs-snv\"></span>\n            <span class=\"vbs-time\">\n                <span class=\"vbs-ctime\">00:00:00</span> / <span class=\"vbs-ftime\">00:00:00</span>\n            </span>\n            <span class=\"vbs-voice-name\"></span>\n        </div>\n        <div class=\"vbs-section-btns\">\n            <ul class=\"vbs-clearfix\">\n\n                ";; if(locals.vbsButtons.downloadMedia) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-download-audio-btn\" format=\"pdf\" data-title=\"Download Recording\"></a>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.remove) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-del-btn\" data-title=\"Delete Recording\"></a>\n                    <div class=\"vbs-download-popup vbs-delete-popup vbs-popup\">\n                        <div class=\"vbs-arrow\"></div>\n                        <h3>Are you sure you want to delete this recording?</h3>\n                        <a href=\"#\" class=\"vbs-red-btn\">Delete</a>\n                        <a href=\"#\" class=\"vbs-blue-btn\">Cancel</a>\n                    </div>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.favorite) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-star-btn\"></a>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.help) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-help-btn\" data-title=\"Help\"></a>\n                </li>\n                ";; } ;__output += "\n\n            </ul>\n        </div>\n        <div class=\"clear-block\"></div>\n    </div>\n    <div class=\"vbs-section-body\"></div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['common/print']  = templates['common/print.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<html>\n<head>\n    <title></title>\n</head>\n<body>\n    ";;__output = [__output, locals.transcriptText].join("");__output += "\n</body>\n</html>";
     return __output.trim();
   };
-  
+
   templates['common/readerWrapper']  = templates['common/readerWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var classes = voiceBase.settings.localYoutubeApp ? ' vbs-local-app' : '' ;__output += "\n";; classes = voiceBase.data.vclass + classes; ;__output += "\n<div id=\"vbs-reader-wrap\" class=\"";;__output += escape(classes);__output += "\">\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['comments/commentDeletePopup']  = templates['comments/commentDeletePopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-comments-popup vbs-popup vbs-comment-delete-popup\">\n    <div class=\"vbs-arrow\"></div>\n    <span>Delete This Comment?</span>\n    <div class=\"vbs-comment-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\" c_id=\"";;__output += escape(locals.c_id);__output += "\">Yes, Delete</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\">No, Cancel</a>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['comments/commentEditPopup']  = templates['comments/commentEditPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var time = Math.round(locals.time); ;__output += "\n";; var parsedTime = locals.parseTime(time); ;__output += "\n\n<div class=\"vbs-comments-popup vbs-popup ";;if(!locals.isFirstComment) {;__output += " vbs-edit-wr ";; } ;__output += "\">\n    <div class=\"vbs-arrow\"></div>\n    ";;if(locals.isFirstComment) {;__output += "\n    <div class=\"vbs-comment-popup-row vbs-clearfix\">\n        <label>\n            Comment position:\n            <span class=\"vbs-time\" id=\"vbs-comment-timeline\" vbct=\"";;__output += escape(time);__output += "\">\n                ";;__output += escape(parsedTime);__output += "\n            </span>\n            <br>\n            <span class=\"vbs-explanation\">Drag the timeline to change</span>\n        </label>\n        <a href=\"#\" class=\"vbs-play-btn\"></a>\n    </div>\n    ";; } ;__output += "\n    <div class=\"vbs-enter-comment-row\">\n        <textarea id=\"vbs-comment-text\" placeholder=\"Enter your comment...\">";;__output += escape(locals.commentText);__output += "</textarea>\n    </div>\n    <div class=\"vbs-comment-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\" c_id=\"";;__output += escape(locals.c_id);__output += "\">Save Changes</a>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['comments/commentOnTimeline']  = templates['comments/commentOnTimeline.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-comments-wrapper ";;__output += escape(locals.rightClass);__output += "\" style=\"left:";;__output += escape(locals.left);__output += "px;\" stime=\"";;__output += escape(locals.stime);__output += "\">\n    <div class=\"vbs-comment-small\"></div>\n    <div class=\"vbs-comment-preview\">\n        <a href=\"#\" stime=\"";;__output += escape(locals.stime);__output += "\">\n            ";;__output += escape(locals.commentText);__output += "\n        </a>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['comments/commentPopup']  = templates['comments/commentPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var time = Math.round(locals.time); ;__output += "\n";; var parsedTime = locals.parseTime(time); ;__output += "\n\n<div class=\"vbs-comments-popup vbs-comments-add-popup vbs-popup\">\n    <div class=\"vbs-arrow\"></div>\n    <div class=\"vbs-comment-popup-row vbs-clearfix\">\n        <label>\n            Comment position:\n            <span class=\"vbs-time\" id=\"vbs-comment-timeline\" vbct=\"";;__output += escape(time);__output += "\">\n                ";;__output += escape(parsedTime);__output += "\n            </span>\n            <br>\n            <span class=\"vbs-explanation\">Drag the timeline to change</span>\n        </label>\n        <a href=\"#\" class=\"vbs-play-btn\"></a>\n    </div>\n    <div class=\"vbs-enter-comment-row\">\n        <textarea id=\"vbs-comment-text\" placeholder=\"Enter your comment...\"></textarea>\n    </div>\n    <div class=\"vbs-comment-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\">Add comment</a>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['comments/commentReplyPopup']  = templates['comments/commentReplyPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-comments-popup vbs-popup\">\n    <div class=\"vbs-arrow\"></div>\n    <div class=\"vbs-enter-comment-row\">\n        <textarea id=\"vbs-comment-reply-text\" placeholder=\"Enter your comment...\"></textarea>\n    </div>\n    <div class=\"vbs-comment-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n        <a href=\"#\" c_id=\"";;__output += escape(locals.c_id);__output += "\" class=\"vbs-confirm-btn\">Add comment</a>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['comments/commentThreads']  = templates['comments/commentThreads.ejs'] = function(it) {
     var locals = it, __output = "";
-    ; if(locals.countComments > 0) { ;__output += "\n\n";; locals.threads.forEach(function (thread) { ;__output += "\n    ";; thread.comments.forEach(function (comment) { ;__output += "\n        ";; var commentLevel = (comment.level > '5') ? '5' : comment.level; ;__output += "\n        ";; var commentEditClass =  comment.canEdit ? 'vbs-with-edition-btns' : ''; ;__output += "\n\n        <div class=\"vbs-comment-row vbs-answer";;__output += escape(commentLevel);__output += "\">\n            <div class=\"vbs-comment-title\">\n                <span class=\"vbs-comment-author\">";;__output += escape(comment.userName);__output += "</span>\n                ";; if(commentLevel == 1) { ;__output += "\n                <span>commented at</span>\n                <a href=\"javascript:void(0)\" class=\"vbs-comment-time\" data-vbct=\"";;__output += escape(thread.timeStamp);__output += "\">\n                    ";; var commented_at = locals.parseTime(thread.timeStamp); ;__output += "\n                    ";;__output += escape(commented_at);__output += "\n                </a>\n                ";; } else { ;__output += "\n                <span>replied</span>\n                ";; } ;__output += "\n            </div>\n            <div class=\"vbs-comment-content ";;__output += escape(commentEditClass);__output += "\">\n                <div class=\"vbs-arrow\"></div>\n                <div class=\"vbs-comment-message\">\n                    <p>";;__output += escape(comment.content);__output += "</p>\n                </div>\n                ";; if(locals.showCommentsBtn) { ;__output += "\n                    ";; if(comment.canEdit) { ;__output += "\n                    <div class=\"vbs-comment-edit-wrapper\">\n                        <div class=\"vbs-comment-edit-btn-wrapper\">\n                            <a href=\"#\" c_id=\"";;__output += escape(comment.id);__output += "\" c_tm=\"";;__output += escape(thread.timeStamp);__output += "\" class=\"vbs-comment-edit vbs-popup-btn\">\n                                Edit\n                            </a>\n                        </div>\n                        <div class=\"vbs-comment-delete-btn-wrapper\">\n                            <a href=\"#\" c_id=\"";;__output += escape(comment.id);__output += "\" class=\"vbs-comment-delete vbs-popup-btn\">Delete</a>\n                        </div>\n                    </div>\n                    ";; } else { ;__output += "\n                    <div class=\"vbs-comment-reply-wrapper\">\n                        <a href=\"#\"  c_id=\"";;__output += escape(comment.id);__output += "\" class=\"vbs-comment-reply vbs-popup-btn\">Reply</a>\n                    </div>\n                    ";; } ;__output += "\n                ";; } ;__output += "\n            </div>\n        </div>\n\n        ";; locals.countComments++; ;__output += "\n    ";; }) ;__output += "\n";; }) ;__output += "\n\n";; } else { ;__output += "\n\n<div class=\"vbs-comment-row\">\n    <div class=\"vbs-comment-title\">No Comments</div>\n</div>\n\n";; } 
+    ; if(locals.countComments > 0) { ;__output += "\n\n";; locals.threads.forEach(function (thread) { ;__output += "\n    ";; thread.comments.forEach(function (comment) { ;__output += "\n        ";; var commentLevel = (comment.level > '5') ? '5' : comment.level; ;__output += "\n        ";; var commentEditClass =  comment.canEdit ? 'vbs-with-edition-btns' : ''; ;__output += "\n\n        <div class=\"vbs-comment-row vbs-answer";;__output += escape(commentLevel);__output += "\">\n            <div class=\"vbs-comment-title\">\n                <span class=\"vbs-comment-author\">";;__output += escape(comment.userName);__output += "</span>\n                ";; if(commentLevel == 1) { ;__output += "\n                <span>commented at</span>\n                <a href=\"javascript:void(0)\" class=\"vbs-comment-time\" data-vbct=\"";;__output += escape(thread.timeStamp);__output += "\">\n                    ";; var commented_at = locals.parseTime(thread.timeStamp); ;__output += "\n                    ";;__output += escape(commented_at);__output += "\n                </a>\n                ";; } else { ;__output += "\n                <span>replied</span>\n                ";; } ;__output += "\n            </div>\n            <div class=\"vbs-comment-content ";;__output += escape(commentEditClass);__output += "\">\n                <div class=\"vbs-arrow\"></div>\n                <div class=\"vbs-comment-message\">\n                    <p>";;__output += escape(comment.content);__output += "</p>\n                </div>\n                ";; if(locals.showCommentsBtn) { ;__output += "\n                    ";; if(comment.canEdit) { ;__output += "\n                    <div class=\"vbs-comment-edit-wrapper\">\n                        <div class=\"vbs-comment-edit-btn-wrapper\">\n                            <a href=\"#\" c_id=\"";;__output += escape(comment.id);__output += "\" c_tm=\"";;__output += escape(thread.timeStamp);__output += "\" class=\"vbs-comment-edit vbs-popup-btn\">\n                                Edit\n                            </a>\n                        </div>\n                        <div class=\"vbs-comment-delete-btn-wrapper\">\n                            <a href=\"#\" c_id=\"";;__output += escape(comment.id);__output += "\" class=\"vbs-comment-delete vbs-popup-btn\">Delete</a>\n                        </div>\n                    </div>\n                    ";; } else { ;__output += "\n                    <div class=\"vbs-comment-reply-wrapper\">\n                        <a href=\"#\"  c_id=\"";;__output += escape(comment.id);__output += "\" class=\"vbs-comment-reply vbs-popup-btn\">Reply</a>\n                    </div>\n                    ";; } ;__output += "\n                ";; } ;__output += "\n            </div>\n        </div>\n\n        ";; locals.countComments++; ;__output += "\n    ";; }) ;__output += "\n";; }) ;__output += "\n\n";; } else { ;__output += "\n\n<div class=\"vbs-comment-row\">\n    <div class=\"vbs-comment-title\">No Comments</div>\n</div>\n\n";; }
     return __output.trim();
   };
-  
+
   templates['comments/commentsTimeline']  = templates['comments/commentsTimeline.ejs'] = function(it) {
     var locals = it, __output = "";
     var include = function(tplName, data) { return render(tplName, data); }
@@ -7170,274 +7170,274 @@ voiceBase = (function(VB, $) {
       rightClass: rightClass,
       left: position,
       stime: thread.timeStamp,
-      commentText: thread.comments[0].content})].join("");__output += "\n\n";; }); 
+      commentText: thread.comments[0].content})].join("");__output += "\n\n";; });
     return __output.trim();
   };
-  
+
   templates['comments/commentsWrapper']  = templates['comments/commentsWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var tabClass = (locals.tabView) ? 'vbs-tab' : '';__output += "\n<div class=\"vbs-comments-block ";;__output += escape(tabClass);__output += "\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\" data-title=\"Show Comments\">\n            <span class=\"vbs-section-name\"></span>\n        </div>\n        ";; if(locals.showAddBtn) { ;__output += "\n        <div class=\"vbs-section-btns\">\n            <ul class=\"vbs-clearfix\">\n                <li>\n                    ";; if(locals.tabView) { ;__output += "\n                    <a href=\"#\" class=\"vbs-comments-btn vbs-popup-btn\" data-title=\"Add a Comment\">\n                        <div class=\"vbs-comments-btn-icon\"></div>\n                        <span>Add New Comment</span>\n                    </a>\n                    ";; } else { ;__output += "\n                    <a href=\"#\" class=\"vbs-comments-btn vbs-popup-btn\" data-title=\"Add a Comment\"></a>\n                    ";; } ;__output += "\n                </li>\n            </ul>\n        </div>\n        ";; } ;__output += "\n    </div>\n    <div class=\"vbs-section-body\"></div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['comments/kalturaInlineComment']  = templates['comments/kalturaInlineComment.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var rightClass = locals.stime > locals.duration / 2 ? 'vbs-from-right' : ''; ;__output += "\n\n<div class=\"vbs-comments-wrapper ";;__output += escape(rightClass);__output += "\"\n     style=\"left:";;__output += escape(locals.left + '%');__output += "; top: -15px;\"\n     stime=\"";;__output += escape(locals.stime);__output += "\">\n\n    <div class=\"vbs-comment-small\"></div>\n    <div class=\"vbs-comment-preview\" style=\"z-index: 99999999991; ";;if(!locals.rightClass) { ;__output += " padding-left: 10px; ";; } ;__output += "\">\n        <a href=\"#\" stime=\"";;__output += escape(locals.stime);__output += "\">\n            ";;__output += escape(locals.commentText);__output += "\n        </a>\n    </div>\n\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['comments/kalturaWrapperComments']  = templates['comments/kalturaWrapperComments.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-comments-wrapper-block\"></div>";
     return __output.trim();
   };
-  
+
   templates['controls/controlsBlock']  = templates['controls/controlsBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var buttonsClass = (locals.vbsButtons.prev && locals.vbsButtons.next) ? ' vbs-3-left-btns' : (locals.vbsButtons.prev || locals.vbsButtons.next) ? ' vbs-2-left-btns' : ' vbs-1-left-btns'; ;__output += "\n\n<div class=\"vbs-record-player ";;__output += escape(buttonsClass);__output += "\">\n    <div class=\"vbs-player-control\">\n        <a href=\"#\" class=\"vbs-play-btn\" data-title=\"Play\"></a>\n\n        ";; if(locals.vbsButtons.prev) { ;__output += "\n        <a href=\"javascript:void(0)\" class=\"vbs-prev-btn\" data-title=\"Back 15 Seconds\"></a>\n        ";; } ;__output += "\n\n        ";; if(locals.vbsButtons.next) { ;__output += "\n        <a href=\"javascript:void(0)\" class=\"vbs-next-action-btn vbs-next-notactive\" data-title=\"Next Keyword Marker\"></a>\n        ";; } ;__output += "\n    </div>\n    <div class=\"vbs-time-name-wrapper-narrow\">\n        <span class=\"vbs-time\"><span class=\"vbs-ctime\">00:00:00</span> / <span class=\"vbs-ftime\">00:00:00</span></span> <br>\n        <span class=\"vbs-voice-name\"></span>\n    </div>\n    <div class=\"vbs-timeline\">\n        <div class=\"vbs-record-preview\">\n            <div class=\"vbs-record-timeline-wrap\">\n                <div class=\"\">\n                    <div class=\"vbs-dragger\"></div>\n                    <div class=\"vbs-record-timeline\"></div>\n                    <div class=\"vbs-record-progress\"></div>\n                    <div class=\"vbs-speakers\"></div>\n                    <div class=\"vbs-player-slider\"></div>\n                    <div class=\"vbs-record_buffer\"></div>\n                    <div class=\"vbs-utterance-markers\"></div>\n                </div>\n                <!--markers-->\n                <div class=\"vbs-markers\"></div>\n                <div class=\"vbs-custom-markers\"></div>\n                <!-- / markers-->\n                <div class=\"vbs-markers-hovers\"></div>\n                <div class=\"vbs-comments-wrapper-block\"></div>\n                <div class=\"vbs-record-disabler\" style=\"width: 0;\"></div>\n            </div>\n        </div>\n    </div>\n    ";; if(locals.vbsButtons.share) { ;__output += "\n    <div class=\"vbs-share-btn-wrapper\">\n        <a href=\"#\" class=\"vbs-share-btn vbs-popup-btn\" data-title=\"Share\"></a>\n    </div>\n    ";; } ;__output += "\n\n    ";; if(!locals.is_iDevice()) { ;__output += "\n    <div class=\"vbs-volume-toolbar\">\n        <a href=\"#\" class=\"vbs-volume-btn\" data-title=\"Volume\"></a>\n        <div class=\"vbs-volume-toolbar-block\" style=\"display: none;\">\n            <div class=\"vbs-volume-slider\">\n                <div class=\"vbs-volume-slider-bg\"></div>\n                <div class=\"vbs-volume-slider-full\"></div>\n                <div class=\"vbs-volume-slider-handler\"></div>\n            </div>\n        </div>\n    </div>\n    ";; } ;__output += "\n\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['controls/controlsContainer']  = templates['controls/controlsContainer.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-after-controls-wrapper\">\n    <div class=\"vbs-player-control\"></div>\n    <div class=\"vbs-share-control\"></div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['controls/controlsPlacement']  = templates['controls/controlsPlacement.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div id=\"vbs-controls-placement\"><div class=\"vbs-controls-wrapper\"></div></div>\n";
     return __output.trim();
   };
-  
+
   templates['controls/controlsWrapper']  = templates['controls/controlsWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-controls-wrapper\"></div>";
     return __output.trim();
   };
-  
+
   templates['controls/readerExitBtn']  = templates['controls/readerExitBtn.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<a href=\"javascript:void(0)\" class=\"vbs-reader-exit\">\n    Exit\n</a>";
     return __output.trim();
   };
-  
+
   templates['keywords/customMarkers']  = templates['keywords/customMarkers.ejs'] = function(it) {
     var locals = it, __output = "";
     ; for (var time in locals.markers) { ;__output += "\n";; var position = locals.getPosition(time); ;__output += "\n";; var phrase = locals.unEscapeHtml(locals.markers[time]); ;__output += "\n\n<a href=\"#\" class=\"vbs-marker vbs-custom-marker\"\n   style=\"z-index:91; left:";;__output += escape(position);__output += "px;\"\n   stime=\"";;__output += escape(time);__output += "\">\n    <ins></ins>\n</a>\n<span ctime=\"";;__output += escape(time);__output += "\" class=\"vbs-comment\">";;__output = [__output, phrase].join("");__output += "</span>\n\n";; } ;__output += "\n";
     return __output.trim();
   };
-  
+
   templates['keywords/deleteTopicPopup']  = templates['keywords/deleteTopicPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-comments-popup vbs-popup vbs-topic-delete-popup\"\n        data-topic=\"";;__output += escape(locals.topicName);__output += "\"\n        style=\"left: ";;__output += escape(locals.left);__output += "px; top: ";;__output += escape(locals.top);__output += "px;\">\n\n    <div class=\"vbs-arrow\"></div>\n    <span>Delete Topic?</span>\n    <div class=\"vbs-comment-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Yes</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\">No</a>\n    </div>\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['keywords/emptyMessage']  = templates['keywords/emptyMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-keyword-message\">\n    <div class=\"vbs-message vbs-message-error\">\n        <p>None of the specified keywords or phrases were spotted for this media file</p>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['keywords/keywordItem']  = templates['keywords/keywordItem.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<li class=\"";;__output += escape(locals.times.length > 0 ? 'key' : '');__output += "\">\n   <a href=\"#\" t=\"";;__output += escape(locals.times.join());__output += "\" speakers=\"";;__output += escape(locals.spkeys);__output += "\" ";;__output += escape(locals.sptimes);__output += ">\n        ";;__output += escape(locals.name);__output += "\n   </a>\n    ";; if(locals.keywordsCounter) { ;__output += "\n    <span>(";;__output += escape(locals.times.length);__output += ")</span>\n    ";; } ;__output += "\n</li>";
     return __output.trim();
   };
-  
+
   templates['keywords/keywordsBlock']  = templates['keywords/keywordsBlock.ejs'] = function(it) {
     var locals = it, __output = "";
-    ; var tabClass = (locals.tabView) ? 'vbs-tab' : '' ;__output += "\n";; var hasFilepickerBtn = locals.vbsButtons.evernote && typeof filepicker !== 'undefined'; ;__output += "\n\n<div class=\"vbs-keywords-block ";;__output += escape(tabClass);__output += "\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\" data-title=\"Hide Keywords\">\n            <span class=\"vbs-section-name\">Keywords</span>\n        </div>\n        \n        <div class=\"vbs-search-form vbs-no-speaker ";; if(hasFilepickerBtn) { ;__output += " vbs-one-btn ";; } else { ;__output += " vbs-no-btns ";; } ;__output += "\">\n            ";; if(!locals.searchBarOuter) { ;__output += "\n            <form action=\"#\" id=\"vbs-search-form\">\n                <div class=\"vbs-widget-wrap\">\n                    <div class=\"vbs-widget\">\n                        <input name=\"get_voice_search\" value=\"\" size=\"20\" id=\"vbs-voice_search_txt\" class=\"vbs-formfields\" type=\"text\" placeholder=\"Search Keywords...\" autocomplete=off>\n                        <div id=\"vbs-search-string\">\n                            <div class=\"vbs-marquee\">\n                                <div class=\"vbs-search-word-widget\"></div>\n                            </div>\n                        </div>\n                        ";; if(locals.vbsButtons.pwrdb) { ;__output += "\n                        <span class=\"vbs-powered-by-label\">Powered by VoiceBase</span>\n                        ";; } ;__output += "\n                    </div>\n                    <a href=\"#\" id=\"vbs-clear-string\" title=\"Clear String\"></a>\n                </div>\n                ";; if(locals.vbsButtons.unquotes) { ;__output += "\n                <a href=\"javascript:void(0)\" class=\"vbs-unquote-btn\">Unquoted</a>\n                ";; } ;__output += "\n\n                <div class=\"vbs-search-btn\" data-title=\"Search\">\n                    <button type=\"submit\"></button>\n                </div>\n            </form>\n            ";; } ;__output += "\n\n            <div class=\"vbs-select-speaker-wrapper\">\n                <div class=\"vbs-select-speaker\">Select speaker...</div>\n                <ul class=\"vbs-speaker-dropdown vbs-select-dropdown\"></ul>\n            </div>\n        </div>\n\n        ";; if(hasFilepickerBtn) { ;__output += "\n        <div class=\"vbs-section-btns\">\n            <ul>\n                <li>\n                    <a href=\"#\" class=\"vbs-evernote-btn\" data-title=\"Send to Evernote\"></a>\n                </li>\n            </ul>\n        </div>\n        ";; } ;__output += "\n\n        <div class=\"clear-block\"></div>\n    </div>\n    <!-- / section header-->\n    \n    <div class=\"vbs-section-body\">\n        <div class=\"vbs-keywords-wrapper vbs-scroll\" style=\"height: ";;__output += escape(voiceBase.settings.keywordsHeight);__output += "px;\">\n            <div class=\"vbs-topics\"></div>\n            <div class=\"vbs-keywords-list-wrapper\">\n                <div class=\"vbs-keywords-list-tab\"></div>\n            </div>\n            <div class=\"clear-block\"></div>\n        </div>\n\n        ";; if(voiceBase.settings.showMore) { ;__output += "\n        <div class=\"vbs-more-btn\"><a href=\"#\">Show More...</a></div>\n        ";; } ;__output += "\n    </div>\n</div>\n";
+    ; var tabClass = (locals.tabView) ? 'vbs-tab' : '' ;__output += "\n";; var hasFilepickerBtn = locals.vbsButtons.evernote && typeof filepicker !== 'undefined'; ;__output += "\n\n<div class=\"vbs-keywords-block ";;__output += escape(tabClass);__output += "\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\" data-title=\"Hide Keywords\">\n            <span class=\"vbs-section-name\">Keywords</span>\n        </div>\n        \n        <div class=\"vbs-search-form vbs-no-speaker ";; if(hasFilepickerBtn) { ;__output += " vbs-one-btn ";; } else { ;__output += " vbs-no-btns ";; } ;__output += "\">\n            ";; if(!locals.searchBarOuter) { ;__output += "\n            <form action=\"#\" id=\"vbs-search-form\">\n                <div class=\"vbs-widget-wrap\">\n                    <div class=\"vbs-widget\">\n                        <input name=\"get_voice_search\" value=\"\" size=\"20\" id=\"vbs-voice_search_txt\" class=\"vbs-formfields\" type=\"text\" placeholder=\"Search Keywords...\" autocomplete=off>\n                        <div id=\"vbs-search-string\">\n                            <div class=\"vbs-marquee\">\n                                <div class=\"vbs-search-word-widget\"></div>\n                            </div>\n                        </div>\n                        ";; if(locals.vbsButtons.pwrdb) { ;__output += "\n                        <span class=\"vbs-powered-by-label\"></span>\n                        ";; } ;__output += "\n                    </div>\n                    <a href=\"#\" id=\"vbs-clear-string\" title=\"Clear String\"></a>\n                </div>\n                ";; if(locals.vbsButtons.unquotes) { ;__output += "\n                <a href=\"javascript:void(0)\" class=\"vbs-unquote-btn\">Unquoted</a>\n                ";; } ;__output += "\n\n                <div class=\"vbs-search-btn\" data-title=\"Search\">\n                    <button type=\"submit\"></button>\n                </div>\n            </form>\n            ";; } ;__output += "\n\n            <div class=\"vbs-select-speaker-wrapper\">\n                <div class=\"vbs-select-speaker\">Select speaker...</div>\n                <ul class=\"vbs-speaker-dropdown vbs-select-dropdown\"></ul>\n            </div>\n        </div>\n\n        ";; if(hasFilepickerBtn) { ;__output += "\n        <div class=\"vbs-section-btns\">\n            <ul>\n                <li>\n                    <a href=\"#\" class=\"vbs-evernote-btn\" data-title=\"Send to Evernote\"></a>\n                </li>\n            </ul>\n        </div>\n        ";; } ;__output += "\n\n        <div class=\"clear-block\"></div>\n    </div>\n    <!-- / section header-->\n    \n    <div class=\"vbs-section-body\">\n        <div class=\"vbs-keywords-wrapper vbs-scroll\" style=\"height: ";;__output += escape(voiceBase.settings.keywordsHeight);__output += "px;\">\n            <div class=\"vbs-topics\"></div>\n            <div class=\"vbs-keywords-list-wrapper\">\n                <div class=\"vbs-keywords-list-tab\"></div>\n            </div>\n            <div class=\"clear-block\"></div>\n        </div>\n\n        ";; if(voiceBase.settings.showMore) { ;__output += "\n        <div class=\"vbs-more-btn\"><a href=\"#\">Show More...</a></div>\n        ";; } ;__output += "\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['keywords/keywordsUl']  = templates['keywords/keywordsUl.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<ul tid=\"";;__output += escape(locals.categoryName);__output += "\" class=\"";;__output += escape(locals.categoryClass);__output += "\">\n\n</ul>";
     return __output.trim();
   };
-  
+
   templates['keywords/markers']  = templates['keywords/markers.ejs'] = function(it) {
     var locals = it, __output = "";
     ; locals.times.forEach(function (time, i) { ;__output += "\n";; var position = locals.getPosition(parseFloat(time)); ;__output += "\n";; var phrase = (locals.phrases && locals.phrases[i]) ? locals.unEscapeHtml(locals.phrases[i]) : '';__output += "\n\n<a href=\"#\" class=\"vbs-marker\"\n        style=\"border-bottom-color:";;__output += escape(locals.color);__output += "; z-index:91; left:";;__output += escape(position);__output += "px;\"\n        stime=\"";;__output += escape(time);__output += "\">\n    <ins></ins>\n</a>\n<span ctime=\"";;__output += escape(time);__output += "\" class=\"vbs-comment\">";;__output = [__output, phrase].join("");__output += "</span>\n\n";; }); ;__output += "\n";
     return __output.trim();
   };
-  
+
   templates['keywords/markersHover']  = templates['keywords/markersHover.ejs'] = function(it) {
     var locals = it, __output = "";
     ; locals.times.forEach(function (time) { ;__output += "\n";; var position = locals.getPosition(parseFloat(time)); ;__output += "\n\n<a href=\"#\" class=\"vbs-marker key\" style=\"z-index:91; left:";;__output += escape(position);__output += "px;\" stime=\"";;__output += escape(time);__output += "\">\n    <ins></ins>\n</a>\n\n";; }); ;__output += "\n";
     return __output.trim();
   };
-  
+
   templates['keywords/plus']  = templates['keywords/plus.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<a href=\"#add\" class=\"vbs-add-search-word\" title=\"Add to all topics\"></a>";
     return __output.trim();
   };
-  
+
   templates['keywords/searchWordWidget']  = templates['keywords/searchWordWidget.ejs'] = function(it) {
     var locals = it, __output = "";
-    ; locals.words.forEach(function (word, i) { ;__output += "\n";; var color = (i > 7) ? locals.generateRandomColor() : locals.colors[i]; ;__output += "\n";; var clean_word = word.replace(/"/g, ''); ;__output += "\n\n<span class=\"vbs-word\">\n        <em>\n            <dfn style=\"border-bottom-color: ";;__output += escape(color);__output += ";\" class=\"vbs-marker\">\n                <ins></ins>\n            </dfn>\n            ";;__output += escape(clean_word);__output += "\n            <span class=\"vbs-search_word\" style=\"display:none\">";;__output += escape(word);__output += "</span>\n        </em>\n</span>\n\n";; }); 
+    ; locals.words.forEach(function (word, i) { ;__output += "\n";; var color = (i > 7) ? locals.generateRandomColor() : locals.colors[i]; ;__output += "\n";; var clean_word = word.replace(/"/g, ''); ;__output += "\n\n<span class=\"vbs-word\">\n        <em>\n            <dfn style=\"border-bottom-color: ";;__output += escape(color);__output += ";\" class=\"vbs-marker\">\n                <ins></ins>\n            </dfn>\n            ";;__output += escape(clean_word);__output += "\n            <span class=\"vbs-search_word\" style=\"display:none\">";;__output += escape(word);__output += "</span>\n        </em>\n</span>\n\n";; });
     return __output.trim();
   };
-  
+
   templates['keywords/topicList']  = templates['keywords/topicList.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<ul class=\"vbs-topics-list\">\n    ";; locals.categories.forEach(function (category) { ;__output += "\n    ";; var typeClass = locals.getCategoryClassString(category, 'group', 'vbs-all-topics'); ;__output += "\n\n    <li class=\"";;__output += escape(typeClass);__output += "\">\n        <a href=\"javascript:void(0);\" speakers=\"";;__output += escape(category.speakers);__output += "\">";;__output += escape(category.name);__output += "</a>\n        <div class=\"vbs-topic-del-btn-wrap\"><i class=\"vbs-cross-btn vbs-popup-btn\"></i></div>\n    </li>\n\n    ";; }); ;__output += "\n</ul>";
     return __output.trim();
   };
-  
+
   templates['menu/editMenu']  = templates['menu/editMenu.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var playTime = (locals.stime > 1) ? locals.stime - 1 : locals.stime  ;__output += "\n<ul class='vbs-vbcmenu'>\n    <li>\n        <a href=\"#\" class=\"vbsc-edit-play\" data-time=\"";;__output += escape(playTime);__output += "\">\n            Play\n        </a>\n    </li>\n\n    ";; if(locals.isInsertSpeaker) { ;__output += "\n    <li>\n        <a href=\"#\" class=\"vbsc-edit-speaker\" data-time=\"";;__output += escape(locals.stime * 1000);__output += "\">\n            Insert Speaker\n        </a>\n    </li>\n    ";; } ;__output += "\n\n    ";; if(locals.isRenameSpeaker) { ;__output += "\n    <li>\n        <a href=\"#\" class=\"vbsc-rename-speaker\" data-speaker-key=\"";;__output += escape(locals.speakerKey);__output += "\">\n            Rename Speaker\n        </a>\n    </li>\n    ";; } ;__output += "\n\n\n</ul>";
     return __output.trim();
   };
-  
+
   templates['menu/menu']  = templates['menu/menu.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<ul class='vbs-vbcmenu'>\n\n    ";; if(locals.hasCopyLib && locals.hasContextMenu) { ;__output += "\n    <li id=\"vbc_url\"><a href=\"#\">Copy URL</a></li>\n    ";; } ;__output += "\n\n    ";; if(locals.hasShareLib && locals.hasContextMenu) { ;__output += "\n    <li id=\"vbc_share\">\n        <a class=\"addthis_button_expanded addthis_default_style\" addthis:url=\"";;__output += escape(locals.url);__output += "\" addthis:title=\"Check out\">\n            Share\n        </a>\n    </li>\n    ";; } ;__output += "\n\n    ";; if(locals.canKeywordMenu) { ;__output += "\n    <li id=\"vbc_move\">\n        <span class=\"vbs-keyword_controls\">\n            ";; if(locals.hasPrevKeyword) { ;__output += "\n            <span class=\"vbs-vbe vbs-voicebase_first\" title=\"Move to Top\">Move to Top</span>\n            <span class=\"vbs-vbe vbs-voicebase_up\" title=\"Move up\">Move up</span>\n            ";; } ;__output += "\n\n            ";; if(locals.hasNextKeyword) { ;__output += "\n            <span class=\"vbs-vbe vbs-voicebase_down\" title=\"Move down\">Move down</span>\n            ";; } ;__output += "\n            <span class=\"vbs-vbe vbs-voicebase_remove\" title=\"Remove\">Remove</span>\n        </span>\n    </li>\n    ";; } ;__output += "\n\n</ul>";
     return __output.trim();
   };
-  
+
   templates['messages/abstractAlertPopup']  = templates['messages/abstractAlertPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-white-popup-overlay\">\n    <div class=\"vbs-big-error-popup\">\n        <h2>";;__output += escape(locals.errorTitle);__output += "</h2>\n\n        <p>";;__output += escape(locals.errorText);__output += "</p>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/abstractErrorPopup']  = templates['messages/abstractErrorPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-white-popup-overlay\">\n    <div class=\"vbs-big-error-popup\">\n        <a href=\"javascript:void(0)\" class=\"overlay_dismiss\">&times;</a>\n\n        <h2>";;__output += escape(locals.errorTitle);__output += "</h2>\n\n        <p>";;__output += escape(locals.errorText);__output += "</p>\n        <a href=\"javascript:location.reload();\" class=\"vbs-reload-btn\"></a>\n        <a href=\"http://www.voicebase.com/contact-us/\" target=\"_blank\" class=\"vbs-contact-support-btn\"></a>\n    </div>\n</div>';\n";
     return __output.trim();
   };
-  
+
   templates['messages/endSearchMessage']  = templates['messages/endSearchMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-message vbs-message-info\">\n    <p>Your search is taking a long time...</p>\n\n    <p>Please wait or click to\n        <a href=\"javascript:void(0)\" class=\"vbs-cancel-search\">Cancel</a>\n    </p>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['messages/errorPopup']  = templates['messages/errorPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-white-popup-overlay\">\n    <div class=\"vbs-big-error-popup\">\n        <a href=\"javascript:void(0)\" class=\"overlay_dismiss\">&times;</a>\n\n        <h2>Could not load recording data</h2>\n\n        <p>Indexing file may not be complete. If reloading does not solve the problem, please contact support for\n            assistance.</p>\n        <a href=\"javascript:location.reload();\" class=\"vbs-reload-btn\"></a>\n        <a href=\"http://www.voicebase.com/contact-us/\" target=\"_blank\" class=\"vbs-contact-support-btn\"></a>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/infoMessage']  = templates['messages/infoMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-message vbs-message-";;__output += escape(locals.mode);__output += "\">\n    <p>";;__output += escape(locals.errorText);__output += "</p>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/loggerBlock']  = templates['messages/loggerBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-logger\">\n    <textarea>\n        ";;__output += escape(locals.response);__output += "\n    </textarea>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/reloadOverlayCredentials']  = templates['messages/reloadOverlayCredentials.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-reload-overlay\">\n    <div class=\"vbs-reload-message-wrapper vbs-large-error-text vbs-clearfix\">\n        <div class=\"vbs-reload-message\">\n            <a href=\"javascript:void(0)\" class=\"overlay_dismiss\">&times;</a>\n            <span>Could not load recording data, indexing file may not be complete. If reload does not solve problem contact support for assistance</span>\n        </div>\n        <a href=\"javascript:location.reload();\" class=\"vbs-reload-btn\"></a>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/savingMessage']  = templates['messages/savingMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-saving\">\n    <div class=\"vbs-saving-inner\">\n        <div class=\"vbs-saving-loader\"></div>\n        <div class=\"vbs-saving-message\">Saving & Re-syncing...</div>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['messages/successSavingMessage']  = templates['messages/successSavingMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-success-saving\">\n    <div class=\"vbs-saving-inner\">\n        <div class=\"vbs-saving-loader\"></div>\n        <div class=\"vbs-saving-message\">Transcript Saved</div>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['messages/textErrorMessage']  = templates['messages/textErrorMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-text-error-message\">\n    <p>";;__output += escape(locals.errorText);__output += "</p>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['news/emptyNewsMessage']  = templates['news/emptyNewsMessage.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"empty_news_message\">\n    ";; if(locals.mode === 'not_found') { ;__output += "\n        ";;__output += escape('News are not founded');__output += "\n    ";; } else if(locals.mode === 'empty') {;__output += "\n        ";;__output += escape('Please select a keyword');__output += "\n    ";; } ;__output += "\n</div>";
     return __output.trim();
   };
-  
+
   templates['news/newsBlock']  = templates['news/newsBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var tabClass = (locals.tabView) ? 'vbs-tab' : '' ;__output += "\n\n<div class=\"vbs-news-block ";;__output += escape(tabClass);__output += "\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\" data-title=\"Show News\">\n            <span class=\"vbs-section-name\">\n                <span>News stories</span>\n                <span class=\"vbs-news-words-wrapper\">\n                    <span class=\"vbs-small-text\"> related to </span>\n                    <span class=\"vbs-news-words\"></span>\n                </span>\n            </span>\n        </div>\n    </div>\n    <!--wrapper for news content-->\n    <div class=\"vbs-section-body\">\n        <div class=\"vbs-news-wrapper vbs-scroll\"></div>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['news/newsContent']  = templates['news/newsContent.ejs'] = function(it) {
     var locals = it, __output = "";
-    ; locals.allNews.forEach(function (news, i) { ;__output += "\n";; var isOdd = ((i + 1) % 2 === 0) ;__output += "\n<a href=\"";;__output += escape(news.Url);__output += "\" target=\"_blank\" class=\"vbs-news-elem ";; if(isOdd) { ;__output += " vbs-news-elem-odd ";; } ;__output += "\">\n    <div class=\"vbs-news-elem-title\">";;__output += escape(news.Title || '');__output += "</div>\n    <div class=\"vbs-news-elem-body\">\n        <span class=\"vbs-news-elem-source\">";;__output += escape(news.Source || '');__output += "</span>\n        <span>&nbsp;-&nbsp;</span>\n        <span class=\"vbs-news-elem-time\">";;__output += escape(news['Date']);__output += "</span>\n    </div>\n</a>\n";; if(isOdd) { ;__output += "\n<div class=\"clear-block\"></div>\n";; } ;__output += "\n\n";; }); 
+    ; locals.allNews.forEach(function (news, i) { ;__output += "\n";; var isOdd = ((i + 1) % 2 === 0) ;__output += "\n<a href=\"";;__output += escape(news.Url);__output += "\" target=\"_blank\" class=\"vbs-news-elem ";; if(isOdd) { ;__output += " vbs-news-elem-odd ";; } ;__output += "\">\n    <div class=\"vbs-news-elem-title\">";;__output += escape(news.Title || '');__output += "</div>\n    <div class=\"vbs-news-elem-body\">\n        <span class=\"vbs-news-elem-source\">";;__output += escape(news.Source || '');__output += "</span>\n        <span>&nbsp;-&nbsp;</span>\n        <span class=\"vbs-news-elem-time\">";;__output += escape(news['Date']);__output += "</span>\n    </div>\n</a>\n";; if(isOdd) { ;__output += "\n<div class=\"clear-block\"></div>\n";; } ;__output += "\n\n";; });
     return __output.trim();
   };
-  
+
   templates['players/expandBtn']  = templates['players/expandBtn.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<li>\n    <a href=\"#\" class=\"vbs-expand-btn\" data-title=\"Expand Video\"></a>\n</li>";
     return __output.trim();
   };
-  
+
   templates['players/fullscreenExitBtn']  = templates['players/fullscreenExitBtn.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<a href=\"#\" class=\"vbs-fullscreen-exit\">Exit</a>";
     return __output.trim();
   };
-  
+
   templates['players/playerWrapper']  = templates['players/playerWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-player-wrapper vbs-";;__output += escape(locals.randId);__output += "\">\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['players/playlist']  = templates['players/playlist.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-playlist collapsed\">\n    <div class=\"vbs-selected-playlist-item\">\n        <div class=\"vbs-item-name\"></div>\n        <i></i>\n    </div>\n    <div class=\"vbs-clearfix\"></div>\n    <ul class=\"vbs-playlist-dropdown\">\n\n        ";; locals.playlist.forEach(function(item, index) { ;__output += "\n        <li class=\"vbs-playlist-item\" data-playlist-item-index=\"";;__output = [__output, index].join("");__output += "\">\n            <span class=\"vbs-playlist-item-title\">";;__output += escape(item.title);__output += "</span>\n        </li>\n        ";; }); ;__output += "\n\n    </ul>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['players/timeInPlayer']  = templates['players/timeInPlayer.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<span class=\"vbs-time vbs-time-in-player\">\n    <span class=\"vbs-ctime\">00:00:00</span> /\n    <span class=\"vbs-ftime\">";;__output = [__output, locals.time].join("");__output += "</span>\n</span>";
     return __output.trim();
   };
-  
+
   templates['search/searchBarOuter']  = templates['search/searchBarOuter.ejs'] = function(it) {
     var locals = it, __output = "";
-    ;__output += "<div id=\"vbs-searchbar-block\">\n    <div class=\"vbs-search-form vbs-no-speaker\">\n        <form action=\"#\" id=\"vbs-search-form\">\n            <div class=\"vbs-widget-wrap\">\n                <div class=\"vbs-widget\">\n                    <input name=\"get_voice_search\" value=\"\" size=\"20\" id=\"vbs-voice_search_txt\" class=\"vbs-formfields\" type=\"text\" placeholder=\"Search Keywords...\" autocomplete=off>\n                    <div id=\"vbs-search-string\">\n                        <div class=\"vbs-marquee\">\n                            <div class=\"vbs-search-word-widget\"></div>\n                            </div>\n                        </div>\n                    ";; if(voiceBase.settings.vbsButtons.pwrdb) { ;__output += "\n                    <span class=\"vbs-powered-by-label\">Powered by VoiceBase</span>\n                    ";; } ;__output += "\n                </div>\n                <a href=\"#\" id=\"vbs-clear-string\" title=\"Clear String\"></a>\n            </div>\n\n            ";; if(voiceBase.settings.vbsButtons.unquotes) { ;__output += "\n            <a href=\"javascript:void(0)\" class=\"vbs-unquote-btn\">Unquoted</a>\n            ";; } ;__output += "\n\n            <div class=\"vbs-search-btn\" data-title=\"Search\">\n               <button type=\"submit\"></button>\n            </div>\n        </form>\n    </div>\n</div>\n";
+    ;__output += "<div id=\"vbs-searchbar-block\">\n    <div class=\"vbs-search-form vbs-no-speaker\">\n        <form action=\"#\" id=\"vbs-search-form\">\n            <div class=\"vbs-widget-wrap\">\n                <div class=\"vbs-widget\">\n                    <input name=\"get_voice_search\" value=\"\" size=\"20\" id=\"vbs-voice_search_txt\" class=\"vbs-formfields\" type=\"text\" placeholder=\"Search Keywords...\" autocomplete=off>\n                    <div id=\"vbs-search-string\">\n                        <div class=\"vbs-marquee\">\n                            <div class=\"vbs-search-word-widget\"></div>\n                            </div>\n                        </div>\n                    ";; if(voiceBase.settings.vbsButtons.pwrdb) { ;__output += "\n                    <span class=\"vbs-powered-by-label\"></span>\n                    ";; } ;__output += "\n                </div>\n                <a href=\"#\" id=\"vbs-clear-string\" title=\"Clear String\"></a>\n            </div>\n\n            ";; if(voiceBase.settings.vbsButtons.unquotes) { ;__output += "\n            <a href=\"javascript:void(0)\" class=\"vbs-unquote-btn\">Unquoted</a>\n            ";; } ;__output += "\n\n            <div class=\"vbs-search-btn\" data-title=\"Search\">\n               <button type=\"submit\"></button>\n            </div>\n        </form>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['search/searchWrapper']  = templates['search/searchWrapper.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div id=\"vbs-searchbar-block\" class=\"vbs-controls-after-searchbar vbs-searchbar-outer\">\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['predictions/predictions']  = templates['predictions/predictions.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var tabClass = (voiceBase.settings.tabView) ? 'vbs-tab' : '' ;__output += "\n\n<div class=\"vbs-predictions-block ";;__output += escape(tabClass);__output += "\">\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\" data-title=\"Show Predictions\">\n            <span class=\"vbs-section-name\">\n                <span>Predictions</span>\n            </span>\n        </div>\n    </div>\n    <div class=\"vbs-section-body\">\n        <div class=\"vbs-predictions-wrapper vbs-scroll\">\n        </div>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['predictions/predictionsData']  = templates['predictions/predictionsData.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<table class=\"vbs-predictions-table\">\n    <thead>\n    <tr>\n        <th>Model Id</th>\n        <th>Type</th>\n        <th>Class</th>\n    </tr>\n    </thead>\n    <tbody>\n    ";; locals.predictions.forEach(function(prediction){ ;__output += "\n    <tr>\n        <td> prediction.model + '</td>\n        <td> prediction.type + '</td>\n        <td> prediction.class + '</td>\n    </tr>\n    ";; }) ;__output += "\n    </tbody>\n</table>";
     return __output.trim();
   };
-  
+
   templates['share/addthisBox']  = templates['share/addthisBox.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-share-social-row vbs-clearfix\">\n    <span>Choose one:</span>\n    <div class=\"vbs-social-wrapper\">\n        <div class=\"vbs-addthis-toolbox addthis_toolbox addthis_default_style\">\n            ";; locals.buttons.forEach(function(button) { ;__output += "\n            <a class=\"addthis_button_";;__output += escape(button);__output += "\"></a>\n            ";; }); ;__output += "\n            <a class=\"addthis_counter addthis_bubble_style\"></a>\n        </div>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['share/sharePopup']  = templates['share/sharePopup.ejs'] = function(it) {
     var locals = it, __output = "";
     var include = function(tplName, data) { return render(tplName, data); }
@@ -7446,91 +7446,91 @@ voiceBase = (function(VB, $) {
           })].join("");__output += "\n    ";; } ;__output += "\n\n    <div class=\"vbs-share-footer\">\n        ";; if(locals.isShare) { ;__output += "\n        <span>or</span>\n        <a href=\"#\" class=\"vbs-voicebase-share-btn\">Share with E-mail</a>\n        ";; } ;__output += "\n\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['speakers/insertSpeakerPopup']  = templates['speakers/insertSpeakerPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-insert-speaker-popup vbs-common-popup\" style=\"top: ";;__output += escape(locals.top);__output += "px; left: ";;__output += escape(locals.left);__output += "px;\">\n    <div class=\"vbs-arrow\"></div>\n    <div class=\"vbs-common-popup-header vbs-clearfix\">\n        <div class=\"rename_speaker_label\">Insert speaker</div>\n    </div>\n    <div class=\"vbs-common-popup-body\">\n        <div class=\"vbs-select-wrapper vbs-select-insert-speaker-wrapper\">\n            <div class=\"vbs-select-title vbs-select-insert-speaker vbs-new-speaker\">\n                <div class=\"vbs-speaker-selected\">Insert new speaker</div>\n            </div>\n            <ul class=\"vbs-speaker-dropdown vbs-select-dropdown\">\n                <li class=\"vbs-insert-new-speaker\">Insert new speaker</li>\n\n                ";; locals.speakersKeys.forEach(function(speakerKey){ ;__output += "\n                ";; var speakerName = locals.getSpeakerNameByKey(speakerKey); ;__output += "\n                    <li data-speaker-key=\"";;__output += escape(speakerKey);__output += "\">";;__output += escape(speakerName);__output += "</li>\n                ";;});;__output += "\n\n            </ul>\n        </div>\n        <div class=\"vbs-speaker-input-wrapper\">\n            <input type=\"text\" data-vbs-validate=\"required,ignore[invisible]\" class=\"vbs-insert-speaker-input\" value=\"\" placeholder=\"Enter speaker name\"/>\n        </div>\n    </div>\n    <div class=\"vbs-common-popup-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\">Insert</a>\n    </div>\n</div>\n\n";
     return __output.trim();
   };
-  
+
   templates['speakers/insertSpeakerText']  = templates['speakers/insertSpeakerText.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<span class=\"w vbs-wd vbs-edit-speaker\" m=\"";;__output += escape(locals.speakerKey);__output += "\" t=\"";;__output += escape(locals.speakerTime);__output += "\">\n    <br><br>\n    ";;__output += escape(locals.speakerName);__output += ":\n</span>\n";
     return __output.trim();
   };
-  
+
   templates['speakers/renameSpeakerPopup']  = templates['speakers/renameSpeakerPopup.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-rename-speaker-popup vbs-common-popup\" style=\"top: ";;__output += escape(locals.top);__output += "px; left: ";;__output += escape(locals.left);__output += "px;\">\n    <div class=\"vbs-arrow\"></div>\n    <div class=\"vbs-common-popup-header vbs-clearfix\">\n        <div class=\"rename_speaker_label\">Rename speaker</div>\n        <div class=\"vbs-old-speaker-name\">";;__output += escape(locals.currentSpeakerName);__output += "</div>\n        <div class=\"rename_speaker_label\">to:</div>\n    </div>\n    <div class=\"vbs-common-popup-body\">\n        <input type=\"text\" id=\"vbs-rename_speaker_input\" data-vbs-validate=\"required\" data-old-speaker-key=\"";;__output += escape(locals.currentSpeakerKey);__output += "\" placeholder=\"Enter new speaker name\"/>\n    </div>\n    <div class=\"vbs-common-popup-footer\">\n        <a href=\"#\" class=\"vbs-cancel-btn\">Cancel</a>\n        <a href=\"#\" class=\"vbs-confirm-btn\">Rename</a>\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['speakers/speakerIsSpeaking']  = templates['speakers/speakerIsSpeaking.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<span class=\"";;__output += escape(locals.speakerKey);__output += "\">";;__output += escape(locals.speakerName);__output += "</span> is speaking\n";
     return __output.trim();
   };
-  
+
   templates['speakers/speakerList']  = templates['speakers/speakerList.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<li data-speaker=\"all\">All Speakers</li>\n";; for (var sp in locals.speakers) { ;__output += "\n<li data-speaker=\"";;__output += escape(sp);__output += "\">";;__output += escape(locals.speakers[sp]);__output += "</li>\n";; } ;__output += "\n\n";
     return __output.trim();
   };
-  
+
   templates['speakers/speakerTranscriptLabel']  = templates['speakers/speakerTranscriptLabel.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<span class=\"vbs-clearfix\"></span>\n<span class=\"vbs-trans-info\">\n    <span class=\"vbs-human-trans-name ";;__output += escape(locals.spClass);__output += "\" title=\"";;__output += escape(locals.speakerName);__output += "\">\n        ";;__output += escape(locals.speakerName);__output += "\n    </span>\n    <span class=\"vbs-human-trans-time\">";;__output += escape(locals.speakerTime);__output += "</span>\n</span>\n";
     return __output.trim();
   };
-  
+
   templates['speakers/timelineSpeaker']  = templates['speakers/timelineSpeaker.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-speaker ";;__output += escape(locals.colorclass);__output += "\"\n     rel=\"tooltip\" data-plcement=\"top\" \n     style=\"width: ";;__output += escape(locals.width);__output += "px; left: ";;__output += escape(locals.position);__output += "px;\"\n     s=\"";;__output += escape(locals.s);__output += "\"\n     e=\"";;__output += escape(locals.e);__output += "\"\n     cnum=\"";;__output += escape(locals.colorclass);__output += "\">\n    \n</div>";
     return __output.trim();
   };
-  
+
   templates['transcript/editTranscript']  = templates['transcript/editTranscript.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-edit-mode-wrapper\">\n    <div class=\"vbs-controls-wrapper\">\n        <div id=\"vbs-controls\" class=\"vbs-controls-box\">\n            <div class=\"vbs-edition-btns vbs-clearfix\">\n                <div class=\"vbs-save-exit-btns\">\n                    <a href=\"#\" class=\"vbs-save-btn vbs-save-edition-popup-trigger\" id=\"vbs-save-edition-popup-trigger\">\n                        Save & Re-sync\n                    </a>\n                    <a href=\"#\" class=\"vbs-exit-btn vbs-edit-mode-exit\">Exit</a>\n                </div>\n            </div>\n            <div class=\"vbs-record-player vbs-3-left-btns\">\n                <div class=\"vbs-player-control\">\n                    <a href=\"#\" class=\"vbs-play-btn\" data-title=\"Play\"></a>\n                    <a href=\"#\" class=\"vbs-prev-btn\" data-title=\"Back 15 Seconds\"></a>\n                    <a href=\"#\" class=\"vbs-next-action-btn vbs-next-notactive\" data-title=\"Next Keyword Marker\"></a>\n                </div>\n                <div class=\"vbs-time-name-wrapper-narrow\" style=\"opacity: 0;\">\n                    <span class=\"vbs-time\">\n                        <span class=\"vbs-ctime\">00:00:00</span> / <span class=\"vbs-ftime\">00:04:03</span>\n                    </span> \n                    <br>\n                    <span class=\"vbs-voice-name\"></span>\n                </div>\n                <div class=\"vbs-timeline\">\n                    <div class=\"vbs-record-preview\">\n                        <div class=\"vbs-record-timeline-wrap\">\n                            <div class=\"\">\n                                <div class=\"vbs-dragger\"></div>\n                                <div class=\"vbs-record-timeline\"></div>\n                                <div class=\"vbs-record-progress\" style=\"width: 0;\"></div>\n                                <div class=\"vbs-speakers\"></div>\n                                <div class=\"vbs-player-slider\" style=\"left: 0;\"></div>\n                                <div class=\"vbs-record_buffer\"></div>\n                            </div>\n                            <!--markers-->\n                            <div class=\"vbs-markers\"></div>\n                            <!-- / markers-->\n                            <div class=\"vbs-markers-hovers\"></div>\n                            <div class=\"vbs-comments-wrapper-block\"></div>\n                            <div class=\"vbs-record-disabler\" style=\"width: 0;\"></div>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"vbs-volume-toolbar\">\n                    <a href=\"#\" class=\"vbs-volume-btn\" data-title=\"Volume\"></a>\n\n                    <div class=\"vbs-volume-toolbar-block\" style=\"display: none;\">\n                        <div class=\"vbs-volume-slider\">\n                            <div class=\"vbs-volume-slider-bg\"></div>\n                            <div class=\"vbs-volume-slider-full\"></div>\n                            <div class=\"vbs-volume-slider-handler\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div class=\"vbs-edit-instr vbs-clearfix\">\n        <div class=\"vbs-mouse-btns-desc\">\n            <span><b>Left click</b> on text to <em>Edit</em></span>\n            <span><b>Right click</b> on text to <em>Menu</em></span>\n        </div>\n    </div>\n    <div class=\"vbs-edition-block\" contenteditable=\"true\">\n        ";;__output = [__output, locals.ourtranscript].join("");__output += "\n    </div>\n    <div class=\"vbs-popup-overlay vbs-save-popup-wrapper\">\n        <div class=\"vbs-save-popup\">\n            <h2>Unsaved Changes</h2>\n\n            <p class=\"vbs-normal-save-message\">You have unsaved changes that will be lost unless you save them.</p>\n\n            <p class=\"vbs-save-message-short-editing\">\n                Edited transcript is too short relative to the original and may be rejected by the system. Attempt to save?\n            </p>\n\n            <p class=\"vbs-save-message-long-editing\">\n                Edited transcript is too long relative to the original and may be rejected by the system. Attempt to save?\n            </p>\n            <a href=\"#\" class=\"vbs-save-btn vbs-save-edition-btn\">Save Changes</a>\n            <a href=\"#\" class=\"vbs-exit-btn vbs-discard-edition-btn\">Discard Changes</a>\n            <a href=\"#\" class=\"vbs-exit-btn vbs-cancel-edition-btn\">Cancel</a>\n        </div>\n        <div class=\"vbs-save-done-popup\">\n            <div class=\"vbs-save-done-img\"></div>\n            <h3>Done!</h3>\n        </div>\n        <div class=\"vbs-save-loading-popup\">\n            <div class=\"vbs-ajax-loader\"></div>\n            <h3>Saving & Re-syncing!</h3>\n\n            <p>This may take a little time, especially if you’re editing a longer transcript.</p>\n        </div>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['transcript/transcriptBlock']  = templates['transcript/transcriptBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ; var tabClass = (locals.tabView) ? 'vbs-tab' : '' ;__output += "\n";; var resizingStyle = (!voiceBase.settings.showMore) ? 'vbs-no-showmore-btn' : '' ;__output += "\n\n<div class=\"vbs-transcript-block ";;__output += escape(tabClass);__output += " ";;__output += escape(resizingStyle);__output += "\">\n    <div class=\"vbs-edit-mode-prewrapper\"></div>\n    <div class=\"vbs-section-header\">\n        <div class=\"vbs-section-title\">\n            <span class=\"vbs-section-name vbs-snh\">human transcript</span>\n            <span class=\"vbs-section-name vbs-snm\">machine transcript</span>\n        </div>\n\n        ";; if(locals.vbsButtons.orderTranscript) { ;__output += "\n        <div class=\"vbs-order-human-trans\" data-title=\"See Transcript Price & Options\">\n            <a href=\"#\" target=\"_blank\">Order Human Transcript</a>\n        </div>\n        ";; } ;__output += "\n\n        <div class=\"vbs-section-btns\">\n            <ul class=\"vbs-clearfix\">\n                ";; if(locals.vbsButtons.downloadTranscript) { ;__output += "\n                <li><a href=\"#\" class=\"vbs-cloud-btn vbs-popup-btn\" data-title=\"Download Transcript\"></a>\n                    <div class=\"vbs-download-popup vbs-popup\">\n                        <div class=\"vbs-arrow\"></div>\n                        <h3>Download transcript</h3>\n                        <a href=\"#pdf\" class=\"vbs-donwload-pdf\" format=\"pdf\">PDF</a>\n                        <a href=\"#rtf\" class=\"vbs-donwload-rtf\" format=\"rtf\">RTF</a>\n                        <a href=\"#srt\" class=\"vbs-donwload-srt\" format=\"srt\">SRT</a>\n                    </div>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.edit) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-edit-btn\" data-title=\"Edit Transcript\"></a>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.print) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-print-btn\" data-title=\"Print Transcript\"></a>\n                </li>\n                ";; } ;__output += "\n\n                ";; if(locals.vbsButtons.readermode) { ;__output += "\n                <li>\n                    <a href=\"#\" class=\"vbs-readermode-btn\" data-title=\"Reader Mode\"></a>\n                </li>\n                ";; } ;__output += "\n\n            </ul>\n        </div>\n    </div>\n    <div class=\"vbs-section-body\">\n        <div class=\"vbs-transcript-prewrapper vbs-resizable\">\n            <div class=\"vbs-transcript-wrapper\"></div>\n        </div>\n\n        ";; if(voiceBase.settings.showMore) { ;__output += "\n        <div class=\"vbs-more-btn\">\n            <a href=\"#\">Show More...</a>\n        </div>\n        ";; } ;__output += "\n\n    </div>\n</div>\n";
     return __output.trim();
   };
-  
+
   templates['transcript/transcriptPlacement']  = templates['transcript/transcriptPlacement.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div id=\"transcript_placement\">\n\n</div>";
     return __output.trim();
   };
-  
+
   templates['utterance/utteranceBlock']  = templates['utterance/utteranceBlock.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-utterance-block vbs-clearfix\">\n    <div class=\"vbs-utterance-title\">\n        <p>utterance detection</p>\n    </div>\n    <div class=\"vbs-utterance-list\">\n        <ul class=\"vbs-clearfix\">\n        </ul>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['utterance/utteranceCheckBox']  = templates['utterance/utteranceCheckBox.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<li>\n    <label class=\"vbs-utter-";;__output += escape(locals.rownum);__output += "\">\n        <input type=\"checkbox\" checked data-row=\"";;__output += escape(locals.rownum);__output += "\"/>\n        ";;__output += escape(locals.title);__output += "\n        <span class=\"vbs-utter-num\">(";;__output += escape(locals.segmentsCount);__output += ")</span>\n    </label>\n</li>";
     return __output.trim();
   };
-  
+
   templates['utterance/utteranceMarker']  = templates['utterance/utteranceMarker.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-utter-marker\n        vbs-utter-";;__output += escape(locals.rownum);__output += "\n        vbs-utter-row";;__output += escape(locals.rownum);__output += "\"\n        data-stime=\"";;__output += escape(locals.startTime);__output += "\"\n        style=\"width:";;__output += escape(locals.width);__output += "px; left:";;__output += escape(locals.position);__output += "px;\">\n\n    <div class=\"vbs-utter-tooltip\">\n        <p class=\"vbs-utter-title\">";;__output += escape(locals.title);__output += "</p>\n\n        <p class=\"vbs-utter-time\">";;__output += escape(locals.time);__output += "</p>\n    </div>\n</div>";
     return __output.trim();
   };
-  
+
   templates['utterance/utteranceMarkerV2']  = templates['utterance/utteranceMarkerV2.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-utter-marker\n            vbs-utter-";;__output += escape(locals.rownum);__output += "\n            vbs-utter-row";;__output += escape(locals.rownum);__output += "\"\n    data-stime=\"";;__output += escape(locals.startTime);__output += "\"\n    style=\"width:";;__output += escape(locals.width);__output += "px; left:";;__output += escape(locals.position);__output += "px;\">\n</div>";
     return __output.trim();
   };
-  
+
   templates['youtube/languageSelect']  = templates['youtube/languageSelect.ejs'] = function(it) {
     var locals = it, __output = "";
     ;__output += "<div class=\"vbs-select-wrapper vbs-select-language-wrapper\">\n    <div class=\"vbs-select-title vbs-select-language\">Select language...</div>\n    <ul class=\"vbs-language-dropdown vbs-select-dropdown\">\n\n        ";; locals.languages.forEach(function (lang) { ;__output += "\n            ";; var langCode = Object.keys(lang)[0] ;__output += "\n\n            <li data-lang-code=\"";;__output += escape(langCode);__output += "\">";;__output += escape(lang[langCode]);__output += "</li>\n\n        ";; }); ;__output += "\n\n    </ul>\n</div>\n";

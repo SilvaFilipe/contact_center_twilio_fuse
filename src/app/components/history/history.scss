@@ -39,3 +39,15 @@
   min-width: 520px;
 }
 
+.fl1{
+  flex: 1 !important;
+  -webkit-box-flex: 1 !important;
+}
+
+.ellipsis{
+  height: 20px;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  word-break: break-all;
+  white-space: nowrap;
+}

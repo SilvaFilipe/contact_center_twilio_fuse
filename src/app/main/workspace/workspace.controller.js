@@ -65,6 +65,9 @@
               $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
                 list.on("itemAdded", function(item) {
                   console.log("List item added!", item);
+                  if (item.value.type == 'call-end' || item.value.type == 'transcription-sent'){
+                    console.log('time to update history tab');
+                  }
                   if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
                     $http.post('/api/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);
@@ -533,7 +536,7 @@
       $scope.$on('callStatusChanged', function (event, data) {
 
         $scope.callTasks.filter(function (callItem) {
-          if (callItem.callSid == data.callSid) {
+          if (callItem.callSid == data.callSid && !$scope.currentCall.isCompleted()) {
             if (callItem.isExtensionCall() && data.callEvent.callStatus == 'Completed') {
               callItem.callStatus = 'completed';
             }
@@ -576,7 +579,7 @@
           $scope.currentCall = null;
           $rootScope.$broadcast('DisconnectSoftware');
         }
-        if ($scope.currentCall) {
+        if ($scope.currentCall && !$scope.currentCall.isCompleted()) {
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
             $scope.startWorkingCounter();
