@@ -579,7 +579,7 @@
           $scope.currentCall = null;
           $rootScope.$broadcast('DisconnectSoftware');
         }
-        if ($scope.currentCall && $scope.currentCall.isCompleted()) {
+        if ($scope.currentCall && !$scope.currentCall.isCompleted()) {
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
             $scope.startWorkingCounter();
