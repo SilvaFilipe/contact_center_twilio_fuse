@@ -65,6 +65,9 @@
               $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
                 list.on("itemAdded", function(item) {
                   console.log("List item added!", item);
+                  if (item.value.type == 'call-end' || item.value.type == 'transcription-sent'){
+                    console.log('time to update history tab');
+                  }
                   if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
                     $http.post('/api/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);

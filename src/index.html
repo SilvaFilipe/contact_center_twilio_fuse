@@ -69,10 +69,15 @@
         <!-- endbower -->
         <!-- endbuild -->
 
-
+        <!-- build:js({.tmp/serve,.tmp/partials,src}) scripts/app.js -->
         <!-- inject:js -->
         <!-- js files will be automatically insert here -->
         <!-- endinject -->
+
+        <!-- inject:partials -->
+        <!-- angular templates will be automatically converted in js and inserted here -->
+        <!-- endinject -->
+        <!-- endbuild -->
 
         <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.4/twilio.min.js"></script>
         <script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.9/taskrouter.min.js"></script>

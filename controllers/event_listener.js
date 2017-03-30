@@ -40,6 +40,11 @@ module.exports.transcription_events = function (req, res) {
         } else {
           console.log('updated with transcription' + call2.callSid);
           call2.saveSync();
+          call2.user_ids.map( function(userid) {
+            var mData = {type: 'transcription-sent', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
+            sync.saveList ('m' + userid, mData);
+          });
+
         }
         res.status(200);
         res.setHeader('Content-Type', 'application/xml')
@@ -224,6 +229,12 @@ module.exports.call_events = function (req, res) {
           } else {
             console.log('updated with correct sequence ' + call2.callSid);
             call2.saveSync();
+            if (callStatus == 'completed'){
+              call2.user_ids.map( function(userid) {
+                var mData = {type: 'call-end', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
+                sync.saveList ('m' + userid, mData);
+              });
+            }
           }
         });
       } else {
