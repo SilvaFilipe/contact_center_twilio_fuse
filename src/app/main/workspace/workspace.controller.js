@@ -536,7 +536,7 @@
       $scope.$on('callStatusChanged', function (event, data) {
 
         $scope.callTasks.filter(function (callItem) {
-          if (callItem.callSid == data.callSid) {
+          if (callItem.callSid == data.callSid && callItem.callStatus != 'completed') {
             if (callItem.isExtensionCall() && data.callEvent.callStatus == 'Completed') {
               callItem.callStatus = 'completed';
             }
