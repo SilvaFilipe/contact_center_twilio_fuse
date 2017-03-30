@@ -536,7 +536,7 @@
       $scope.$on('callStatusChanged', function (event, data) {
 
         $scope.callTasks.filter(function (callItem) {
-          if (callItem.callSid == data.callSid && callItem.callStatus != 'completed') {
+          if (callItem.callSid == data.callSid && !$scope.currentCall.isCompleted()) {
             if (callItem.isExtensionCall() && data.callEvent.callStatus == 'Completed') {
               callItem.callStatus = 'completed';
             }
@@ -579,7 +579,7 @@
           $scope.currentCall = null;
           $rootScope.$broadcast('DisconnectSoftware');
         }
-        if ($scope.currentCall) {
+        if ($scope.currentCall && $scope.currentCall.isCompleted()) {
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get('/api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $scope.currentCall.conferenceName);
             $scope.startWorkingCounter();
