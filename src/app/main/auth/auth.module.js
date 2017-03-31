@@ -13,7 +13,7 @@
 
     service.responseError = function(response) {
       if (response.status == 401){
-        window.location = "/login";
+        window.location = "/access/login";
       }
       return $q.reject(response);
     };
@@ -21,14 +21,19 @@
 
   function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider, $httpProvider) {
     // State
-    $stateProvider.state('app.auth_login', {
+    $stateProvider.state('auth', {
+      abstract:true,
+      url:'/access'
+    });
+    // State
+    $stateProvider.state('auth.login', {
       url      : '/login',
       views    : {
         'main@': {
           templateUrl: 'app/core/layouts/content-only.html',
           controller : 'MainController as vm'
         },
-        'content@app.auth_login': {
+        'content@auth.login': {
           templateUrl: 'app/main/auth/login/login.html',
           controller : 'LoginController as vm'
         }
@@ -36,7 +41,7 @@
       bodyClass: 'login'
     });
 
-    $stateProvider.state('app.auth_register', {
+    $stateProvider.state('auth.register', {
       url      : '/register',
       views    : {
         'main@': {

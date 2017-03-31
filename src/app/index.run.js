@@ -13,14 +13,14 @@
       // Activate loading indicator
       var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function (e, toState) {
         $rootScope.loadingProgress = true;
-        var isLogin = (toState.name === 'app.auth_login') || (toState.name === 'app.auth_register');
+        var isLogin = (toState.name === 'auth.login') || (toState.name === 'auth.login');
         if (isLogin) {
           return;
         }
 
         if(!authService.isLoggedIn()) {
           e.preventDefault(); // stop current execution
-          $state.go('app.auth_login'); // go to login
+          $state.go('auth.login'); // go to login
         }
 
       });

@@ -11,7 +11,7 @@
     {
         $locationProvider.html5Mode(true);
 
-        $urlRouterProvider.otherwise('/login');
+        $urlRouterProvider.otherwise('/workplace');
 
         /**
          * Layout Style Switcher
@@ -73,6 +73,12 @@
         $stateProvider
             .state('app', {
                 abstract: true,
+                data: {
+                  permissions: {
+                    except: ['anonymous'],
+                    redirectTo: 'auth.login'
+                  }
+                },
                 views   : {
                     'main@'         : {
                         templateUrl: layouts[layoutStyle].main,
