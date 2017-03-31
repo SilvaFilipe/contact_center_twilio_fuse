@@ -9,6 +9,7 @@
     /** @ngInject */
     function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall) {
       var vm = this;
+
       var func = function () {
         UserService.usersWithStars()
           .then(function (users) {
@@ -51,6 +52,7 @@
 
       $http.get('/api/users/me')
         .then(function (response) {
+          console.log('?????????????????')
           $scope.user = response.data.user;
           //Get an access token for the current user, passing a device ID
           //In browser-based apps, every tab is like its own unique device
@@ -67,6 +69,7 @@
                   console.log("List item added!", item);
                   if (item.value.type == 'call-end' || item.value.type == 'transcription-sent'){
                     console.log('time to update history tab');
+                    $rootScope.$broadcast('history.reload');
                   }
                   if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
                     $http.post('/api/callControl/inbound_ringing').then(function(res) {
@@ -377,7 +380,6 @@
 
 
       $scope.transfer = function (ev) {
-        console.log(ev)
         $mdDialog.show({
           controller: 'TransferDialogController',
           controllerAs: 'vm',
@@ -470,7 +472,6 @@
                     $rootScope.$broadcast('callStatusChanged', {callSid: data.callSid, callEvent: data});
 
                   }, function onError(response) {
-                    console.log(response.data);
                   });
                 });
             }
@@ -847,9 +848,7 @@
       };
 
       $scope.$on('SetActivitySid', function(event, activitySid) {
-        console.log('set ActivitySid: ' + activitySid);
         var selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
-        console.log(selectedActivitySid);
         $scope.workerJS.update('ActivitySid', selectedActivitySid, function (err, worker) {
           if (err) {
             $log.error(err);

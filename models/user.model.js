@@ -132,7 +132,7 @@ UserSchema.methods.syncWorker = function () {
         //create worker
         var newWorkerData = {
             friendlyName: user.friendlyWorkerName,
-            attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"default", "email":user.email})
+            attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"sales", "email":user.email})
         }
         console.log('new user data: ' + JSON.stringify(newWorkerData, null, 4));
         taskrouterClient.workspace.workers.create(newWorkerData)
@@ -153,7 +153,7 @@ UserSchema.methods.syncWorker = function () {
         console.log('update worker ' + this.workerSid );
         taskrouterClient.workspace.workers(this.workerSid ).update({
         friendlyName: user.friendlyWorkerName,
-        attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"default", "email":user.email})
+        attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"sales", "email":user.email})
       }, function(err, worker) {
         if (err){
             console.log('worker update error: ' + JSON.stringify(err, null, 4));

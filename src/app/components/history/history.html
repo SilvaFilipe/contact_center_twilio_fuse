@@ -50,20 +50,25 @@
   <md-content>
     <md-list>
       <md-list-item class="md-3-line" ng-repeat="call in $ctrl.calls | filter:$ctrl.historySearch | filter:$ctrl.filterCalls() " ng-if="$ctrl.calls.length > 0">
-          <div class="md-list-item-text fl1">
-            <h3>{{$ctrl.getNumberByDirection(call)}}</h3>
-            <p>{{$ctrl.getDirection(call)}}</p>
-          </div>
-          <div class="md-list-item-text fl1" ng-click="$ctrl.openRecordingDialog(call)" layout="column">
-            <div>
-              <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
+          <div class="md-list-item-text fl1" layout="column">
+            <div class="column-row" layout="row">
+              <div class="fl1">
+                <h3 ng-click="$ctrl.makeCall(call)">{{$ctrl.getNumberByDirection(call)}}</h3>
+                <p>{{$ctrl.getDirection(call)}}</p>
+              </div>
+              <div class="fl1">
+                <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
+                <span>Duration: {{ call.duration | secsToDuration }}</span>
+                <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)"></md-icon>
+              </div>
             </div>
-            <div>
-              <span>Duration: {{ call.duration | secsToDuration }}</span>
-              <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
-            </div>
-            <div ng-if="!!call.transcription">
-              <p class="ellipsis">{{call.transcription}}</p>
+            <div class="column-row">
+              <div class="md-list-item-text fl1" ng-click="$ctrl.openRecordingDialog(call)">
+
+                <div ng-if="!!call.transcription">
+                  <p class="ellipsis">{{call.transcription | cleanTranscription }}</p>
+                </div>
+              </div>
             </div>
           </div>
       </md-list-item>

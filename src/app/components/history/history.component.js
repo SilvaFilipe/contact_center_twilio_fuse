@@ -8,7 +8,7 @@ angular.module('app.components')
   });
 
 /** @ngInject */
-function HistoryController($scope, $mdDialog, UserService) {
+function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   var $ctrl = this;
 
   $ctrl.historyPagination = {
@@ -36,7 +36,7 @@ function HistoryController($scope, $mdDialog, UserService) {
         $ctrl.historyPagination.pages = callsPages.pages;
         $ctrl.historyPagination.total = callsPages.total;
         $ctrl.calls = callsPages.docs;
-      })
+      });
   };
 
   $ctrl.resetPagination = function () {
@@ -96,5 +96,10 @@ function HistoryController($scope, $mdDialog, UserService) {
         return call.direction != 'inbound-api';
       }
     }
+  }
+
+  $ctrl.makeCall = function (call) {
+    var phoneNumber = $ctrl.getNumberByDirection(call);
+    $rootScope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber });
   }
 }
