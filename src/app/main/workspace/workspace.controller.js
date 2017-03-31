@@ -542,9 +542,6 @@
             }
             else {
               callItem.callStatus = (typeof data.callEvent.callStatus != 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
-              if (callItem.callStatus == 'participant-leave') {
-                callItem.callStatus = 'completed';
-              }
             }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
           }
