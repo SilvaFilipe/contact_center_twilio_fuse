@@ -48,7 +48,7 @@
           templateUrl: 'app/core/layouts/content-only.html',
           controller : 'MainController as vm'
         },
-        'content@app.auth_register': {
+        'content@auth.register': {
           templateUrl: 'app/main/auth/register/register.html',
           controller : 'RegisterController as vm'
         }
