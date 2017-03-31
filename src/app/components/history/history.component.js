@@ -12,7 +12,8 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   var $ctrl = this;
 
   $ctrl.historyPagination = {
-    page: 0
+    page: 0,
+    currentPage: 1
   };
 
   $ctrl.$onInit = function () {
@@ -30,7 +31,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   };
 
   $ctrl.loadCalls = function loadCalls() {
-    UserService.getOwnCalls($ctrl.historyPagination.page + 1)
+    UserService.getOwnCalls($ctrl.historyPagination.currentPage)
       .then(function (callsPages) {
         $ctrl.historyPagination.page = parseInt(callsPages.page, 10);
         $ctrl.historyPagination.pages = callsPages.pages;
@@ -67,20 +68,22 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
 
           $scope.call = call;
 
-          $scope.hide = function() {
+          $scope.hide = function () {
             $mdDialog.hide();
           };
 
-          $scope.cancel = function() {
+          $scope.cancel = function () {
             $mdDialog.cancel();
           };
 
         },
         templateUrl: 'app/components/history/history.recoding.dialog.html',
         parent: angular.element(document.body),
-        clickOutsideToClose:true
+        clickOutsideToClose: true
       })
-      .then(function() {}, function() {});
+      .then(function () {
+      }, function () {
+      });
   };
 
   $ctrl.filterCalls = function () {
@@ -96,10 +99,10 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
         return call.direction != 'inbound-api';
       }
     }
-  }
+  };
 
   $ctrl.makeCall = function (call) {
     var phoneNumber = $ctrl.getNumberByDirection(call);
-    $rootScope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber });
+    $rootScope.$broadcast('CallPhoneNumber', {phoneNumber: phoneNumber});
   }
 }

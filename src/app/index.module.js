@@ -17,6 +17,9 @@
             // Toolbar
             'app.toolbar',
 
+            // 3rd party
+            'cl.paging',
+
             // Quick Panel
             'app.quick-panel',
             // Left Panel

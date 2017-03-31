@@ -113,7 +113,7 @@
 
             /* session is not valid anymore */
             if (response.status == 403) {
-              window.location.replace('/login');
+              window.location.replace('/access/login');
             } else {
               alert(JSON.stringify(response));
             }

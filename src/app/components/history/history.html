@@ -76,6 +76,10 @@
         No calls found
       </md-list-item>
     </md-list>
-
+    <cl-paging flex cl-pages="$ctrl.historyPagination.pages"
+               cl-steps="4"
+               cl-align="center center"
+               cl-page-changed="$ctrl.loadCalls()"
+               cl-current-page="$ctrl.historyPagination.currentPage"></cl-paging>
   </md-content>
 

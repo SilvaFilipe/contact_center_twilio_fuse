@@ -43,7 +43,7 @@ module.exports = {
           },
           //select: 'recordingUrl created_at to from direction duration',
           lean: true,
-          limit: 4,
+          limit: 8,
           page: req.params.page ? req.params.page : 1
         }).then(function (calls) {
             return res.json(calls);
