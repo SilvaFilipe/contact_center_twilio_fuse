@@ -167,7 +167,7 @@ module.exports.sendToCallSidConference = function (req, res) {
 module.exports.toCallEnded = function (req, res) {
 
   var caller_sid = req.query.caller_sid;
-  var twiml = '<Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/bing-low.wav</Play><Pause length="60"/> <Play>' + process.env.PUBLIC_HOST  + '/sounds/call-terminated.wav</Play> <Redirect/></Response>';
+  var twiml = '<Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/bing-low.wav</Play><Pause length="86400"/><Redirect/></Response>';
   var escaped_twiml = require('querystring').escape(twiml);
 
   client.calls(caller_sid).update({
