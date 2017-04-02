@@ -23,6 +23,7 @@ if (process.env.DYNO) {
 
 var app = express();
 
+console.log(process.env.MONGO_URL);
 mongoose.connect(process.env.MONGO_URL);
 
 mongoose.connection.on('connected', function (err) {
