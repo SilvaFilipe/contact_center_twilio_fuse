@@ -6,8 +6,9 @@
     .controller('TransferDialogController', TransferDialogController);
 
   /** @ngInject */
-  function TransferDialogController($rootScope, $log, $mdDialog,  UserService) {
+  function TransferDialogController($scope, $rootScope, $log, $mdDialog,  UserService, callTasks) {
     var vm = this;
+    $scope.callTasks = callTasks;
 
     vm.selectedAction = vm.displayableAction = 'transfer-call';
 

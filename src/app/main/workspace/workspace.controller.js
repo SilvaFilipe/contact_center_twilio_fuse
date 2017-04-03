@@ -10,15 +10,6 @@
     function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall) {
       var vm = this;
 
-      var func = function () {
-        UserService.usersWithStars()
-          .then(function (users) {
-            console.log(users);
-          });
-      };
-
-      func();
-
       //Generate random UUID to identify this browser tab
       //For a more robust solution consider a library like
       //fingerprintjs2: https://github.com/Valve/fingerprintjs2
@@ -52,7 +43,6 @@
 
       $http.get('/api/users/me')
         .then(function (response) {
-          console.log('?????????????????')
           $scope.user = response.data.user;
           //Get an access token for the current user, passing a device ID
           //In browser-based apps, every tab is like its own unique device
@@ -384,7 +374,7 @@
           controller: 'TransferDialogController',
           controllerAs: 'vm',
           locals: {
-            selectedMail: undefined
+            callTasks: $scope.callTasks
           },
           templateUrl: 'app/main/workspace/dialogs/transfer.html',
           parent: angular.element($document.body),

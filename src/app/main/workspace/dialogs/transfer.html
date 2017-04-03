@@ -72,24 +72,11 @@
         </md-tab>
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">
-        <div layout="row">
+        <div class="md-warn" ng-show="callTasks.length < 3">Two or more active calls are required to join.</div>
+        <div layout="row" ng-repeat="task in callTasks">
           <md-input-container>
-            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">
-              Inbound call 1
-            </md-checkbox>
-          </md-input-container>
-        </div>
-        <div layout="row">
-          <md-input-container>
-            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 2" ng-value="2" aria-label="Finished?">
-              Outbound call (858) 371-3881
-            </md-checkbox>
-          </md-input-container>
-        </div>
-        <div layout="row">
-          <md-input-container>
-            <md-checkbox ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 3" ng-value="3" aria-label="Finished?">
-              Outbound Call (619 381-28111)
+            <md-checkbox  ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">
+              {{ task.fromNumber }}
             </md-checkbox>
           </md-input-container>
         </div>
