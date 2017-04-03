@@ -233,7 +233,7 @@
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
-          window.location.replace('/workspace_login');
+          window.location.replace('/access/login');
 
         });
 
@@ -583,7 +583,7 @@
 
           .then(function onSuccess(response) {
 
-            window.location.replace('/workspace_login');
+            window.location.replace('/access/login');
 
           }, function onError(response) {
 
