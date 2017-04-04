@@ -77,13 +77,17 @@
 
     // Service interface
     return {
-      isAdmin    : isAdmin,
+      userIsAdmin : userIsAdmin,
       login       : login,
       logout      : logout,
       isLoggedIn  : isLoggedIn
     };
 
     //////////
+
+    function userIsAdmin () {
+      return isAdmin;
+    }
 
     function login(email, password) {
       var deferred = $q.defer();
@@ -92,7 +96,7 @@
           $http.get('/api/users/me')
             .then(function (response) {
               console.log(response.data);
-              if (response.data.roles.indexOf('admin')) {
+              if (response.data.roles.indexOf('admin') > 0) {
                   isAdmin = true;
               }
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};

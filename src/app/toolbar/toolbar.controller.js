@@ -16,7 +16,7 @@
             search: ''
         };
 
-        vm.isAdmin = authService.isAdmin;
+        vm.isAdmin = authService.userIsAdmin();
         var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
         vm.userName = currentUser.firstName + ' ' + currentUser.lastName;
         vm.userName = vm.userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
