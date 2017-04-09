@@ -13,10 +13,11 @@
       getCurrentUser: function getCurrentUser() {
         return authService.loggedInUser || null;
       },
-      getOwnCalls: function getOwnCalls(page) {
+      getOwnCalls: function getOwnCalls(search, page) {
+        search = search ? search : '';
         page = page ? page : 1;
         return $http({
-          url: '/api/users/' + UserService.getCurrentUser()._id + '/calls/' + page,
+          url: '/api/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
           method: 'GET'
         }).then(function (response) {
           return response.data;

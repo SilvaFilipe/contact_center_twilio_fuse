@@ -35,8 +35,13 @@ module.exports = {
         })
     },
     getCalls: function (req, res) {
+        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+        var search = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+
         Call.paginate({
           user_ids: req.user._id,
+          $or: search
         }, {
           sort: {
             created_at: -1
