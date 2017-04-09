@@ -10,11 +10,14 @@ angular.module('app.components')
 /** @ngInject */
 function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   var $ctrl = this;
+  $ctrl.isLoading = false;
 
   $ctrl.historyPagination = {
     page: 0,
     currentPage: 1
   };
+
+  $ctrl.historySearch = '';
 
   $ctrl.$onInit = function () {
 
@@ -31,12 +34,16 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   };
 
   $ctrl.loadCalls = function loadCalls() {
-    UserService.getOwnCalls($ctrl.historyPagination.currentPage)
+    $ctrl.isLoading = true;
+    UserService.getOwnCalls($ctrl.historySearch, $ctrl.historyPagination.currentPage)
       .then(function (callsPages) {
         $ctrl.historyPagination.page = parseInt(callsPages.page, 10);
         $ctrl.historyPagination.pages = callsPages.pages;
         $ctrl.historyPagination.total = callsPages.total;
         $ctrl.calls = callsPages.docs;
+      })
+      .finally(function () {
+        $ctrl.isLoading = false;
       });
   };
 
@@ -104,5 +111,13 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   $ctrl.makeCall = function (call) {
     var phoneNumber = $ctrl.getNumberByDirection(call);
     $rootScope.$broadcast('CallPhoneNumber', {phoneNumber: phoneNumber});
+  };
+
+  $ctrl.updateHistoryList = function () {
+    //$ctrl.historySearch
+    $ctrl.historyPagination.page = 1;
+    $ctrl.calls = [];
+    $ctrl.historyPagination.currentPage = 1;
+    $ctrl.loadCalls();
   }
 }
