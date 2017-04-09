@@ -73,27 +73,43 @@
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">
         <div class="md-warn" ng-show="callTasks.length < 3">Two or more active calls are required to join.</div>
-        <div layout="row" ng-repeat="task in callTasks">
-          <md-input-container>
-            <md-checkbox  ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">
-              {{ task.fromNumber }}
-            </md-checkbox>
-          </md-input-container>
-        </div>
-      </div>
+
+
+
+        <fieldset class="standard" ng-show="callTasks.length > 2">
+          <legend>Calls to Join</legend>
+          <div layout-wrap layout-gt-sm="row" ng-repeat="task in callTasks">
+            <div flex-gt-sm="100">
+              <md-checkbox name="selectedCalls[]" value="{{task.callSid}}">
+               <!-- " aria-label="{{ task.fromNumber }}" ng-model="task"  -->
+                {{ task.fromNumber }}
+              </md-checkbox>
+            </div>
+          </div>
+        </fieldset>
+
+        <!--<div layout="row" ng-repeat="task in callTasks">-->
+          <!--<md-input-container>-->
+            <!--<md-checkbox  ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">-->
+              <!--{{ task.fromNumber }}-->
+            <!--</md-checkbox>-->
+          <!--</md-input-container>-->
+        <!--</div>-->
+      <!--</div>-->
 
 
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="center center">
-        <div></div><md-button ng-click="vm.confirmChange()" class="send-button md-accent md-raised" aria-label="Transfer Call">
-          {{vm.displayableAction=='transfer-call'?'Transfer Call':'Join Lines'}}
+        <div></div>
+        <md-button ng-click="vm.cancelChange()" class="send-button md-accent md-active" aria-label="Cancel">
+          Cancel
         </md-button>
         </div>
       <div>
-        <md-button ng-click="vm.cancelChange()" class="send-button md-accent md-active" aria-label="Cancel">
-         Cancel
+        <md-button ng-click="vm.confirmChange()" class="send-button md-accent md-raised" aria-label="Transfer Call">
+          {{vm.displayableAction=='transfer-call'?'Transfer Call':'Join Lines'}}
         </md-button>
         </div>
       </div>

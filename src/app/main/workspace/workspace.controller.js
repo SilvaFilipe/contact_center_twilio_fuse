@@ -837,6 +837,14 @@
 
       };
 
+      $scope.mockCalls = function(number) {
+        for (var n=0; n<number; n++){
+          var callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest'};
+          $scope.currentCall = new InboundCall(callParams);
+          $scope.callTasks.push($scope.currentCall);
+        }
+      }
+
       $scope.$on('SetActivitySid', function(event, activitySid) {
         var selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
         $scope.workerJS.update('ActivitySid', selectedActivitySid, function (err, worker) {

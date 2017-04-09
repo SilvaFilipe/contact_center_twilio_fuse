@@ -19,7 +19,7 @@ module.exports.welcome = function (req, res) {
 		numDigits: 1,
 		timeout: 10
 	}, function (node) {
-		node.say(req.configuration.ivr.text)
+		node.say(req.configuration.ivr.text, {'voice':'alice'})
 	})
 
 	res.setHeader('Content-Type', 'application/xml')
