@@ -64,11 +64,13 @@
   }
 
 
-  function authService($q, $window, $http, $rootScope)
+  function authService($q, $window, $http, $rootScope, EnvironmentConfig)
   {
 
     // Private vars
     var currentUser = null;
+    var authUrl = EnvironmentConfig.Auth;
+    var apiUrl = EnvironmentConfig.API;
 
     var me = this;
 
@@ -91,9 +93,9 @@
 
     function login(email, password) {
       var deferred = $q.defer();
-      $http.post('/auth/sign-in', {email: email, password: password})
+      $http.post(authUrl + '/sign-in', {email: email, password: password})
         .then(function(res) {
-          $http.get('/api/users/me')
+          $http.get(apiUrl + '/users/me')
             .then(function (response) {
               console.log(response.data);
               if (response.data.roles.indexOf('admin') > 0) {
@@ -102,7 +104,7 @@
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
-              $http.post('/api/agents/login', { worker: worker, endpoint: endpoint })
+              $http.post(apiUrl + '/agents/login', { worker: worker, endpoint: endpoint })
 
                 .then(function onSuccess(response) {
                   me.loggedInUser = response.data;

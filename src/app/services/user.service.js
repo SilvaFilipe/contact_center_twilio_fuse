@@ -6,7 +6,8 @@
   angular.module('app.services').factory('UserService', UserService);
 
   /** @ngInject */
-  function UserService($http, $resource, $q, authService) {
+  function UserService($http, $resource, $q, authService, EnvironmentConfig) {
+    var apiUrl = EnvironmentConfig.API;
 
     var UserService = {
 
@@ -17,7 +18,7 @@
         search = search ? search : '';
         page = page ? page : 1;
         return $http({
-          url: '/api/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
+          url: apiUrl + '/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
           method: 'GET'
         }).then(function (response) {
           return response.data;
@@ -37,7 +38,7 @@
       },
       starUser: function starUser(user, starStatus) {
         return $http({
-          url: '/api/users/' + user._id + '/star',
+          url: apiUrl + '/users/' + user._id + '/star',
           method: 'POST',
           data: {
             starred: starStatus
@@ -45,7 +46,7 @@
         });
       },
 
-      $resource: $resource('/api/users/:id/:routeAction', {id: '@id', routeAction: '@routeAction'}, {
+      $resource: $resource(apiUrl + '/users/:id/:routeAction', {id: '@id', routeAction: '@routeAction'}, {
         star: {
           method: 'POST',
           params: {

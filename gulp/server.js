@@ -13,6 +13,8 @@ var util = require('util');
 var proxyMiddleware = require('http-proxy-middleware');
 var exec = require('child_process').exec;
 
+var gulpNgConfig = require('gulp-ng-config');
+
 function browserSyncInit(baseDir, browser)
 {
     browser = browser === undefined ? 'default' : browser;
@@ -51,7 +53,7 @@ browserSync.use(browserSyncSpa({
     selector: '[ng-app]'// Only needed for angular apps
 }));
 
-gulp.task('serve', ['watch'], function (cb)
+gulp.task('serve', ['config', 'watch'], function ()
 {
   browserSyncInit([path.join(conf.paths.tmp, '/serve'), conf.paths.src]);
   nodemon({
@@ -72,4 +74,12 @@ gulp.task('serve:e2e', ['inject'], function ()
 gulp.task('serve:e2e-dist', ['build'], function ()
 {
     browserSyncInit(conf.paths.dist, []);
+});
+
+gulp.task('config', function () {
+  return gulp.src(path.join(conf.paths.src, '/app/config.json'))
+    .pipe(gulpNgConfig('app.config', {
+      environment: 'local'
+    }))
+    .pipe(gulp.dest(path.join(conf.paths.src, '/app')))
 });

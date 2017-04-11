@@ -34,7 +34,8 @@
             'app.directives',
             'app.components',
             // Auth
-            'app.auth'
+            'app.auth',
+            'app.config'
 
         ]);
 })();

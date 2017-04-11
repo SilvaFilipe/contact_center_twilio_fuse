@@ -1,0 +1,14 @@
+{
+  "local": {
+    "EnvironmentConfig": {
+      "API": "/api",
+      "Auth": "/auth"
+    }
+  },
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://personable.herokuapp.com/api",
+      "Auth": "https://personable.herokuapp.com/auth"
+    }
+  }
+}

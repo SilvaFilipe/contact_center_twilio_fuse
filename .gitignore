@@ -8,3 +8,4 @@ dist/
 .env
 configuration.json
 .DS_Store
+src/app/config.js

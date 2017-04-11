@@ -6,28 +6,29 @@
 
 
   /** @ngInject */
-  function CallService($timeout, $http, $q, $window) {
+  function CallService($timeout, $http, $q, $window, EnvironmentConfig) {
 
     var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
     var workerName =  'w' + currentUser._id;
+    var apiUrl = EnvironmentConfig.API;
 
     var CallService = {};
 
 
     CallService.recordOn = function (call_sid) {
-      return $http.get('/api/callControl/recordOn?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/recordOn?callSid=' + call_sid);
     };
 
     CallService.recordOff = function (call_sid) {
-      return $http.get('/api/callControl/recordOff?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/recordOff?callSid=' + call_sid);
     };
 
     CallService.holdOn = function (call_sid) {
-      return $http.get('/api/callControl/holdOn?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/holdOn?callSid=' + call_sid);
     };
 
     CallService.holdOff = function (call_sid) {
-      return $http.get('/api/callControl/holdOff?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/holdOff?callSid=' + call_sid);
     };
 
     CallService.muteOn = function () {
@@ -39,7 +40,7 @@
     };
 
     CallService.hangup = function (call_sid) {
-      return $http.get('/api/callControl/hangup?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/hangup?callSid=' + call_sid);
     };
 
     CallService.hangupDialpad = function () {
