@@ -9,6 +9,22 @@
   function TransferDialogController($scope, $rootScope, $log, $mdDialog,  UserService, callTasks) {
     var vm = this;
     $scope.callTasks = callTasks;
+    $scope.selected = [];
+
+    $scope.toggle = function (item, list) {
+      var idx = list.indexOf(item);
+      if (idx > -1) {
+        list.splice(idx, 1);
+      }
+      else {
+        list.push(item);
+      }
+    };
+
+    $scope.exists = function (item, list) {
+      return list.indexOf(item) > -1;
+    };
+
 
     vm.selectedAction = vm.displayableAction = 'transfer-call';
 
@@ -21,7 +37,8 @@
         });
     }
     vm.confirmChange = function () {
-        vm.displayableAction = vm.selectedAction;
+      console.log($scope.selected );
+      vm.displayableAction = vm.selectedAction;
       $mdDialog.hide();
     };
 

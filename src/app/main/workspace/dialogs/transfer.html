@@ -72,18 +72,21 @@
         </md-tab>
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">
-        <div class="md-warn" ng-show="callTasks.length < 3">Two or more active calls are required to join.</div>
+        <div class="md-warn" ng-show="callTasks.length < 2">Two or more active calls are required to join.</div>
 
 
 
-        <fieldset class="standard" ng-show="callTasks.length > 2">
+        <fieldset class="standard" ng-show="callTasks.length > 1">
           <legend>Calls to Join</legend>
-          <div layout-wrap layout-gt-sm="row" ng-repeat="task in callTasks">
+          <div layout-wrap layout-gt-sm="row" ng-repeat="call in callTasks">
             <div flex-gt-sm="100">
-              <md-checkbox name="selectedCalls[]" value="{{task.callSid}}">
-               <!-- " aria-label="{{ task.fromNumber }}" ng-model="task"  -->
-                {{ task.fromNumber }}
+              <md-checkbox ng-checked="exists(call, selected)" ng-click="toggle(call, selected)">
+                {{ call.fromNumber }}
               </md-checkbox>
+              <!--<md-checkbox name="selectedCalls[]" value="{{task.callSid}}">-->
+               <!--&lt;!&ndash; " aria-label="{{ task.fromNumber }}" ng-model="task"  &ndash;&gt;-->
+                <!--{{ task.fromNumber }}-->
+              <!--</md-checkbox>-->
             </div>
           </div>
         </fieldset>
