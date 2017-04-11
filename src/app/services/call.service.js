@@ -6,11 +6,11 @@
 
 
   /** @ngInject */
-  function CallService($timeout, $http, $q, $window, EnvironmentConfig) {
+  function CallService($rootScope, $timeout, $http, $q, $window) {
 
     var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
     var workerName =  'w' + currentUser._id;
-    var apiUrl = EnvironmentConfig.API;
+    var apiUrl = $rootScope.apiBaseUrl;
 
     var CallService = {};
 

@@ -7,12 +7,12 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window, CallService, EnvironmentConfig)
+    function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window, CallService)
     {
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
       var workerName =  currentUser.friendlyWorkerName;
-      var apiUrl = EnvironmentConfig.API;
+      var apiUrl = $rootScope.apiBaseUrl;
 
       $scope.status = null;
       $scope.isActive = false;

@@ -69,8 +69,10 @@
 
     // Private vars
     var currentUser = null;
-    var authUrl = EnvironmentConfig.Auth;
-    var apiUrl = EnvironmentConfig.API;
+    $rootScope.apiBaseUrl = EnvironmentConfig.API;
+    $rootScope.authBaseUrl = EnvironmentConfig.Auth;
+    var authUrl = $rootScope.authBaseUrl;
+    var apiUrl = $rootScope.apiBaseUrl;
 
     var me = this;
 

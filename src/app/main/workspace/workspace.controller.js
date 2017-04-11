@@ -7,10 +7,10 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, EnvironmentConfig) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall) {
       var vm = this;
 
-      var apiUrl = EnvironmentConfig.API;
+      var apiUrl = $rootScope.apiBaseUrl;
 
       //Generate random UUID to identify this browser tab
       //For a more robust solution consider a library like
