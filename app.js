@@ -21,7 +21,15 @@ if (process.env.DYNO) {
 }
 var app = express();
 //TODO: specify cors origins
-app.use(cors());
+var corsConfig = {
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 204,
+  "allowedHeaders":["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsConfig));
 mongoose.connect(process.env.MONGO_URL);
 mongoose.connection.on('connected', function (err) {
     if (err) throw err;
