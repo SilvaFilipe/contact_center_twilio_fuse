@@ -26,7 +26,7 @@ var corsConfig = {
   "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
   "preflightContinue": false,
   "optionsSuccessStatus": 204,
-  "allowedHeaders":["Content-Type", "Authorization"]
+  "allowedHeaders":["Content-Type", "Authorization", "Origin", "Accept", "X-Request-With"]
 };
 
 app.use(cors(corsConfig));
