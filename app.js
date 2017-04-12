@@ -5,12 +5,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var compression = require('compression');
-
+var cors = require('cors');
 var mongoose = require('mongoose');
 var acl = require('acl');
 var flash = require('connect-flash');
 var passport = require('passport');
-
 //var messagingAdapter = require('./controllers/messaging-adapter.js');
 /* check if the application runs on heroku */
 var util;
@@ -20,11 +19,10 @@ if (process.env.DYNO) {
 } else {
     util = require('./util-file.js')
 }
-
 var app = express();
-
+//TODO: specify cors origins
+app.use(cors());
 mongoose.connect(process.env.MONGO_URL);
-
 mongoose.connection.on('connected', function (err) {
     if (err) throw err;
 
@@ -92,14 +90,8 @@ app.use(bodyParser.json({}));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-
-
 app.use(flash()); // use connect-flash for flash messages
-
-
 app.use(function (req, res, next) {
-
     util.getConfiguration(function (err, configuration) {
         if (err) {
             res.status(500).json({stack: err.stack, message: err.message})
@@ -111,14 +103,11 @@ app.use(function (req, res, next) {
     })
 
 });
-
-
 app.use('/', express.static(__dirname + '/public'));
 // Routes
 
 // Twilio Event Listeners and Callbacks
 require('./routes/listener.routes')(app);
-
 app.listen(app.get('port'), function () {
     console.log('magic happens on port', app.get('port'))
 });
