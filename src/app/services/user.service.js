@@ -6,8 +6,8 @@
   angular.module('app.services').factory('UserService', UserService);
 
   /** @ngInject */
-  function UserService($http, $resource, $q, authService, EnvironmentConfig) {
-    var apiUrl = EnvironmentConfig.API;
+  function UserService($http, $resource, $q, authService, $rootScope) {
+    var apiUrl = $rootScope.apiBaseUrl;
 
     var UserService = {
 
