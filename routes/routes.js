@@ -24,13 +24,33 @@ module.exports = function (app, passport, acl) {
         failureFlash: true
     }));
 
+    app.post('/auth/sign-in', function(req, res, next) {
+      passport.authenticate('local-login', function(err, user, info) {
+        if (err) {
+          //return next(err);
+          return res.status(404).end('Authentication Failed!');
+        }
+        if (!user) {
+          //return res.redirect('/login');
+          return res.status(404).end('Authentication Failed!');
+        }
+        req.logIn(user, function(err) {
+          if (err) { return next(err); }
+          // acl.middleware(1), authme
+          //return res.redirect('/users/' + user.username);
+          return res.status(200).end('successfully login!');
+        });
+      })(req, res, next);
+    });
+
+  /*
     app.post('/auth/sign-in', passport.authenticate('local-login', {
       successRedirect: '/auth-me',
       failureRedirect: '/auth-failure',
       failureFlash: true
     }));
 
-
+*/
 
     app.get('/auth/google', passport.authenticate('google', {
         //scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
