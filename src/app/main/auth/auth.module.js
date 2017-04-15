@@ -95,9 +95,9 @@
 
     function login(email, password) {
       var deferred = $q.defer();
-      $http.post(authUrl + '/sign-in', {email: email, password: password})
+      $http.post(authUrl + '/sign-in', {email: email, password: password}, {withCredentials: true})
         .then(function(res) {
-          $http.get(apiUrl + '/users/me')
+          $http.get(apiUrl + '/users/me', {withCredentials: true})
             .then(function (response) {
               console.log(response.data);
               if (response.data.roles.indexOf('admin') > 0) {
@@ -106,7 +106,7 @@
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
-              $http.post(apiUrl + '/agents/login', { worker: worker, endpoint: endpoint })
+              $http.post(apiUrl + '/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
 
                 .then(function onSuccess(response) {
                   me.loggedInUser = response.data;

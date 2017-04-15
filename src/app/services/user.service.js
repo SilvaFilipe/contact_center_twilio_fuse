@@ -19,7 +19,8 @@
         page = page ? page : 1;
         return $http({
           url: apiUrl + '/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
-          method: 'GET'
+          method: 'GET',
+          withCredentials: true
         }).then(function (response) {
           return response.data;
         });
@@ -42,7 +43,8 @@
           method: 'POST',
           data: {
             starred: starStatus
-          }
+          },
+          withCredentials: true
         });
       },
 
@@ -51,7 +53,8 @@
           method: 'POST',
           params: {
             routeAction: 'star'
-          }
+          },
+          withCredentials: true
         },
         update: {
           method: 'PUT' // this method issues a PUT request

@@ -106,7 +106,7 @@
       });
 
       $scope.directCall = function () {
-        $http.get(apiUrl + '/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName).then(function (response) {
+        $http.get(apiUrl + '/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName, {withCredentials: true}).then(function (response) {
           if(response.data !== "ERROR"){
             if (response.data.call.direction == 'extension') {
               $rootScope.syncClient.document('c'+ response.data.call.callSid)
@@ -118,7 +118,7 @@
                     console.log(response.data);
                   });
                 });
-              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName);
+              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName, {withCredentials: true});
               $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid, recipientName: response.data.call.recipientName});
 
             }
@@ -133,7 +133,7 @@
                     console.log(response.data);
                   });
                 });
-              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid);
+              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid, {withCredentials: true});
               $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
 
             }

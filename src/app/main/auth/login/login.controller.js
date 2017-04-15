@@ -17,7 +17,6 @@
           function(data){
             console.log(data);
             $state.go('app.workspace');
-
           },
           function(data) {
             console.log(data);

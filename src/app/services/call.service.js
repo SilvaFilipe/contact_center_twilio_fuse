@@ -16,19 +16,19 @@
 
 
     CallService.recordOn = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/recordOn?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/recordOn?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.recordOff = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/recordOff?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/recordOff?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.holdOn = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/holdOn?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/holdOn?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.holdOff = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/holdOff?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/holdOff?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.muteOn = function () {
@@ -40,7 +40,7 @@
     };
 
     CallService.hangup = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/hangup?callSid=' + call_sid);
+      return $http.get(apiUrl + '/callControl/hangup?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.hangupDialpad = function () {

@@ -64,7 +64,7 @@
             contentWithToolbar  : {
                 main      : 'app/core/layouts/content-with-toolbar.html',
                 toolbar   : 'app/toolbar/layouts/content-with-toolbar/toolbar.html',
-                navigation: ''
+                navigation: 'app/navigation/layouts/horizontal-navigation/navigation.html' // this could not be empty or production build fails
             }
         };
         // END - Layout Style Switcher

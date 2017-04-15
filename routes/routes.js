@@ -27,17 +27,13 @@ module.exports = function (app, passport, acl) {
     app.post('/auth/sign-in', function(req, res, next) {
       passport.authenticate('local-login', function(err, user, info) {
         if (err) {
-          //return next(err);
-          return res.status(404).end('Authentication Failed!');
+          return res.status(500).end('Authentication Failed!');
         }
         if (!user) {
-          //return res.redirect('/login');
           return res.status(404).end('Authentication Failed!');
         }
         req.logIn(user, function(err) {
           if (err) { return next(err); }
-          // acl.middleware(1), authme
-          //return res.redirect('/users/' + user.username);
           return res.status(200).end('successfully login!');
         });
       })(req, res, next);
