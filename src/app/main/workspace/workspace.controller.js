@@ -7,7 +7,7 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
       var vm = this;
 
       var apiUrl = $rootScope.apiBaseUrl;
@@ -375,6 +375,7 @@
         $mdDialog.show({
           controller: 'TransferDialogController',
           controllerAs: 'vm',
+          //scope: $scope,
           locals: {
             callTasks: $scope.callTasks
           },
@@ -434,6 +435,15 @@
         $scope.stopWorkingCounter();
         $scope.startWorkingCounter();
 
+      });
+
+
+      $scope.$on('AddCallTask', function (event, data) {
+        $log.log('AddCallTask: ' + data);
+        $scope.currentCall = data;
+        $scope.callTasks.push($scope.currentCall);
+        $scope.stopWorkingCounter();
+        $scope.startWorkingCounter();
       });
 
       $scope.$on('NewExtensionCall', function (event, data) {
@@ -841,8 +851,10 @@
       $scope.mockCalls = function(number) {
         for (var n=0; n<number; n++){
           var callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest'};
-          $scope.currentCall = new InboundCall(callParams);
+          $scope.currentCall = new OutboundCall(callParams);
           $scope.callTasks.push($scope.currentCall);
+          $scope.stopWorkingCounter();
+          $scope.startWorkingCounter();
         }
       }
 

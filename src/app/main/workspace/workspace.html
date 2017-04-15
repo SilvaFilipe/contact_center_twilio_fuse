@@ -1,3 +1,11 @@
+<!--
+<md-button class="md-fab md-primary" aria-label="transfer" ng-click="mockCalls(1);">
+  <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
+</md-button>
+<md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">
+  <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
+</md-button>
+-->
 <div class="page-layout simple fullwidth doc-page element-doc-page">
   <div class="header md-accent-bg" layout="row" layout-align="space-between">
     <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')" aria-label="Toggle Left Sidenav">
@@ -28,9 +36,11 @@
               <md-tab-label>
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.showOutgoingIcon()"></md-icon>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.showIngoingIcon()"></md-icon>
+                <md-icon md-font-icon="icon-phone-forward" ng-show="task.showConferenceIcon()"></md-icon>
                 <md-icon ng-show="task.isCompleted()" md-font-icon="icon-close" ng-click="complete(false)"></md-icon>
                 <span ng-hide="task.isExtensionCall()">{{task.fromNumber}}</span>
                 <span ng-show="task.isExtensionCall()">{{task.callerName}}</span>
+                <span ng-show="task.isConferenceCall()">Conference</span>
               </md-tab-label>
               <md-tab-body>
                 <md-content class="h-400" ng-class="(task.isCompleted()) ? 'callCompleted' : 'md-grey-100-bg'">

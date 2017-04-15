@@ -6,7 +6,7 @@
     .controller('TransferDialogController', TransferDialogController);
 
   /** @ngInject */
-  function TransferDialogController($scope, $rootScope, $log, $mdDialog,  UserService, callTasks) {
+  function TransferDialogController($scope, $rootScope, $log, $mdDialog,  UserService, callTasks, ConferenceCall) {
     var vm = this;
     $scope.callTasks = callTasks;
     $scope.selected = [];
@@ -36,8 +36,18 @@
           vm.users = users;
         });
     }
+
     vm.confirmChange = function () {
       console.log($scope.selected );
+      var callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest', name: 'MockConference'};
+      var newConference = new ConferenceCall(callParams);
+      $scope.selected.forEach(function (call) {
+        newConference.calls.push(call);
+      });
+      console.log('newConference', newConference);
+      //$scope.currentCall = newConference;
+      //$scope.callTasks.push($scope.currentCall);
+      $rootScope.$broadcast('AddCallTask', newConference);
       vm.displayableAction = vm.selectedAction;
       $mdDialog.hide();
     };

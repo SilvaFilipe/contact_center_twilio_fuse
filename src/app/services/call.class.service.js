@@ -6,7 +6,8 @@
     .factory('Call', Call)
     .factory('ExtensionCall', ExtensionCall)
     .factory('InboundCall', InboundCall)
-    .factory('OutboundCall', OutboundCall);
+    .factory('OutboundCall', OutboundCall)
+    .factory('ConferenceCall', ConferenceCall);
 
   function Call() {
     // instantiate Call class
@@ -31,7 +32,9 @@
     Call.prototype.showIngoingIcon = function() {
       return this.callStatus != 'completed' && this.type == 'inbound';
     };
-
+    Call.prototype.showConferenceIcon = function() {
+      return this.callStatus != 'completed' && this.type == 'conference';
+    };
     Call.prototype.isCompleted = function() {
       return this.callStatus == 'completed';
     };
@@ -46,6 +49,10 @@
 
     Call.prototype.isExtensionCall = function() {
       return this.direction == 'extension';
+    };
+
+    Call.prototype.isConferenceCall = function() {
+      return this.direction == 'conference';
     };
 
     return Call;
@@ -113,6 +120,28 @@
 
 
     return OutboundCall;
+  }
+
+
+  function ConferenceCall(Call) {
+
+    var ConferenceCall = function (params) {
+      Call.apply(this, arguments);
+      // ConferenceCall.prototype = Object.create(Call.prototype);
+      // ConferenceCall.prototype.constructor = ConferenceCall;
+      this.type = 'conference';
+      this.direction = 'conference';
+      this.calls =  [];
+      if (params.name) {
+        this.name =  params.name;
+      }
+    };
+    ConferenceCall.prototype = new Call();
+
+    ConferenceCall.prototype.getCalls = function(){
+      return( this.calls);
+    }
+    return ConferenceCall;
   }
 
 })();
