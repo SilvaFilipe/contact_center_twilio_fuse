@@ -3,7 +3,8 @@ angular.module('app.components')
     templateUrl: 'app/components/jp-player/jp-player.html',
     controller: JPPlayerController,
     bindings: {
-      call: '='
+      audioUrl: '=',
+      voiceBaseMediaId: '='
     }
   });
 
@@ -24,7 +25,7 @@ function JPPlayerController($element, $timeout) {
       $player.jPlayer({
         ready: function () {
           $player.jPlayer("setMedia", {
-            wav: $ctrl.call.recordingUrl
+            wav: $ctrl.audioUrl
           });
         },
         swfPath: "js/lib/jplayer",
@@ -36,7 +37,7 @@ function JPPlayerController($element, $timeout) {
         playerType: 'jplayer',
         apiUrl: 'https://apis.voicebase.com/v2-beta/',
         token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNDYyMzM0NS02NmIzLTRiYTctODMxNy02N2IyMmViYzY5NTQiLCJ1c2VySWQiOiJhdXRoMHw1ODg2OGNkYTI3YWFkZTU0YzBiNDYwNDgiLCJvcmdhbml6YXRpb25JZCI6IjRlZWExMjMxLTRjYzQtOTkzOS04MTljLTgzMmY1YmRhMzdjMyIsImVwaGVtZXJhbCI6ZmFsc2UsImlhdCI6MTQ4OTMwNjU4MzA1NiwiaXNzIjoiaHR0cDovL3d3dy52b2ljZWJhc2UuY29tIn0.ZbfVFzj2R8wYrCSLxn2kEEljyP8Ua5HrU3oWRTSYZWg',
-        mediaID: $ctrl.call.voiceBaseMediaId,
+        mediaID: $ctrl.voiceBaseMediaId,
         apiVersion: '2.0',
         vbsButtons: {
           share: 0,

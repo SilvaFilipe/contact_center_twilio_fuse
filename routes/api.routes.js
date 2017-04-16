@@ -90,16 +90,19 @@ module.exports = function(app){
         .delete(users.delete);
 
     router.route('/users/:user_id/calls/:page')
-        .get(users.getCalls)
+        .get(users.getCalls);
+
+    router.route('/users/:user_id/voicemails/:page')
+        .get(users.getVoicemails);
 
     router.route('/users/:user_id/star')
       .post(users.starUser);
 
-    app.use('/api', router)
+    app.use('/api', router);
 
     // workaround for https://www.twilio.com/console/sms/settings
-    var router2 = express.Router()
-    router2.route('/inbound').post(messagingAdapter.inbound)
-    app.use('/messaging-adapter', router2)
+    var router2 = express.Router();
+    router2.route('/inbound').post(messagingAdapter.inbound);
+    app.use('/messaging-adapter', router2);
 
-}
+};

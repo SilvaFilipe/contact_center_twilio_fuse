@@ -1,11 +1,11 @@
 angular.module('app.components')
-  .component('historyCall', {
-    templateUrl: 'app/components/history/history.html',
-    controller: HistoryController
+  .component('voiceMail', {
+    templateUrl: 'app/components/voice-mail/voice-mail.html',
+    controller: VoiceMailController
   });
 
 /** @ngInject */
-function HistoryController($rootScope, $scope, $mdDialog, UserService) {
+function VoiceMailController($rootScope, $scope, $mdDialog, UserService) {
   var $ctrl = this;
   $ctrl.isLoading = false;
 
@@ -32,7 +32,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
 
   $ctrl.loadCalls = function loadCalls() {
     $ctrl.isLoading = true;
-    UserService.getOwnCalls($ctrl.historySearch, $ctrl.historyPagination.currentPage)
+    UserService.getOwnVoicemails($ctrl.historySearch, $ctrl.historyPagination.currentPage)
       .then(function (callsPages) {
         $ctrl.historyPagination.page = parseInt(callsPages.page, 10);
         $ctrl.historyPagination.pages = callsPages.pages;
@@ -81,7 +81,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
           };
 
         },
-        templateUrl: 'app/components/history/history.recoding.dialog.html',
+        templateUrl: 'app/components/voice-mail/voice-mail.recoding.dialog.html',
         parent: angular.element(document.body),
         clickOutsideToClose: true
       })

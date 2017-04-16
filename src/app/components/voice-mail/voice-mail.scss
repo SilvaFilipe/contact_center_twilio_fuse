@@ -1,0 +1,59 @@
+#left-quick-panel {
+  md-toolbar {
+    background-color: #F3F4F5;
+    color: rgba(0, 0, 0, 0.87);
+
+    md-icon {
+      color: rgba(0, 0, 0, 0.87);
+    }
+
+    .md-toolbar-tools-top {
+      border-bottom: 1px solid rgba(0, 0, 0, .08);
+
+      .avatar-wrapper {
+        cursor: pointer;
+      }
+    }
+
+    .md-toolbar-tools-bottom {
+      background-color: #FAFAFA;
+      .search {
+        height: 36px;
+        line-height: 36px;
+        padding: 8px;
+        background: #FFF;
+        font-size: 13px;
+      }
+    }
+  }
+
+  md-content {
+    md-list {
+      md-list-item {
+        border-bottom: 1px solid lightgrey;
+      }
+    }
+  }
+}
+.recording-dialog{
+  min-width: 520px;
+}
+
+.fl1{
+  flex: 1 !important;
+  -webkit-box-flex: 1 !important;
+}
+
+.ellipsis{
+  height: 20px;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+  word-break: break-all;
+  white-space: nowrap;
+}
+
+history-call{
+  md-list{
+    margin-bottom: 20px;
+  }
+}

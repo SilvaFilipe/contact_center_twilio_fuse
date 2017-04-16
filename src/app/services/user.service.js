@@ -25,6 +25,16 @@
           return response.data;
         });
       },
+      getOwnVoicemails: function getOwnVoicemails(search, page) {
+        search = search ? search : '';
+        page = page ? page : 1;
+        return $http({
+          url: apiUrl + '/users/' + UserService.getCurrentUser()._id + '/voicemails/' + page + '?search=' + search,
+          method: 'GET'
+        }).then(function (response) {
+          return response.data;
+        });
+      },
       usersWithStars: function usersWithStars() {
         return UserService.$resource.query().$promise.then(function (users) {
           users = users.map(function (user) {

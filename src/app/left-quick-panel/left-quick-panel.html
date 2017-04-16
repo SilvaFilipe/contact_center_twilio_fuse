@@ -6,7 +6,7 @@
             </md-tab-label>
             <md-tab-body>
                 <md-content class="today-tab scrollable" ms-scroll>
-                  <history-call calls="vm.calls"></history-call>
+                  <history-call></history-call>
                 </md-content>
             </md-tab-body>
         </md-tab>
@@ -15,8 +15,8 @@
             <span>VOICEMAIL</span>
           </md-tab-label>
           <md-tab-body>
-            <md-content class="activity-tab scrollable" ms-scroll
-                        ng-include="'app/left-quick-panel/tabs/voicemail/voicemail-tab.html'">
+            <md-content class="today-tab scrollable" ms-scroll>
+              <voice-mail></voice-mail>
             </md-content>
           </md-tab-body>
         </md-tab>

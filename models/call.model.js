@@ -52,7 +52,11 @@ var callSchema = mongoose.Schema({
   callerName: String,
   recipientName: String,
   transcription: String,
-  voiceBaseMediaId: String
+  voiceBaseMediaId: String,
+  mailTranscription: String,
+  mailRecordingUrl: String,
+  mailRecordingSid: String,
+  mailVoiceBaseMediaId: String
 });
 
 callSchema.methods.saveSync = function () {

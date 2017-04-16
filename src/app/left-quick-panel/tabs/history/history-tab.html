@@ -1,93 +1,92 @@
+<md-toolbar>
+  <div class="md-toolbar-tools md-toolbar-tools-bottom">
+    <!-- CALL SEARCH -->
+    <div class="search-wrapper md-whiteframe-1dp" layout="row" layout-align="start center" flex="90">
 
-  <md-toolbar>
-    <div class="md-toolbar-tools md-toolbar-tools-bottom">
-      <!-- CALL SEARCH -->
-      <div class="search-wrapper md-whiteframe-1dp" layout="row" layout-align="start center" flex="90">
+      <div class="search" flex layout="row" layout-align="start center">
 
-        <div class="search" flex layout="row" layout-align="start center">
+        <md-icon md-font-icon="icon-magnify" class="icon s18">
+        </md-icon>
 
-          <md-icon md-font-icon="icon-magnify" class="icon s18">
-          </md-icon>
+        <input flex ng-model="vm.chatSearch" type="text" placeholder="Search">
 
-          <input flex ng-model="vm.chatSearch" type="text" placeholder="Search">
-
-        </div>
       </div>
-      <!-- /CALL SEARCH -->
-
-      <!-- CALL FILTER -->
-      <div flex="10">
-        <md-menu md-position-mode="target-right target">
-
-          <md-button class="md-icon-button" ng-click="$mdOpenMenu()"
-                     aria-label="more">
-            <md-icon md-font-icon="icon-dots-vertical"></md-icon>
-          </md-button>
-
-          <md-menu-content width="3">
-            <md-menu-item>
-              <md-button>
-                All
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button ng-click="">
-                Missed
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button>
-                Received
-              </md-button>
-            </md-menu-item>
-            <md-menu-item>
-              <md-button ng-click="">
-                Placed
-              </md-button>
-            </md-menu-item>
-          </md-menu-content>
-
-        </md-menu>
-      </div>
-      <!-- /CALL FILTER-->
     </div>
-  </md-toolbar>
+    <!-- /CALL SEARCH -->
 
-  <md-content>
-    <md-list>
-      <md-list-item class="md-3-line" ng-click="null">
-          <div class="md-list-item-text">
-            <h3>858 450-7441</h3>
-            <p style="margin-top:14px;">Inbound Call - Claims</p>
-          </div>
-          <div class="md-list-item-text">
-            <div>
-              <span>05/01/2016</span>&nbsp;
-              <span>4:25 PM</span>
-            </div>
-            <div>
-              <span>Duration: 2:02</span>&nbsp;
-              <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
-            </div>
-          </div>
-      </md-list-item>
-      <md-list-item class="md-3-line" ng-click="null">
-        <div class="md-list-item-text">
-          <h3>858 450-7441</h3>
-          <p style="margin-top:14px;">Inbound Call - Payments</p>
-        </div>
-        <div class="md-list-item-text">
-          <div>
-            <span>05/01/2016</span>&nbsp;
-            <span>4:25 PM</span>
-          </div>
-          <div>
-            <span>Duration: 6:15</span>&nbsp;
-            <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
-          </div>
-        </div>
-      </md-list-item>
-    </md-list>
+    <!-- CALL FILTER -->
+    <div flex="10">
+      <md-menu md-position-mode="target-right target">
 
-  </md-content>
+        <md-button class="md-icon-button" ng-click="$mdOpenMenu()"
+                   aria-label="more">
+          <md-icon md-font-icon="icon-dots-vertical"></md-icon>
+        </md-button>
+
+        <md-menu-content width="3">
+          <md-menu-item>
+            <md-button>
+              All
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="">
+              Missed
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button>
+              Received
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="">
+              Placed
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+
+      </md-menu>
+    </div>
+    <!-- /CALL FILTER-->
+  </div>
+</md-toolbar>
+
+<md-content>
+  <md-list>
+    <md-list-item class="md-3-line" ng-click="null">
+      <div class="md-list-item-text">
+        <h3>858 450-7441</h3>
+        <p style="margin-top:14px;">Inbound Call - Claims</p>
+      </div>
+      <div class="md-list-item-text">
+        <div>
+          <span>05/01/2016</span>&nbsp;
+          <span>4:25 PM</span>
+        </div>
+        <div>
+          <span>Duration: 2:02</span>&nbsp;
+          <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
+        </div>
+      </div>
+    </md-list-item>
+    <md-list-item class="md-3-line" ng-click="null">
+      <div class="md-list-item-text">
+        <h3>858 450-7441</h3>
+        <p style="margin-top:14px;">Inbound Call - Payments</p>
+      </div>
+      <div class="md-list-item-text">
+        <div>
+          <span>05/01/2016</span>&nbsp;
+          <span>4:25 PM</span>
+        </div>
+        <div>
+          <span>Duration: 6:15</span>&nbsp;
+          <md-icon md-font-icon="icon-play-circle-outline"></md-icon>
+        </div>
+      </div>
+    </md-list-item>
+  </md-list>
+
+</md-content>
 
