@@ -18,9 +18,8 @@ function ContactsDirectoryController($log, $rootScope, UserService, $scope){
           for (var x=0; x<item.items.length; x++){
             var worker = item.items[x];
             $ctrl.updateUserActivity(worker);
-            // update users
           }
-          $scope.$apply();
+
         });
 
 
@@ -49,7 +48,7 @@ function ContactsDirectoryController($log, $rootScope, UserService, $scope){
       if (user.friendlyWorkerName == workerName){
         user.activity = workerActivity;
         console.log('set User ', workerName, ' to ', workerActivity, ' ext ', user.extension);
-        // console.log(user);
+        $scope.$apply();
       }
     }
 
