@@ -863,6 +863,7 @@
       }
 
       $scope.$on('SetActivitySid', function(event, activitySid) {
+        console.log('SetActivitySid: ', activitySid);
         var selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
         $scope.workerJS.update('ActivitySid', selectedActivitySid, function (err, worker) {
           if (err) {

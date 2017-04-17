@@ -42,13 +42,13 @@
                 'title': 'Working Offline',
                 'icon' : 'icon-clock',
                 'color': '#FFC107',
-                'activitySid': 'workerWorkingOffline'
+                'activitySid': 'workerOfflineActivitySid'
             },
             {
                 'title': 'On Break',
                 'icon' : 'icon-checkbox-blank-circle-outline',
                 'color': '#BDBDBD',
-                'activitySid': 'workerOnBreak'
+                'activitySid': 'workerOfflineActivitySid'
             }
         ];
         vm.languages = {

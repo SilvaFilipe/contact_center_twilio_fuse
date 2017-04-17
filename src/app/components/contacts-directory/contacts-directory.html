@@ -11,7 +11,7 @@
                 ng-repeat="user in $ctrl.users | orderBy:'-starred' | filter:$ctrl.searchText track by user._id"
                 ng-class="{'selected': $ctrl.isSelected(user)}">
 
-    <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>
+    <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/><div class="status {{user.activity}}"></div>
     <p class="text-truncate font-weight-600" ng-click="$ctrl.callUser(user)">{{user.firstName}} {{user.lastName}}</p>
     <p class="phone text-truncate hide show-gt-md" ng-click="$ctrl.callUser(user)">
       {{user.extension}}

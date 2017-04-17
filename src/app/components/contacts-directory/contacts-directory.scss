@@ -1,5 +1,45 @@
 .contacts-list{
   .contact-item{
     padding: 0 10px;
+
+    .status {
+      position: absolute;
+      top: 8px;
+      left: 44px;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #FFFFFF;
+      border-radius: 50%;
+      z-index: 10;
+
+      &.online {
+        background-color: #00C853;
+      }
+
+      &.offline {
+        background-color: #D50000;
+      }
+      &.away {
+        background-color: #FF6D00;
+      }
+      // personable activities
+      &.Offline {
+        background-color: #8d8d8e;
+      }
+      &.Available {
+        background-color: #00C853;
+      }
+      &.Working {
+        background-color: #D50000;
+      }
+      &.Working Offline{
+        background-color: #ffe438;;
+      }
+      &.On Break{
+        background-color: #8d8d8e;
+      }
+
+    }
+
   }
 }
