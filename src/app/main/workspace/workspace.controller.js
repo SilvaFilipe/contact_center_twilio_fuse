@@ -64,7 +64,7 @@
                     $rootScope.$broadcast('history.reload');
                   }
                   if (item.value.type == 'inboundCall'&& !$scope.extensionCallTask) {
-                    $http.post('/api/callControl/inbound_ringing').then(function(res) {
+                    $http.post(apiUrl + '/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);
                       audio.play();
                       var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
@@ -138,7 +138,7 @@
           $log.log('TaskRouter Worker: reservation.created');
           $log.log(reservation);
 
-          $http.post('/api/callControl/inbound_ringing').then(function(res) {
+          $http.post(apiUrl + '/callControl/inbound_ringing').then(function(res) {
             var audio = new Audio(res.data);
             audio.play();
             $scope.reservation = reservation;
