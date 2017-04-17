@@ -15,12 +15,17 @@
       &.online {
         background-color: #00C853;
       }
-
-      &.offline {
-        background-color: #D50000;
-      }
       &.away {
         background-color: #FF6D00;
+      }
+      &.Idle {
+        background-color: #00C853;
+      }
+      &.Busy {
+        background-color: #D50000;
+      }
+      &.offline {
+        background-color: #8d8d8e;
       }
       // personable activities
       &.Offline {
