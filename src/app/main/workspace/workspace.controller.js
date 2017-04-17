@@ -256,6 +256,10 @@
                 return;
               }
 
+              // TODO  - make a call type to represent chat
+              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: 'CA12345', conferenceName: 'chat'};
+              $scope.currentCall = new InboundCall(callParams);
+              $scope.callTasks.push($scope.currentCall);
               $scope.$broadcast('ActivateChat', {channelSid: reservation.task.attributes.channelSid});
 
             });

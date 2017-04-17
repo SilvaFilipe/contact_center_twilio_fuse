@@ -44,11 +44,11 @@
               </md-tab-label>
               <md-tab-body>
                 <md-content class="h-400" ng-class="(task.isCompleted()) ? 'callCompleted' : 'md-grey-100-bg'">
-                  <div style="height: 70px;">
+                  <div style="height: 70px;"  ng-show="task.conferenceName!='chat'">
                     <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
                   </div>
-                  <div class="workingTimer" ng-class='{"invisible": !task.duration}'> {{ task.duration | counter }} </div>
-                  <div layout="row" layout-align="center center">
+                  <div class="workingTimer" ng-class='{"invisible": !task.duration}' ng-show="task.conferenceName!='chat'"> {{ task.duration | counter }} </div>
+                  <div layout="row" layout-align="center center" ng-show="task.conferenceName!='chat'">
 
                     <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
                       REC
@@ -80,12 +80,70 @@
                     <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
                   </div>
+
+                  <!-- chat -->
+                  <section ng-show="session.channelSid" class="chat-controller" ng-cloak>
+
+                    <div class="load-indicator" ng-show="session.isLoading">
+                      <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
+                    </div>
+
+                    <div ng-show="session.isInitialized">
+
+                      <div class="chat-canvas" scroll-glue>
+
+                        <ul class="message-list" >
+
+                          <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
+
+                            <div>
+
+                              <div class="body">
+                                <div class="needle"></div>
+                                <p dynamic="message.body">{{message.body}}</p>
+                              </div>
+                              <div class="footer">
+                                <div class="author">{{message.author}}</div>
+                                <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp | time}}</div>
+                              </div>
+
+                            </div>
+
+                          </li>
+
+                        </ul>
+                        <div id="bottom"></div>
+
+                      </div>
+
+                      <div class="typing-notification"><span>{{typingNotification}}</span></div>
+
+                      <form class="chat-message-form form-horizontal" name="chatMessageForm">
+                        <div layout="row" layout-align="between-space center">
+                          <div flex="70">
+                            <md-input-container class="md-block">
+                              <input ng-model="vm.message" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
+                            </md-input-container>
+                          </div>
+                          <div flex="30" class="mt-10">
+                            <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" ng-click="send()">Send</md-button>
+                          </div>
+                        </div>
+                      </form>
+
+                    </div>
+
+                  </section>
+
+                  <md-button ng-show="task.conferenceName=='chat'"  class="md-raised md-accent" ng-click="complete(true); complete(false);">Complete Task</md-button>
                   <div class="mt-30" layout="row" layout-align="center center" ng-show="task.isCompleted()">
                     <md-button class="md-warn md-raised md-hue-2" ng-click="complete(false)">
                       <span ng-show="task.isInGoingCall()">Complete task</span>
                       <span ng-show="task.isOutGoingCall() || task.isExtensionCall()">Close</span>
                     </md-button>
                   </div>
+
+
                 </md-content>
               </md-tab-body>
             </md-tab>
@@ -128,60 +186,6 @@
                 <div style="font-size: 16px">{{task.attributes.text}}</div>
                 <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete(true)">Complete Task</md-button>
               </div>
-
-              <!-- chat -->
-              <section ng-show="session.channelSid" class="chat-controller" ng-cloak>
-
-                <div class="load-indicator" ng-show="session.isLoading">
-                  <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
-                </div>
-
-                <div ng-show="session.isInitialized">
-
-                  <div class="chat-canvas" scroll-glue>
-
-                    <ul class="message-list" >
-
-                      <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
-
-                        <div>
-
-                          <div class="body">
-                            <div class="needle"></div>
-                            <p dynamic="message.body">{{message.body}}</p>
-                          </div>
-                          <div class="footer">
-                            <div class="author">{{message.author}}</div>
-                            <div class="time"><i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{message.timestamp | time}}</div>
-                          </div>
-
-                        </div>
-
-                      </li>
-
-                    </ul>
-                    <div id="bottom"></div>
-
-                  </div>
-
-                  <div class="typing-notification"><span>{{typingNotification}}</span></div>
-
-                  <form class="chat-message-form form-horizontal" name="chatMessageForm">
-                    <div layout="row" layout-align="between-space center">
-                      <div flex="70">
-                        <md-input-container class="md-block">
-                          <input ng-model="vm.message" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
-                        </md-input-container>
-                      </div>
-                      <div flex="30" class="mt-10">
-                        <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" ng-click="send()">Send</md-button>
-                      </div>
-                    </div>
-                  </form>
-
-                </div>
-
-              </section>
             </md-tab>
 
           </md-tabs>
