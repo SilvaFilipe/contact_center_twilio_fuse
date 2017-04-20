@@ -4,7 +4,6 @@ var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
 var gulpNgConfig = require('gulp-ng-config');
-var babel  = require('gulp-babel');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']

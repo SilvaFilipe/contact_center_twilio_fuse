@@ -35,7 +35,8 @@
             'app.components',
             // Auth
             'app.auth',
-            'app.config'
+            'app.config',
+            'app.admin'
 
         ]);
 })();

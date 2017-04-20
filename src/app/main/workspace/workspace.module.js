@@ -42,7 +42,7 @@
         });
 
         msNavigationServiceProvider.saveItem('fuse.workspace', {
-            title    : 'Workplace',
+            title    : 'Workspace',
             icon     : 'icon-tile-four',
             state    : 'app.workspace',
             /*stateParams: {

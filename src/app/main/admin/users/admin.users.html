@@ -1,0 +1,108 @@
+<div id="admin-users" class="page-layout carded fullwidth" layout="row">
+
+    <!-- TOP BACKGROUND -->
+    <div class="top-bg md-accent-bg" style="height: 150px !important;"></div>
+    <!-- / TOP BACKGROUND -->
+
+    <!-- CENTER -->
+    <div class="center" layout="column" flex>
+
+        <!-- CONTENT HEADER -->
+        <div class="header" layout="row" layout-align="space-between center">
+            <div class="white-fg" layout="column" layout-align="start start">
+                <div class="h1" layout="row" layout-align="start center">
+                    <md-icon md-font-icon="icon-cube-outline"></md-icon>
+                    <span>Users</span>
+                </div>
+                <div class="product-count secondary-text">
+                    <span>Total Users:</span>
+                    <!--<span>{{vm.users.length}}</span>-->
+                </div>
+            </div>
+
+            <div class="search" layout="row" layout-align="start center" flex>
+                <md-icon md-font-icon="icon-magnify" class="white-text icon search-icon"></md-icon>
+                <input id="admin-users-search" class="search-input" type="text" placeholder="Search" flex>
+            </div>
+
+            <div>
+                <md-button class="md-raised md-background" ng-click="vm.gotoAddProduct()">
+                    <span>Add New User</span>
+                </md-button>
+            </div>
+        </div>
+        <!-- / CONTENT HEADER -->
+
+        <!-- CONTENT CARD -->
+        <div class="content-card" layout="column" flex>
+
+            <!-- CONTENT TOOLBAR -->
+
+            <!-- / CONTENT TOOLBAR -->
+
+            <!-- CONTENT -->
+            <div class="content fullpage-datatable" layout="column" flex>
+
+                <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                       dt-options="vm.dtOptions">
+                    <thead>
+                        <tr>
+                            <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Avatar</span>
+                                </div>
+                            </th>
+                            <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">First Name</span>
+                                </div>
+                            </th>
+                            <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Last Name</span>
+                                </div>
+                            </th>
+                            <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Email</span>
+                                </div>
+                            </th>
+                            <th class="secondary-text">
+                                <div class="table-header">
+                                    <span class="column-title">Extension</span>
+                                </div>
+                            </th>
+                            <th class="secondary-text">
+                              <div class="table-header">
+                                <span class="column-title">Action</span>
+                              </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in ::vm.users">
+                            <td><img class="product-image" ng-src="{{product.images[0].url}}"></td>
+                            <td>{{user.firstName}}</td>
+                            <td>{{user.lastName}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.extension}}</td>
+                            <td>
+                                <md-button class="edit-button md-icon-button" ng-click="vm.gotoProductDetail(product.id)" aria-label="Product details"
+                                           translate translate-attr-aria-label="EC.PRODUCT_DETAILS">
+                                    <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- / CONTENT -->
+
+        </div>
+        <!-- / CONTENT CARD -->
+
+    </div>
+    <!-- / CENTER -->
+
+</div>
