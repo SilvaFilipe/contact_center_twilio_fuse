@@ -8,11 +8,11 @@
   /** @ngInject */
   function CallService($rootScope, $timeout, $http, $q, $window) {
 
-    let currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-    let workerName =  'w' + currentUser._id;
-    let apiUrl = $rootScope.apiBaseUrl;
+    var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+    var workerName =  'w' + currentUser._id;
+    var apiUrl = $rootScope.apiBaseUrl;
 
-    let CallService = {};
+    var CallService = {};
 
 
     CallService.recordOn = function (call_sid) {

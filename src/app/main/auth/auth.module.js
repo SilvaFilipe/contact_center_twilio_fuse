@@ -9,7 +9,7 @@
     .factory('authService', authService);
 
   function authInterceptor($q) {
-    let service = this;
+    var service = this;
 
     service.responseError = function(response) {
       if (response.status === 401){
@@ -68,15 +68,15 @@
   {
 
     // Private vars
-    let currentUser = null;
+    var currentUser = null;
     $rootScope.apiBaseUrl = EnvironmentConfig.API;
     $rootScope.authBaseUrl = EnvironmentConfig.Auth;
-    let authUrl = $rootScope.authBaseUrl;
-    let apiUrl = $rootScope.apiBaseUrl;
+    var authUrl = $rootScope.authBaseUrl;
+    var apiUrl = $rootScope.apiBaseUrl;
 
-    let me = this;
+    var me = this;
 
-    let isAdmin = false;
+    var isAdmin = false;
 
 
     // Service interface
@@ -94,7 +94,7 @@
     }
 
     function login(email, password) {
-      let deferred = $q.defer();
+      var deferred = $q.defer();
       $http.post(authUrl + 'auth/sign-in', {email: email, password: password}, {withCredentials: true})
         .then(function(res) {
           $http.get(apiUrl + 'api/users/me', {withCredentials: true})
@@ -103,8 +103,8 @@
               if (response.data.roles.indexOf('admin') > 0) {
                   isAdmin = true;
               }
-              let worker =  {friendlyName: response.data.user.friendlyWorkerName};
-              let endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
+              var worker =  {friendlyName: response.data.user.friendlyWorkerName};
+              var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
               $http.post(apiUrl + 'api/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
 
@@ -139,7 +139,7 @@
     function isLoggedIn() {
       if (this.loggedInUser == null) {
         try {
-          let storedUser = $window.sessionStorage.getItem('currentUser');
+          var storedUser = $window.sessionStorage.getItem('currentUser');
           if (storedUser) {
             this.loggedInUser = JSON.parse(storedUser);
           }

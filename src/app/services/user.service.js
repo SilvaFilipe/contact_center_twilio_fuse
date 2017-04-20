@@ -7,9 +7,9 @@
 
   /** @ngInject */
   function UserService($http, $resource, $q, authService, $rootScope) {
-    let apiUrl = $rootScope.apiBaseUrl;
+    var apiUrl = $rootScope.apiBaseUrl;
 
-    let UserService = {
+    var UserService = {
 
       getCurrentUser: function getCurrentUser() {
         return authService.loggedInUser || null;

@@ -11,7 +11,7 @@
 
   function Call() {
     // instantiate Call class
-    let Call = function (params) {
+    var Call = function (params) {
       if (params) {
         this.fromNumber = params.fromNumber;
         this.duration = (params.duration === undefined ? 0: params.duration);
@@ -61,7 +61,7 @@
 
   function ExtensionCall(Call) {
 
-    let ExtensionCall = function(params) {
+    var ExtensionCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'extension';
       this.callerName = params.callerName;
@@ -82,7 +82,7 @@
 
   function InboundCall(Call) {
 
-    let InboundCall = function(params) {
+    var InboundCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'inbound';
       this.type = 'inbound';
@@ -103,7 +103,7 @@
 
   function OutboundCall(Call) {
 
-    let OutboundCall = function(params) {
+    var OutboundCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'outbound';
       this.type = 'outbound';
@@ -125,7 +125,7 @@
 
   function ConferenceCall(Call) {
 
-    let ConferenceCall = function (params) {
+    var ConferenceCall = function (params) {
       Call.apply(this, arguments);
       // ConferenceCall.prototype = Object.create(Call.prototype);
       // ConferenceCall.prototype.constructor = ConferenceCall;

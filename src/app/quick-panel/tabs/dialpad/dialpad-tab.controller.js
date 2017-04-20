@@ -9,10 +9,10 @@
     /** @ngInject */
     function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window, CallService)
     {
-      let vm = this;
-      let currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-      let workerName =  currentUser.friendlyWorkerName;
-      let apiUrl = $rootScope.apiBaseUrl;
+      var vm = this;
+      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+      var workerName =  currentUser.friendlyWorkerName;
+      var apiUrl = $rootScope.apiBaseUrl;
 
       $scope.status = null;
       $scope.isActive = false;
@@ -191,10 +191,10 @@
         $('.phoneNumberTxt').focus();
       };
 
-      let addAnimationToButton = function(thisButton){
+      var addAnimationToButton = function(thisButton){
         //add animation
         $(thisButton).removeClass('clicked');
-        let _this = thisButton;
+        var _this = thisButton;
         setTimeout(function(){
           $(_this).addClass('clicked');
         },1);
@@ -202,10 +202,10 @@
 
       function bindVolumeIndicators(connection) {
         connection.volume(function(inputVolume, outputVolume) {
-          let inputVolumeBar = document.getElementById('input-volume');
-          let volumeIndicators = document.getElementById('volume-indicators');
-          let outputVolumeBar = document.getElementById('output-volume');
-          let inputColor = 'red';
+          var inputVolumeBar = document.getElementById('input-volume');
+          var volumeIndicators = document.getElementById('volume-indicators');
+          var outputVolumeBar = document.getElementById('output-volume');
+          var inputColor = 'red';
           if (inputVolume < .50) {
             inputColor = 'green';
           } else if (inputVolume < .75) {
@@ -215,7 +215,7 @@
           inputVolumeBar.style.width = Math.floor(inputVolume * 300) + 'px';
           inputVolumeBar.style.background = inputColor;
 
-          let outputColor = 'red';
+          var outputColor = 'red';
           if (outputVolume < .50) {
             outputColor = 'green';
           } else if (outputVolume < .75) {

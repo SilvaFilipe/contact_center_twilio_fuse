@@ -4,6 +4,7 @@ var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
 var gulpNgConfig = require('gulp-ng-config');
+var babel  = require('gulp-babel');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
@@ -46,6 +47,7 @@ gulp.task('html', ['inject', 'partials'], function ()
         .pipe(jsFilter)
         .pipe($.sourcemaps.init())
         .pipe($.ngAnnotate())
+        .pipe($.uglify({preserveComments: $.uglifySaveLicense})).on('error', conf.errorHandler('Uglify'))
         .pipe($.rev())
         .pipe($.sourcemaps.write('maps'))
         .pipe(jsFilter.restore)

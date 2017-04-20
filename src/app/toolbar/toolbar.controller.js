@@ -9,7 +9,7 @@
     /** @ngInject */
     function ToolbarController($rootScope, $q, $state, $timeout, $mdSidenav, $translate, $mdToast, msNavigationService, authService, $window)
     {
-        let vm = this;
+        var vm = this;
 
         // Data
         $rootScope.global = {
@@ -17,7 +17,7 @@
         };
 
         vm.isAdmin = authService.userIsAdmin();
-        let currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+        var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
         vm.userName = currentUser.firstName + ' ' + currentUser.lastName;
         vm.userName = vm.userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
           return letter.toUpperCase();
@@ -150,7 +150,7 @@
              */
             if ( lang.code !== 'en' )
             {
-                let message = 'Fuse supports translations through angular-translate module, but currently we do not have any translations other than English language. If you want to help us, send us a message through ThemeForest profile page.';
+                var message = 'Fuse supports translations through angular-translate module, but currently we do not have any translations other than English language. If you want to help us, send us a message through ThemeForest profile page.';
 
                 $mdToast.show({
                     template : '<md-toast id="language-message" layout="column" layout-align="center start"><div class="md-toast-content">' + message + '</div></md-toast>',
@@ -190,14 +190,14 @@
          */
         function search(query)
         {
-            let navigation = [],
+            var navigation = [],
                 flatNavigation = msNavigationService.getFlatNavigation(),
                 deferred = $q.defer();
 
             // Iterate through the navigation array and
             // make sure it doesn't have any groups or
             // none ui-sref items
-            for ( let x = 0; x < flatNavigation.length; x++ )
+            for ( var x = 0; x < flatNavigation.length; x++ )
             {
                 if ( flatNavigation[x].uisref )
                 {

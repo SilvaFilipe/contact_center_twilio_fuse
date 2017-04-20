@@ -8,17 +8,17 @@
 
     /** @ngInject */
     function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
-      let vm = this;
+      var vm = this;
 
-      let apiUrl = $rootScope.apiBaseUrl;
+      var apiUrl = $rootScope.apiBaseUrl;
 
       //Generate random UUID to identify this browser tab
       //For a more robust solution consider a library like
       //fingerprintjs2: https://github.com/Valve/fingerprintjs2
-      let getDeviceId = function () {
+      var getDeviceId = function () {
         return 'browser-' +
           'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            let r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
           });
       };
@@ -65,9 +65,9 @@
                   }
                   if (item.value.type === 'inboundCall'&& !$scope.extensionCallTask) {
                     $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
-                      let audio = new Audio(res.data);
+                      var audio = new Audio(res.data);
                       audio.play();
-                      let callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
+                      var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
                         conferenceName: item.value.data.conferenceFriendlyName};
                       $scope.extensionCallTask = new ExtensionCall(callParams);
                       $scope.startExtensionCounter();
@@ -139,7 +139,7 @@
           $log.log(reservation);
 
           $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
-            let audio = new Audio(res.data);
+            var audio = new Audio(res.data);
             audio.play();
             $scope.reservation = reservation;
             $scope.startReservationCounter();
@@ -155,7 +155,7 @@
           $scope.task = reservation.task;
 
           /* check if the customer name is a phone number */
-          let pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
+          var pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
 
           if (pattern.test($scope.task.attributes.name) === true) {
             $scope.task.attributes.nameIsPhoneNumber = true;
@@ -164,8 +164,8 @@
           $scope.task.completed = false;
           $scope.reservation = null;
           $scope.stopReservationCounter();
-          let caller_sid = reservation.task.attributes.call_sid;
-          let agent_sid = reservation.task.attributes.worker_call_sid;
+          var caller_sid = reservation.task.attributes.call_sid;
+          var agent_sid = reservation.task.attributes.worker_call_sid;
           $scope.$apply();
 
               // subscribe to updated events
@@ -257,7 +257,7 @@
               }
 
               // TODO  - make a call type to represent chat
-              let callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: 'CA12345', conferenceName: 'chat'};
+              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: 'CA12345', conferenceName: 'chat'};
               $scope.currentCall = new InboundCall(callParams);
               $scope.callTasks.push($scope.currentCall);
               $scope.$broadcast('ActivateChat', {channelSid: reservation.task.attributes.channelSid});
@@ -279,7 +279,7 @@
                 return;
               }
               $log.log("reservation accepted");
-              let callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: reservation.task.attributes.call_sid, conferenceName: reservation.sid};
+              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: reservation.task.attributes.call_sid, conferenceName: reservation.sid};
               $scope.currentCall = new InboundCall(callParams);
               $scope.callTasks.push($scope.currentCall);
               CallService.getActiveConnSid(function(ActiveConnSid) {
@@ -433,7 +433,7 @@
       $scope.$on('NewOutBoundingCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        let callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid};
+        var callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid};
         $scope.currentCall = new OutboundCall(callParams);
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
@@ -453,7 +453,7 @@
       $scope.$on('NewExtensionCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        let callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName};
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName};
         $scope.currentCall = new ExtensionCall(callParams);
         $scope.callTasks.push($scope.currentCall);
         $scope.stopWorkingCounter();
@@ -571,7 +571,7 @@
       });
 
       $scope.closeTab = function () {
-        let index = $scope.callTasks.indexOf($scope.currentCall);
+        var index = $scope.callTasks.indexOf($scope.currentCall);
         $scope.callTasks.splice(index, 1);
         if (index === $scope.callTasks.length && index !== 0) {
           $scope.currentCall = $scope.callTasks[0];
@@ -725,7 +725,7 @@
       $scope.setupClient = function (channelSid) {
 
         $log.log('setup channel: ' + channelSid);
-        let accessManager = new Twilio.AccessManager($scope.session.token);
+        var accessManager = new Twilio.AccessManager($scope.session.token);
 
         /**
          * you'll want to be sure to listen to the tokenExpired event either update
@@ -740,9 +740,9 @@
           $log.error('An error occurred');
         });
 
-        let messagingClient = new Twilio.IPMessaging.Client(accessManager);
+        var messagingClient = new Twilio.IPMessaging.Client(accessManager);
 
-        let promise = messagingClient.getChannelBySid(channelSid);
+        var promise = messagingClient.getChannelBySid(channelSid);
 
         promise.then(function (channel) {
           $log.log('channel is: ' + channel.uniqueName);
@@ -760,8 +760,8 @@
 
           /* first we read the history of this channel, afterwards we join */
           channel.getMessages().then(function (messages) {
-            for (let i = 0; i < messages.length; i++) {
-              let message = messages[i];
+            for (var i = 0; i < messages.length; i++) {
+              var message = messages[i];
               $scope.addMessage(message);
             }
             $log.log('Total Messages in Channel:' + messages.length);
@@ -838,10 +838,10 @@
 
       $scope.addMessage = function (message) {
 
-        let pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
+        var pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
 
-        let m = message.body;
-        let template = '<p>$1<span class="chat-inline-number" ng-click="callInlineNumber(\'$2\')">$2</span>$3</p>';
+        var m = message.body;
+        var template = '<p>$1<span class="chat-inline-number" ng-click="callInlineNumber(\'$2\')">$2</span>$3</p>';
 
         if (pattern.test(message.body) === true) {
           m = message.body.replace(pattern, template);
@@ -853,8 +853,8 @@
       };
 
       $scope.mockCalls = function(number) {
-        for (let n=0; n<number; n++){
-          let callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest'};
+        for (var n=0; n<number; n++){
+          var callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest'};
           $scope.currentCall = new OutboundCall(callParams);
           $scope.callTasks.push($scope.currentCall);
           $scope.stopWorkingCounter();
@@ -864,7 +864,7 @@
 
       $scope.$on('SetActivitySid', function(event, activitySid) {
         console.log('SetActivitySid: ', activitySid);
-        let selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
+        var selectedActivitySid = eval ('$scope.configuration.twilio.' + activitySid);
         $scope.workerJS.update('ActivitySid', selectedActivitySid, function (err, worker) {
           if (err) {
             $log.error(err);
