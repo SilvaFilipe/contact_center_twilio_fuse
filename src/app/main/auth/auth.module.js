@@ -9,10 +9,10 @@
     .factory('authService', authService);
 
   function authInterceptor($q) {
-    var service = this;
+    let service = this;
 
     service.responseError = function(response) {
-      if (response.status == 401){
+      if (response.status === 401){
         window.location = "/access/login";
       }
       return $q.reject(response);
@@ -68,15 +68,15 @@
   {
 
     // Private vars
-    var currentUser = null;
+    let currentUser = null;
     $rootScope.apiBaseUrl = EnvironmentConfig.API;
     $rootScope.authBaseUrl = EnvironmentConfig.Auth;
-    var authUrl = $rootScope.authBaseUrl;
-    var apiUrl = $rootScope.apiBaseUrl;
+    let authUrl = $rootScope.authBaseUrl;
+    let apiUrl = $rootScope.apiBaseUrl;
 
-    var me = this;
+    let me = this;
 
-    var isAdmin = false;
+    let isAdmin = false;
 
 
     // Service interface
@@ -94,19 +94,19 @@
     }
 
     function login(email, password) {
-      var deferred = $q.defer();
-      $http.post(authUrl + '/sign-in', {email: email, password: password}, {withCredentials: true})
+      let deferred = $q.defer();
+      $http.post(authUrl + 'auth/sign-in', {email: email, password: password}, {withCredentials: true})
         .then(function(res) {
-          $http.get(apiUrl + '/users/me', {withCredentials: true})
+          $http.get(apiUrl + 'api/users/me', {withCredentials: true})
             .then(function (response) {
               console.log(response.data);
               if (response.data.roles.indexOf('admin') > 0) {
                   isAdmin = true;
               }
-              var worker =  {friendlyName: response.data.user.friendlyWorkerName};
-              var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
+              let worker =  {friendlyName: response.data.user.friendlyWorkerName};
+              let endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
-              $http.post(apiUrl + '/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
+              $http.post(apiUrl + 'api/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
 
                 .then(function onSuccess(response) {
                   me.loggedInUser = response.data;
@@ -139,7 +139,7 @@
     function isLoggedIn() {
       if (this.loggedInUser == null) {
         try {
-          var storedUser = $window.sessionStorage.getItem('currentUser');
+          let storedUser = $window.sessionStorage.getItem('currentUser');
           if (storedUser) {
             this.loggedInUser = JSON.parse(storedUser);
           }

@@ -11,10 +11,10 @@
 
   function Call() {
     // instantiate Call class
-    var Call = function (params) {
+    let Call = function (params) {
       if (params) {
         this.fromNumber = params.fromNumber;
-        this.duration = (params.duration == undefined ? 0: params.duration);
+        this.duration = (params.duration === undefined ? 0: params.duration);
         this.callSid = params.callSid;
         this.onhold = false;
         this.recording = false;
@@ -26,33 +26,33 @@
     };
 
     Call.prototype.showOutgoingIcon = function() {
-      return this.callStatus != 'completed' && this.type == 'outbound'
+      return this.callStatus !== 'completed' && this.type === 'outbound'
     };
 
     Call.prototype.showIngoingIcon = function() {
-      return this.callStatus != 'completed' && this.type == 'inbound';
+      return this.callStatus !== 'completed' && this.type === 'inbound';
     };
     Call.prototype.showConferenceIcon = function() {
-      return this.callStatus != 'completed' && this.type == 'conference';
+      return this.callStatus !== 'completed' && this.type === 'conference';
     };
     Call.prototype.isCompleted = function() {
-      return this.callStatus == 'completed';
+      return this.callStatus === 'completed';
     };
 
     Call.prototype.isInGoingCall = function() {
-      return this.type == 'inbound' && this.direction != 'extension';
+      return this.type === 'inbound' && this.direction !== 'extension';
     };
 
     Call.prototype.isOutGoingCall = function() {
-      return this.type == 'outbound';
+      return this.type === 'outbound';
     };
 
     Call.prototype.isExtensionCall = function() {
-      return this.direction == 'extension';
+      return this.direction === 'extension';
     };
 
     Call.prototype.isConferenceCall = function() {
-      return this.direction == 'conference';
+      return this.direction === 'conference';
     };
 
     return Call;
@@ -61,7 +61,7 @@
 
   function ExtensionCall(Call) {
 
-    var ExtensionCall = function(params) {
+    let ExtensionCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'extension';
       this.callerName = params.callerName;
@@ -82,7 +82,7 @@
 
   function InboundCall(Call) {
 
-    var InboundCall = function(params) {
+    let InboundCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'inbound';
       this.type = 'inbound';
@@ -103,7 +103,7 @@
 
   function OutboundCall(Call) {
 
-    var OutboundCall = function(params) {
+    let OutboundCall = function(params) {
       Call.apply(this, arguments);
       this.direction = 'outbound';
       this.type = 'outbound';
@@ -125,7 +125,7 @@
 
   function ConferenceCall(Call) {
 
-    var ConferenceCall = function (params) {
+    let ConferenceCall = function (params) {
       Call.apply(this, arguments);
       // ConferenceCall.prototype = Object.create(Call.prototype);
       // ConferenceCall.prototype.constructor = ConferenceCall;
@@ -140,7 +140,7 @@
 
     ConferenceCall.prototype.getCalls = function(){
       return( this.calls);
-    }
+    };
     return ConferenceCall;
   }
 

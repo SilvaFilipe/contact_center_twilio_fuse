@@ -8,27 +8,27 @@
   /** @ngInject */
   function CallService($rootScope, $timeout, $http, $q, $window) {
 
-    var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-    var workerName =  'w' + currentUser._id;
-    var apiUrl = $rootScope.apiBaseUrl;
+    let currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+    let workerName =  'w' + currentUser._id;
+    let apiUrl = $rootScope.apiBaseUrl;
 
-    var CallService = {};
+    let CallService = {};
 
 
     CallService.recordOn = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/recordOn?callSid=' + call_sid, {withCredentials: true});
+      return $http.get(apiUrl + 'api/callControl/recordOn?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.recordOff = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/recordOff?callSid=' + call_sid, {withCredentials: true});
+      return $http.get(apiUrl + 'api/callControl/recordOff?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.holdOn = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/holdOn?callSid=' + call_sid, {withCredentials: true});
+      return $http.get(apiUrl + 'api/callControl/holdOn?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.holdOff = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/holdOff?callSid=' + call_sid, {withCredentials: true});
+      return $http.get(apiUrl + 'api/callControl/holdOff?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.muteOn = function () {
@@ -40,7 +40,7 @@
     };
 
     CallService.hangup = function (call_sid) {
-      return $http.get(apiUrl + '/callControl/hangup?callSid=' + call_sid, {withCredentials: true});
+      return $http.get(apiUrl + 'api/callControl/hangup?callSid=' + call_sid, {withCredentials: true});
     };
 
     CallService.hangupDialpad = function () {
@@ -56,7 +56,7 @@
     };
 
     CallService.getActiveConnSid = function (callback) {
-      if (Twilio.Device.activeConnection() == undefined) {
+      if (Twilio.Device.activeConnection() === undefined) {
         Twilio.Device.connect({'workerName': workerName, 'user_id': currentUser._id });
         Twilio.Device.connect(function (conn) {
           callback(Twilio.Device.activeConnection().parameters.CallSid);

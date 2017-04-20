@@ -7,9 +7,9 @@
 
   /** @ngInject */
   function UserService($http, $resource, $q, authService, $rootScope) {
-    var apiUrl = $rootScope.apiBaseUrl;
+    let apiUrl = $rootScope.apiBaseUrl;
 
-    var UserService = {
+    let UserService = {
 
       getCurrentUser: function getCurrentUser() {
         return authService.loggedInUser || null;
@@ -18,7 +18,7 @@
         search = search ? search : '';
         page = page ? page : 1;
         return $http({
-          url: apiUrl + '/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
+          url: apiUrl + 'api/users/' + UserService.getCurrentUser()._id + '/calls/' + page + '?search=' + search,
           method: 'GET',
           withCredentials: true
         }).then(function (response) {
@@ -29,7 +29,7 @@
         search = search ? search : '';
         page = page ? page : 1;
         return $http({
-          url: apiUrl + '/users/' + UserService.getCurrentUser()._id + '/voicemails/' + page + '?search=' + search,
+          url: apiUrl + 'api/users/' + UserService.getCurrentUser()._id + '/voicemails/' + page + '?search=' + search,
           method: 'GET'
         }).then(function (response) {
           return response.data;
@@ -39,7 +39,7 @@
         return UserService.$resource.query().$promise.then(function (users) {
           users = users.map(function (user) {
             user.starred = user.starredBy.findIndex(function (starredBy) {
-                return starredBy.userId == authService.loggedInUser._id && starredBy.starred;
+                return starredBy.userId === authService.loggedInUser._id && starredBy.starred;
               }) > -1;
             return user;
           });
@@ -49,7 +49,7 @@
       },
       starUser: function starUser(user, starStatus) {
         return $http({
-          url: apiUrl + '/users/' + user._id + '/star',
+          url: apiUrl + 'api/users/' + user._id + '/star',
           method: 'POST',
           data: {
             starred: starStatus
@@ -58,7 +58,7 @@
         });
       },
 
-      $resource: $resource(apiUrl + '/users/:id/:routeAction', {id: '@id', routeAction: '@routeAction'}, {
+      $resource: $resource(apiUrl + 'api/users/:id/:routeAction', {id: '@id', routeAction: '@routeAction'}, {
         star: {
           method: 'POST',
           params: {

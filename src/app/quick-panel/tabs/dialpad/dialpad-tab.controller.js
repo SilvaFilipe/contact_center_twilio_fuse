@@ -9,10 +9,10 @@
     /** @ngInject */
     function PhoneController($scope, $rootScope, $http, $timeout, $log, $mdSidenav, $mdToast, $window, CallService)
     {
-      var vm = this;
-      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-      var workerName =  currentUser.friendlyWorkerName;
-      var apiUrl = $rootScope.apiBaseUrl;
+      let vm = this;
+      let currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+      let workerName =  currentUser.friendlyWorkerName;
+      let apiUrl = $rootScope.apiBaseUrl;
 
       $scope.status = null;
       $scope.isActive = false;
@@ -20,7 +20,7 @@
       $scope.toggleRight = function() {
         $mdSidenav('right').toggle();
       };
-      $scope.connection;
+      $scope.connection = null;
       $scope.isOutboundCall = false;
 
 
@@ -106,9 +106,9 @@
       });
 
       $scope.directCall = function () {
-        $http.get(apiUrl + '/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName, {withCredentials: true}).then(function (response) {
+        $http.get(apiUrl + 'api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName, {withCredentials: true}).then(function (response) {
           if(response.data !== "ERROR"){
-            if (response.data.call.direction == 'extension') {
+            if (response.data.call.direction === 'extension') {
               $rootScope.syncClient.document('c'+ response.data.call.callSid)
                 .then(function(doc) {
                   doc.on('updated', function(data) {
@@ -118,7 +118,7 @@
                     console.log(response.data);
                   });
                 });
-              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName, {withCredentials: true});
+              $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.conferenceFriendlyName, {withCredentials: true});
               $rootScope.$broadcast('NewExtensionCall', { phoneNumber: vm.phoneNumber, conferenceName: response.data.call.conferenceFriendlyName, callSid: response.data.call.callSid, recipientName: response.data.call.recipientName});
 
             }
@@ -133,7 +133,7 @@
                     console.log(response.data);
                   });
                 });
-              $http.get(apiUrl + '/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid, {withCredentials: true});
+              $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid + '&roomName=' + response.data.call.sid, {withCredentials: true});
               $rootScope.$broadcast('NewOutBoundingCall', { phoneNumber: vm.phoneNumber, callSid: response.data.call.sid});
 
             }
@@ -191,10 +191,10 @@
         $('.phoneNumberTxt').focus();
       };
 
-      var addAnimationToButton = function(thisButton){
+      let addAnimationToButton = function(thisButton){
         //add animation
         $(thisButton).removeClass('clicked');
-        var _this = thisButton;
+        let _this = thisButton;
         setTimeout(function(){
           $(_this).addClass('clicked');
         },1);
@@ -202,10 +202,10 @@
 
       function bindVolumeIndicators(connection) {
         connection.volume(function(inputVolume, outputVolume) {
-          var inputVolumeBar = document.getElementById('input-volume');
-          var volumeIndicators = document.getElementById('volume-indicators');
-          var outputVolumeBar = document.getElementById('output-volume');
-          var inputColor = 'red';
+          let inputVolumeBar = document.getElementById('input-volume');
+          let volumeIndicators = document.getElementById('volume-indicators');
+          let outputVolumeBar = document.getElementById('output-volume');
+          let inputColor = 'red';
           if (inputVolume < .50) {
             inputColor = 'green';
           } else if (inputVolume < .75) {
@@ -215,7 +215,7 @@
           inputVolumeBar.style.width = Math.floor(inputVolume * 300) + 'px';
           inputVolumeBar.style.background = inputColor;
 
-          var outputColor = 'red';
+          let outputColor = 'red';
           if (outputVolume < .50) {
             outputColor = 'green';
           } else if (outputVolume < .75) {
@@ -232,7 +232,7 @@
         $log.log('call: ' + data.phoneNumber);
         $scope.isOutboundCall = true;
         vm.phoneNumber = data.phoneNumber;
-        if (Twilio.Device.activeConnection() == undefined) {
+        if (Twilio.Device.activeConnection() === undefined) {
           Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
         }
         else {
