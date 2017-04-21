@@ -25,16 +25,5 @@
               }
             });
 
-        // Navigation
-        msNavigationServiceProvider.saveItem('fuse.admin', {
-          title : 'Admin',
-          icon  : 'icon-account-multiple',
-          weight: 3
-        });
-
-        msNavigationServiceProvider.saveItem('fuse.admin.users', {
-          title: 'Users',
-          state: 'app.admin.users'
-        });
     }
 })();
