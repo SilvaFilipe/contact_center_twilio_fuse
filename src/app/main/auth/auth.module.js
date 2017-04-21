@@ -90,7 +90,7 @@
     //////////
 
     function userIsAdmin () {
-      return isAdmin;
+      return $window.sessionStorage.getItem('isAdmin') === 'true';
     }
 
     function login(email, password) {
@@ -102,6 +102,10 @@
               console.log(response.data);
               if (response.data.roles.indexOf('admin') > 0) {
                   isAdmin = true;
+                  $window.sessionStorage.setItem('isAdmin', "true");
+              }
+              else {
+                $window.sessionStorage.setItem('isAdmin', "false");
               }
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);

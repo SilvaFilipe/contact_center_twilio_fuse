@@ -7,7 +7,7 @@
         .controller('AdminUsersController', AdminUsersController);
 
     /** @ngInject */
-    function AdminUsersController($state)
+    function AdminUsersController($state, $http, $rootScope)
     {
       var vm = this;
       vm.dtOptions = {
@@ -17,6 +17,15 @@
         autoWidth : false,
         responsive: true
       };
+
+      var apiUrl = $rootScope.apiBaseUrl;
+
+      //get all users
+      $http.get(apiUrl + 'api/users', {withCredentials: true})
+        .then(function (response) {
+          console.log("fetched all users");
+          vm.users = response.data;
+        });
 
     }
 })();
