@@ -39,6 +39,12 @@ var UserSchema = mongoose.Schema({
     workerSid: String,
     workerFriendlyName: String,
     friendlyWorkerName: String,
+    hasDid: Boolean,
+    hasFax: Boolean,
+    hasVoicemail: Boolean,
+    sipURI: String,
+    forwarding: Object,
+    skills: [String],
     local: {
         email: {
             type: String
@@ -55,15 +61,9 @@ var UserSchema = mongoose.Schema({
         },
         name: String
     },
-    starredBy: [
-      {
-        userId: {
-          type: mongoose.Schema.ObjectId,
-          ref: 'User'
-        },
-        starred: Boolean
-      }
-    ]
+    starredBy: [{ userId: { type: mongoose.Schema.ObjectId, ref: 'User' }, starred: Boolean}],
+    queues: [{ type: mongoose.Schema.ObjectId, ref: 'Queue' }],
+    dids: [{ type: mongoose.Schema.ObjectId, ref: 'Did' }]
 });
 
 UserSchema.methods.generateHash = function (password) {
