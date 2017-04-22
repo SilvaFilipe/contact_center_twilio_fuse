@@ -36,7 +36,8 @@
             // Auth
             'app.auth',
             'app.config',
-            'app.admin'
+            'app.admin',
+            'datatables'
 
         ]);
 })();

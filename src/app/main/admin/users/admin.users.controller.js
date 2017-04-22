@@ -11,12 +11,25 @@
     {
       var vm = this;
       vm.dtOptions = {
-        dom       : '<"top"f>rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
+        dom       : 'rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
         pagingType: 'simple',
         pageLength: 50,
         autoWidth : false,
         responsive: true
       };
+      vm.dtInstance = {};
+
+      // customize search box
+      var searchBox = angular.element('body').find('#admin-users-search');
+
+      if ( searchBox.length > 0 )
+      {
+        searchBox.on('keyup', function (event)
+        {
+          vm.dtInstance.DataTable.search(event.target.value);
+          vm.dtInstance.DataTable.search(event.target.value).draw();
+        });
+      }
 
       var apiUrl = $rootScope.apiBaseUrl;
 
