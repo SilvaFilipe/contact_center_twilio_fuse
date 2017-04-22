@@ -39,6 +39,22 @@ module.exports = function (app, passport, acl) {
       })(req, res, next);
     });
 
+    app.post('/auth/register', function(req, res, next) {
+      passport.authenticate('local', function(err, user, info) {
+        if (err) {
+          return res.status(500).end('Register Failed!');
+        }
+        if (!user) {
+          return res.status(404).end('Register Failed!');
+        }
+        else {
+          return res.status(200).end('Successfully Created!');
+        }
+
+      })(req, res, next);
+    });
+
+
   /*
     app.post('/auth/sign-in', passport.authenticate('local-login', {
       successRedirect: '/auth-me',

@@ -13,7 +13,9 @@
 
     var service = {
       getUser     : getUser,
-      newUser     : newUser
+      newUser     : newUser,
+      updateUser  : updateUser,
+      createUser  : createUser
     };
 
     return service;
@@ -28,7 +30,6 @@
       var deferred = $q.defer();
       $http.get(apiUrl + 'api/users/' + id, {withCredentials: true})
         .then(function (response) {
-          console.log(response.data);
           deferred.resolve(response.data);
         });
 
@@ -41,6 +42,31 @@
      */
     function  newUser() {
       return [];
+    }
+
+    /**
+     * Update user
+     */
+    function updateUser(id, user) {
+      var deferred = $q.defer();
+      $http.put(apiUrl + 'api/users/' + id, user, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        });
+
+      return deferred.promise;
+    }
+    /**
+     * Create user
+     */
+    function createUser(user) {
+      var deferred = $q.defer();
+      $http.post(apiUrl + 'auth/register', user, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        });
+
+      return deferred.promise;
     }
   }
 
