@@ -40,5 +40,26 @@
           vm.users = response.data;
         });
 
+      // Methods
+      vm.gotoAddUser = gotoAddUser;
+      vm.gotoEditUser = gotoEditUser;
+      /**
+       * Go to add user
+       */
+      function gotoAddUser()
+      {
+        $state.go('app.admin.users.add');
+      }
+
+      /**
+       * Go to product detail
+       *
+       * @param id
+       */
+      function gotoEditUser(id)
+      {
+        $state.go('app.admin.users.edit', {id: id});
+      }
+
     }
 })();

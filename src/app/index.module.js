@@ -37,7 +37,8 @@
             'app.auth',
             'app.config',
             'app.admin',
-            'datatables'
+            'datatables',
+            'ngAvatar'
 
         ]);
 })();
