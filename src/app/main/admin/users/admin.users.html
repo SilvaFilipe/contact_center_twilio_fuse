@@ -26,7 +26,7 @@
             </div>
 
             <div>
-                <md-button class="md-raised md-background" ng-click="vm.gotoAddUser()">
+                <md-button class="md-raised md-background"  ui-sref="app.admin.users.add">
                     <span>Add New User</span>
                 </md-button>
             </div>
@@ -87,7 +87,7 @@
                             <td>{{user.email}}</td>
                             <td>{{user.extension}}</td>
                             <td>
-                                <md-button class="edit-button md-icon-button" ng-click="vm.gotoEditUser(user._id)" aria-label="User details">
+                                <md-button class="edit-button md-icon-button" ui-sref="app.admin.users.edit(user._id)" aria-label="User details">
                                     <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
                                 </md-button>
                             </td>

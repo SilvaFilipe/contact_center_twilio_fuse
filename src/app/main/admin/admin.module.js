@@ -55,5 +55,21 @@
               }
             });
 
+      msNavigationServiceProvider.saveItem('admin', {
+        title : 'Admin',
+        group : true,
+        hidden: function ()
+        {
+          return !authService.userIsAdmin(); // must be a boolean value
+        },
+        weight: 1
+      });
+
+      msNavigationServiceProvider.saveItem('admin.users', {
+        title    : 'Users',
+        icon     : 'icon-account-multiple',
+        state    : 'app.admin.users'
+      });
+
     }
 })();
