@@ -113,5 +113,11 @@
         state    : 'app.admin.users'
       });
 
+      msNavigationService.saveItem('admin.groups', {
+        title    : 'Groups',
+        icon     : 'icon-account-multiple',
+        state    : 'app.admin.groups'
+      });
+
     }
 })();

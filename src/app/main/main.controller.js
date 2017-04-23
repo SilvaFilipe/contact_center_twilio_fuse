@@ -22,29 +22,5 @@
             }
         });
 
-<<<<<<< bd9ef2d73fde7f7ce0fdcde59f84761ce9f103bf
-=======
-        msNavigationService.saveItem('admin', {
-          title : 'Admin',
-          group : true,
-          hidden: function ()
-          {
-            return !authService.userIsAdmin(); // must be a boolean value
-          },
-          weight: 1
-        });
-
-        msNavigationService.saveItem('admin.users', {
-          title    : 'Users',
-          icon     : 'icon-account-multiple',
-          state    : 'app.admin.users'
-        });
-
-        msNavigationService.saveItem('admin.groups', {
-          title    : 'Groups',
-          icon     : 'icon-account-multiple',
-          state    : 'app.admin.groups'
-        });
->>>>>>> groups add routes templates nav
     }
 })();
