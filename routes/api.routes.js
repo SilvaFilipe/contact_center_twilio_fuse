@@ -24,6 +24,7 @@ var messagingAdapter = require('../controllers/messaging-adapter.js')
 var workers = require('../controllers/workers.js')
 
 var users = require('../controllers/users.js')
+var groups = require('../controllers/groups.js')
 
 module.exports = function(app){
     router.route('/setup').get(setup.get)
@@ -96,6 +97,11 @@ module.exports = function(app){
 
     router.route('/users/:user_id/star')
       .post(users.starUser);
+
+    //Groups api
+    router.route('/groups')
+      .post(groups.create)
+      .get(groups.all);
 
     app.use('/api', router);
 

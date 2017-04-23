@@ -1,0 +1,130 @@
+<div id="admin-user" class="page-layout simple tabbed" layout="column">
+
+  <!-- HEADER -->
+  <div class="header md-accent-bg" layout="row" layout-align="start center">
+    <div class="white-fg" layout="row" layout-align="start center" flex>
+      <md-button class="goto-products-button md-icon-button" aria-label="Go to users"
+                 ng-click="vm.gotoUsers()">
+        <md-icon md-font-icon="icon-arrow-left"></md-icon>
+      </md-button>
+
+      <div layout="row" layout-align="start center">
+        <div class="product-image" hide-xs ng-show="vm.user._id">
+          <ng-avatar  initials="{{vm.user.firstName.charAt(0) + vm.user.lastName.charAt(0)}}" width="64" round-shape="true" bg-color="#3875d7"></ng-avatar>
+        </div>
+        <div class="product-image" hide-xs ng-hide="vm.user._id">
+          <img class="profile-image avatar" src="assets/images/avatars/profile.jpg">
+        </div>
+
+        <div layout="column" layout-align="start start">
+          <div class="h2">
+            {{vm.user.firstName}} {{vm.user.lastName}}
+          </div>
+          <div class="subtitle secondary-text">
+            <span>User Detail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <md-button class="md-raised md-background" ng-click="vm.saveUser()"
+                 ng-disabled="!vm.isFormValid('productForm')">
+        <span>SAVE</span>
+      </md-button>
+    </div>
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <md-tabs md-dynamic-height>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Basic Info</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <form id="productForm" name="productForm">
+              <md-input-container class="md-block">
+                <label>First Name</label>
+                <input type="text" ng-model="vm.user.firstName" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Last Name</label>
+                <input type="text" ng-model="vm.user.lastName" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Phone</label>
+                <input type="text" ng-model="vm.user.phone" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Email</label>
+                <input type="email" ng-model="vm.user.email" required>
+              </md-input-container>
+              <md-input-container class="md-block" ng-hide="vm.user._id">
+                <label>Password</label>
+                <input type="password" ng-model="vm.user.password" required>
+              </md-input-container>
+
+            </form>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Profile</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Skills</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Queues</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Groups</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+          </div>
+        </md-tab-body>
+      </md-tab>
+    </md-tabs>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

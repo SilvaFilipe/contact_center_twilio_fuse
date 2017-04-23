@@ -53,6 +53,48 @@
                   return AdminUserService.newUser();
                 }
               }
+            })
+
+            //Groups
+
+            .state('app.admin.groups', {
+              url      : '/groups',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/groups/admin.groups.html',
+                  controller : 'AdminGroupsController as vm'
+                }
+              }
+            })
+            .state('app.admin.groups.edit', {
+              url      : '/:id',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/groups/user/user.html',
+                  controller : 'AdminGroupController as vm'
+                }
+              },
+              resolve  : {
+                User: function ($stateParams, AdminUserService)
+                {
+                  return AdminUserService.getUser($stateParams.id);
+                }
+              }
+            })
+            .state('app.admin.groups.add', {
+              url      : '/add',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/groups/group/group.html',
+                  controller : 'AdminGroupController as vm'
+                }
+              },
+              resolve  : {
+                User: function ($stateParams, AdminUserService)
+                {
+                  return AdminUserService.newUser();
+                }
+              }
             });
 
       msNavigationServiceProvider.saveItem('admin', {
