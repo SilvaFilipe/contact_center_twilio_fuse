@@ -7,10 +7,10 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
       var vm = this;
-
       var apiUrl = $rootScope.apiBaseUrl;
+      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
 
       //Generate random UUID to identify this browser tab
       //For a more robust solution consider a library like
@@ -36,6 +36,7 @@
       $scope.callTasks = [];
       $scope.currentCall = null;
       $scope.extensionCallTask = null;
+      $scope.currentUser = currentUser;
 
       /* contains worker record received by the Twilio API or the TaskRouter JavaScript SDK */
       $scope.worker = null;
@@ -440,7 +441,6 @@
         $scope.startWorkingCounter();
 
       });
-
 
       $scope.$on('AddCallTask', function (event, data) {
         $log.log('AddCallTask: ' + data);

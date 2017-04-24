@@ -1,11 +1,11 @@
-<!--
-<md-button class="md-fab md-primary" aria-label="transfer" ng-click="mockCalls(1);">
-  <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
-</md-button>
-<md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">
-  <md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>
-</md-button>
--->
+
+<!--<md-button class="md-fab md-primary" aria-label="transfer" ng-click="mockCalls(1);">-->
+  <!--<md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>-->
+<!--</md-button>-->
+<!--<md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">-->
+  <!--<md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>-->
+<!--</md-button>-->
+
 <div class="page-layout simple fullwidth doc-page element-doc-page">
   <div class="header md-accent-bg" layout="row" layout-align="space-between">
     <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')" aria-label="Toggle Left Sidenav">
@@ -48,7 +48,9 @@
                     <md-icon style="font-size: 60px;position: relative;top: 30px; left: 30px;" md-font-icon="icon-phone" aria-label="icon-phone"></md-icon>
                   </div>
                   <div class="workingTimer" ng-class='{"invisible": !task.duration}' ng-show="task.conferenceName!='chat'"> {{ task.duration | counter }} </div>
-                  <div layout="row" layout-align="center center" ng-show="task.conferenceName!='chat'">
+
+                  <!-- call controls -->
+                  <div layout="row" layout-align="center center" ng-show="task.conferenceName!='chat' && task.direction != 'conference'">
 
                     <md-button class="md-fab md-primary rec" aria-label="Record" ng-click="recordOn()" ng-show="!task.recording">
                       REC
@@ -79,6 +81,50 @@
 
                     <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
+                  </div>
+
+                  <!-- conference -->
+                  <div layout="row" layout-align="center center" ng-show="task.direction == 'conference'">
+
+                    <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch  ng-repeat="call in task.getCalls()">
+                      <md-card-title>
+                        <md-card-title-text>
+                          <span class="md-headline">{{ call.callerName}}</span>
+                          <span class="md-subhead">{{ call.fromNumber }}</span>
+                        </md-card-title-text>
+                        <md-card-title-media>
+                          <div class="md-media-sm card-media"></div>
+                        </md-card-title-media>
+                      </md-card-title>
+                      <md-card-actions layout="row" layout-align="end center">
+                        <md-button>Hangup</md-button>
+                        <md-button>Detach</md-button>
+                      </md-card-actions>
+                    </md-card>
+
+                    <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch >
+                      <md-card-title>
+                        <md-card-title-text>
+                          <span class="md-headline">{{ currentUser.firstName + ' ' + currentUser.lastName }}</span>
+                        </md-card-title-text>
+                          <span class="md-subhead">{{ currentUser.extension }}</span>
+                        <md-card-title-media>
+                          <div class="md-media-sm card-media"></div>
+                        </md-card-title-media>
+                      </md-card-title>
+                      <md-card-actions layout="row" layout-align="end center">
+                        <md-button>Drop Out</md-button>
+                        <md-button>Disconnect Everyone</md-button>
+                      </md-card-actions>
+                    </md-card>
+
+
+                    <md-button class="md-fab md-primary" aria-label="MuteOn" ng-click="muteOn()" ng-show="!task.muted">
+                      <md-icon md-font-icon="icon-microphone" aria-label="icon-microphone"></md-icon>
+                    </md-button>
+                    <md-button class="md-fab md-warn mute" aria-label="Mute" ng-click="muteOff()" ng-show="task.muted">
+                    </md-button>
+
                   </div>
 
                   <!-- chat -->
