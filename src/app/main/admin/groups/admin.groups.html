@@ -12,11 +12,11 @@
             <div class="white-fg" layout="column" layout-align="start start">
                 <div class="h1" layout="row" layout-align="start center">
                     <md-icon md-font-icon="icon-cube-outline"></md-icon>
-                    <span>Users</span>
+                    <span>Groups</span>
                 </div>
                 <div class="product-count secondary-text">
-                    <span>Total Users:</span>
-                    <span>{{vm.users.length}}</span>
+                    <span>Total Groups:</span>
+                    <span>{{vm.groups.length}}</span>
                 </div>
             </div>
 
@@ -26,8 +26,8 @@
             </div>
 
             <div>
-                <md-button class="md-raised md-background" ng-click="vm.gotoAddUser()">
-                    <span>Add New User</span>
+                <md-button class="md-raised md-background" ui-sref="app.admin.groups.add">
+                    <span>Add New Group</span>
                 </md-button>
             </div>
         </div>
@@ -49,27 +49,12 @@
                         <tr>
                             <th class="secondary-text">
                                 <div class="table-header">
-                                    <span class="column-title">Avatar</span>
+                                    <span class="column-title">Name</span>
                                 </div>
                             </th>
                             <th class="secondary-text">
                                 <div class="table-header">
-                                    <span class="column-title">First Name</span>
-                                </div>
-                            </th>
-                            <th class="secondary-text">
-                                <div class="table-header">
-                                    <span class="column-title">Last Name</span>
-                                </div>
-                            </th>
-                            <th class="secondary-text">
-                                <div class="table-header">
-                                    <span class="column-title">Email</span>
-                                </div>
-                            </th>
-                            <th class="secondary-text">
-                                <div class="table-header">
-                                    <span class="column-title">Extension</span>
+                                    <span class="column-title">Description</span>
                                 </div>
                             </th>
                             <th class="secondary-text">
@@ -80,16 +65,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="user in ::vm.users">
-                            <td><ng-avatar initials="{{user.firstName.charAt(0) + user.lastName.charAt(0)}}" round-shape="true" bg-color="#3875d7"></ng-avatar></td>
-                            <td>{{user.firstName}}</td>
-                            <td>{{user.lastName}}</td>
-                            <td>{{user.email}}</td>
-                            <td>{{user.extension}}</td>
+                        <tr ng-repeat="group in ::vm.groups">
+                            <td>{{group.name}}</td>
+                            <td>{{group.description}}</td>
                             <td>
-                                <md-button class="edit-button md-icon-button" ng-click="vm.gotoEditUser(user._id)" aria-label="User details">
-                                    <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
-                                </md-button>
+                              <md-button class="edit-button md-icon-button"
+                                         ui-sref="app.admin.groups.edit({id: group._id})" aria-label="User details">
+                                <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
+                              </md-button>
                             </td>
                         </tr>
                     </tbody>

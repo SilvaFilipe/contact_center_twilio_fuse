@@ -103,6 +103,10 @@ module.exports = function(app){
       .post(groups.create)
       .get(groups.all);
 
+    router.route('/groups/:group_id')
+      .put(groups.update)
+      .get(groups.get);
+
     app.use('/api', router);
 
     // workaround for https://www.twilio.com/console/sms/settings

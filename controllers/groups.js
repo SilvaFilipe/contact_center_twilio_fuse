@@ -23,32 +23,38 @@ module.exports = {
         })
     },
     get: function (req, res) {
-        Group.findById(req.params.user_id, function (err, group) {
+        Group.findById(req.params.group_id)
+          .populate('users queues')
+          .exec(function (err, group) {
             if(err) return res.send(err);
 
             return res.json(group);
         })
     },
     update: function (req, res) {
-        Group.findById(req.params.user_id, function (err, user) {
+        Group.findById(req.params.group_id, function (err, group) {
             if(err) return res.send(err);
 
-            user.email = req.body.email || user.email;
-            user.firstName = req.body.firstName || user.firstName;
-            user.lastName = req.body.lastName || user.lastName;
-            user.phone = req.body.phone || user.phone;
+            group.name = req.body.name;
+            group.description = req.body.description;
 
-            user.save(function(err){
+            if (Array.isArray(req.body.users)) {
+                group.users = req.body.users.map(function (user) {
+                  return user._id;
+                });
+            }
+
+            group.save(function(err){
                 if(err) return res.send(err);
 
-                return res.json(user);
+                return res.json(group);
             });
         })
     },
     delete: function (req, res) {
         Group.remove({
-            _id: req.params.user_id
-        }, function (err, user) {
+            _id: req.params.group_id
+        }, function (err, group) {
             if(err) return res.send(err);
 
             return res.json({message: 'Group deleted.'});

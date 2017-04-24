@@ -4,33 +4,28 @@
   <div class="header md-accent-bg" layout="row" layout-align="start center">
     <div class="white-fg" layout="row" layout-align="start center" flex>
       <md-button class="goto-products-button md-icon-button" aria-label="Go to users"
-                 ng-click="vm.gotoUsers()">
+                ui-sref="app.admin.groups">
         <md-icon md-font-icon="icon-arrow-left"></md-icon>
       </md-button>
 
       <div layout="row" layout-align="start center">
-        <div class="product-image" hide-xs ng-show="vm.user._id">
-          <ng-avatar  initials="{{vm.user.firstName.charAt(0) + vm.user.lastName.charAt(0)}}" width="64" round-shape="true" bg-color="#3875d7"></ng-avatar>
-        </div>
-        <div class="product-image" hide-xs ng-hide="vm.user._id">
-          <img class="profile-image avatar" src="assets/images/avatars/profile.jpg">
-        </div>
-
         <div layout="column" layout-align="start start">
           <div class="h2">
-            {{vm.user.firstName}} {{vm.user.lastName}}
+            {{vm.group.name}}
           </div>
           <div class="subtitle secondary-text">
-            <span>User Detail</span>
+            <span>Group Detail</span>
           </div>
         </div>
       </div>
     </div>
 
     <div>
-      <md-button class="md-raised md-background" ng-click="vm.saveUser()"
+      <md-button class="md-raised md-background" ng-click="vm.saveGroup()"
+                 aria-label="save group"
                  ng-disabled="!vm.isFormValid('productForm')">
-        <span>SAVE</span>
+        <span ng-if="!vm.group._id">ADD</span>
+        <span ng-if="vm.group._id">SAVE</span>
       </md-button>
     </div>
   </div>
@@ -50,26 +45,13 @@
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
             <form id="productForm" name="productForm">
               <md-input-container class="md-block">
-                <label>First Name</label>
-                <input type="text" ng-model="vm.user.firstName" required>
+                <label>Name</label>
+                <input type="text" ng-model="vm.group.name" required>
               </md-input-container>
               <md-input-container class="md-block">
-                <label>Last Name</label>
-                <input type="text" ng-model="vm.user.lastName" required>
+                <label>Description</label>
+                <textarea ng-model="vm.group.description"></textarea>
               </md-input-container>
-              <md-input-container class="md-block">
-                <label>Phone</label>
-                <input type="text" ng-model="vm.user.phone" required>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Email</label>
-                <input type="email" ng-model="vm.user.email" required>
-              </md-input-container>
-              <md-input-container class="md-block" ng-hide="vm.user._id">
-                <label>Password</label>
-                <input type="password" ng-model="vm.user.password" required>
-              </md-input-container>
-
             </form>
           </div>
         </md-tab-body>
@@ -77,7 +59,7 @@
 
       <md-tab>
         <md-tab-label>
-          <span>Profile</span>
+          <span>Contacts</span>
         </md-tab-label>
 
         <md-tab-body>
@@ -89,36 +71,60 @@
 
       <md-tab>
         <md-tab-label>
-          <span>Skills</span>
+          <span>Members</span>
         </md-tab-label>
 
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
-          </div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab>
-        <md-tab-label>
-          <span>Queues</span>
-        </md-tab-label>
-
-        <md-tab-body>
-          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
-          </div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab>
-        <md-tab-label>
-          <span>Groups</span>
-        </md-tab-label>
-
-        <md-tab-body>
-          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
+              <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                     dt-options="vm.dtOptions">
+                <thead>
+                <tr>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">Avatar</span>
+                    </div>
+                  </th>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">First Name</span>
+                    </div>
+                  </th>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">Last Name</span>
+                    </div>
+                  </th>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">Email</span>
+                    </div>
+                  </th>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">Extension</span>
+                    </div>
+                  </th>
+                  <th class="secondary-text">
+                    <div class="table-header">
+                      <span class="column-title">Action</span>
+                    </div>
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in vm.group.users">
+                  <td><ng-avatar initials="{{user.firstName.charAt(0) + user.lastName.charAt(0)}}" round-shape="true" bg-color="#3875d7"></ng-avatar></td>
+                  <td>{{user.firstName}}</td>
+                  <td>{{user.lastName}}</td>
+                  <td>{{user.email}}</td>
+                  <td>{{user.extension}}</td>
+                  <td>
+                    <md-checkbox ng-model="user.groupFlag" aria-label="belongs to group"></md-checkbox>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
           </div>
         </md-tab-body>
       </md-tab>

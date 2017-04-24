@@ -70,14 +70,13 @@
               url      : '/:id',
               views    : {
                 'content@app': {
-                  templateUrl: 'app/main/admin/groups/user/user.html',
+                  templateUrl: 'app/main/admin/groups/group/group.html',
                   controller : 'AdminGroupController as vm'
                 }
               },
               resolve  : {
-                User: function ($stateParams, AdminUserService)
-                {
-                  return AdminUserService.getUser($stateParams.id);
+                Group: function ($stateParams, GroupService) {
+                  return GroupService.getGroup($stateParams.id);
                 }
               }
             })
@@ -90,9 +89,8 @@
                 }
               },
               resolve  : {
-                User: function ($stateParams, AdminUserService)
-                {
-                  return AdminUserService.newUser();
+                Group: function () {
+                  return {};
                 }
               }
             });
@@ -113,7 +111,7 @@
         state    : 'app.admin.users'
       });
 
-      msNavigationService.saveItem('admin.groups', {
+      msNavigationServiceProvider.saveItem('admin.groups', {
         title    : 'Groups',
         icon     : 'icon-account-multiple',
         state    : 'app.admin.groups'

@@ -17,10 +17,26 @@
             return response.data;
           });
       },
+      getGroup: function getGroup(id) {
+        return $http.get(apiUrl + '/groups/' + id)
+          .then(function (response) {
+            return response.data;
+          });
+      },
       create: function create(group) {
         return $http.post(apiUrl + '/groups', group)
           .then(function (response) {
             return response.data;
+          })
+      },
+      update: function update(id, group) {
+        console.log('am i passing', group)
+        return $http.put(apiUrl + '/groups/' + id, group)
+          .then(function (response) {
+            return response.data;
+          })
+          .catch(function (response) {
+            console.log(response);
           })
       }
     };

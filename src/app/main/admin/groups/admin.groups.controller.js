@@ -7,7 +7,7 @@
         .controller('AdminGroupsController', AdminGroupsController);
 
     /** @ngInject */
-    function AdminGroupsController($state, $http, $rootScope, UserService)
+    function AdminGroupsController($state, $http, $rootScope, GroupService)
     {
       var vm = this;
       vm.dtOptions = {
@@ -32,9 +32,9 @@
       }
 
       //get all users
-      UserService.getAll().then(function (users) {
-          console.log("fetched all users");
-          vm.users = users;
+      GroupService.getAll().then(function (groups) {
+          console.log("fetched all groups");
+          vm.groups = groups;
         });
 
       // Methods
