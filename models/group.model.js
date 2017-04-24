@@ -9,7 +9,7 @@ var GroupSchema = mongoose.Schema({
         type: String
     },
     users: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-    //queues: [{ type: mongoose.Schema.ObjectId, ref: 'Queue' }]
+    queues: [{ type: mongoose.Schema.ObjectId, ref: 'Queue' }]
 });
 
 module.exports = mongoose.model('Group', GroupSchema);

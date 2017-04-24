@@ -4,10 +4,10 @@
 
     angular
         .module('app.admin')
-        .controller('AdminGroupsController', AdminGroupsController);
+        .controller('AdminQueuesController', AdminQueuesController);
 
     /** @ngInject */
-    function AdminGroupsController($state, $http, $rootScope, GroupService)
+    function AdminQueuesController(QueueService)
     {
       var vm = this;
       vm.dtOptions = {
@@ -20,7 +20,7 @@
       vm.dtInstance = {};
 
       // customize search box
-      var searchBox = angular.element('body').find('#admin-users-search');
+      var searchBox = angular.element('body').find('#admin-queues-search');
 
       if ( searchBox.length > 0 )
       {
@@ -31,11 +31,10 @@
         });
       }
 
-      //get all users
-      GroupService.getAll().then(function (groups) {
-          console.log("fetched all groups");
-          vm.groups = groups;
+      //get all queues
+      QueueService.getAll().then(function (queues) {
+          console.log("fetched all queues");
+          vm.queues = queues;
         });
-
     }
 })();

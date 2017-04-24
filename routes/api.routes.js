@@ -25,6 +25,7 @@ var workers = require('../controllers/workers.js')
 
 var users = require('../controllers/users.js')
 var groups = require('../controllers/groups.js')
+var queues = require('../controllers/queues.js')
 
 module.exports = function(app){
     router.route('/setup').get(setup.get)
@@ -103,9 +104,18 @@ module.exports = function(app){
       .post(groups.create)
       .get(groups.all);
 
-    router.route('/groups/:group_id')
+    router.route('/groups/:queue_id')
       .put(groups.update)
       .get(groups.get);
+
+    //Queues api
+    router.route('/queues')
+      .post(queues.create)
+      .get(queues.all);
+
+    router.route('/queues/:queue_id')
+      .put(queues.update)
+      .get(queues.get);
 
     app.use('/api', router);
 
