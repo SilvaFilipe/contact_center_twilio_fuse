@@ -15,7 +15,8 @@
         pagingType: 'simple',
         pageLength: 50,
         autoWidth : false,
-        responsive: true
+        responsive: true,
+        scrollY     : 'auto'
       };
       vm.dtInstance = {};
 

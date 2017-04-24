@@ -81,13 +81,13 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="user in ::vm.users">
-                            <td><ng-avatar initials="{{user.firstName.charAt(0) + user.lastName.charAt(0)}}" round-shape="true" bg-color="#3875d7"></ng-avatar></td>
+                            <td><a ui-sref="app.admin.users.edit({id: user._id})"><ng-avatar initials="{{user.firstName.charAt(0) + user.lastName.charAt(0)}}" round-shape="true" bg-color="#3875d7"></ng-avatar></a></td>
                             <td>{{user.firstName}}</td>
                             <td>{{user.lastName}}</td>
                             <td>{{user.email}}</td>
                             <td>{{user.extension}}</td>
                             <td>
-                                <md-button class="edit-button md-icon-button" ui-sref="app.admin.users.edit(user._id)" aria-label="User details">
+                                <md-button class="edit-button md-icon-button" ui-sref="app.admin.users.edit({id: user._id})" aria-label="User details">
                                     <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
                                 </md-button>
                             </td>
