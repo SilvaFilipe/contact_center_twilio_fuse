@@ -89,6 +89,7 @@ module.exports = {
             user.firstName = req.body.firstName || user.firstName;
             user.lastName = req.body.lastName || user.lastName;
             user.phone = req.body.phone || user.phone;
+            user.skills = req.body.skills || user.skills;
 
             user.save(function(err){
                 if(err) return res.send(err);

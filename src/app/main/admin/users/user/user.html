@@ -94,6 +94,13 @@
 
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+              <h3 class="tags secondary-text">Skills</h3>
+              <md-chips ng-model="vm.user.skills"
+                        placeholder="Enter a skill"
+                        delete-button-label="Remove Skill"
+                        delete-hint="Press delete to remove tag"
+                        secondary-placeholder="+Tag">
+              </md-chips>
 
           </div>
         </md-tab-body>
