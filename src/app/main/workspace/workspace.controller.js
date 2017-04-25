@@ -375,6 +375,41 @@
           });
       };
 
+      $scope.hangupConferenceCaller = function (call, conference) {
+        CallService.hangup(call.callSid)
+          .then(function (response) {
+            conference.removeCall(call);
+          })
+      };
+
+      $scope.detachConferenceCaller = function (call, conference) {
+        var callCopy = angular.copy(call);
+        $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + callCopy.callSid + '&roomName=' + callCopy.conferenceName, {withCredentials: true});
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + callCopy.conferenceName, {withCredentials: true});
+        });
+        $scope.callTasks.push(callCopy);
+        $scope.currentCall = callCopy ;
+        conference.removeCall(call);
+      };
+
+      $scope.disconnectAllConference = function (conferenceCall) {
+        conferenceCall.getCalls().forEach(function (call) {
+          CallService.hangup(call.callSid)
+            .then(function (response) {
+              conferenceCall.removeCall(call);
+            })
+        });
+        $scope.dropOutOfConference(conferenceCall);
+      };
+
+      $scope.dropOutOfConference = function (conferenceCall) {
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get(apiUrl + 'api/agents/agentToSilence?caller_sid=' + ActiveConnSid, {withCredentials: true});
+        });
+        var index = $scope.callTasks.indexOf(conferenceCall);
+        $scope.callTasks.splice(index, 1);
+      };
 
       $scope.transfer = function (ev) {
         $mdDialog.show({

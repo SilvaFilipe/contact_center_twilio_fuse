@@ -86,7 +86,7 @@
                   <!-- conference -->
                   <div layout="row" layout-align="center center" ng-show="task.direction == 'conference'">
 
-                    <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch  ng-repeat="call in task.getCalls()">
+                    <md-card ng-repeat="call in task.getCalls()">
                       <md-card-title>
                         <md-card-title-text>
                           <span class="md-headline">{{ call.callerName}}</span>
@@ -97,12 +97,12 @@
                         </md-card-title-media>
                       </md-card-title>
                       <md-card-actions layout="row" layout-align="end center">
-                        <md-button>Hangup</md-button>
-                        <md-button>Detach</md-button>
+                        <md-button ng-click="hangupConferenceCaller(call, task)">Hangup</md-button>
+                        <md-button ng-click="detachConferenceCaller(call, task)">Detach</md-button>
                       </md-card-actions>
                     </md-card>
 
-                    <md-card md-theme="{{ showDarkTheme ? 'dark-purple' : 'default' }}" md-theme-watch >
+                    <md-card>
                       <md-card-title>
                         <md-card-title-text>
                           <span class="md-headline">{{ currentUser.firstName + ' ' + currentUser.lastName }}</span>
@@ -113,8 +113,8 @@
                         </md-card-title-media>
                       </md-card-title>
                       <md-card-actions layout="row" layout-align="end center">
-                        <md-button>Drop Out</md-button>
-                        <md-button>Disconnect Everyone</md-button>
+                        <md-button ng-click="dropOutOfConference(task)">Drop Out</md-button>
+                        <md-button ng-click="disconnectAllConference(task)">Hangup All</md-button>
                       </md-card-actions>
                     </md-card>
 

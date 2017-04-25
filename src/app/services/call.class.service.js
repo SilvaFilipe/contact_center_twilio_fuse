@@ -141,6 +141,12 @@
     ConferenceCall.prototype.getCalls = function(){
       return( this.calls);
     };
+
+    ConferenceCall.prototype.removeCall = function(call){
+      var index = this.calls.indexOf(call);
+      this.calls.splice(index, 1);
+    };
+
     return ConferenceCall;
   }
 
