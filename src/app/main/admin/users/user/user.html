@@ -75,18 +75,18 @@
         </md-tab-body>
       </md-tab>
 
-      <md-tab>
+      <md-tab ng-disabled="!vm.user._id">
         <md-tab-label>
           <span>Profile</span>
         </md-tab-label>
 
         <md-tab-body>
-          <md-content class="about-tab" ng-include="'app/main/admin/users/user/user.profile.html'">
+          <md-content class="about-tab" ng-if="vm.user._id" ng-include="'app/main/admin/users/user/user.profile.html'">
           </md-content>
         </md-tab-body>
       </md-tab>
 
-      <md-tab>
+      <md-tab ng-disabled="!vm.user._id">
         <md-tab-label>
           <span>Skills</span>
         </md-tab-label>
@@ -105,7 +105,7 @@
         </md-tab-body>
       </md-tab>
 
-      <md-tab>
+      <md-tab ng-disabled="!vm.user._id">
         <md-tab-label>
           <span>Queues</span>
         </md-tab-label>
@@ -117,7 +117,7 @@
         </md-tab-body>
       </md-tab>
 
-      <md-tab>
+      <md-tab ng-disabled="!vm.user._id">
         <md-tab-label>
           <span>Groups</span>
         </md-tab-label>
