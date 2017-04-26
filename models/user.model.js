@@ -43,7 +43,7 @@ var UserSchema = mongoose.Schema({
     hasFax: Boolean,
     hasVoicemail: Boolean,
     sipURI: String,
-    forwarding: Object,
+    forwarding: String,
     skills: [String],
     local: {
         email: {

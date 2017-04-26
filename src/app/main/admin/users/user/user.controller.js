@@ -10,16 +10,14 @@
   function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast)
   {
     var vm = this;
+    vm.roles = ['phone', 'contact_center', 'admin'];
 
     vm.user = User;
     console.log(vm.user);
-    vm.gotoUsers = gotoUsers;
     vm.isFormValid = isFormValid;
     vm.saveUser = saveUser;
-
-    function gotoUsers() {
-      $state.go('app.admin.users');
-    }
+    vm.roleToggle = roleToggle;
+    vm.roleExists = roleExists;
 
     /**
      * Checks if the given form valid
@@ -65,6 +63,20 @@
         });
       }
 
+    }
+
+    function roleToggle (item, list) {
+      var idx = list.indexOf(item);
+      if (idx > -1) {
+        list.splice(idx, 1);
+      }
+      else {
+        list.push(item);
+      }
+    }
+
+    function roleExists (item, list) {
+      return list.indexOf(item) > -1;
     }
 
   }

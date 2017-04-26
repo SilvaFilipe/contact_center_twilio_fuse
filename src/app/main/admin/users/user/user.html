@@ -4,7 +4,7 @@
   <div class="header md-accent-bg" layout="row" layout-align="start center">
     <div class="white-fg" layout="row" layout-align="start center" flex>
       <md-button class="goto-products-button md-icon-button" aria-label="Go to users"
-                 ng-click="vm.gotoUsers()">
+                 ui-sref="app.admin.users">
         <md-icon md-font-icon="icon-arrow-left"></md-icon>
       </md-button>
 
@@ -81,9 +81,8 @@
         </md-tab-label>
 
         <md-tab-body>
-          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
-          </div>
+          <md-content class="about-tab" ng-include="'app/main/admin/users/user/user.profile.html'">
+          </md-content>
         </md-tab-body>
       </md-tab>
 

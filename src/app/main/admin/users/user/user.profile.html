@@ -1,0 +1,61 @@
+<div class="profile_tab" layout="row" layout-wrap>
+
+  <div class="about" flex="100" flex-gt-sm="55" flex-gt-md="55">
+    <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
+      <header class="md-accent-bg">
+        <div class="title">General Information</div>
+      </header>
+
+      <div class="content">
+        <form id="profile_form" name="profile_form">
+          <md-input-container class="md-block">
+            <label>Extension</label>
+            <input type="text" ng-model="vm.user.extension">
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Forwarding</label>
+            <input type="text" ng-model="vm.user.forwarding">
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>SipURI</label>
+            <input type="text" ng-model="vm.user.sipURI">
+          </md-input-container>
+          <md-switch ng-model="vm.user.hasFax" aria-label="hasFax" name="hasFax">
+            hasFax: {{ vm.user.hasFax }}
+          </md-switch>
+          <md-switch ng-model="vm.user.hasVoicemail" aria-label="hasVoicemail" name="hasVoicemail">
+            hasVoicemail: {{ vm.user.hasVoicemail }}
+          </md-switch>
+          <md-switch ng-model="vm.user.hasDid" aria-label="hasDid" name="hasDid">
+            hasDid: {{ vm.user.hasDid }}
+          </md-switch>
+          <fieldset class="standard">
+            <legend>Permissions</legend>
+            <div layout-wrap layout-gt-sm="row" >
+              <div flex-gt-sm="50" ng-repeat="role in vm.roles">
+                <md-checkbox aria-label="role checkbox" ng-checked="vm.roleExists(role, vm.user.roles)" ng-click="vm.roleToggle(role, vm.user.roles)">
+                  {{role}}
+                </md-checkbox>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+  <div class="about-sidebar" layout="column" flex="100" flex-gt-sm="45" flex-gt-md="45">
+    <div class="profile-box md-whiteframe-1dp" layout="column">
+      <header class="md-accent-bg" layout="row" layout-align="space-between center">
+        <div class="title">Did Information
+        </div>
+      </header>
+      <div class="content" layout="row" layout-wrap>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -111,6 +111,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(flash()); // use connect-flash for flash messages
 app.use(function (req, res, next) {
+    req.acl = acl;
     util.getConfiguration(function (err, configuration) {
         if (err) {
             res.status(500).json({stack: err.stack, message: err.message})
