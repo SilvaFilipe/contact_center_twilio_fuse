@@ -1,4 +1,5 @@
 var express = require('express');
+const User = require('../models/user.model');
 
 module.exports = function (app, passport, acl) {
 
@@ -48,7 +49,15 @@ module.exports = function (app, passport, acl) {
           return res.status(404).end('Register Failed!');
         }
         else {
-          return res.status(200).send(user);
+          User.findById(user._id, function (err, findUser) {
+            if(err) return res.send(err);
+
+            req.acl.userRoles(user._id.toString(), function(err, roles){
+              var convertedJSON = JSON.parse(JSON.stringify(findUser));
+              convertedJSON.roles = roles;
+              return res.json(convertedJSON);
+            });
+          });
         }
 
       })(req, res, next);

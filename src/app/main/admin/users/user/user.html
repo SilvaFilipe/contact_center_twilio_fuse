@@ -10,7 +10,7 @@
 
       <div layout="row" layout-align="start center">
         <div class="product-image" hide-xs ng-show="vm.user._id">
-          <ng-avatar  initials="{{vm.user.firstName.charAt(0) + vm.user.lastName.charAt(0)}}" width="64" round-shape="true" bg-color="#3875d7"></ng-avatar>
+          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" width="64" round-shape="true" bg-color="#3875d7"></ng-avatar>
         </div>
         <div class="product-image" hide-xs ng-hide="vm.user._id">
           <img class="profile-image avatar" src="assets/images/avatars/profile.jpg">
