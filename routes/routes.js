@@ -48,7 +48,7 @@ module.exports = function (app, passport, acl) {
           return res.status(404).end('Register Failed!');
         }
         else {
-          return res.status(200).end('Successfully Created!');
+          return res.status(200).send(user);
         }
 
       })(req, res, next);

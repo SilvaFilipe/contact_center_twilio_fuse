@@ -55,8 +55,8 @@
       {
         AdminUserService.createUser(vm.user).then(function (res) {
           console.log(res);
-          $mdToast.showSimple("User Information Saved.");
-          $state.go("app.admin.users");
+          $mdToast.showSimple("New User Added Successfully.");
+          $state.go("app.admin.users.edit", {id: res.data._id});
         }, function (err) {
           console.log(err);
           $mdToast.showSimple("Something went wrong, Please try again");
