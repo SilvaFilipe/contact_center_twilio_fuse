@@ -10,7 +10,7 @@
 
       <div layout="row" layout-align="start center">
         <div class="product-image" hide-xs ng-show="vm.user._id">
-          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" width="64" round-shape="true" bg-color="#3875d7"></ng-avatar>
+          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
         </div>
         <div class="product-image" hide-xs ng-hide="vm.user._id">
           <img class="profile-image avatar" src="assets/images/avatars/profile.jpg">
@@ -39,7 +39,7 @@
   <!-- CONTENT -->
   <div class="content">
 
-    <md-tabs md-dynamic-height>
+    <md-tabs md-dynamic-height md-selected="vm.tabIndex">
 
       <md-tab>
         <md-tab-label>

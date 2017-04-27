@@ -11,6 +11,7 @@
   {
     var vm = this;
     vm.roles = ['phone', 'contact_center', 'admin'];
+    vm.tabIndex = 0;
 
     vm.user = User;
     console.log(vm.user);
@@ -54,9 +55,9 @@
       else
       {
         AdminUserService.createUser(vm.user).then(function (res) {
-          console.log(res);
           $mdToast.showSimple("New User Added Successfully.");
           vm.user = res.data;
+          vm.tabIndex = 1;
         }, function (err) {
           console.log(err);
           $mdToast.showSimple("Something went wrong, Please try again");
