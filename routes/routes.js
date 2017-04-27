@@ -46,7 +46,7 @@ module.exports = function (app, passport, acl) {
           return res.status(500).end('Register Failed!');
         }
         if (!user) {
-          return res.status(404).end('Register Failed!');
+          return res.status(404).end('Email already in use!');
         }
         else {
           User.findById(user._id, function (err, findUser) {

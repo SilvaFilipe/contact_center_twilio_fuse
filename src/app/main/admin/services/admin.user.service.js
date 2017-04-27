@@ -52,6 +52,8 @@
       $http.put(apiUrl + 'api/users/' + id, user, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
         });
 
       return deferred.promise;
@@ -64,6 +66,8 @@
       $http.post(apiUrl + 'auth/register', user, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
         });
 
       return deferred.promise;

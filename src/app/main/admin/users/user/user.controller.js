@@ -49,7 +49,7 @@
           $state.go("app.admin.users");
         }, function (err) {
           console.log(err);
-          $mdToast.showSimple("Something went wrong, Please try again");
+          $mdToast.showSimple(err.data);
         });
       }
       else
@@ -60,7 +60,7 @@
           vm.tabIndex = 1;
         }, function (err) {
           console.log(err);
-          $mdToast.showSimple("Something went wrong, Please try again");
+          $mdToast.showSimple(err.data);
         });
       }
 

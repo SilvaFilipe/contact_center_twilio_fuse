@@ -87,32 +87,23 @@ module.exports = {
     update: function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
             if(err) return res.send(err);
-            user.email = req.body.email || user.email;
-            user.firstName = req.body.firstName || user.firstName;
-            user.lastName = req.body.lastName || user.lastName;
-            user.phone = req.body.phone || user.phone;
-            user.skills = req.body.skills || user.skills;
-            user.extension = req.body.extension || user.extension;
-            user.forwarding = req.body.forwarding || user.forwarding;
-            user.sipURI = req.body.sipURI || user.sipURI;
-            user.hasFax = req.body.hasFax;
-            user.hasVoicemail = req.body.hasVoicemail;
-            user.hasDid = req.body.hasDid;
+            User.findOne({'extension': req.body.extension}, function (err, findUser) {
+              if (err) return res.send(err);
+              if (findUser && findUser._id.toString() !== req.params.user_id) return res.status(500).send('Extension already in use!');
+              user.email = req.body.email || user.email;
+              user.firstName = req.body.firstName || user.firstName;
+              user.lastName = req.body.lastName || user.lastName;
+              user.phone = req.body.phone || user.phone;
+              user.skills = req.body.skills || user.skills;
+              user.extension = req.body.extension || user.extension;
+              user.forwarding = req.body.forwarding || user.forwarding;
+              user.sipURI = req.body.sipURI || user.sipURI;
+              user.hasFax = req.body.hasFax;
+              user.hasVoicemail = req.body.hasVoicemail;
+              user.hasDid = req.body.hasDid;
 
-            req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
-              if (roles.length === 0) {
-                req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
-                  if(err) return res.send(err);
-                  user.save(function(err){
-                    if(err) return res.send(err);
-
-                    return res.json(user);
-                  });
-                });
-              }
-              else {
-                req.acl.removeUserRoles(req.params.user_id.toString(), roles, function (err) {
-                  if(err) return res.send(err);
+              req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
+                if (roles.length === 0) {
                   req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
                     if(err) return res.send(err);
                     user.save(function(err){
@@ -121,8 +112,21 @@ module.exports = {
                       return res.json(user);
                     });
                   });
-                });
-              }
+                }
+                else {
+                  req.acl.removeUserRoles(req.params.user_id.toString(), roles, function (err) {
+                    if(err) return res.send(err);
+                    req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
+                      if(err) return res.send(err);
+                      user.save(function(err){
+                        if(err) return res.send(err);
+
+                        return res.json(user);
+                      });
+                    });
+                  });
+                }
+              });
             });
 
         })
