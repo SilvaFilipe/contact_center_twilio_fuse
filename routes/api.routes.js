@@ -16,6 +16,7 @@ var ivr = require('../controllers/ivr.js')
 var taskrouter = require('../controllers/taskrouter.js')
 
 var callController = require('../controllers/call-control.js')
+var adminController = require('../controllers/admin-apis.js')
 var sync = require('../controllers/sync.js')
 
 /* routes for messaging adapter */
@@ -47,6 +48,9 @@ module.exports = function(app){
     router.route('/agents/sendToCallSidConference').get(agents.sendToCallSidConference)
     router.route('/agents/agentToConference').get(agents.agentToConference)
     router.route('/agents/toCallEnded').get(agents.toCallEnded)
+
+    router.route('/admin/didSearch').get(adminController.didSearch)
+    router.route('/admin/didPurchase').post(adminController.didPurchase)
 
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/select-team').get(ivr.selectTeam)
