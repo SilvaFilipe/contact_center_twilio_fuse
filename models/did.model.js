@@ -9,4 +9,9 @@ var DidSchema = mongoose.Schema({
     }
 });
 
+DidSchema.static('findByNumber', function (number, callback) {
+  return this.findOne({ number: number }, callback);
+});
+
+
 module.exports = mongoose.model('Did', DidSchema);

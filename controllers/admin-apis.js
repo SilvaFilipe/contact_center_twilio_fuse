@@ -1,5 +1,6 @@
 'use strict'
 const Did = require('../models/did.model');
+const User = require('../models/user.model');
 const twilio = require('twilio')
 const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -49,34 +50,52 @@ module.exports.didSearch = function (req, res) {
 
 module.exports.didPurchase = function (req, res) {
   var phoneNumber = req.body.phoneNumber;
+  var userId = req.body.userId;
   console.log(phoneNumber);
-  client.incomingPhoneNumbers.create({
-    phoneNumber:phoneNumber,
-    voiceUrl:'https://demo.twilio.com/welcome/voice',
-    smsUrl:'https://demo.twilio.com/welcome/sms/reply'
-  }, function(buyError, number) {
-    if (buyError) {
-      console.error('Buying the number failed. Reason: '+ buyError.message);
-      res.setHeader('Cache-Control', 'public, max-age=0')
-      res.statusCode = 500;
-      res.send(buyError)
+  var inUseTest = Did.findByNumber(phoneNumber, function (err, existingDid) {
+    if (existingDid){
+      console.log('number already purchased!')
+      return res.status(500).json('Did already purchased');
     } else {
-      console.log('Number purchased! Phone number is: '+ number.phoneNumber);
-      var didModel = new Did();
-      didModel.number = number.phoneNumber;
-      didModel.sid = number.sid;
-      didModel.save(function (err, newDid) {
-        if(err) {
+      client.incomingPhoneNumbers.create({
+        phoneNumber:phoneNumber,
+        voiceUrl:'https://demo.twilio.com/welcome/voice',
+        smsUrl:'https://demo.twilio.com/welcome/sms/reply'
+      }, function(buyError, number) {
+        if (buyError) {
+          console.error('Buying the number failed. Reason: '+ buyError.message);
           res.setHeader('Cache-Control', 'public, max-age=0')
           res.statusCode = 500;
-          res.send(err)
+          res.send(buyError)
         } else {
-          // add this did to the user record!
-          res.setHeader('Cache-Control', 'public, max-age=0')
-          res.send(newDid);
+          console.log('Number purchased! Phone number is: '+ number.phoneNumber);
+          var didModel = new Did();
+          didModel.number = number.phoneNumber;
+          didModel.sid = number.sid;
+          didModel.save(function (err, newDid) {
+            if(err) {
+              res.setHeader('Cache-Control', 'public, max-age=0')
+              res.statusCode = 500;
+              res.send(err);
+            } else {
+              if (userId){
+                User.findById(userId, function (err, user) {
+                  if(err) return res.status(500).json(err);
+                  user.dids.push(newDid._id);
+                  user.save(function (userErr, user) {
+                    if(userErr) return res.status(500).json(userErr);
+                    res.setHeader('Cache-Control', 'public, max-age=0')
+                    res.send(newDid);
+                  })
+                });
+              } else {
+                res.setHeader('Cache-Control', 'public, max-age=0')
+                res.send(newDid);
+              }
+            }
+          })
         }
-      })
-
+      });
     }
   });
 }
