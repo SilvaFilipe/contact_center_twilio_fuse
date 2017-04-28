@@ -108,7 +108,7 @@ module.exports = function(app){
       .post(groups.create)
       .get(groups.all);
 
-    router.route('/groups/:queue_id')
+    router.route('/groups/:group_id')
       .put(groups.update)
       .get(groups.get);
 

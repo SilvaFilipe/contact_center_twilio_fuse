@@ -20,7 +20,7 @@
     };
     vm.dtInstance = {};
 
-    vm.group = Group;
+    vm.group = Group || {};
     vm.group.users = Group.users.map(function (user) {
       user.groupFlag = true;
       return user

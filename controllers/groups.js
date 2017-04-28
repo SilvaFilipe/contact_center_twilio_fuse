@@ -23,12 +23,13 @@ module.exports = {
         })
     },
     get: function (req, res) {
+      console.log('do i even get called', req.params.group_id)
         Group.findById(req.params.group_id)
           .populate('users queues')
           .exec(function (err, group) {
-            if(err) return res.send(err);
-
-            return res.json(group);
+            if(err) return res.status(400).json(err);
+            console.log(group);
+            return res.status(200).json(group);
         })
     },
     update: function (req, res) {

@@ -41,6 +41,8 @@ app.use(function(req, res, next) {
     next();
   }
 });
+
+mongoose.Promise = require('bluebird');
 mongoose.connect(process.env.MONGO_URL);
 mongoose.connection.on('connected', function (err) {
     if (err) throw err;
