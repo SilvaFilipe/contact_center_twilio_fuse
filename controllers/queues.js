@@ -8,38 +8,38 @@ module.exports = {
         queue.description = req.body.description;
 
         queue.save(function (err) {
-            if(err) return res.send(err);
+            if(err) res.status(500).json(err);
 
-            return res.json(queue);
+            return res.status(200).json(queue);
         })
     },
     all: function (req, res) {
         Queue.find(function (err, queues) {
-            if(err) return res.send(err);
+            if(err) res.status(500).json(err);
 
-            return res.json(queues);
+            return res.status(200).json(queues);
         })
     },
     get: function (req, res) {
         Queue.findById(req.params.queue_id)
           .populate('users queues')
           .exec(function (err, queue) {
-            if(err) return res.send(err);
+            if(err) res.status(500).json(err);
 
-            return res.json(queue);
+            return res.status(200).json(queue);
         })
     },
     update: function (req, res) {
         Queue.findById(req.params.queue_id, function (err, queue) {
-            if(err) return res.send(err);
+            if(err) return res.status(500).json(err);
 
             queue.name = req.body.name;
             queue.description = req.body.description;
 
             queue.save(function(err){
-                if(err) return res.send(err);
+                if(err) res.status(500).json(err);
 
-                return res.json(queue);
+                return res.status(200).json(queue);
             });
         })
     },
@@ -47,9 +47,9 @@ module.exports = {
         Queue.remove({
             _id: req.params.queue_id
         }, function (err, queue) {
-            if(err) return res.send(err);
+            if(err) res.status(500).json(err);
 
-            return res.json({message: 'Queue deleted.'});
+            return res.status(200).json({message: 'Queue deleted.'});
         })
     }
 }

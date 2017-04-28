@@ -23,12 +23,14 @@ module.exports = {
         })
     },
     get: function (req, res) {
-      console.log('do i even get called', req.params.group_id)
+
         Group.findById(req.params.group_id)
           .populate('users queues')
           .exec(function (err, group) {
-            if(err) return res.status(400).json(err);
-            console.log(group);
+            if(err) return res.status(500).json(err);
+
+            if(!group) return res.status(404).send("No group found");
+
             return res.status(200).json(group);
         })
     },

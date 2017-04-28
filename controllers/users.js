@@ -14,38 +14,41 @@ module.exports = {
         user.password = req.body.password;
 
         user.save(function (err) {
-            if(err) return res.send(err);
+            if(err) return res.status(500).json(err);
 
-            return res.json(user);
+            return res.status(200).json(user);
         })
     },
     all: function (req, res) {
         User.find(function (err, users) {
-            if(err) return res.send(err);
+            if(err) return res.status(500).json(err);
 
-            return res.json(users);
+            return res.status(200).json(users);
         })
     },
     get: function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
-            if(err) return res.send(err);
+            if(err) return res.status(500).json(err);
 
             req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
               var convertedJSON = JSON.parse(JSON.stringify(user));
               convertedJSON.roles = roles;
-              return res.json(convertedJSON);
+              return res.status(200).json(convertedJSON);
             });
         })
     },
     getCalls: function (req, res) {
-        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+        var params = {
+          user_ids: req.user_id
+        };
 
-        var search = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+        if(req.query.search){
+          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
 
-        Call.paginate({
-          user_ids: req.user._id,
-          $or: search
-        }, {
+          params.$or = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+        }
+
+        Call.paginate(params, {
           sort: {
             created_at: -1
           },
@@ -54,22 +57,24 @@ module.exports = {
           limit: 8,
           page: req.params.page ? req.params.page : 1
         }).then(function (calls) {
-            return res.json(calls);
+            return res.status(200).json(calls);
         })
         .catch(function (err) {
-          if(err) return res.send(err);
+          if(err) return res.status(500).send(err);
         })
     },
     getVoicemails: function (req, res) {
-        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
-
-        var search = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
-
-        Call.paginate({
-          user_ids: req.user._id,
-          $or: search,
+        var params = {
+          user_ids: req.user_id,
           mailRecordingUrl: {$exists: true}
-        }, {
+        };
+
+        if(req.query.search){
+          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+          params.$or = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+        }
+        Call.paginate(params, {
           sort: {
             created_at: -1
           },
@@ -78,10 +83,10 @@ module.exports = {
           limit: 8,
           page: req.params.page ? req.params.page : 1
         }).then(function (calls) {
-            return res.json(calls);
+            return res.status(200).json(calls);
         })
         .catch(function (err) {
-          if(err) return res.send(err);
+          if(err) return res.status(500).send(err);
         })
     },
     update: function (req, res) {
@@ -119,9 +124,9 @@ module.exports = {
                     req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
                       if(err) return res.send(err);
                       user.save(function(err){
-                        if(err) return res.send(err);
+                        if(err) return res.status(500).json(err);
 
-                        return res.json(user);
+                        return res.status(200).json(user);
                       });
                     });
                   });
@@ -152,9 +157,9 @@ module.exports = {
                });
             }
             user.save(function(err){
-                if(err) return res.send(err);
+                if(err) return res.status(500).json(err);
 
-                return res.json({success: true});
+                return res.status(200).json({success: true});
             });
         })
     },
@@ -162,9 +167,9 @@ module.exports = {
         User.remove({
             _id: req.params.user_id
         }, function (err, user) {
-            if(err) return res.send(err);
+            if(err) return res.status(500).json(err);
 
-            return res.json({message: 'User deleted.'});
+            return res.status(200).json({message: 'User deleted.'});
         })
     }
 }
