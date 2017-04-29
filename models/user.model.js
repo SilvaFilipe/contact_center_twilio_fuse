@@ -190,7 +190,7 @@ UserSchema.pre('save', function(next) {
   }
 
   function createCompliantString(str){
-    return str.split(" ").join(join_symbol);
+    return str.toLowerCase().split(" ").join(join_symbol);
   }
 
 });
