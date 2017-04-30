@@ -30,7 +30,6 @@
           })
       },
       update: function update(id, group) {
-        console.log('am i passing', group)
         return $http.put(apiUrl + '/groups/' + id, group)
           .then(function (response) {
             return response.data;
@@ -38,6 +37,10 @@
           .catch(function (response) {
             console.log(response);
           })
+      },
+      //Non-Async methods
+      isUserInGroup: function (group, user) {
+
       }
     };
 

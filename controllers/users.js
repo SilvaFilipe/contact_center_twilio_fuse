@@ -26,6 +26,22 @@ module.exports = {
             return res.status(200).json(users);
         })
     },
+    query: function (req, res) {
+
+        var params = {};
+
+        if(req.query.search){
+          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+          params.$or = [{ 'firstName': { $regex: re }}, { 'lastName': { $regex: re }}, { 'email': { $regex: re }}];
+        }
+
+        User.find(params, function (err, users) {
+            if(err) return res.status(500).json(err);
+
+            return res.status(200).json(users);
+        })
+    },
     get: function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
             if(err) return res.status(500).json(err);

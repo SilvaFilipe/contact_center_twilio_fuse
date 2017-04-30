@@ -22,6 +22,15 @@
           });
       },
 
+      query: function query(query) {
+        if(query == 0) return [];
+
+        return $http.get(apiUrl + 'api/users?search=' + query, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          });
+      },
+
       getOwnCalls: function getOwnCalls(search, page) {
         search = search ? search : '';
         page = page ? page : 1;
