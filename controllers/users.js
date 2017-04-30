@@ -57,20 +57,17 @@ module.exports = {
           params.$or = [{ 'firstName': { $regex: re }}, { 'lastName': { $regex: re }}, { 'email': { $regex: re }}];
         }
 
-        var groupPromise = Group.findById(req.params.group_id).populate('users');
-        var usersPromise = User.find(params);
-
-        Promise.props({
-            group: groupPromise.exec(),
-            users: usersPromise.exec()
-        })
-        .then(function (result) {
-          var users = differenceWith(result.users, result.group.users, (a, b) => { return a._id.toString() == b._id.toString()});
-          return res.status(200).json(users);
-        })
-        .catch(function (err) {
-          return res.status(500).json(err);
-        });
+        Group.findById(req.params.group_id).populate('users').exec()
+          .then(function (group) {
+            params._id = {$nin: group.users};
+            return User.find(params).exec();
+          })
+          .then(function (users) {
+            return res.status(200).json(users);
+          })
+          .catch(function (err) {
+            return res.status(500).json(err);
+          });
 
     },
     get: function (req, res) {
