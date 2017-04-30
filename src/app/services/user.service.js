@@ -31,7 +31,7 @@
           });
       },
       queryExcludeGroupUsers: function query(groupId, query) {
-        if(query.length == 0) return [];
+        //if(query.length == 0) return [];
 
         return $http.get(apiUrl + 'api/users/excludeGroupUsers/'+ groupId +'?search=' + query, {withCredentials: true})
           .then(function (response) {

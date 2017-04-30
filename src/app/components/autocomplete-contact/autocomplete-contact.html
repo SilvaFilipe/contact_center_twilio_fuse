@@ -1,14 +1,15 @@
 <div class="autocomplete-contact-container">
   <md-autocomplete
     ng-disabled="$ctrl.isDisabled"
-    md-no-cache="$ctrl.noCache"
+    md-no-cache="true"
+    md-input-minlength="0"
+    md-min-length="0"
     md-selected-item="$ctrl.selectedItem"
     md-search-text-change="$ctrl.searchTextChange($ctrl.searchText)"
     md-search-text="$ctrl.searchText"
     md-selected-item-change="$ctrl.addToGroup(item)"
     md-items="item in $ctrl.queryModel($ctrl.searchText)"
     md-item-text="item.firstName + ' ' + item.lastName"
-    md-min-length="0"
     placeholder="Pick an User to Add"
     md-menu-class="autocomplete-custom-template">
     <md-item-template>
@@ -16,7 +17,7 @@
             <ng-avatar wrapper="false" string="{{item.firstName + ' ' + item.lastName}}" bind="true" width="32" round-shape="true"
                        bg-color="#3875d7" upper-case="true"></ng-avatar>
             <span>
-              <strong> {{item.firstName + ' ' + item.lastName}} </strong>
+              <strong> {{item.firstName + ' ' + item.lastName + ' (' + item.email + ')'}} </strong>
             </span>
           </span>
     </md-item-template>

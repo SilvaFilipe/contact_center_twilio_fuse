@@ -16,6 +16,7 @@ function AutocompleteContactController($log, $rootScope, UserService, GroupServi
   };
 
   $ctrl.addToGroup = function (instance) {
+    if(!instance) return;
     console.log($ctrl.group, instance);
     if(!GroupService.isUserInGroup($ctrl.group, instance)){
       $ctrl.group.users.push(instance);
