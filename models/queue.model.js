@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const twilio 	= require('twilio')
+const twilio 	= require('twilio');
 const taskrouterClient = new twilio.TaskRouterClient(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN,
@@ -45,30 +45,55 @@ QueueSchema.methods.setFriendlyName = function () {
   this.taskQueueFriendlyName = tmpId;
 }
 
-/*
+QueueSchema.statics.syncWorkflow = function (callback) {
 
-QueueSchema.methods.setFriendlyName = function (cb) {
-  var queue = this;
-  var tmpId = queue.name.toLowerCase();
-  tmpId = tmpId.replace(/[^a-z0-9 ]/g, '');
-  tmpId = tmpId.replace(/[ ]/g, '_');
-  this.taskQueueFriendlyName = tmpId;
-  queue.model('Queue').update({_id: queue._id}, {
-    taskQueueFriendlyName: tmpId
-  }, function(err, affected, resp) {
-    if (err){
-      console.log('setFriendlyName err');
-      console.log(err);
-      return cb(err);
-    } else {
-      console.log('setFriendlyName success');
-      console.log(resp);
-      return cb(null, resp);
+  var workflowConfiguration = { task_routing: { filters: [] }}
+
+  this.find({}, function(err, queues) {
+    queues.forEach(function (queue) {
+      if (!queue.taskQueueSid || !queue.taskQueueFriendlyName ){
+        console.log('Queue %s is invalid for workflow', queue._id);
+        return;
+      }
+      var target = {
+        targets: [{
+          queue: queue.taskQueueSid,
+          expression: 'task.requested_agent==worker.agent_name'
+        }],
+        expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
+      }
+      workflowConfiguration.task_routing.filters.push(target);
+      var target = {
+        targets: [{
+          queue: queue.taskQueueSid,
+        }],
+        expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
+      }
+      workflowConfiguration.task_routing.filters.push(target);
+    });
+
+    var callbackUrl = process.env.PUBLIC_HOST + '/api/taskrouter/assignment';
+
+    var workflow = {
+      sid: process.env.WORKFLOW_SID,
+      friendlyName: 'Twilio Contact Center Workflow',
+      assignmentCallbackUrl: callbackUrl,
+      taskReservationTimeout: 30,
+      configuration: JSON.stringify(workflowConfiguration)
     }
 
-  })
+    module.exports.createOrUpdateWorkflow(workflow, function (err, workflow) {
+      if (err) {
+        callback(err)
+      } else {
+        process.env.WORKFLOW_SID = workflow.sid
+        callback(null, workflow)
+      }
+    })
+  });
+  //return this.where('name', new RegExp(name, 'i')).exec(cb);
 }
-*/
+
 
 QueueSchema.methods.syncQueue = function () {
   var queue = this;
@@ -137,3 +162,30 @@ QueueSchema.post('save', function(doc, next) {
 });
 
 module.exports = mongoose.model('Queue', QueueSchema);
+
+module.exports.createOrUpdateWorkflow = function (workflow, callback) {
+  console.log('updating workflow ');
+  console.log(workflow);
+  if (workflow.sid) {
+
+    taskrouterClient.workspace.workflows(workflow.sid).update(workflow, function (err) {
+      if (err) {
+        callback(err)
+      } else {
+        callback(null, workflow)
+      }
+    })
+
+  } else  {
+
+    taskrouterClient.workspace.workflows.create(workflow, function (err, workflowFromApi) {
+      if (err) {
+        callback(err)
+      } else {
+        workflow.sid = workflowFromApi.sid
+        callback(null, workflow)
+      }
+    })
+
+  }
+}
