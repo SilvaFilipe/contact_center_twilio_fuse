@@ -126,39 +126,49 @@ UserSchema.methods.setExtension = function (extNumber) {
 }
 
 UserSchema.methods.syncWorker = function () {
-    var user = this;
-    if (this.workerSid == undefined ){
+    //var user = this;
+    this.model('User').findOne({ _id: this._id }).populate('queues').exec(function (err, user) {
+      if(err){
+        console.log(err);
+      } else {
+        userQueues=[]
+        user.queues.forEach(function(queue){
+          userQueues.push(queue.taskQueueFriendlyName)
+        });
+      }
+      if (user.workerSid == undefined ){
         //create worker
         var newWorkerData = {
-            friendlyName: user.friendlyWorkerName,
-            attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"sales", "email":user.email})
+          friendlyName: user.friendlyWorkerName,
+          attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "queues":userQueues,"team":"sales", "email":user.email})
         }
         console.log('new user data: ' + JSON.stringify(newWorkerData, null, 4));
         taskrouterClient.workspace.workers.create(newWorkerData)
-            .then(function (newWorker) {
-                console.log('created worker: ' + JSON.stringify(newWorker, null, 4));
-                user.model('User').update({_id: user._id}, {
-                    workerSid: newWorker.sid
-                }, function(err, affected, resp) {
-                    console.log('updated user sid:'.green, newWorker.sid,resp);
-                })
+          .then(function (newWorker) {
+            console.log('created worker: ' + JSON.stringify(newWorker, null, 4));
+            user.model('User').update({_id: user._id}, {
+              workerSid: newWorker.sid
+            }, function(err, affected, resp) {
+              console.log('updated user sid:'.green, newWorker.sid,resp);
             })
-            .catch(function (err) {
-              console.log('worker creation error: '.red + JSON.stringify(err, null, 4));
-            })
+          })
+          .catch(function (err) {
+            console.log('worker creation error: '.red + JSON.stringify(err, null, 4));
+          })
 
-    } else {
+      } else {
         //update worker
-        console.log('update worker ' + this.workerSid );
-        taskrouterClient.workspace.workers(this.workerSid ).update({
-        friendlyName: user.friendlyWorkerName,
-        attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "channels":["phone","chat"],"team":"sales", "email":user.email})
-      }, function(err, worker) {
-        if (err){
+        console.log('update worker ' + user.workerSid );
+        taskrouterClient.workspace.workers(user.workerSid ).update({
+          friendlyName: user.friendlyWorkerName,
+          attributes: JSON.stringify( { "contact_uri":"client:" + user.friendlyWorkerName, "queues":userQueues,"team":"sales", "email":user.email})
+        }, function(err, worker) {
+          if (err){
             console.log('worker update error: ' + JSON.stringify(err, null, 4));
-        }
-      });
-    }
+          }
+        });
+      }
+    });
 
 };
 

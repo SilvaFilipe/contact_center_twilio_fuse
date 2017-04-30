@@ -58,6 +58,7 @@ QueueSchema.statics.syncWorkflow = function (callback) {
       var target = {
         targets: [{
           queue: queue.taskQueueSid,
+          priority: queue.priority,
           expression: 'task.requested_agent==worker.agent_name'
         }],
         expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
@@ -66,6 +67,7 @@ QueueSchema.statics.syncWorkflow = function (callback) {
       var target = {
         targets: [{
           queue: queue.taskQueueSid,
+          priority: queue.priority
         }],
         expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
       }
