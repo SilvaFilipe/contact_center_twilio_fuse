@@ -64,9 +64,10 @@
 
         GroupService.create(vm.group).then(function (group) {
           console.log(group);
-          vm.group._id = group._id;
+          vm.group = group;
+          vm.tabIndex = 1;
 
-          $state.go('app.admin.groups.edit', {id: vm.group._id});
+          //$state.go('app.admin.groups.edit', {id: vm.group._id});
 
           $mdToast.showSimple("Group Information Saved.");
         }, function (err) {
