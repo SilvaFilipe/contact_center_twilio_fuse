@@ -67,4 +67,4 @@ module.exports = {
             return res.json({message: 'Group deleted.'});
         })
     }
-}
+};

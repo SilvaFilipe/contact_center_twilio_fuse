@@ -62,7 +62,8 @@ var UserSchema = mongoose.Schema({
     },
     starredBy: [{ userId: { type: mongoose.Schema.ObjectId, ref: 'User' }, starred: Boolean}],
     queues: [{ type: mongoose.Schema.ObjectId, ref: 'Queue' }],
-    dids: [{ type: mongoose.Schema.ObjectId, ref: 'Did' }]
+    dids: [{ type: mongoose.Schema.ObjectId, ref: 'Did' }],
+    contacts: [{ type: mongoose.Schema.ObjectId, ref: 'Contact' }]
 });
 
 UserSchema.methods.generateHash = function (password) {
