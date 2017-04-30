@@ -1,5 +1,10 @@
 const User = require('../models/user.model');
+const Group = require('../models/group.model');
 const Call = require('../models/call.model');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const differenceWith = require('lodash.differencewith');
+
 
 module.exports = {
     me: function (req, res) {
@@ -41,6 +46,32 @@ module.exports = {
 
             return res.status(200).json(users);
         })
+    },
+    queryExcludeGroupUsers: function (req, res) {
+        console.log('queryExcludeGroupUsers')
+        var params = {};
+
+        if(req.query.search){
+          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+          params.$or = [{ 'firstName': { $regex: re }}, { 'lastName': { $regex: re }}, { 'email': { $regex: re }}];
+        }
+
+        var groupPromise = Group.findById(req.params.group_id).populate('users');
+        var usersPromise = User.find(params);
+
+        Promise.props({
+            group: groupPromise.exec(),
+            users: usersPromise.exec()
+        })
+        .then(function (result) {
+          var users = differenceWith(result.users, result.group.users, (a, b) => { return a._id.toString() == b._id.toString()});
+          return res.status(200).json(users);
+        })
+        .catch(function (err) {
+          return res.status(500).json(err);
+        });
+
     },
     get: function (req, res) {
         User.findById(req.params.user_id, function (err, user) {

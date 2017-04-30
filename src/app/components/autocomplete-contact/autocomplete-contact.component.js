@@ -12,15 +12,15 @@ function AutocompleteContactController($log, $rootScope, UserService, GroupServi
   var $ctrl = this;
 
   $ctrl.queryModel = function () {
-    return UserService.query($ctrl.searchText)
+    return UserService.queryExcludeGroupUsers($ctrl.group._id, $ctrl.searchText)
   };
-  $ctrl.selectInstance = function (instance) {
 
+  $ctrl.addToGroup = function (instance) {
+    console.log($ctrl.group, instance);
     if(!GroupService.isUserInGroup($ctrl.group, instance)){
-
+      $ctrl.group.users.push(instance);
+      GroupService.update($ctrl.group._id, $ctrl.group);
     }
-    $ctrl.group.users.push(instance._id);
-    GroupService.update($ctrl.group._id, $ctrl.group);
   };
 
   $log.log('AutocompleteContactController load');

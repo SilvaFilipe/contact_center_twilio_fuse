@@ -25,7 +25,12 @@ module.exports = {
     get: function (req, res) {
 
         Group.findById(req.params.group_id)
-          .populate('users queues')
+          .populate({
+            path: 'users'
+            , select: 'firstName lastName email email'
+            , match: { color: 'black' }
+            , options: { sort: { name: -1 }}
+          })
           .exec(function (err, group) {
             if(err) return res.status(500).json(err);
 
@@ -40,6 +45,7 @@ module.exports = {
 
             group.name = req.body.name;
             group.description = req.body.description;
+            group.users = req.body.users;
 
             if (Array.isArray(req.body.users)) {
                 group.users = req.body.users.map(function (user) {

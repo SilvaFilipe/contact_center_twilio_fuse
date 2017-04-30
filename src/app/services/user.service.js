@@ -23,9 +23,17 @@
       },
 
       query: function query(query) {
-        if(query == 0) return [];
+        if(query.length == 0) return [];
 
         return $http.get(apiUrl + 'api/users?search=' + query, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          });
+      },
+      queryExcludeGroupUsers: function query(groupId, query) {
+        if(query.length == 0) return [];
+
+        return $http.get(apiUrl + 'api/users/excludeGroupUsers/'+ groupId +'?search=' + query, {withCredentials: true})
           .then(function (response) {
             return response.data;
           });

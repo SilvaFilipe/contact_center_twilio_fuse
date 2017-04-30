@@ -22,7 +22,7 @@
 
     vm.group = Group || {};
     vm.group.users = Group.users.map(function (user) {
-      user.groupFlag = true;
+      user.groupFlag = false;
       return user
     });
 
@@ -48,7 +48,7 @@
 
       vm.group.users = vm.group.users
         .filter(function (user) {
-          return user.groupFlag
+          return !user.groupFlag
         });
 
       if (vm.group._id) {

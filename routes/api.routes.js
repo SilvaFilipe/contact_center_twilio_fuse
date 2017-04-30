@@ -100,6 +100,9 @@ module.exports = function(app){
     router.route('/users/:user_id/voicemails/:page')
         .get(users.getVoicemails);
 
+    router.route('/users/excludeGroupUsers/:group_id')
+        .get(users.queryExcludeGroupUsers);
+
     router.route('/users/:user_id/star')
       .post(users.starUser);
 
