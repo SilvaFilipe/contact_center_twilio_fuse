@@ -26,10 +26,8 @@ module.exports = {
 
         Group.findById(req.params.group_id)
           .populate({
-            path: 'users'
-            , select: 'firstName lastName email email'
-            , match: { color: 'black' }
-            , options: { sort: { name: -1 }}
+            path: 'users',
+            select: 'firstName lastName email extension'
           })
           .exec(function (err, group) {
             if(err) return res.status(500).json(err);
