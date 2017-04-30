@@ -24,6 +24,21 @@
                 }
               }
             })
+            .state('app.admin.users.add', {
+              url      : '/add',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/users/user/user.html',
+                  controller : 'AdminUserController as vm'
+                }
+              },
+              resolve  : {
+                User: function (AdminUserService)
+                {
+                  return AdminUserService.newUser();
+                }
+              }
+            })
             .state('app.admin.users.edit', {
               url      : '/:id',
               views    : {
@@ -36,21 +51,6 @@
                 User: function ($stateParams, AdminUserService)
                 {
                   return AdminUserService.getUser($stateParams.id);
-                }
-              }
-            })
-            .state('app.admin.users.add', {
-              url      : '/add',
-              views    : {
-                'content@app': {
-                  templateUrl: 'app/main/admin/users/user/user.html',
-                  controller : 'AdminUserController as vm'
-                }
-              },
-              resolve  : {
-                User: function ($stateParams, AdminUserService)
-                {
-                  return AdminUserService.newUser();
                 }
               }
             })

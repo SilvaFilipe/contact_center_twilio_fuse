@@ -41,7 +41,7 @@
      * Make new user
      */
     function  newUser() {
-      return [];
+      return {};
     }
 
     /**
