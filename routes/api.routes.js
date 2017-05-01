@@ -49,7 +49,7 @@ module.exports = function(app){
     router.route('/agents/agentToConference').get(agents.agentToConference)
     router.route('/agents/toCallEnded').get(agents.toCallEnded)
 
-    router.route('/admin/didSearch').get(adminController.didSearch)
+    router.route('/admin/didSearch/:areacode').get(adminController.didSearch)
     router.route('/admin/didPurchase').post(adminController.didPurchase)
 
     router.route('/ivr/welcome').get(ivr.welcome)

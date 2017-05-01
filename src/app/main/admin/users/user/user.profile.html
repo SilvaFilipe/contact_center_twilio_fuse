@@ -51,8 +51,18 @@
         <div class="title">Did Information
         </div>
       </header>
-      <div class="content" layout="row" layout-wrap>
-
+      <div class="content" layout="column" layout-wrap>
+        <div>
+          <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)" ng-show="vm.user.hasDid">
+            Add Did
+          </md-button>
+        </div>
+        <md-list flex>
+          <md-subheader class="md-no-sticky">Did List</md-subheader>
+          <md-list-item ng-repeat="item in vm.user.dids" ng-click="null">
+            <div>{{item.number}}</div>
+          </md-list-item>
+        </md-list>
       </div>
     </div>
 

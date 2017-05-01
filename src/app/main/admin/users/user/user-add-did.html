@@ -1,0 +1,49 @@
+<md-dialog aria-label="Mango (Fruit)">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Purchase Did</h2>
+        <span flex></span>
+        <md-progress-circular id="toolbar-progress" ng-if="loadingProgress" class="md-accent"
+                              md-mode="indeterminate" md-diameter="24">
+        </md-progress-circular>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+      <form name="didForm" novalidate>
+        <div layout="row" layout-align="space-between center">
+          <md-input-container class="md-block mr-30" flex-gt-sm>
+            <label>Area Code</label>
+            <input type="text" name="areaCode" ng-model="areaCode" placeholder="123" required ng-pattern="/^[0-9]+$/">
+          </md-input-container>
+          <md-button class="md-primary md-raised mb-35" ng-click="searchDid()" ng-disabled="didForm.$invalid || didForm.$pristine">
+            Search
+          </md-button>
+        </div>
+        <div layout="row" layout-align="space-between center">
+          <md-input-container>
+            <label>Phone Number</label>
+            <md-select ng-model="selectedDid" style="min-width: 200px;">
+              <md-option><em>None</em></md-option>
+              <md-option ng-repeat="did in didSearch" ng-value="did.phone_number">
+                {{did.phone_number}}
+              </md-option>
+            </md-select>
+          </md-input-container>
+          <md-button class="md-accent md-raised mb-10" ng-click="purchaseDid()" ng-disabled="!didSearch.length">
+            Purchase
+          </md-button>
+        </div>
+      </form>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()" style="margin-right:20px;" >
+        Cancel
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+

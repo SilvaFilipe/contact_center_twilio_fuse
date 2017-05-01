@@ -7,7 +7,7 @@
     .controller('AdminUserController', AdminUserController);
 
   /** @ngInject */
-  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast)
+  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog)
   {
     var vm = this;
     vm.roles = ['phone', 'contact_center', 'admin'];
@@ -19,6 +19,7 @@
     vm.saveUser = saveUser;
     vm.roleToggle = roleToggle;
     vm.roleExists = roleExists;
+    vm.openAddDidDialog = openAddDidDialog;
 
     /**
      * Checks if the given form valid
@@ -78,6 +79,59 @@
 
     function roleExists (item, list) {
       return list.indexOf(item) > -1;
+    }
+
+    function openAddDidDialog (ev) {
+      $mdDialog.show({
+        controller: DidDialogController,
+        templateUrl: 'app/main/admin/users/user/user-add-did.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose:true,
+        locals:{userId: vm.user._id},
+      })
+        .then(function(did) {
+          vm.user.dids.push(did);
+        }, function() {
+          $scope.status = 'You cancelled the dialog.';
+        });
+    }
+
+    function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, userId) {
+      $scope.loadingProgress = false;
+      $scope.hide = function() {
+        $mdDialog.hide();
+      };
+      $scope.cancel = function() {
+        $mdDialog.cancel();
+      };
+
+      $scope.searchDid = function() {
+        $scope.loadingProgress = true;
+        AdminUserService.didSearch($scope.areaCode).then(function (res) {
+          $scope.loadingProgress = false;
+          $mdToast.showSimple("Did Searched Successfully.");
+          $scope.didSearch = res.data;
+        }, function (err) {
+          $scope.loadingProgress = false;
+          console.log(err);
+          $mdToast.showSimple(err.data);
+        });
+      };
+
+      $scope.purchaseDid = function () {
+        $scope.loadingProgress = true;
+        var data = {phoneNumber: $scope.selectedDid, userId: userId};
+        AdminUserService.didPurchase(data).then(function (res) {
+          $scope.loadingProgress = false;
+          $mdToast.showSimple("Did Purcharsed Successfully.");
+          $mdDialog.hide(res.data);
+        }, function (err) {
+          $scope.loadingProgress = false;
+          console.log(err);
+          $mdToast.showSimple(err.data);
+        });
+      };
     }
 
   }

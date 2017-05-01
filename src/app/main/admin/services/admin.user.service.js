@@ -15,7 +15,9 @@
       getUser     : getUser,
       newUser     : newUser,
       updateUser  : updateUser,
-      createUser  : createUser
+      createUser  : createUser,
+      didSearch   : didSearch,
+      didPurchase : didPurchase
     };
 
     return service;
@@ -64,6 +66,37 @@
     function createUser(user) {
       var deferred = $q.defer();
       $http.post(apiUrl + 'auth/register', user, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    }
+
+    /**
+     * search did
+     */
+    function didSearch(areaCode) {
+      var deferred = $q.defer();
+      $http.get(apiUrl + 'api/admin/didSearch/' + areaCode, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+
+    }
+
+    /**
+     * purchase did
+     */
+    function didPurchase (data) {
+      var deferred = $q.defer();
+      $http.post(apiUrl + 'api/admin/didPurchase', data, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);
         }, function (err) {

@@ -71,15 +71,15 @@ module.exports = {
 
     },
     get: function (req, res) {
-        User.findById(req.params.user_id, function (err, user) {
-            if(err) return res.status(500).json(err);
-
-            req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
-              var convertedJSON = JSON.parse(JSON.stringify(user));
-              convertedJSON.roles = roles;
-              return res.status(200).json(convertedJSON);
-            });
-        })
+        User.findById(req.params.user_id).populate('dids').exec().then(function (user) {
+          req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
+            var convertedJSON = JSON.parse(JSON.stringify(user));
+            convertedJSON.roles = roles;
+            return res.status(200).json(convertedJSON);
+          });
+        }, function (err) {
+          if(err) return res.status(500).json(err);
+        });
     },
     getCalls: function (req, res) {
         var params = {

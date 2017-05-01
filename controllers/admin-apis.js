@@ -8,8 +8,8 @@ const client = new twilio(
 
 
 module.exports.didSearch = function (req, res) {
-  var areaCode = req.query.areacode;
-  var tollFree = req.query.tollfree;
+  var areaCode = req.params.areacode;
+  var tollFree = req.params.tollfree;
 
   if (tollFree == "1" || tollFree =="true"){
     client.availablePhoneNumbers("US").tollFree.list({
