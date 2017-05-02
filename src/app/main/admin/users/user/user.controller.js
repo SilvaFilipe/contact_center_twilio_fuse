@@ -99,6 +99,7 @@
 
     function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, userId) {
       $scope.loadingProgress = false;
+      $scope.isLocal = '1';
       $scope.hide = function() {
         $mdDialog.hide();
       };
@@ -106,9 +107,9 @@
         $mdDialog.cancel();
       };
 
-      $scope.searchDid = function() {
+      $scope.searchDid = function(areaCode, tollFree) {
         $scope.loadingProgress = true;
-        AdminUserService.didSearch($scope.areaCode).then(function (res) {
+        AdminUserService.didSearch(areaCode, tollFree).then(function (res) {
           $scope.loadingProgress = false;
           $mdToast.showSimple("Did Searched Successfully.");
           $scope.didSearch = res.data;
@@ -132,6 +133,13 @@
           $mdToast.showSimple(err.data);
         });
       };
+
+      $scope.$watch('isLocal', function (newValue, oldValue) {
+        $scope.didSearch = null;
+        if (newValue === '0') {
+          $scope.searchDid($scope.areaCode, 1);
+        }
+      });
     }
 
   }

@@ -19,7 +19,7 @@
               url      : '/users',
               views    : {
                 'content@app': {
-                  templateUrl: 'app/main/admin/users/admin.users.html',
+                  templateUrl: 'app/main/admin/users/admin.users.list.html',
                   controller : 'AdminUsersController as vm'
                 }
               }

@@ -53,12 +53,13 @@
       </header>
       <div class="content" layout="column" layout-wrap>
         <div>
-          <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)" ng-show="vm.user.hasDid">
+          <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)">
             Add Did
           </md-button>
         </div>
         <md-list flex>
-          <md-subheader class="md-no-sticky">Did List</md-subheader>
+          <md-subheader class="md-no-sticky" ng-hide="vm.user.dids.length">User has no dids</md-subheader>
+          <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length">Did List</md-subheader>
           <md-list-item ng-repeat="item in vm.user.dids" ng-click="null">
             <div>{{item.number}}</div>
           </md-list-item>
