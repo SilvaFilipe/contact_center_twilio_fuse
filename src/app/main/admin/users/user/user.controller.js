@@ -84,7 +84,7 @@
     function openAddDidDialog (ev) {
       $mdDialog.show({
         controller: DidDialogController,
-        templateUrl: 'app/main/admin/users/user/user-add-did.html',
+        templateUrl: 'app/main/admin/users/user/views/user-add-did.html',
         parent: angular.element(document.body),
         targetEvent: ev,
         clickOutsideToClose:true,

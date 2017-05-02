@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('app.admin')
+    .module('app.services')
     .factory('AdminUserService', AdminUserService);
 
   /** @ngInject */
