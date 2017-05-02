@@ -98,7 +98,6 @@
     }
 
     function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, userId) {
-      $scope.loadingProgress = false;
       $scope.isLocal = '1';
       $scope.hide = function() {
         $mdDialog.hide();
@@ -140,6 +139,8 @@
           $scope.searchDid($scope.areaCode, 1);
         }
       });
+
+      $scope.searchDid('', 0);
     }
 
   }

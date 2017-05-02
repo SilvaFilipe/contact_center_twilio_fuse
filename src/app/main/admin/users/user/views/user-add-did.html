@@ -21,7 +21,7 @@
         <div layout="row" layout-align="space-between center" ng-show="isLocal === '1'">
           <md-input-container class="md-block mr-30" flex-gt-sm>
             <label>Area Code</label>
-            <input type="text" name="areaCode" ng-model="areaCode" placeholder="123" required ng-pattern="/^[0-9]+$/">
+            <input type="text" name="areaCode" ng-model="areaCode" required ng-pattern="/^[0-9]+$/">
           </md-input-container>
           <md-button class="md-primary md-raised mb-35" ng-click="searchDid(areaCode, 0)" ng-disabled="didForm.$invalid || didForm.$pristine">
             Search
@@ -31,7 +31,6 @@
           <md-input-container>
             <label>Phone Number</label>
             <md-select ng-model="selectedDid" style="min-width: 200px;">
-              <!--<md-option><em>None</em></md-option>-->
               <md-option ng-repeat="did in didSearch" ng-value="did.phone_number" ng-selected="$first">
                 {{did.phone_number}}
               </md-option>
