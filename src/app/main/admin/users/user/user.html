@@ -48,6 +48,7 @@
 
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
             <form id="productForm" name="productForm">
               <md-input-container class="md-block">
                 <label>First Name</label>
@@ -128,6 +129,19 @@
           </div>
         </md-tab-body>
       </md-tab>
+
+      <md-tab ng-disabled="!vm.user._id">
+        <md-tab-label>
+          <span>Contacts</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+          </div>
+        </md-tab-body>
+      </md-tab>
+
     </md-tabs>
 
   </div>

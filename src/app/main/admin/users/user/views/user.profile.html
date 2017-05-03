@@ -13,21 +13,21 @@
             <input type="text" ng-model="vm.user.extension">
           </md-input-container>
           <md-input-container class="md-block">
-            <label>Forwarding</label>
+            <label>Forwarding Number</label>
             <input type="text" ng-model="vm.user.forwarding">
           </md-input-container>
           <md-input-container class="md-block">
             <label>SipURI</label>
             <input type="text" ng-model="vm.user.sipURI">
           </md-input-container>
-          <md-switch ng-model="vm.user.hasFax" aria-label="hasFax" name="hasFax">
-            hasFax: {{ vm.user.hasFax }}
-          </md-switch>
           <md-switch ng-model="vm.user.hasVoicemail" aria-label="hasVoicemail" name="hasVoicemail">
-            hasVoicemail: {{ vm.user.hasVoicemail }}
+            Voicemail Enabled
           </md-switch>
           <md-switch ng-model="vm.user.hasDid" aria-label="hasDid" name="hasDid">
-            hasDid: {{ vm.user.hasDid }}
+            Did purchase access
+          </md-switch>
+          <md-switch ng-model="vm.user.hasFax" aria-label="hasFax" name="hasFax">
+            Fax Access
           </md-switch>
           <fieldset class="standard">
             <legend>Permissions</legend>
@@ -48,7 +48,7 @@
   <div class="about-sidebar" layout="column" flex="100" flex-gt-sm="45" flex-gt-md="45">
     <div class="profile-box md-whiteframe-1dp" layout="column">
       <header class="md-accent-bg" layout="row" layout-align="space-between center">
-        <div class="title">Did Information
+        <div class="title">User Dids
         </div>
       </header>
       <div class="content" layout="column" layout-wrap>

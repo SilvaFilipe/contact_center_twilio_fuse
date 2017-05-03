@@ -148,7 +148,7 @@
 
       msNavigationServiceProvider.saveItem('admin.users', {
         title    : 'Users',
-        icon     : 'icon-account-multiple',
+        icon     : 'icon-account',
         state    : 'app.admin.users'
       });
 
@@ -160,7 +160,7 @@
 
       msNavigationServiceProvider.saveItem('admin.queues', {
         title    : 'Queues',
-        icon     : 'icon-account-multiple',
+        icon     : 'icon-layers',
         state    : 'app.admin.queues'
       });
 

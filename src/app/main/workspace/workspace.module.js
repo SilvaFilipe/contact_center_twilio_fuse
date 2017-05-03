@@ -43,7 +43,7 @@
 
         msNavigationServiceProvider.saveItem('fuse.workspace', {
             title    : 'Workspace',
-            icon     : 'icon-tile-four',
+            icon     : 'icon-phone',
             state    : 'app.workspace',
             /*stateParams: {
                 'param1': 'page'
