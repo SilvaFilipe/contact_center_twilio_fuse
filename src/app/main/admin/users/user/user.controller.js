@@ -13,8 +13,22 @@
     vm.roles = ['phone', 'contact_center', 'admin'];
     vm.tabIndex = 0;
 
+    vm.dtOptions = {
+      dom       : 'rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
+      pagingType: 'simple',
+      pageLength: 50,
+      autoWidth : false,
+      responsive: true
+    };
+    vm.dtInstance = {};
+
     vm.user = User;
     console.log(vm.user);
+    vm.user.groups = User.groups.map(function (group) {
+      group.userFlag = false;
+      return group;
+    });
+
     vm.isFormValid = isFormValid;
     vm.saveUser = saveUser;
     vm.roleToggle = roleToggle;
@@ -39,10 +53,16 @@
      */
     function saveUser()
     {
-      // Since we have two-way binding in place, we don't really need
-      // this function to update the products array in the demo.
-      // But in real world, you would need this function to trigger
-      // an API call to update your database.
+      vm.user.groups = vm.user.groups
+        .filter(function (group) {
+          return !group.userFlag
+        }).map(function (group) {
+          delete group.userFlag;
+          delete group.description;
+          delete group.name;
+          return group;
+        });
+
       if ( vm.user._id )
       {
         AdminUserService.updateUser(vm.user._id, vm.user).then(function (res) {

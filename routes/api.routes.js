@@ -103,6 +103,9 @@ module.exports = function(app){
     router.route('/users/excludeGroupUsers/:group_id')
         .get(users.queryExcludeGroupUsers);
 
+    router.route('/users/excludeUserGroups/:user_id')
+      .get(users.queryExcludeUserGroups);
+
     router.route('/users/:user_id/star')
       .post(users.starUser);
 

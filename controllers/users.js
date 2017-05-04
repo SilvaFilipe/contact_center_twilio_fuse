@@ -48,7 +48,6 @@ module.exports = {
         })
     },
     queryExcludeGroupUsers: function (req, res) {
-        console.log('queryExcludeGroupUsers')
         var params = {};
 
         if(req.query.search){
@@ -70,16 +69,45 @@ module.exports = {
           });
 
     },
+
+    queryExcludeUserGroups: function (req, res) {
+      var params = {};
+
+      if(req.query.search){
+        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+        params.$or = [{ 'name': { $regex: re }}, { 'description': { $regex: re }}];
+      }
+
+      Group.find({ users: { "$in" : [req.params.user_id]} }).select('_id').then(function (groups) {
+        params._id = {$nin: groups};
+        return Group.find(params).select('_id description name').exec();
+      })
+      .then(function (groups) {
+        return res.status(200).json(groups);
+      })
+      .catch(function (err) {
+        return res.status(500).json(err);
+      });
+
+    },
+
     get: function (req, res) {
+      Group.find({ users: { "$in" : [req.params.user_id]} }).select('_id description name').then(function (groups) {
         User.findById(req.params.user_id).populate('dids').exec().then(function (user) {
           req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
             var convertedJSON = JSON.parse(JSON.stringify(user));
             convertedJSON.roles = roles;
+            convertedJSON.groups = groups;
             return res.status(200).json(convertedJSON);
           });
         }, function (err) {
           if(err) return res.status(500).json(err);
         });
+      }, function (err) {
+        if(err) return res.status(500).json(err);
+      });
+
     },
     getCalls: function (req, res) {
         var params = {
@@ -134,51 +162,56 @@ module.exports = {
         })
     },
     update: function (req, res) {
-        User.findById(req.params.user_id, function (err, user) {
-            if(err) return res.send(err);
-            User.findOne({'extension': req.body.extension}, function (err, findUser) {
-              if (err) return res.send(err);
-              if (findUser && findUser._id.toString() !== req.params.user_id) return res.status(500).send('Extension already in use!');
-              user.email = req.body.email || user.email;
-              user.firstName = req.body.firstName || user.firstName;
-              user.lastName = req.body.lastName || user.lastName;
-              user.phone = req.body.phone || user.phone;
-              user.skills = req.body.skills || user.skills;
-              user.extension = req.body.extension || user.extension;
-              user.forwarding = req.body.forwarding || user.forwarding;
-              user.sipURI = req.body.sipURI || user.sipURI;
-              user.hasFax = req.body.hasFax;
-              user.hasVoicemail = req.body.hasVoicemail;
-              user.hasDid = req.body.hasDid;
+      Group.update({ }, {$pull: {users: req.params.user_id }}, {multi: true}).then(function () {
+          Group.update({_id: {$in : req.body.groups} }, {$push: {users: req.params.user_id }}, {multi: true}).then(function () {
+            User.findById(req.params.user_id, function (err, user) {
+              if(err) return res.send(err);
+              User.findOne({'extension': req.body.extension}, function (err, findUser) {
+                if (err) return res.send(err);
+                if (findUser && findUser._id.toString() !== req.params.user_id) return res.status(500).send('Extension already in use!');
+                user.email = req.body.email || user.email;
+                user.firstName = req.body.firstName || user.firstName;
+                user.lastName = req.body.lastName || user.lastName;
+                user.phone = req.body.phone || user.phone;
+                user.skills = req.body.skills || user.skills;
+                user.extension = req.body.extension || user.extension;
+                user.forwarding = req.body.forwarding || user.forwarding;
+                user.sipURI = req.body.sipURI || user.sipURI;
+                user.hasFax = req.body.hasFax;
+                user.hasVoicemail = req.body.hasVoicemail;
+                user.hasDid = req.body.hasDid;
 
-              req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
-                if (roles.length === 0) {
-                  req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
-                    if(err) return res.send(err);
-                    user.save(function(err){
-                      if(err) return res.send(err);
-
-                      return res.json(user);
-                    });
-                  });
-                }
-                else {
-                  req.acl.removeUserRoles(req.params.user_id.toString(), roles, function (err) {
-                    if(err) return res.send(err);
+                req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
+                  if (roles.length === 0) {
                     req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
                       if(err) return res.send(err);
                       user.save(function(err){
-                        if(err) return res.status(500).json(err);
+                        if(err) return res.send(err);
 
-                        return res.status(200).json(user);
+                        return res.json(user);
                       });
                     });
-                  });
-                }
-              });
-            });
+                  }
+                  else {
+                    req.acl.removeUserRoles(req.params.user_id.toString(), roles, function (err) {
+                      if(err) return res.send(err);
+                      req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
+                        if(err) return res.send(err);
+                        user.save(function(err){
+                          if(err) return res.status(500).json(err);
 
-        })
+                          return res.status(200).json(user);
+                        });
+                      });
+                    });
+                  }
+                });
+              });
+
+            })
+
+          });
+      });
     },
     starUser: function (req, res) {
 

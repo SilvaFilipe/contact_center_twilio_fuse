@@ -125,7 +125,40 @@
 
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
+            <autocomplete-user-group user="vm.user"></autocomplete-user-group>
+          </div>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                   dt-options="vm.dtOptions">
+              <thead>
+              <tr>
+                <th class="secondary-text">
+                  <div class="table-header">
+                    <span class="column-title">Name</span>
+                  </div>
+                </th>
+                <th class="secondary-text">
+                  <div class="table-header">
+                    <span class="column-title">Description</span>
+                  </div>
+                </th>
+                <th class="secondary-text actions">
+                  <div class="table-header">
+                    <span class="column-title">Remove from this group ?</span>
+                  </div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="group in vm.user.groups">
+                <td>{{group.name}}</td>
+                <td>{{group.description}}</td>
+                <td class="actions">
+                  <md-checkbox ng-model="group.userFlag" aria-label="belongs to group"></md-checkbox>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </md-tab-body>
       </md-tab>

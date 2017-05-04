@@ -1,0 +1,23 @@
+<div>
+  <md-autocomplete
+    ng-disabled="$ctrl.isDisabled"
+    md-no-cache="true"
+    md-input-minlength="0"
+    md-min-length="0"
+    md-selected-item="$ctrl.selectedItem"
+    md-search-text-change="$ctrl.searchTextChange($ctrl.searchText)"
+    md-search-text="$ctrl.searchText"
+    md-selected-item-change="$ctrl.addToGroup(item)"
+    md-items="item in $ctrl.queryModel($ctrl.searchText)"
+    md-item-text="item.name"
+    placeholder="Pick an Group to User"
+    md-menu-class="autocomplete-custom-template">
+    <md-item-template>
+          <span class="item-title" ng-click="$ctrl.addToUser(item)">
+            <span>
+              <strong> {{item.name}} ({{item.description}})</strong>
+            </span>
+          </span>
+    </md-item-template>
+  </md-autocomplete>
+</div>

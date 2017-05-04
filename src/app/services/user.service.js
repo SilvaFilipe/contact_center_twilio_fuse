@@ -39,6 +39,13 @@
           });
       },
 
+      queryExcludeUserGroups: function query(userId, query) {
+        return $http.get(apiUrl + 'api/users/excludeUserGroups/'+ userId +'?search=' + query, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          });
+      },
+
       getOwnCalls: function getOwnCalls(search, page) {
         search = search ? search : '';
         page = page ? page : 1;
