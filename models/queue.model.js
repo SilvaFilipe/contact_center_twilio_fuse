@@ -57,21 +57,24 @@ QueueSchema.statics.syncWorkflow = function (callback) {
         console.log('Queue %s is invalid for workflow', queue._id);
         return;
       }
+      /*
+       {
+       queue: queue.taskQueueSid,
+       priority: queue.priority,
+       timeout: 20,
+       expression: 'task.requested_agent==worker.agent_name'
+       },
+       */
       var target = {
-        targets: [{
-          queue: queue.taskQueueSid,
-          priority: queue.priority,
-          expression: 'task.requested_agent==worker.agent_name'
-        }],
-        expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
-      }
-      workflowConfiguration.task_routing.filters.push(target);
-      var target = {
-        targets: [{
-          queue: queue.taskQueueSid,
-          priority: queue.priority
-        }],
-        expression: "queue == \"" + queue.taskQueueFriendlyName + "\""
+        expression: "queue == \"" + queue.taskQueueFriendlyName + "\"",
+        filter_friendly_name: queue.taskQueueFriendlyName,
+        targets: [
+          {
+            queue: queue.taskQueueSid,
+            priority: queue.priority,
+            timeout: 20,
+          }
+        ],
       }
       workflowConfiguration.task_routing.filters.push(target);
     });
@@ -160,10 +163,20 @@ QueueSchema.post('save', function(doc, next) {
 });
 */
 QueueSchema.post('save', function(doc, next) {
-  console.log('queue %s post 2', doc._id);
+  console.log('queue %s post 1', doc._id);
   doc.syncQueue();
   next();
 });
+QueueSchema.post('save', function(doc, next) {
+  console.log('queue %s post 2', doc._id);
+  doc.constructor.syncWorkflow(function(err, config){
+    console.log(err);
+    console.log(config);
+    next();
+  });
+});
+
+
 
 module.exports = mongoose.model('Queue', QueueSchema);
 
