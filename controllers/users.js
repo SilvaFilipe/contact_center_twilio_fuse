@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const Group = require('../models/group.model');
+const Queue = require('../models/queue.model');
 const Call = require('../models/call.model');
 const _ = require('lodash');
 const Promise = require('bluebird');
@@ -92,9 +93,31 @@ module.exports = {
 
     },
 
+    queryExcludeUserQueues: function (req, res) {
+      var params = {};
+      if(req.query.search){
+        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+        params.$or = [{ 'name': { $regex: re }}, { 'description': { $regex: re }}];
+      }
+
+      User.findById(req.params.user_id).populate('queues').exec()
+        .then(function (user) {
+          params._id = {$nin: user.queues};
+          return Queue.find(params).exec();
+        })
+        .then(function (queues) {
+          return res.status(200).json(queues);
+        })
+        .catch(function (err) {
+          return res.status(500).json(err);
+        });
+
+    },
+
     get: function (req, res) {
       Group.find({ users: { "$in" : [req.params.user_id]} }).select('_id description name').then(function (groups) {
-        User.findById(req.params.user_id).populate('dids').exec().then(function (user) {
+        User.findById(req.params.user_id).populate('dids, queues').exec().then(function (user) {
           req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
             var convertedJSON = JSON.parse(JSON.stringify(user));
             convertedJSON.roles = roles;
@@ -180,6 +203,11 @@ module.exports = {
                 user.hasFax = req.body.hasFax;
                 user.hasVoicemail = req.body.hasVoicemail;
                 user.hasDid = req.body.hasDid;
+                if (Array.isArray(req.body.queues)) {
+                  user.queues = req.body.queues.map(function (queue) {
+                    return queue._id;
+                  });
+                }
 
                 req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
                   if (roles.length === 0) {

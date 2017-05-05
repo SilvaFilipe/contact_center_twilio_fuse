@@ -29,6 +29,11 @@
       return group;
     });
 
+    vm.user.queues = User.queues.map(function (queue) {
+      queue.userFlag = false;
+      return queue;
+    });
+
     vm.isFormValid = isFormValid;
     vm.saveUser = saveUser;
     vm.roleToggle = roleToggle;
@@ -61,6 +66,11 @@
           delete group.description;
           delete group.name;
           return group;
+        });
+
+      vm.user.queues = vm.user.queues
+        .filter(function (queue) {
+          return !queue.userFlag
         });
 
       if ( vm.user._id )

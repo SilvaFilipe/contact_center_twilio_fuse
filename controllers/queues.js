@@ -1,4 +1,6 @@
 const Queue = require('../models/queue.model');
+const User = require('../models/user.model');
+
 
 module.exports = {
     create: function (req, res) {
@@ -21,13 +23,18 @@ module.exports = {
         })
     },
     get: function (req, res) {
+      User.find({ queues: { "$in" : [req.params.queue_id]} }).then(function (users) {
         Queue.findById(req.params.queue_id)
-          .populate('users queues')
           .exec(function (err, queue) {
+            var convertedJSON = JSON.parse(JSON.stringify(queue));
+            convertedJSON.users = users;
+            return res.status(200).json(convertedJSON);
             if(err) res.status(500).json(err);
 
-            return res.status(200).json(queue);
-        })
+            return res.status(200).json(convertedJSON);
+          })
+      });
+
     },
     update: function (req, res) {
         Queue.findById(req.params.queue_id, function (err, queue) {

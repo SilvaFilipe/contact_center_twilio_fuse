@@ -46,6 +46,19 @@
           });
       },
 
+      queryExcludeUserQueues: function query(userId, query) {
+        return $http.get(apiUrl + 'api/users/excludeUserQueues/'+ userId +'?search=' + query, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          });
+      },
+
+      isQueueInUser: function (user, queue) {
+        return user.queues.some(function (q) {
+          return (q._id === queue._id);
+        })
+      },
+
       getOwnCalls: function getOwnCalls(search, page) {
         search = search ? search : '';
         page = page ? page : 1;
