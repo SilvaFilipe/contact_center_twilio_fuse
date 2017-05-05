@@ -32,9 +32,7 @@ var QueueSchema = mongoose.Schema({
     targetWorkerExpression: { type: String},
     reservationActivitySid: { type: String},
     assignmentActivitySid: { type: String},
-    maxReservedWorkers: { type: Number},
-    users: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-    contacts: [{ type: mongoose.Schema.ObjectId, ref: 'Contact' }]
+    maxReservedWorkers: { type: Number}
 
 });
 
