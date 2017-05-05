@@ -41,14 +41,12 @@
       //Non-Async methods
       isUserInGroup: function (group, user) {
         return group.users.some(function (u) {
-          console.log(u._id, user._id);
           return (u._id === user._id);
         })
       },
 
       isGroupInUser: function (user, group) {
         return user.groups.some(function (g) {
-          console.log(g._id, group._id);
           return (g._id === group._id);
         })
       }

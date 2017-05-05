@@ -23,6 +23,8 @@ function AutocompleteUserGroupController($log, $rootScope, UserService, GroupSer
     if(!GroupService.isGroupInUser($ctrl.user, instance)){
       $ctrl.user.groups.push(instance);
     }
+    $ctrl.selectedItem = '';
+    $('#userGroupInput').trigger('blur');
   };
 
   $log.log('AutocompleteContactController load');

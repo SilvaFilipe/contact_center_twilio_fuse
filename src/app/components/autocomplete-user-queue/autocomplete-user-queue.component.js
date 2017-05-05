@@ -20,6 +20,8 @@ function AutocompleteUserQueueController($log, $rootScope, UserService, QueueSer
     if(!UserService.isQueueInUser($ctrl.user, instance)){
       $ctrl.user.queues.push(instance);
     }
+    $ctrl.selectedItem = '';
+    $('#userQueueInput').trigger('blur');
   };
 
   $log.log('AutocompleteContactController load');
