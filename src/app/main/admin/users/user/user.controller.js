@@ -24,15 +24,19 @@
 
     vm.user = User;
     console.log(vm.user);
-    vm.user.groups = User.groups.map(function (group) {
-      group.userFlag = false;
-      return group;
-    });
+    if (angular.isDefined(User.groups)) {
+      vm.user.groups = User.groups.map(function (group) {
+        group.userFlag = false;
+        return group;
+      });
+    }
+    if (angular.isDefined(User.queues)) {
+      vm.user.queues = User.queues.map(function (queue) {
+        queue.userFlag = false;
+        return queue;
+      });
 
-    vm.user.queues = User.queues.map(function (queue) {
-      queue.userFlag = false;
-      return queue;
-    });
+    }
 
     vm.isFormValid = isFormValid;
     vm.saveUser = saveUser;
@@ -58,20 +62,25 @@
      */
     function saveUser()
     {
-      vm.user.groups = vm.user.groups
-        .filter(function (group) {
-          return !group.userFlag
-        }).map(function (group) {
-          delete group.userFlag;
-          delete group.description;
-          delete group.name;
-          return group;
-        });
+      if (angular.isDefined(vm.user.groups)) {
+        vm.user.groups = vm.user.groups
+          .filter(function (group) {
+            return !group.userFlag
+          }).map(function (group) {
+            delete group.userFlag;
+            delete group.description;
+            delete group.name;
+            return group;
+          });
+      }
 
-      vm.user.queues = vm.user.queues
-        .filter(function (queue) {
-          return !queue.userFlag
-        });
+      if (angular.isDefined(vm.user.queues)) {
+        vm.user.queues = vm.user.queues
+          .filter(function (queue) {
+            return !queue.userFlag
+          });
+      }
+
 
       if ( vm.user._id )
       {

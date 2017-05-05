@@ -117,7 +117,7 @@ module.exports = {
 
     get: function (req, res) {
       Group.find({ users: { "$in" : [req.params.user_id]} }).select('_id description name').then(function (groups) {
-        User.findById(req.params.user_id).populate('dids, queues').exec().then(function (user) {
+        User.findById(req.params.user_id).populate('dids queues').exec().then(function (user) {
           req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
             var convertedJSON = JSON.parse(JSON.stringify(user));
             convertedJSON.roles = roles;

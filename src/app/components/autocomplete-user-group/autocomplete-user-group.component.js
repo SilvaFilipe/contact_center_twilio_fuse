@@ -17,6 +17,9 @@ function AutocompleteUserGroupController($log, $rootScope, UserService, GroupSer
 
   $ctrl.addToUser = function (instance) {
     if(!instance) return;
+    if (!angular.isDefined($ctrl.user.groups)) {
+      $ctrl.user.groups = [];
+    }
     if(!GroupService.isGroupInUser($ctrl.user, instance)){
       $ctrl.user.groups.push(instance);
     }
