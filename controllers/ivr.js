@@ -94,7 +94,7 @@ module.exports.selectTeam = function (req, res) {
         twiml.redirect({ method: 'GET' }, 'welcome')
       } else {
         twiml.gather({
-          action: 'create-task?queueFriendlyName=' + encodeURIComponent(selectedQueue.name),
+          action: 'create-task?queueFriendlyName=' + encodeURIComponent(selectedQueue.taskQueueFriendlyName),
           method: 'GET',
           numDigits: 1,
           timeout: 3
@@ -110,7 +110,7 @@ module.exports.selectTeam = function (req, res) {
           name: req.query.From,
           title: 'Inbound call',
           type: 'inbound_call',
-          queue: selectedQueue.name
+          queue: selectedQueue.taskQueueFriendlyName
         }
 
         twiml.enqueue({ workflowSid: req.configuration.twilio.workflowSid }, function (node) {
