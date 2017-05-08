@@ -257,7 +257,7 @@ module.exports = {
         }
 
         return rolesPromise.then(() => {
-          if(bodyRoles != undefined){ //error when sending empty array
+          if(bodyRoles.length > 0){ //error when sending empty array
             return req.acl.addUserRoles(id, bodyRoles)
           }else{
             return Promise.resolve()

@@ -147,6 +147,9 @@
 
       $scope.searchDid = function(areaCode, tollFree) {
         $scope.loadingProgress = true;
+        if (!angular.isDefined(areaCode)) {
+          areaCode = "";
+        }
         AdminUserService.didSearch(areaCode, tollFree).then(function (res) {
           $scope.loadingProgress = false;
           $mdToast.showSimple("Did Searched Successfully.");
