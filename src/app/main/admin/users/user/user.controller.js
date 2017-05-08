@@ -18,7 +18,8 @@
       pagingType: 'simple',
       pageLength: 50,
       autoWidth : false,
-      responsive: true
+      responsive: true,
+      columnDefs: [{"orderable": false, "targets": 2}]
     };
     vm.dtInstance = {};
 
