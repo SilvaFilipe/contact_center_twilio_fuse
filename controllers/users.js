@@ -249,13 +249,20 @@ module.exports = {
       });
 
       function addOrRemoveRoles(id, bodyRoles, roles){
-        if (roles.length === 0 && bodyRoles != undefined) {
-          return req.acl.addUserRoles(id, bodyRoles)
-        } else if(roles.length > 0){ //error when sending empty array
-          return req.acl.removeUserRoles(id, roles)
-        } else{
-          return Promise.resolve();
+        let rolesPromise;
+        if (roles.length > 0) {
+          rolesPromise = req.acl.removeUserRoles(id, roles)
+        } else {
+          rolesPromise  = Promise.resolve();
         }
+
+        return rolesPromise.then(() => {
+          if(bodyRoles != undefined){ //error when sending empty array
+            return req.acl.addUserRoles(id, bodyRoles)
+          }else{
+            return Promise.resolve()
+          }
+        });
       }
     },
     removeQueue: function (req, res) {
