@@ -95,19 +95,25 @@ module.exports = function(app){
         .delete(users.delete);
 
     router.route('/users/:user_id/calls/:page')
-        .get(users.getCalls);
+      .get(users.getCalls);
 
     router.route('/users/:user_id/voicemails/:page')
-        .get(users.getVoicemails);
+      .get(users.getVoicemails);
 
     router.route('/users/excludeGroupUsers/:group_id')
-        .get(users.queryExcludeGroupUsers);
+      .get(users.queryExcludeGroupUsers);
+
+    router.route('/users/excludeQueueUsers/:queue_id')
+      .get(users.queryExcludeQueueUsers);
 
     router.route('/users/excludeUserGroups/:user_id')
       .get(users.queryExcludeUserGroups);
 
     router.route('/users/excludeUserQueues/:user_id')
       .get(users.queryExcludeUserQueues);
+
+    router.route('/users/:user_id/removeQueue/:queue_id')
+      .post(users.removeQueue);
 
     router.route('/users/:user_id/star')
       .post(users.starUser);

@@ -36,8 +36,14 @@
             return response.data;
           })
           .catch(function (response) {
-            console.log(response);
+            return response
           })
+      },
+      //Non-Async methods
+      isUserInQueue: function (queue, user) {
+        return queue.users.some(function (u) {
+          return (u._id === user._id);
+        })
       }
     };
 

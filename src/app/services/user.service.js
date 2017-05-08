@@ -30,10 +30,42 @@
             return response.data;
           });
       },
+
+      update: function update(id, user) {
+        var payload = angular.copy(user);
+        return $http.put(apiUrl + 'api/users/' + id, payload)
+          .then(function (response) {
+            return response.data;
+          })
+          .catch(function (response) {
+            console.log(response);
+          })
+      },
+
+      removeQueue: function removeQueue(user, queue) {
+        return $http.post(apiUrl + 'api/users/' + user._id + '/removeQueue/' + queue._id);
+      },
+
+      removeMultipleUsersFromQueue: function removeMultipleUsersFromQueue(users, queue) {
+        console.log('users', users);
+          var userPromises = users.map(function (user) {
+              return UserService.removeQueue(user, queue)
+          });
+        console.log(userPromises)
+          return $q.all(userPromises);
+      },
       queryExcludeGroupUsers: function query(groupId, query) {
         //if(query.length == 0) return [];
 
         return $http.get(apiUrl + 'api/users/excludeGroupUsers/'+ groupId +'?search=' + query, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          });
+      },
+      queryExcludeQueueUsers: function query(queueId, query) {
+        //if(query.length == 0) return [];
+
+        return $http.get(apiUrl + 'api/users/excludeQueueUsers/'+ queueId +'?search=' + query, {withCredentials: true})
           .then(function (response) {
             return response.data;
           });
