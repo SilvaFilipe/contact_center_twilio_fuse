@@ -7,7 +7,7 @@
     .controller('AdminQueueController', AdminQueueController);
 
   /** @ngInject */
-  function AdminQueueController($scope, $state, Queue, QueueService, $mdToast)
+  function AdminQueueController($scope, $q, UserService, Queue, QueueService, $mdToast)
   {
     var vm = this;
 
@@ -21,10 +21,8 @@
     vm.dtInstance = {};
 
     vm.queue = Queue;
-    vm.queue.users = Queue.users && Queue.users.map(function (user) {
-      user.queueFlag = true;
-      return user
-    });
+
+    flagUsers();
 
     vm.isFormValid = isFormValid;
     vm.saveQueue = saveQueue;
@@ -44,17 +42,27 @@
      * Save user
      */
     function saveQueue() {
-      console.log(vm.queue)
+      var users = angular.copy(vm.queue.users);
+      vm.queue.users = users
+        .filter(function (user) {
+          return !user.queueFlag
+        });
 
-      vm.queue.users = vm.queue.users
+      var usersToRemoveFromQueue = users
         .filter(function (user) {
           return user.queueFlag
         });
-
       if (vm.queue._id) {
+        var queueUpdatePromise = QueueService.update(vm.queue._id, vm.queue);
+        var removeUsersPromise = UserService.removeMultipleUsersFromQueue(usersToRemoveFromQueue, vm.queue);
 
-        QueueService.update(vm.queue._id, vm.queue).then(function (res) {
+        $q.all([queueUpdatePromise, removeUsersPromise])
+          .then(function (results) {
+          //var queue = results[0];
           $mdToast.showSimple("Queue Information Saved.");
+          //vm.queue = queue;
+          flagUsers();
+
         }, function (err) {
           console.log(err);
           $mdToast.showSimple("Something went wrong, Please try again");
@@ -63,10 +71,8 @@
       } else {
 
         QueueService.create(vm.queue).then(function (queue) {
-          console.log(queue);
-          vm.queue._id = queue._id;
-
-          $state.go('app.admin.queues.edit', {id: vm.queue._id});
+          vm.queue = queue;
+          vm.tabIndex = 1;
 
           $mdToast.showSimple("Queue Information Saved.");
         }, function (err) {
@@ -75,6 +81,13 @@
         });
 
       }
+    }
+
+    function flagUsers(){
+      vm.queue.users = vm.queue.users && vm.queue.users.map(function (user) {
+          user.queueFlag = false;
+          return user
+        });
     }
 
   }

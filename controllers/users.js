@@ -71,6 +71,33 @@ module.exports = {
 
     },
 
+    queryExcludeQueueUsers: function (req, res) {
+        var params = {};
+
+        if(req.query.search){
+          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+
+          params.$or = [{ 'firstName': { $regex: re }}, { 'lastName': { $regex: re }}, { 'email': { $regex: re }}];
+        }
+        params.queues = {
+          $nin: [req.params.queue_id]
+        }
+
+        User.find(params)
+          .exec()
+        //.then(function (queue) {
+        //  params._id = {$nin: queue.users};
+        //  return User.find(params).exec();
+        //})
+        .then(function (users) {
+          return res.status(200).json(users);
+        })
+        .catch(function (err) {
+          return res.status(500).json(err);
+        });
+
+    },
+
     queryExcludeUserGroups: function (req, res) {
       var params = {};
 
@@ -187,9 +214,9 @@ module.exports = {
     update: function (req, res) {
       Group.update({ }, {$pull: {users: req.params.user_id }}, {multi: true}).then(function () {
           Group.update({_id: {$in : req.body.groups} }, {$push: {users: req.params.user_id }}, {multi: true}).then(function () {
-            User.findById(req.params.user_id, function (err, user) {
+            User.findById(req.params.user_id, {strict: false}, function (err, user) {
               if(err) return res.send(err);
-              User.findOne({'extension': req.body.extension}, function (err, findUser) {
+              User.findOne({'extension': req.body.extension}, {strict: false}, function (err, findUser) {
                 if (err) return res.send(err);
                 if (findUser && findUser._id.toString() !== req.params.user_id) return res.status(500).send('Extension already in use!');
                 user.email = req.body.email || user.email;
@@ -203,43 +230,46 @@ module.exports = {
                 user.hasFax = req.body.hasFax;
                 user.hasVoicemail = req.body.hasVoicemail;
                 user.hasDid = req.body.hasDid;
+
                 if (Array.isArray(req.body.queues)) {
                   user.queues = req.body.queues.map(function (queue) {
                     return queue._id;
                   });
                 }
-
-                req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
-                  if (roles.length === 0) {
-                    req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
-                      if(err) return res.send(err);
-                      user.save(function(err){
-                        if(err) return res.send(err);
-
-                        return res.json(user);
-                      });
-                    });
-                  }
-                  else {
-                    req.acl.removeUserRoles(req.params.user_id.toString(), roles, function (err) {
-                      if(err) return res.send(err);
-                      req.acl.addUserRoles(req.params.user_id.toString(), req.body.roles, function (err) {
-                        if(err) return res.send(err);
-                        user.save(function(err){
-                          if(err) return res.status(500).json(err);
-
-                          return res.status(200).json(user);
-                        });
-                      });
-                    });
-                  }
-                });
+                req.acl.userRoles(req.params.user_id)
+                  .then(roles => addOrRemoveRoles(req.params.user_id, req.body.roles, roles))
+                  .then(() =>  user.save())
+                  .then(_user => res.status(200).json(_user))
+                  .catch(err => res.status(500).json(err));
               });
 
             })
 
           });
       });
+
+      function addOrRemoveRoles(id, bodyRoles, roles){
+        if (roles.length === 0 && bodyRoles != undefined) {
+          return req.acl.addUserRoles(id, bodyRoles)
+        } else if(roles.length > 0){ //error when sending empty array
+          return req.acl.removeUserRoles(id, roles)
+        } else{
+          return Promise.resolve();
+        }
+      }
+    },
+    removeQueue: function (req, res) {
+
+      User.update({
+        _id: req.params.user_id
+      }, {
+        $pullAll: {
+          queues: [req.params.queue_id]
+        }
+      })
+      .then( () => res.status(200).json({success: true}) )
+      .catch( (err) => res.status(500).json(err) );
+
     },
     starUser: function (req, res) {
 
