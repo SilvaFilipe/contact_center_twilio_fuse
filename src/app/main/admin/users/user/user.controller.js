@@ -25,6 +25,7 @@
 
     vm.user = User;
     console.log(vm.user);
+    vm.confirmPassword = vm.user.password;
     if (angular.isDefined(User.groups)) {
       vm.user.groups = User.groups.map(function (group) {
         group.userFlag = false;
@@ -98,6 +99,7 @@
         AdminUserService.createUser(vm.user).then(function (res) {
           $mdToast.showSimple("New User Added Successfully.");
           vm.user = res.data;
+          vm.confirmPassword = vm.user.password;
           vm.tabIndex = 1;
         }, function (err) {
           console.log(err);

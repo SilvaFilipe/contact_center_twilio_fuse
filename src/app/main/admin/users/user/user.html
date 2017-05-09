@@ -66,9 +66,19 @@
                 <label>Email</label>
                 <input type="email" ng-model="vm.user.email" required>
               </md-input-container>
-              <md-input-container class="md-block" ng-hide="vm.user._id">
+              <md-input-container class="md-block">
                 <label>Password</label>
-                <input type="password" ng-model="vm.user.password" required>
+                <input type="password" ng-model="vm.user.password" name="new_pwd" ng-pattern="vm.confirmPassword|escapeRegex" required>
+                <div ng-messages="productForm.new_pwd.$error">
+                  <div ng-message="pattern">Password different</div>
+                </div>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Confirm Password</label>
+                <input type="password" ng-model="vm.confirmPassword" name="confirm_pwd" ng-pattern="vm.user.password|escapeRegex" required>
+                <div ng-messages="productForm.confirm_pwd.$error">
+                  <div ng-message="pattern">Password different</div>
+                </div>
               </md-input-container>
 
             </form>

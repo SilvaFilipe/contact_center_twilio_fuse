@@ -230,6 +230,11 @@ module.exports = {
                 user.hasFax = req.body.hasFax;
                 user.hasVoicemail = req.body.hasVoicemail;
                 user.hasDid = req.body.hasDid;
+                if (user.password !== req.body.password) {
+                  var hashedPassword = user.generateHash(req.body.password);
+                  user.password = hashedPassword;
+                  user.local.password = hashedPassword;
+                }
 
                 if (Array.isArray(req.body.queues)) {
                   user.queues = req.body.queues.map(function (queue) {
