@@ -10,9 +10,22 @@ angular.module('app.components')
 /** @ngInject */
 function AutocompleteUserGroupController($log, $rootScope, UserService, GroupService) {
   var $ctrl = this;
+  var items = [];
 
   $ctrl.queryModel = function () {
-    return UserService.queryExcludeUserGroups($ctrl.user._id, $ctrl.searchText)
+    return UserService.queryExcludeUserGroups($ctrl.user._id, $ctrl.searchText).then(function (res) {
+      items = res.filter(function(val) {
+        for( var i=0, len=$ctrl.user.groups.length; i<len; i++ ){
+          if( $ctrl.user.groups[i]._id === val._id ) {
+            return false;
+          }
+        }
+        return true;
+      });
+      return items;
+    }, function (err) {
+      console.log(err);
+    });
   };
 
   $ctrl.addToUser = function (instance) {

@@ -10,9 +10,22 @@ angular.module('app.components')
 /** @ngInject */
 function AutocompleteUserQueueController($log, $rootScope, UserService, QueueService) {
   var $ctrl = this;
+  var items = [];
 
   $ctrl.queryModel = function () {
-    return UserService.queryExcludeUserQueues($ctrl.user._id, $ctrl.searchText)
+    return UserService.queryExcludeUserQueues($ctrl.user._id, $ctrl.searchText).then(function (res) {
+      items = res.filter(function(val) {
+        for( var i=0, len=$ctrl.user.queues.length; i<len; i++ ){
+          if( $ctrl.user.queues[i]._id === val._id ) {
+            return false;
+          }
+        }
+        return true;
+      });
+      return items;
+    }, function (err) {
+      console.log(err);
+    });
   };
 
   $ctrl.addToUser = function (instance) {

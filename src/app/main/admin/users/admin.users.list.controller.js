@@ -18,7 +18,10 @@
         responsive: true,
         scrollY     : 'auto',
         order: [[ 1, "asc" ]],
-        columnDefs: [{"orderable": false, "targets": 0}, {"orderable": false, "targets": 5}]
+        columnDefs: [{"orderable": false, "targets": 0}, {"orderable": false, "targets": 5}],
+        language: {
+          "emptyTable": "No users have been added yet."
+        }
       };
       vm.dtInstance = {};
 
@@ -39,7 +42,6 @@
       //get all users
       $http.get(apiUrl + 'api/users', {withCredentials: true})
         .then(function (response) {
-          console.log("fetched all users");
           vm.users = response.data;
         });
     }
