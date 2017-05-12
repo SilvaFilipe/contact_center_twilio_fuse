@@ -7,7 +7,7 @@
         .run(runBlock);
 
     /** @ngInject */
-    function runBlock($rootScope, $timeout, $state, authService) {
+    function runBlock($rootScope, $timeout, $state, $log, $interval, authService) {
 
       $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
         // console.log('$stateChangeStart to '+toState.name+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
@@ -70,6 +70,62 @@
       };
 
       $rootScope.syncClient = null;
+
+      $rootScope.startReservationCounter = function () {
+
+        $log.log('start reservation counter');
+        $rootScope.reservationCounter = $rootScope.reservation.task.age;
+
+        $rootScope.reservationInterval = $interval(function () {
+          $rootScope.reservationCounter++;
+        }, 1000);
+
+      };
+
+      $rootScope.stopReservationCounter = function () {
+
+        if (angular.isDefined($rootScope.reservationInterval)) {
+          $interval.cancel($rootScope.reservationInterval);
+          $rootScope.reservationInterval = undefined;
+        }
+
+      };
+
+      $rootScope.startExtensionCounter = function () {
+
+        $log.log('start working counter');
+        $rootScope.extensionInterval = $interval(function () {
+          $rootScope.extensionCallTask.duration++;
+        }, 1000);
+
+      };
+
+      $rootScope.stopExtensionCounter = function () {
+        $log.log('stop working counter');
+        if (angular.isDefined($rootScope.extensionInterval)) {
+          $interval.cancel($rootScope.extensionInterval);
+          $rootScope.extensionInterval = undefined;
+        }
+
+      };
+
+      $rootScope.startWorkingCounter = function () {
+
+        $log.log('start working counter');
+        $rootScope.workingInterval = $interval(function () {
+          $rootScope.currentCall.duration++;
+        }, 1000);
+
+      };
+
+      $rootScope.stopWorkingCounter = function () {
+        $log.log('stop working counter');
+        if (angular.isDefined($rootScope.workingInterval)) {
+          $interval.cancel($rootScope.workingInterval);
+          $rootScope.workingInterval = undefined;
+        }
+
+      };
 
     }
 })();
