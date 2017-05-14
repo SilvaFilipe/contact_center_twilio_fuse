@@ -64,7 +64,7 @@
             <p>{{$ctrl.getDirection(call)}}</p>
           </div>
           <div class="fl1">
-            <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
+            <span>{{call.created | date : 'MM/dd/yyyy h:mm a' }}</span>
             <span>Duration: {{ call.duration | secsToDuration }}</span>
             <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)"></md-icon>
           </div>
