@@ -49,7 +49,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   };
 
   $ctrl.getNumberByDirection = function (call) {
-    if (call.direction === 'inbound-api') {
+    if (call.direction === 'inbound') {
       return call.from;
     } else if (call.direction === 'outbound-api') {
       return call.to;
@@ -59,7 +59,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
   };
 
   $ctrl.getDirection = function (call) {
-    if (call.direction === 'inbound-api') {
+    if (call.direction === 'inbound') {
       return 'inbound';
     } else if (call.direction === 'outbound-api') {
       return 'outbound';
@@ -98,9 +98,9 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
       }
 
       if ($ctrl.callFilterType == 'received') {
-        return call.direction == 'inbound-api';
+        return call.direction == 'inbound';
       } else if ($ctrl.callFilterType == 'placed') {
-        return call.direction != 'inbound-api';
+        return call.direction != 'inbound';
       }
     }
   };

@@ -48,6 +48,8 @@ module.exports = function(app){
     router.route('/agents/sendToCallSidConference').get(agents.sendToCallSidConference)
     router.route('/agents/agentToConference').get(agents.agentToConference)
     router.route('/agents/toCallEnded').get(agents.toCallEnded)
+    router.route('/agents/agentToSilence').get(agents.agentToSilence)
+    router.route('/agents/didInboundExtensionCall').get(agents.didInboundExtensionCall)
 
     router.route('/admin/didSearch').get(adminController.didSearch)
     router.route('/admin/didPurchase').post(adminController.didPurchase)

@@ -6,7 +6,6 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const differenceWith = require('lodash.differencewith');
 
-
 module.exports = {
     me: function (req, res) {
         var data = {user: req.user, roles: req.session.roles};
@@ -160,30 +159,28 @@ module.exports = {
 
     },
     getCalls: function (req, res) {
-        var params = {
-          user_ids: req.user_id
-        };
+      var params = {
+        user_ids: req.params.user_id
+      };
+      if(req.query.search){
+        var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
+        params.$or = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+      }
 
-        if(req.query.search){
-          var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
-
-          params.$or = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
-        }
-
-        Call.paginate(params, {
-          sort: {
-            created_at: -1
-          },
-          //select: 'recordingUrl created_at to from direction duration',
-          lean: true,
-          limit: 8,
-          page: req.params.page ? req.params.page : 1
-        }).then(function (calls) {
-            return res.status(200).json(calls);
-        })
-        .catch(function (err) {
-          if(err) return res.status(500).send(err);
-        })
+      Call.paginate(params, {
+        sort: {
+          created: -1
+        },
+        //select: 'recordingUrl created_at to from direction duration',
+        lean: true,
+        limit: 8,
+        page: req.params.page ? req.params.page : 1
+      }).then(function (calls) {
+          return res.status(200).json(calls);
+      })
+      .catch(function (err) {
+        if(err) return res.status(500).send(err);
+      })
     },
     getVoicemails: function (req, res) {
         var params = {
