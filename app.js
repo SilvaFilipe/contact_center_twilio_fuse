@@ -92,6 +92,11 @@ mongoose.connection.on('connected', function (err) {
             req.flash('message', 'Insufficient permissions to access <strong>' + req.path + '</strong>');
             return res.redirect('/pages/dashboard');
         }
+        if (err.errorCode == undefined){
+          err.errorCode = 500
+        }
+        console.log ('express error handling in app.js')
+        console.log(err);
         return res.status( err.errorCode ).send( err.msg);
     });
 });

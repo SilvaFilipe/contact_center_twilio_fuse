@@ -59,8 +59,10 @@ module.exports.didPurchase = function (req, res) {
     } else {
       client.incomingPhoneNumbers.create({
         phoneNumber:phoneNumber,
-        voiceUrl:'https://demo.twilio.com/welcome/voice',
-        smsUrl:'https://demo.twilio.com/welcome/sms/reply'
+        voiceUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionCall',
+        smsUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionSms',
+        voiceMethod: "GET",
+        smsMethod: "GET"
       }, function(buyError, number) {
         if (buyError) {
           console.error('Buying the number failed. Reason: '+ buyError.message);
