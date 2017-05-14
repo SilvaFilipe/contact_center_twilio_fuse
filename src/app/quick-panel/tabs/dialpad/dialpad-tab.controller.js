@@ -7,8 +7,9 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall)
+    function PhoneController($scope, $state, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall)
     {
+      console.log($state.current.name);
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
       var workerName =  currentUser.friendlyWorkerName;
@@ -23,6 +24,16 @@
             var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
             return v.toString(16);
           });
+      };
+
+      var showCallNotification = function (number) {
+        msNavigationService.saveItem('fuse.workspace', {
+          badge : {
+            content: number,
+            color  : '#09d261'
+          }
+        });
+
       };
 
       $scope.currentUser = currentUser;
@@ -60,6 +71,11 @@
                         conferenceName: item.value.data.conferenceFriendlyName};
                       $rootScope.extensionCallTask = new ExtensionCall(callParams);
                       $rootScope.startExtensionCounter();
+
+                      if ($state.current.name !== 'app.workspace') {
+                        showCallNotification($rootScope.callTasks.length + 1);
+                      }
+
                     });
                   }
 
@@ -131,6 +147,9 @@
             audio.play();
             $rootScope.reservation = reservation;
             $rootScope.startReservationCounter();
+            if ($state.current.name !== 'app.workspace') {
+              showCallNotification($rootScope.callTasks.length + 1);
+            }
           });
 
         });

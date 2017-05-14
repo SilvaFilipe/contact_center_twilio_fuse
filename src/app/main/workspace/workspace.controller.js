@@ -7,7 +7,7 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
       var vm = this;
       var apiUrl = $rootScope.apiBaseUrl;
       $scope.currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
@@ -15,6 +15,14 @@
       vm.toggleLeftSidenav = function (sidenavId) {
         $mdSidenav(sidenavId).toggle();
       };
+
+      msNavigationService.deleteItem('fuse.workspace');
+      msNavigationService.saveItem('fuse.workspace', {
+        title    : 'Workspace',
+        icon     : 'icon-phone',
+        state    : 'app.workspace',
+        weight   : 1
+      });
 
 
       $scope.acceptReservation = function (reservation) {
