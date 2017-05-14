@@ -46,11 +46,13 @@
     "mongoose-paginate": "^5.0.3",
     "nodemailer": "^4.0.1",
     "nodemailer-sendgrid-transport": "^0.2.0",
+    "multer": "^1.3.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0",
     "pg": "^4.5.6",
     "request-promise": "^4.1.1",
+    "s3fs": "^2.5.0",
     "twilio": "^2.9.x",
     "uuid": "^3.0.1"
   },

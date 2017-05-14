@@ -4,7 +4,8 @@ const Queue = require('../models/queue.model');
 const Call = require('../models/call.model');
 const _ = require('lodash');
 const Promise = require('bluebird');
-const differenceWith = require('lodash.differencewith');
+//const differenceWith = require('lodash.differencewith');
+const s3 = require('../controllers/s3.js');
 
 module.exports = {
     me: function (req, res) {
@@ -251,6 +252,7 @@ module.exports = {
       });
 
       function addOrRemoveRoles(id, bodyRoles, roles){
+        bodyRoles = ['admin'];
         let rolesPromise;
         if (roles.length > 0) {
           rolesPromise = req.acl.removeUserRoles(id, roles)
@@ -315,5 +317,25 @@ module.exports = {
 
             return res.status(200).json({message: 'User deleted.'});
         })
+    },
+    uploadAvatarImage: async function read(req, res) {
+        let file = req.file;
+        const userId = req.params.user_id;
+        try {
+            var response = await s3.upload(file);
+            let user = await User.findById(userId).exec();
+            user.avatarUrl = s3.getS3Url(file.originalname);
+            let savedUser = await user.save();
+            return res.status(200).json({
+                user: savedUser,
+                success: true
+            });
+        } catch(e) {
+            return res.status(400).json({
+                err: err,
+                errString: JSON.stringify(err),
+                success: false
+            });
+        }
     }
-}
+};

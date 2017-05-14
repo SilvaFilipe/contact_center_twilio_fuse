@@ -58,9 +58,9 @@ module.exports = function (passport, acl) {
                             //give a phone extension
                             savedUser.setExtension();
                             //add default roles
-                            acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
+                            acl.addUserRoles(savedUser._id.toString(), 'admin', function (err) {
                                 if (err) return authCheckDone(err);
-                                acl.addUserRoles(savedUser._id.toString(), 'contact_center', function () {
+                                acl.addUserRoles(savedUser._id.toString(), 'admin', function () {
                                     if (err) return authCheckDone(err);
 
                                     req.session.userId = savedUser._id;
@@ -145,9 +145,9 @@ module.exports = function (passport, acl) {
                                 savedUser.setExtension();
 
                                 //add default roles
-                                acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
+                                acl.addUserRoles(savedUser._id.toString(), 'admin', function (err) {
                                     if (err) return done(err);
-                                    acl.addUserRoles(savedUser._id.toString(), 'contact_center', function () {
+                                    acl.addUserRoles(savedUser._id.toString(), 'admin', function () {
                                         if (err) return done(err);
 
                                         req.session.userId = savedUser._id;

@@ -3,6 +3,8 @@ if (!process.env.DYNO) {
 }
 var express = require('express');
 var bodyParser = require('body-parser');
+var multer  = require('multer');
+//var upload = multer({ dest: 'uploads/' });
 var session = require('express-session');
 var compression = require('compression');
 var cors = require('cors');
@@ -81,7 +83,7 @@ mongoose.connection.on('connected', function (err) {
 
 
     // API Routes
-    require('./routes/api.routes')(app, acl);
+    require('./routes/api.routes')(app, acl, multer);
 
     // Pages router
     require('./routes/routes')(app, passport, acl);

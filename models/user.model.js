@@ -35,6 +35,7 @@ var UserSchema = mongoose.Schema({
         //min: [6, 'Password is too short.']
     },
     imageUrl: String,
+    avatarUrl: String,
     workerSid: String,
     workerFriendlyName: String,
     friendlyWorkerName: String,

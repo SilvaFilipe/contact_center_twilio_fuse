@@ -5,6 +5,8 @@ coverage/
 .idea/
 .tmp/
 dist/
+uploads/*
+!uploads/.gitkeep
 .env
 configuration.json
 .DS_Store

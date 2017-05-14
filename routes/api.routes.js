@@ -27,8 +27,9 @@ var workers = require('../controllers/workers.js')
 var users = require('../controllers/users.js')
 var groups = require('../controllers/groups.js')
 var queues = require('../controllers/queues.js')
+//var s3 = require('../controllers/s3.js')
 
-module.exports = function(app){
+module.exports = function(app, acl, multer){
     router.route('/setup').get(setup.get)
     router.route('/setup').post(setup.update)
     router.route('/setup/workspace').get(setup.getWorkspace)
@@ -96,6 +97,16 @@ module.exports = function(app){
         .get(users.get)
         .put(users.update)
         .delete(users.delete);
+
+    router.route('/users/:user_id/uploadAvatar')
+        .post(multer(
+          {
+            limits: {
+              fileSize: 10 * 1024 * 1024
+            },
+            dest: 'uploads/'
+          }
+        ).single('file'), users.uploadAvatarImage);
 
     router.route('/users/:user_id/calls/:page')
       .get(users.getCalls);
