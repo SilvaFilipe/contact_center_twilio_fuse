@@ -9,7 +9,6 @@
     /** @ngInject */
     function PhoneController($scope, $state, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall)
     {
-      console.log($state.current.name);
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
       var workerName =  currentUser.friendlyWorkerName;
