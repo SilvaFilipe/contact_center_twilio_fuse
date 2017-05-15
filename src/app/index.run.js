@@ -7,10 +7,13 @@
         .run(runBlock);
 
     /** @ngInject */
-    function runBlock($rootScope, $timeout, $state, $log, $interval, authService) {
+    function runBlock($rootScope, $timeout, $state, $log, $interval, authService, msNavigationService) {
 
       $rootScope.$on('$stateChangeStart',function(event, toState, toParams, fromState, fromParams){
         // console.log('$stateChangeStart to '+toState.name+'- fired when the transition begins. toState,toParams : \n',toState, toParams);
+        if (fromState.name === 'app.workspace') {
+          $rootScope.showCallNotification();
+        }
       });
       $rootScope.$on('$stateChangeError',function(event, toState, toParams, fromState, fromParams, error){
         // console.log('$stateChangeError - fired when an error occurs during transition.');
@@ -126,6 +129,27 @@
         }
 
       };
+
+      $rootScope.showCallNotification = function () {
+        var nonCompletedCallTasks = $rootScope.callTasks.filter(function (task) {
+          return !task.isCompleted();
+        });
+        var number = nonCompletedCallTasks.length;
+        if (angular.isDefined($rootScope.extensionCallTask) && $rootScope.extensionCallTask) {
+          number += 1;
+        }
+        if (angular.isDefined($rootScope.reservation) && $rootScope.reservation) {
+          number += 1;
+        }
+        msNavigationService.saveItem('fuse.workspace', {
+          badge : {
+            content: number,
+            color  : '#09d261'
+          }
+        });
+
+      };
+
 
     }
 })();

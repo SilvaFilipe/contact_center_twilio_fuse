@@ -25,16 +25,6 @@
           });
       };
 
-      var showCallNotification = function (number) {
-        msNavigationService.saveItem('fuse.workspace', {
-          badge : {
-            content: number,
-            color  : '#09d261'
-          }
-        });
-
-      };
-
       $scope.currentUser = currentUser;
 
       if (!angular.isDefined($rootScope.callTasks)) {
@@ -72,7 +62,7 @@
                       $rootScope.startExtensionCounter();
 
                       if ($state.current.name !== 'app.workspace') {
-                        showCallNotification($rootScope.callTasks.length + 1);
+                        $rootScope.showCallNotification();
                       }
 
                     });
@@ -147,7 +137,7 @@
             $rootScope.reservation = reservation;
             $rootScope.startReservationCounter();
             if ($state.current.name !== 'app.workspace') {
-              showCallNotification($rootScope.callTasks.length + 1);
+              $rootScope.showCallNotification();
             }
           });
 
