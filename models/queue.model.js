@@ -55,14 +55,20 @@ QueueSchema.statics.syncWorkflow = function (callback) {
         console.log('Queue %s is invalid for workflow', queue._id);
         return;
       }
-      /*
-       {
-       queue: queue.taskQueueSid,
-       priority: queue.priority,
-       timeout: 20,
-       expression: 'task.requested_agent==worker.agent_name'
-       },
-       */
+
+      var target = {
+        expression: "queue == \"" + queue.taskQueueFriendlyName + "\"",
+        filter_friendly_name: queue.taskQueueFriendlyName,
+        targets: [
+          {
+            queue: queue.taskQueueSid,
+            priority: queue.priority,
+            timeout: 20,
+            expression: 'task.requested_agent==worker.agent_name'
+          },
+        ],
+      }
+      workflowConfiguration.task_routing.filters.push(target);
       var target = {
         expression: "queue == \"" + queue.taskQueueFriendlyName + "\"",
         filter_friendly_name: queue.taskQueueFriendlyName,

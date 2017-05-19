@@ -293,7 +293,6 @@
       });
 
       $scope.$on('callStatusChanged', function (event, data) {
-
         $rootScope.callTasks.filter(function (callItem) {
           if (callItem.callSid === data.callSid && !$rootScope.currentCall.isCompleted()) {
             if (callItem.isExtensionCall() && data.callEvent.callStatus === 'Completed') {

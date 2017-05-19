@@ -118,7 +118,7 @@
         $rootScope.workingInterval = $interval(function () {
           $rootScope.currentCall.duration++;
         }, 1000);
-
+        $rootScope.showCallNotification();
       };
 
       $rootScope.stopWorkingCounter = function () {
@@ -127,7 +127,7 @@
           $interval.cancel($rootScope.workingInterval);
           $rootScope.workingInterval = undefined;
         }
-
+        $rootScope.showCallNotification();
       };
 
       $rootScope.showCallNotification = function () {
@@ -141,15 +141,16 @@
         if (angular.isDefined($rootScope.reservation) && $rootScope.reservation) {
           number += 1;
         }
-        msNavigationService.saveItem('fuse.workspace', {
-          badge : {
-            content: number,
-            color  : '#09d261'
-          }
-        });
+        if (number>0){
+          msNavigationService.saveItem('fuse.workspace', {
+            badge : {
+              content: number,
+              color  : '#09d261'
+            }
+          });
 
+        }
       };
-
 
     }
 })();
