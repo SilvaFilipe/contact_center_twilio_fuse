@@ -86,6 +86,9 @@ module.exports.inbound_ringing = function (req, res) {
 
 module.exports.hangup = function (req, res) {
   var callSid = req.query.callSid;
+  if (callSid==undefined){
+    callSid = req.query.CallSid; // from TwiML request
+  }
 
   if (callSid.substring(0,2).toLowerCase()=='ca'){
     // Twilio CallSid
@@ -231,7 +234,7 @@ module.exports.muteOff = function (req, res) {
 
 module.exports.toVoicemail= function (req, res) {
   var caller_sid = req.query.callSid;
-  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record action="http://foo.edu/handleRecording.php" method="GET" maxLength="20" finishOnKey="*"/></Response>';
+  var twiml = voiceMailTwiml();
   var escaped_twiml = require('querystring').escape(twiml);
 
   client.calls(caller_sid).update({
@@ -253,7 +256,7 @@ module.exports.toVoicemail= function (req, res) {
 }
 
 module.exports.toVoicemailCallSid = function (caller_sid, callback) {
-  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record action="http://foo.edu/handleRecording.php" method="GET" maxLength="20" finishOnKey="*"/></Response>';
+  var twiml = voiceMailTwiml();
   var escaped_twiml = require('querystring').escape(twiml);
 
   client.calls(caller_sid).update({
@@ -268,6 +271,10 @@ module.exports.toVoicemailCallSid = function (caller_sid, callback) {
   });
 }
 
+function voiceMailTwiml(){
+  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/voicemail_recording_events" recordingStatusCallbackMethod="GET" action="' + process.env.PUBLIC_HOST + '/api/callControl/hangup" method="GET" maxLength="300" finishOnKey="*"/></Response>';
+  return twiml;
+}
 
 module.exports.playRecording = function (req, res) {
   var fs = require('fs'),

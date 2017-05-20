@@ -57,6 +57,7 @@ var callSchema = mongoose.Schema({
   mailRecordingUrl: String,
   mailRecordingSid: String,
   mailVoiceBaseMediaId: String,
+  mailRecordingDuration: String,
   created: {type : Date, default : Date.now}
 });
 

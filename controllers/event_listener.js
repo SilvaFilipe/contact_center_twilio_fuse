@@ -17,6 +17,46 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 
 
+module.exports.voicemail_transcription_events= function (req, res) {
+  console.log('logging voicemail_transcription_events');
+  var data = req.body;
+  var transcriptionText =req.body.media.transcripts.text;
+  var voiceBaseMediaId = req.body.media.mediaId;
+  console.log('mediaID: ' + voiceBaseMediaId);
+  //console.log(transcriptionText);
+  var callSid = req.query.callSid;
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      console.log ('Could not find call to update voicemail transcription: ' + callSid);
+      res.status(404);
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      return res.send("<Response/>")
+    } else {
+      console.log ('updating transcription: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{mailTranscription: transcriptionText, mailVoiceBaseMediaId: voiceBaseMediaId}}, function(err, call2){
+        if(err) {
+          console.log("Something wrong when updating voicemail call: " + err);
+        } else {
+          console.log('updated with voicemail transcription' + call2.callSid);
+          call2.saveSync();
+          call2.user_ids.map( function(userid) {
+            var mData = {type: 'voicemail-transcription-sent', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
+            sync.saveList ('m' + userid, mData);
+            // send vm email
+          });
+
+        }
+        res.status(200);
+        res.setHeader('Content-Type', 'application/xml')
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        return res.send("<Response/>");
+      });
+    }
+  });
+
+}
+
 module.exports.transcription_events = function (req, res) {
   console.log('logging transcription event');
   var data = req.body;
@@ -55,6 +95,63 @@ module.exports.transcription_events = function (req, res) {
   });
 
 }
+
+module.exports.voicemail_recording_events = function (req, res) {
+  console.log('logging voicemail recording event');
+  var accountSid = req.query.AccountSid;
+  var callSid = req.query.CallSid;
+  var recordingSid = req.query.RecordingSid;
+  var recordingUrl = req.query.RecordingUrl;
+  var recordingDuration = req.query.RecordingDuration;
+  var recordingChannels = req.query.RecordingChannels;
+  var updated_at = new Date();
+  var dbFields = { accountSid: accountSid, callSid: callSid, updated_at: updated_at, mailRecordingSid: recordingSid, mailRecordingUrl: recordingUrl, mailRecordingDuration: recordingDuration};
+  console.log('recording event called: ' + callSid);
+
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      //insert new call
+      console.log ('null call with recording: ' + callSid);
+    } else {
+      console.log ('updating call with recording: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
+        if(err) {
+          console.log("Something wrong when updating recording: " + err);
+        } else {
+          console.log('updated with recording ' + call2.callSid);
+          call2.saveSync();
+        }
+      });
+    }
+  });
+
+  // send for transcription
+
+
+  console.log ('recordingUrl: ' + recordingUrl);
+  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+//  console.log(configuration);
+
+  request.post({
+    url:'https://apis.voicebase.com/v2-beta/media',
+    formData: { media:recordingUrl + ".wav", configuration: configuration},
+    headers: {
+      'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
+    }
+  }, function(err,httpResponse,body){
+    //console.log('voicebase response');
+    console.log('err: '+ err);
+    //console.log(util.inspect(httpResponse, false, null))
+    //console.log('body' + body);
+
+  })
+
+  res.status(200);
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+
+};
 
 module.exports.recording_events = function (req, res) {
   console.log('logging recording event');
