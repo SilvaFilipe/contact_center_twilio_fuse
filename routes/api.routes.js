@@ -27,6 +27,7 @@ var workers = require('../controllers/workers.js')
 var users = require('../controllers/users.js')
 var groups = require('../controllers/groups.js')
 var queues = require('../controllers/queues.js')
+var contacts = require('../controllers/contacts.js')
 //var s3 = require('../controllers/s3.js')
 
 module.exports = function(app, acl, multer){
@@ -149,6 +150,17 @@ module.exports = function(app, acl, multer){
     router.route('/queues/:queue_id')
       .put(queues.update)
       .get(queues.get);
+
+    //Contacts api
+    router.route('/contacts')
+      .post(contacts.create)
+      .get(contacts.all);
+
+
+    router.route('/contacts/:contact_id')
+      .put(contacts.update)
+      .get(contacts.get);
+
 
     app.use('/api', router);
 

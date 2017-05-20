@@ -7,7 +7,7 @@
     .controller('AdminGroupController', AdminGroupController);
 
   /** @ngInject */
-  function AdminGroupController($scope, $document, $state, Group, GroupService, $mdToast)
+  function AdminGroupController($scope, $rootScope, $state, Group, GroupService, $mdToast)
   {
     var vm = this;
 
@@ -28,6 +28,15 @@
 
     vm.isFormValid = isFormValid;
     vm.saveGroup = saveGroup;
+
+    activate();
+
+    function activate(){
+      $rootScope.$on('contactModal.created', function (event, args) {
+        console.log('hola');
+        console.log('args', args)
+      });
+    }
 
     /**
      * Checks if the given form valid

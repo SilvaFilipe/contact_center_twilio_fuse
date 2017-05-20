@@ -14,6 +14,9 @@ var ContactSchema = mongoose.Schema({
     },
     photoUrl: {
         type: String
+    },
+    avatarUrl: {
+        type: String
     }
 });
 

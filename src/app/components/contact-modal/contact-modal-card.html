@@ -1,0 +1,54 @@
+<md-dialog class="contact-dialog">
+  <form name="contactForm" class="md-inline-form" novalidate="">
+    <md-toolbar class="md-accent md-tall contact-toolbar layout-column md-default-theme" layout="column">
+      <div class="md-toolbar-tools md-toolbar-tools-top layout-align-space-between-center layout-row" layout="row"
+           layout-align="space-between center"><span class="title ng-binding">New Contact</span>
+        <button class="md-icon-button md-button  md-ink-ripple md-default-theme" type="button"
+                ng-click="vm.closeDialog()" aria-label="Close dialog">
+          <md-icon md-font-icon="icon-close" class="md-font material-icons icon-close md-default-theme" role="img"></md-icon>
+        </button>
+      </div>
+      <div class="md-toolbar-tools md-toolbar-tools-middle layout-align-center-center layout-column flex" flex=""
+           layout="column" layout-align="center center">
+        <div layout="column" layout-align="center center" class="layout-align-center-center layout-column"><img
+          ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge" alt="">
+          <div class="contact-name">name here ?</div>
+        </div>
+      </div>
+    </md-toolbar>
+    <md-dialog-content ms-scroll="" class="">
+      <md-input-container class="md-icon-float md-block md-icon-left md-default-theme">
+        <label class="" for="input_47">Name (required)</label>
+        <md-icon md-font-icon="icon-account" class="name md-font material-icons icon-account md-default-theme" role="img"
+                 aria-label="icon-account"></md-icon>
+        <input ng-model="$ctrl.contact.name" type="text" ng-required="" md-autofocus="" class="md-input" id="input_47" aria-invalid="false">
+        <div class="md-errors-spacer"></div>
+      </md-input-container>
+      <md-input-container class="md-icon-float md-block md-icon-left md-default-theme">
+        <label class="" for="input_49">Phone</label>
+        <md-icon class="material-icons md-default-theme" role="img" aria-hidden="true"></md-icon>
+        <input ng-model="$ctrl.contact.phone" type="text" class="md-input" id="input_49" aria-invalid="false">
+        <div class="md-errors-spacer"></div>
+      </md-input-container>
+      <md-input-container class="md-icon-float md-block md-icon-left md-default-theme">
+        <label class="" >Description</label>
+        <md-icon class="material-icons md-default-theme" role="img" aria-hidden="true"></md-icon>
+        <input ng-model="$ctrl.contact.description" type="text" class="md-input" aria-invalid="false">
+        <div class="md-errors-spacer"></div>
+      </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-align="space-between center"
+                       class="layout-align-space-between-center layout-row">
+      <div layout="row" layout-align="start center" class="layout-align-start-center layout-row">
+        <button class="send-button md-accent md-raised md-button  md-default-theme md-ink-ripple" ng-click="$ctrl.addContact()" aria-label="ADD CONTACT">ADD CONTACT
+        </button>
+      </div>
+      <div layout="row" class="layout-row">
+        <button class="md-icon-button md-button md-ink-ripple md-default-theme" type="button"  aria-label="DELETE">
+          <md-icon md-font-icon="icon-delete" class=" md-font material-icons icon-delete md-default-theme"
+                   role="img" aria-hidden="true"></md-icon>
+        </button>
+      </div>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
