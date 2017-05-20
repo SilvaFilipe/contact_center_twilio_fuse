@@ -229,6 +229,45 @@ module.exports.muteOff = function (req, res) {
   });
 }
 
+module.exports.toVoicemail= function (req, res) {
+  var caller_sid = req.query.callSid;
+  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record action="http://foo.edu/handleRecording.php" method="GET" maxLength="20" finishOnKey="*"/></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+
+  client.calls(caller_sid).update({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+    method: "GET"
+  }, function(err, call) {
+    if (err){
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'ERROR' , null, 3))
+    } else {
+      console.log ("moved agent " + caller_sid + ' silence');
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'OK' , null, 3))
+    }
+  });
+}
+
+module.exports.toVoicemailCallSid = function (caller_sid, callback) {
+  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record action="http://foo.edu/handleRecording.php" method="GET" maxLength="20" finishOnKey="*"/></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+
+  client.calls(caller_sid).update({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+    method: "GET"
+  }, function(err, call) {
+    if (err){
+      callback(err, null);
+    } else {
+      callback(null, call);
+    }
+  });
+}
+
 
 module.exports.playRecording = function (req, res) {
   var fs = require('fs'),

@@ -122,6 +122,14 @@
           })
       };
 
+      $scope.toVoicemail = function () {
+        CallService.toVoicemail($rootScope.currentCall.callSid)
+          .then(function (response) {
+            $rootScope.currentCall.callStatus = 'completed';
+            $rootScope.stopWorkingCounter();
+          })
+      };
+
       $scope.holdOn = function () {
         CallService.holdOn($rootScope.currentCall.callSid)
           .then(function (response) {
@@ -276,7 +284,7 @@
       };
 
       $scope.declineInboundCall = function () {
-        CallService.hangup($rootScope.extensionCallTask.callSid)
+        CallService.toVoicemail($rootScope.extensionCallTask.callSid)
           .then(function (response) {
             $rootScope.extensionCallTask = null;
             $rootScope.stopExtensionCounter();

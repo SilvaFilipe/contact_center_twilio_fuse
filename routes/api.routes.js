@@ -72,6 +72,7 @@ module.exports = function(app){
     router.route('/callControl/playRecording').get(callController.playRecording)
     router.route('/callControl/play_ringing').post(callController.play_ringing)
     router.route('/callControl/inbound_ringing').post(callController.inbound_ringing)
+    router.route('/callControl/toVoicemail').get(callController.toVoicemail)
 
     router.route('/sync/write').get(sync.write)
     router.route('/sync/token').get(sync.token)

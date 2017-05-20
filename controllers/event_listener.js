@@ -268,8 +268,71 @@ module.exports.conference_events = function (req, res) {
     var dbFields = { conferenceSid: conferenceSid, conferenceFriendlyName: friendlyName, conferenceStatusCallbackEvent: statusCallbackEvent, muted: muted, hold: hold, callSid: callSid, updated_at: updated_at }
 
     console.log('Conference event called: ' + statusCallbackEvent);
+    if (callSid){
+      console.log('about to update callSid with conference info: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
+        if(err) {
+          console.log("Something wrong when updating call: " + err);
+        } else {
+          if (call2==null){
+            console.log('agentCallsid' + callSid + ' for conference event ' + statusCallbackEvent);
+          } else {
+            console.log('updated with conference info ' + call2.callSid);
+            //call2.saveSync();
+          }
+        }
+      });
+    } else {
+      Call.find({'conferenceSid': conferenceSid}, function (err, calls){
+        if (err){
+          console.log('error finding by conferenceSid ' + err);
+        } else {
+          calls.forEach(function (call) {
+            console.log('updating call by confSid: ' + call.callSid);
+            call.update({$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, raw){
+              if (err) {
+                console.log(err);
+              } else {
+                //console.log('The raw response from Mongo was ', raw);
+              }
+            });
+          });
+        }
+      });
+    }
 
-
+/*
+  Call.findOne({'conferenceSid': conferenceSid}, function (err, call) {
+    if (call == null){
+      //insert new call
+      console.log ('error, could not find call with conferenceSid ' + conferenceSid);
+    } else {
+      console.log ('updating call: ' + call.callSid);
+      if (call.sequenceNumber == undefined || sequenceNumber > call.sequenceNumber) {
+        Call.findOneAndUpdate({'callSid': call.callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+          if(err){
+            console.log("Something wrong when updating call: " + err);
+          } else {
+            console.log('updated with correct sequence ' + call2.callSid);
+            call2.saveSync();
+            if (callStatus == 'completed'){
+              call2.user_ids.map( function(userid) {
+                var mData = {type: 'call-end', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
+                sync.saveList ('m' + userid, mData);
+              });
+            }
+          }
+        });
+      } else {
+        // event received out of sequence, don't update top level properties
+        Call.findOneAndUpdate({'callSid': callSid}, {$push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+          if(err) console.log("Something wrong when updating call: " + err);
+          console.log('updated out of sequence ' + call2.callSid);
+        });
+      }
+    }
+  });
+    */
   if (statusCallbackEvent == 'participant-join'){
 
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
@@ -296,7 +359,7 @@ module.exports.conference_events = function (req, res) {
 
     }
 
-    if (statusCallbackEvent == 'conference-start'){
+  if (statusCallbackEvent == 'conference-start'){
       console.log('conference-start')
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
             if (task) {
@@ -327,8 +390,8 @@ module.exports.conference_events = function (req, res) {
                                   call.addUserIds(user._id);
                                   call.saveSync();
                                 }
-
-
+                                /*
+                                This is done earlier now
                                 Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
                                   if(err) {
                                     console.log("Something wrong when updating call: " + err);
@@ -337,6 +400,7 @@ module.exports.conference_events = function (req, res) {
                                     call2.saveSync();
                                   }
                                 });
+                                */
                               }
                             });
                           }
@@ -352,8 +416,8 @@ module.exports.conference_events = function (req, res) {
         });
 
     }
-
-    if (callSid && statusCallbackEvent != 'conference-start'){
+/*
+  if (callSid && statusCallbackEvent != 'conference-start'){
       //Conference start and end events have no callSid
       Call.findOne({'callSid': callSid}, function (err, call) {
         if (call == null){
@@ -371,7 +435,7 @@ module.exports.conference_events = function (req, res) {
         }
       });
     }
-
+*/
     res.setHeader('Content-Type', 'application/xml')
     res.setHeader('Cache-Control', 'public, max-age=0')
     res.send("<Response/>")

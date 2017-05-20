@@ -43,6 +43,10 @@
       return $http.get(apiUrl + 'api/callControl/hangup?callSid=' + call_sid, {withCredentials: true});
     };
 
+    CallService.toVoicemail = function (call_sid) {
+      return $http.get(apiUrl + 'api/callControl/toVoicemail?callSid=' + call_sid, {withCredentials: true});
+    };
+
     CallService.hangupDialpad = function () {
       return $q.when($timeout(function(){
         Twilio.Device.disconnectAll();

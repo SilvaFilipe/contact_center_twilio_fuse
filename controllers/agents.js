@@ -19,6 +19,7 @@ const taskrouterClient = new twilio.TaskRouterClient(
 const Call = require('../models/call.model');
 const User = require('../models/user.model');
 const Did = require('../models/did.model');
+const callController = require('./call-control.js')
 
 module.exports.login = function (req, res) {
   var friendlyName = req.body.worker.friendlyName
@@ -404,6 +405,7 @@ module.exports.didInboundExtensionCall = function (req, res) {
             sync.saveList('m' + userToDial._id, mData);
 
             var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+            setTimeout(inboundExtensionCallToVoicemail, 5500, req.query.CallSid);
             res.send(twiml)
           });
         })
@@ -411,6 +413,31 @@ module.exports.didInboundExtensionCall = function (req, res) {
     }
   });
 };
+function inboundExtensionCallToVoicemail (callSid) {
+  console.log('checking if inboundExtensionCall was answered: ' + callSid);
+  Call.findOne({"callSid": callSid}, function (err, call){
+    if (err){
+      console.log(err);
+    } else {
+      var sendToVm=true;
+      call.callEvents.forEach(function (callEvent){
+        if (callEvent.conferenceStatusCallbackEvent=="conference-start"){
+          sendToVm=false;
+        }
+      });
+      console.log("sendToVm: "+ sendToVm);
+      if (sendToVm){
+        callController.toVoicemailCallSid(callSid, function(err, call){
+          if (err){
+            console.log(err);
+          } else{
+            console.log('sent call to VM: ' + call.sid);
+          }
+        });
+      }
+    }
+  });
+}
 /*
 
 
