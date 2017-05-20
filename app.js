@@ -10,6 +10,11 @@ var mongoose = require('mongoose');
 var acl = require('acl');
 var flash = require('connect-flash');
 var passport = require('passport');
+var nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
+var options = { auth: { api_user: process.env.SENDGRID_USERNAME,  api_key: process.env.SENDGRID_PASSWORD }};
+var mailer = nodemailer.createTransport(sgTransport(options));
+
 //var messagingAdapter = require('./controllers/messaging-adapter.js');
 /* check if the application runs on heroku */
 var util;
