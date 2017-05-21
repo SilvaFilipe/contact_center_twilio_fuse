@@ -7,7 +7,7 @@
     .controller('AdminQueueController', AdminQueueController);
 
   /** @ngInject */
-  function AdminQueueController($scope, $q, UserService, Queue, QueueService, $mdToast)
+  function AdminQueueController($scope, $q, UserService, Queue, QueueService, $mdToast, ContactService)
   {
     var vm = this;
 
@@ -22,7 +22,19 @@
 
     vm.queue = Queue;
 
-    flagUsers();
+    activate();
+
+    function activate(){
+      flagUsers();
+
+      $scope.$on('contactModal.created', function (event, args) {
+        ContactService.addToQueues(vm.queue._id, args.contact._id)
+          .then(function (queue) {
+            console.log(queue)
+            vm.queue = queue;
+          })
+      });
+    }
 
     vm.isFormValid = isFormValid;
     vm.saveQueue = saveQueue;

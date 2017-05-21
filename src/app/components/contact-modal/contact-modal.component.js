@@ -86,7 +86,7 @@ angular.module('app.components')
   }]);
 
 /** @ngInject */
-function ContactModalController($log, $rootScope, $mdDialog, ContactService) {
+function ContactModalController($log, $scope, $mdDialog, ContactService) {
   var $ctrl = this;
 
   $ctrl.showDialog = showDialog;
@@ -110,7 +110,7 @@ function ContactModalController($log, $rootScope, $mdDialog, ContactService) {
     })
       .then(function (contact) {
         console.log(contact);
-        $rootScope.$broadcast('contactModal.created', {
+        $scope.$emit('contactModal.created', {
           contact: contact
         });
       })
@@ -127,8 +127,6 @@ function ContactModalController($log, $rootScope, $mdDialog, ContactService) {
 
         ContactService.create($ctrl.contact)
           .then(function (contact) {
-            //$mdDialog.hide(contact)
-            $ctrl.contact = contact;
             return ContactService.uploadAvatar(contact._id, fileObj);
           })
           .then(function (response) {

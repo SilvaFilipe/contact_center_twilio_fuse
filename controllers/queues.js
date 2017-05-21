@@ -81,5 +81,18 @@ module.exports = {
 
             return res.status(200).json({message: 'Queue deleted.'});
         })
+    },
+    addContact: function (req, res) {
+      Queue.findByIdAndUpdate(req.params.queue_id,
+        {"$addToSet": {"contacts": req.params.contact_id}},
+        {"new": true }
+        )
+        .populate('contacts')
+        .exec().then(function (queue) {
+          return res.status(200).json(queue);
+        })
+        .catch(function (err) {
+          if (err) return res.status(500).json(err);
+        })
     }
 }

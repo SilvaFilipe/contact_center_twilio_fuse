@@ -99,6 +99,9 @@ module.exports = function(app, acl, multer){
         .put(users.update)
         .delete(users.delete);
 
+    router.route('/users/:user_id/contacts/:contact_id')
+      .post(users.addContact);
+
     router.route('/users/:user_id/uploadAvatar')
         .post(multer(
           {
@@ -153,6 +156,9 @@ module.exports = function(app, acl, multer){
     router.route('/queues/:queue_id')
       .put(queues.update)
       .get(queues.get);
+
+    router.route('/queues/:queue_id/contacts/:contact_id')
+      .post(queues.addContact);
 
     //Contacts api
     router.route('/contacts')

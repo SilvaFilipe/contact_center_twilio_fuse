@@ -144,16 +144,17 @@ module.exports = {
 
     get: function (req, res) {
       Group.find({ users: { "$in" : [req.params.user_id]} }).select('_id description name').then(function (groups) {
-        User.findById(req.params.user_id).populate('dids queues').exec().then(function (user) {
-          req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
-            var convertedJSON = JSON.parse(JSON.stringify(user));
-            convertedJSON.roles = roles;
-            convertedJSON.groups = groups;
-            return res.status(200).json(convertedJSON);
+        User.findById(req.params.user_id).populate('dids queues contacts').exec()
+          .then(function (user) {
+            req.acl.userRoles(req.params.user_id.toString(), function(err, roles){
+              var convertedJSON = JSON.parse(JSON.stringify(user));
+              convertedJSON.roles = roles;
+              convertedJSON.groups = groups;
+              return res.status(200).json(convertedJSON);
+            });
+          }, function (err) {
+            if(err) return res.status(500).json(err);
           });
-        }, function (err) {
-          if(err) return res.status(500).json(err);
-        });
       }, function (err) {
         if(err) return res.status(500).json(err);
       });
@@ -337,5 +338,18 @@ module.exports = {
                 success: false
             });
         }
+    },
+    addContact: function (req, res) {
+      User.findByIdAndUpdate(req.params.user_id,
+        {"$addToSet": {"contacts": req.params.contact_id}},
+        {"new": true }
+        )
+        .populate('dids queues contacts')
+        .exec().then(function (user) {
+          return res.status(200).json(user);
+        })
+        .catch(function (err) {
+          if (err) return res.status(500).json(err);
+        })
     }
 };

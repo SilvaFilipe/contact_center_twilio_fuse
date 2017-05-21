@@ -32,9 +32,7 @@
     activate();
 
     function activate(){
-      $rootScope.$on('contactModal.created', function (event, args) {
-        console.log('hola');
-        console.log('args', args);
+      $scope.$on('contactModal.created', function (event, args) {
         ContactService.addToGroup(vm.group._id, args.contact._id)
           .then(function (group) {
             console.log(group)

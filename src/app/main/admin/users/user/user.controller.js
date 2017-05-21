@@ -7,7 +7,7 @@
     .controller('AdminUserController', AdminUserController);
 
   /** @ngInject */
-  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog)
+  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog, ContactService)
   {
     var vm = this;
     vm.roles = ['phone', 'contact_center', 'admin'];
@@ -37,7 +37,19 @@
         queue.userFlag = false;
         return queue;
       });
+    }
 
+    activate();
+
+    function activate(){
+
+      $scope.$on('contactModal.created', function (event, args) {
+        ContactService.addToUser(vm.user._id, args.contact._id)
+          .then(function (user) {
+            vm.user.contacts = user.contacts;
+            //$state.go("app.admin.users.edit", {id: vm.user._id})
+          })
+      });
     }
 
     vm.isFormValid = isFormValid;

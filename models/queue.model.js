@@ -27,6 +27,7 @@ var QueueSchema = mongoose.Schema({
         message   : '{VALUE} is not an integer value'
       }
     },
+    contacts: [{ type: mongoose.Schema.ObjectId, ref: 'Contact' }],
     taskQueueSid: { type: String},
     taskQueueFriendlyName: { type: String},
     targetWorkerExpression: { type: String},

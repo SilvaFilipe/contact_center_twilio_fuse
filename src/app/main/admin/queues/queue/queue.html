@@ -127,7 +127,46 @@
 
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
-
+            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+              <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+                <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                       dt-options="vm.dtOptions">
+                  <thead>
+                  <tr>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Avatar</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Name</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Phone</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Description</span>
+                      </div>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="contact in vm.queue.contacts">
+                    <td><img ng-src="{{contact.avatarUrl}}"></td>
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.phone}}</td>
+                    <td>{{contact.description}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <contact-modal></contact-modal>
           </div>
         </md-tab-body>
       </md-tab>
