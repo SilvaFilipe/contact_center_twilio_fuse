@@ -8,13 +8,22 @@
           <md-icon md-font-icon="icon-close" class="md-font material-icons icon-close md-default-theme" role="img"></md-icon>
         </button>
       </div>
+
       <div class="md-toolbar-tools md-toolbar-tools-middle layout-align-center-center layout-column flex" flex=""
            layout="column" layout-align="center center">
-        <div layout="column" layout-align="center center" class="layout-align-center-center layout-column"><img
-          ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge" alt="">
-          <div class="contact-name">name here ?</div>
+        <div layout="column" layout-align="center center" class="layout-align-center-center layout-column">
+          <label for="avatar-url">
+            <img ng-show="!$ctrl.contact.avatarUrl" ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge">
+            <div ng-if="!!$ctrl.contact.avatarUrl" ng-thumb="{ file: $ctrl.contact.avatarUrl, height: 80, width: 80 }"></div>
+          </label>
+          <div class="contact-name">{{$ctrl.contact.name}}</div>
+          <input type="file"
+                 fileread="$ctrl.contact.avatarUrl"
+                 class="hidden"
+                 id="avatar-url">
         </div>
       </div>
+
     </md-toolbar>
     <md-dialog-content ms-scroll="" class="">
       <md-input-container class="md-icon-float md-block md-icon-left md-default-theme">

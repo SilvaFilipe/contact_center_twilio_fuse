@@ -25,10 +25,7 @@ module.exports = {
     get: function (req, res) {
 
         Group.findById(req.params.group_id)
-          .populate({
-            path: 'users',
-            select: 'firstName lastName email extension'
-          })
+          .populate('users contacts')
           .exec(function (err, group) {
             if(err) return res.status(500).json(err);
 
@@ -65,6 +62,19 @@ module.exports = {
             if(err) return res.send(err);
 
             return res.json({message: 'Group deleted.'});
+        })
+    },
+    addContact: function (req, res) {
+        Group.findByIdAndUpdate(req.params.group_id,
+          {"$addToSet": {"contacts": req.params.contact_id}},
+          {"new": true }
+        )
+          .populate('users contacts')
+          .exec().then(function (group) {
+            return res.status(200).json(group);
+        })
+        .catch(function (err) {
+          if (err) return res.status(500).json(err);
         })
     }
 };

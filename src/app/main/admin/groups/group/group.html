@@ -128,11 +128,53 @@
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
             <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-              <!--<md-button class="md-fab md-fab-bottom-right add-contact-fab-button" aria-label="Add contact">-->
-                <!--<md-icon md-font-icon="icon-plus"></md-icon>-->
-              <!--</md-button>-->
-              <contact-modal></contact-modal>
+              <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+                <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                       dt-options="vm.dtOptions">
+                  <thead>
+                  <tr>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Avatar</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Name</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Phone</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Description</span>
+                      </div>
+                    </th>
+                    <!--<th class="secondary-text">-->
+                      <!--<div class="table-header">-->
+                        <!--<span class="column-title">Delete?</span>-->
+                      <!--</div>-->
+                    <!--</th>-->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="contact in vm.group.contacts">
+                    <td><img ng-src="{{contact.avatarUrl}}"></td>
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.phone}}</td>
+                    <td>{{contact.description}}</td>
+                    <!--<td>-->
+                      <!--<md-checkbox ng-model="user.groupFlag" aria-label="belongs to group"></md-checkbox>-->
+                    <!--</td>-->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
+            <contact-modal></contact-modal>
           </div>
         </md-tab-body>
       </md-tab>

@@ -142,6 +142,9 @@ module.exports = function(app, acl, multer){
       .put(groups.update)
       .get(groups.get);
 
+    router.route('/groups/:group_id/contacts/:contact_id')
+      .post(groups.addContact);
+
     //Queues api
     router.route('/queues')
       .post(queues.create)
@@ -160,6 +163,16 @@ module.exports = function(app, acl, multer){
     router.route('/contacts/:contact_id')
       .put(contacts.update)
       .get(contacts.get);
+
+    router.route('/contacts/:contact_id/uploadAvatar')
+      .post(multer(
+        {
+          limits: {
+            fileSize: 10 * 1024 * 1024
+          },
+          dest: 'uploads/'
+        }
+      ).single('file'), contacts.uploadAvatarImage);
 
 
     app.use('/api', router);

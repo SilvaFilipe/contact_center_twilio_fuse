@@ -7,7 +7,7 @@
     .controller('AdminGroupController', AdminGroupController);
 
   /** @ngInject */
-  function AdminGroupController($scope, $rootScope, $state, Group, GroupService, $mdToast)
+  function AdminGroupController($scope, $rootScope, $state, Group, GroupService, $mdToast, ContactService)
   {
     var vm = this;
 
@@ -34,7 +34,12 @@
     function activate(){
       $rootScope.$on('contactModal.created', function (event, args) {
         console.log('hola');
-        console.log('args', args)
+        console.log('args', args);
+        ContactService.addToGroup(vm.group._id, args.contact._id)
+          .then(function (group) {
+            console.log(group)
+            vm.group = group;
+          })
       });
     }
 

@@ -7,7 +7,7 @@ const s3fsImpl = new S3FS('kismet-dev', { //hardcoded for now
 });
 const Promise = require('bluebird');
 
-exports.upload = function (file) {
+exports.upload = function upload(file) {
   if (!file) {
     return Promise.reject('file expected');
   }
@@ -26,6 +26,7 @@ exports.upload = function (file) {
           reject(err);
 
         });
+        console.log('repsonse upload', response);
         return resolve(response);
       })
       .catch((err) => { reject(err) });

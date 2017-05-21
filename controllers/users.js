@@ -318,7 +318,7 @@ module.exports = {
             return res.status(200).json({message: 'User deleted.'});
         })
     },
-    uploadAvatarImage: async function read(req, res) {
+    uploadAvatarImage: async function uploadAvatarImage(req, res) {
         let file = req.file;
         const userId = req.params.user_id;
         try {

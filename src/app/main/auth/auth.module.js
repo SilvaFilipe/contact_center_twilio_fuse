@@ -105,7 +105,7 @@
                   $window.sessionStorage.setItem('isAdmin', "true");
               }
               else {
-                $window.sessionStorage.setItem('isAdmin', "false"); //change to false
+                $window.sessionStorage.setItem('isAdmin', true); //change to false
               }
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
