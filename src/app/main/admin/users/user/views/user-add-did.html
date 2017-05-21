@@ -28,7 +28,7 @@
         <div layout="row" layout-align="space-between center" ng-show="isLocal === '1'">
           <md-input-container class="md-block mr-30" flex-gt-sm>
             <label>Area Code</label>
-            <input type="text" name="areaCode" ng-model="areaCode" required ng-pattern="/^[0-9]+$/">
+            <input type="text" name="areaCode" ng-model="areaCode">
           </md-input-container>
           <md-button class="md-primary md-raised mb-35" ng-click="searchDid(0)" ng-disabled="didForm.$invalid || didForm.$pristine">
             Search
