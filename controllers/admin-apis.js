@@ -10,9 +10,10 @@ const client = new twilio(
 module.exports.didSearch = function (req, res) {
   var areaCode = req.query.areacode;
   var tollFree = req.query.tollfree;
+  var countryCode = req.query.countryCode;
 
   if (tollFree === "1"){
-    client.availablePhoneNumbers("US").tollFree.list({
+    client.availablePhoneNumbers(countryCode).tollFree.list({
       voiceEnabled: true,
       smsEnabled: true
     }, function(err, data) {
@@ -28,7 +29,7 @@ module.exports.didSearch = function (req, res) {
       }
     });
   } else {
-    client.availablePhoneNumbers("US").local.list({
+    client.availablePhoneNumbers(countryCode).local.list({
       areaCode: areaCode,
       voiceEnabled: true,
       smsEnabled: true

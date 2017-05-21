@@ -78,9 +78,9 @@
     /**
      * search did
      */
-    function didSearch(areaCode, tollFree) {
+    function didSearch(areaCode, countryCode, tollFree) {
       var deferred = $q.defer();
-      $http.get(apiUrl + 'api/admin/didSearch/?tollfree=' + tollFree + '&areacode=' + areaCode, {withCredentials: true})
+      $http.get(apiUrl + 'api/admin/didSearch/?tollfree=' + tollFree + '&countryCode=' + countryCode + '&areacode=' + areaCode, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);
         }, function (err) {

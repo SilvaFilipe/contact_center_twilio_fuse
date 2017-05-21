@@ -139,7 +139,7 @@
         });
     }
 
-    function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, userId) {
+    function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, $timeout, userId) {
       $scope.isLocal = '1';
       $scope.hide = function() {
         $mdDialog.hide();
@@ -148,19 +148,19 @@
         $mdDialog.cancel();
       };
 
-      $scope.searchDid = function(areaCode, tollFree) {
+      $scope.searchDid = function(tollFree) {
         $scope.loadingProgress = true;
-        if (!angular.isDefined(areaCode)) {
-          areaCode = "";
+        if (!angular.isDefined($scope.areaCode)) {
+          $scope.areaCode = "";
         }
-        AdminUserService.didSearch(areaCode, tollFree).then(function (res) {
+        AdminUserService.didSearch($scope.areaCode, $scope.countryCode.toUpperCase(), tollFree).then(function (res) {
           $scope.loadingProgress = false;
           $mdToast.showSimple("Did Searched Successfully.");
           $scope.didSearch = res.data;
         }, function (err) {
           $scope.loadingProgress = false;
           console.log(err);
-          $mdToast.showSimple(err.data);
+          $mdToast.showSimple('Internal Server Error.');
         });
       };
 
@@ -181,11 +181,21 @@
       $scope.$watch('isLocal', function (newValue, oldValue) {
         $scope.didSearch = null;
         if (newValue === '0') {
-          $scope.searchDid($scope.areaCode, 1);
+          $scope.searchDid(1);
         }
       });
 
-      $scope.searchDid('', 0);
+      $scope.$watch('countryCode', function (newValue, oldValue) {
+        if ($scope.isLocal === '0') {
+          $scope.didSearch = null;
+          $scope.searchDid(1);
+        }
+      });
+
+      $timeout(function () {
+        $scope.searchDid(0);
+      }, 500);
+
     }
 
   }
