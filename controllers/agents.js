@@ -412,19 +412,23 @@ module.exports.extensionInboundCall = function (req, res) {
           sync.saveList('m' + userToDial._id, mData);
 
           var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
-          if (userToDial.sipURI.length>0){
+          if (userToDial.sipURI!=undefined && userToDial.sipURI.length>0){
             // Dial a SIP phone with a timeout
             var escaped_twiml = require('querystring').escape(twiml);
+            var toSipURI = userToDial.sipURI;
+            if (userToDial.sipURI.indexOf("sip:")==-1){
+              toSipURI = 'sip:' + userToDial.sipURI;
+            }
             client.calls.create({
               url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
-              to: 'sip:' + userToDial.sipURI,
+              to: toSipURI,
               from: fromNumber,
               timeout: 14
             }, function(err, call) {
               if (err){
                 console.log(err);
               } else {
-                console.log('created outbound to SIP call ' + call.sid);
+                console.log('created outbound to SIP call ' + call.sid + ' to ' + toSipURI);
                 // insert into db
                 // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
                 // var newCall = new Call( Object.assign(dbFields) );
@@ -491,12 +495,16 @@ module.exports.didInboundExtensionCall = function (req, res) {
 
             var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
 
-            if (userToDial.sipURI.length>0){
+            if (userToDial.sipURI!=undefined && userToDial.sipURI.length>0){
               // Dial a SIP phone with a timeout
               var escaped_twiml = require('querystring').escape(twiml);
+              var toSipURI = userToDial.sipURI;
+              if (userToDial.sipURI.indexOf("sip:")==-1){
+                toSipURI = 'sip:' + userToDial.sipURI;
+              }
               client.calls.create({
                 url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
-                to: 'sip:' + userToDial.sipURI,
+                to: toSipURI,
                 from: fromNumber,
                 timeout: 14
               }, function(err, call) {
