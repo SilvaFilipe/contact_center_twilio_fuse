@@ -14,10 +14,6 @@
     </md-toolbar>
     <md-dialog-content style="max-width:800px;max-height:810px; ">
       <form name="didForm" novalidate>
-        <md-radio-group ng-model="isLocal" layout="row">
-          <md-radio-button value="1">Local</md-radio-button>
-          <md-radio-button value="0"> Toll free </md-radio-button>
-        </md-radio-group>
         <div>
           <md-input-container class="md-block" flex-gt-sm>
             <label>Select Country</label>
@@ -25,6 +21,10 @@
           </md-input-container>
           <input type="text" id="country_code" ng-model="countryCode" hidden/>
         </div>
+        <md-radio-group ng-model="isLocal" layout="row">
+          <md-radio-button value="1">Local</md-radio-button>
+          <md-radio-button value="0"> Toll free </md-radio-button>
+        </md-radio-group>
         <div layout="row" layout-align="space-between center" ng-show="isLocal === '1'">
           <md-input-container class="md-block mr-30" flex-gt-sm>
             <label>Area Code</label>
@@ -58,5 +58,232 @@
 </md-dialog>
 <script>
   $("#country").countrySelect();
+
+  var twilioCountries=[
+    {
+      iso2: "gb",
+      name: "United Kingdom",
+    },
+    {
+      iso2: "us",
+      name: "United States",
+    }
+    ,
+    {
+      iso2: "hu",
+      name: "Hungary",
+    },
+    {
+      iso2: "cz",
+      name: "Czech Republic",
+    },
+    {
+      iso2: "ng",
+      name: "Nigeria",
+    },
+    {
+      iso2: "co",
+      name: "Colombia",
+    },
+    {
+      iso2: "ph",
+      name: "Philippines",
+    },
+    {
+      iso2: "hk",
+      name: "Hong Kong",
+    },
+    {
+      iso2: "mx",
+      name: "Mexico",
+    },
+    {
+      iso2: "th",
+      name: "Thailand",
+    },
+    {
+      iso2: "ke",
+      name: "Kenya",
+    },
+    {
+      iso2: "il",
+      name: "Israel",
+    },
+    {
+      iso2: "lv",
+      name: "Latvia",
+    },
+    {
+      iso2: "jp",
+      name: "Japan",
+    },
+    {
+      iso2: "no",
+      name: "Norway",
+    },
+    {
+      iso2: "cl",
+      name: "Chile",
+    },
+    {
+      iso2: "pa",
+      name: "Panama",
+    },
+    {
+      iso2: "pt",
+      name: "Portugal",
+    },
+    {
+      iso2: "au",
+      name: "Australia",
+    },
+    {
+      iso2: "de",
+      name: "Germany",
+    },
+    {
+      iso2: "fr",
+      name: "France",
+    },
+    {
+      iso2: "ie",
+      name: "Ireland",
+    },
+    {
+      iso2: "nl",
+      name: "Netherlands",
+    },
+    {
+      iso2: "es",
+      name: "Spain",
+    },
+    {
+      iso2: "ch",
+      name: "Switzerland",
+    },
+    {
+      iso2: "is",
+      name: "Iceland",
+    },
+    {
+      iso2: "si",
+      name: "Slovenia",
+    },
+    {
+      iso2: "hr",
+      name: "Croatia",
+    },
+    {
+      iso2: "pr",
+      name: "Puerto Rico",
+    },
+    {
+      iso2: "ca",
+      name: "Canada",
+    },
+    {
+      iso2: "id",
+      name: "Indonesia",
+    },
+    {
+      iso2: "dk",
+      name: "Denmark",
+    },
+    {
+      iso2: "lt",
+      name: "Lithuania",
+    },
+    {
+      iso2: "at",
+      name: "Austria",
+    },
+    {
+      iso2: "do",
+      name: "Dominican Republic",
+    },
+    {
+      iso2: "za",
+      name: "South Africa",
+    },
+    {
+      iso2: "se",
+      name: "Sweden",
+    },
+    {
+      iso2: "ee",
+      name: "Estonia",
+    },
+    {
+      iso2: "lu",
+      name: "Luxembourg",
+    },
+    {
+      iso2: "br",
+      name: "Brazil",
+    },
+    {
+      iso2: "sk",
+      name: "Slovakia",
+    },
+    {
+      iso2: "sv",
+      name: "El Salvador",
+    },
+    {
+      iso2: "bg",
+      name: "Bulgaria",
+    },
+    {
+      iso2: "be",
+      name: "Belgium",
+    },
+    {
+      iso2: "ro",
+      name: "Romania",
+    },
+    {
+      iso2: "cy",
+      name: "Cyprus",
+    },
+    {
+      iso2: "pl",
+      name: "Poland",
+    },
+    {
+      iso2: "nz",
+      name: "New Zealand",
+    },
+    {
+      iso2: "fi",
+      name: "Finland",
+    },
+    {
+      iso2: "gr",
+      name: "Greece",
+    },
+    {
+      iso2: "it",
+      name: "Italy",
+    },
+    {
+      iso2: "mt",
+      name: "Malta",
+    },
+    {
+      iso2: "pe",
+      name: "Peru",
+    }
+  ];
+
+  twilioCountries.sort(function(a, b){
+    var keyA = a.name,
+      keyB = b.name;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+  });
+
+  $.fn.countrySelect.setCountryData(twilioCountries);
+
 </script>
 

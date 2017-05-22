@@ -47,6 +47,7 @@
 
         if(!authService.isLoggedIn()) {
           e.preventDefault(); // stop current execution
+          console.log('user not logged in');
           $state.go('auth.login'); // go to login
         }
 

@@ -52,6 +52,7 @@ module.exports = function(app, acl, multer){
     router.route('/agents/toCallEnded').get(agents.toCallEnded)
     router.route('/agents/agentToSilence').get(agents.agentToSilence)
     router.route('/agents/didInboundExtensionCall').get(agents.didInboundExtensionCall)
+    router.route('/agents/registeredSipOutboundCall').get(agents.registeredSipOutboundCall)
 
     router.route('/admin/didSearch').get(adminController.didSearch)
     router.route('/admin/didPurchase').post(adminController.didPurchase)
