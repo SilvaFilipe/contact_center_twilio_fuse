@@ -56,12 +56,19 @@
           <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)">
             Add Did
           </md-button>
+          <md-button class="md-primary md-raised" ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
+            Delete Did
+          </md-button>
         </div>
         <md-list flex>
-          <md-subheader class="md-no-sticky" ng-hide="vm.user.dids.length">User has no dids</md-subheader>
-          <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length">Did List</md-subheader>
+          <div layout="row" layout-align="space-between center">
+            <md-subheader class="md-no-sticky" ng-hide="vm.user.dids.length">User has no dids</md-subheader>
+            <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length">Did List</md-subheader>
+            <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length"> Remove from Dids? </md-subheader>
+          </div>
           <md-list-item ng-repeat="item in vm.user.dids" ng-click="null">
             <div>{{item.number}}</div>
+            <md-checkbox class="md-secondary" ng-model="item.userFlag" aria-label="delete did"></md-checkbox>
           </md-list-item>
         </md-list>
       </div>

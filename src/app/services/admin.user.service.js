@@ -17,7 +17,8 @@
       updateUser  : updateUser,
       createUser  : createUser,
       didSearch   : didSearch,
-      didPurchase : didPurchase
+      didPurchase : didPurchase,
+      deleteDids  : deleteDids
     };
 
     return service;
@@ -97,6 +98,22 @@
     function didPurchase (data) {
       var deferred = $q.defer();
       $http.post(apiUrl + 'api/admin/didPurchase', data, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
+        });
+
+      return deferred.promise;
+    }
+
+    /**
+     * Delete did
+     */
+
+    function deleteDids (user_id, dids) {
+      var deferred = $q.defer();
+      $http.post(apiUrl + 'api/admin/didDelete/' + user_id, {data: dids}, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);
         }, function (err) {

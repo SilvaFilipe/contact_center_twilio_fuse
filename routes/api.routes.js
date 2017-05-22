@@ -55,6 +55,7 @@ module.exports = function(app, acl, multer){
 
     router.route('/admin/didSearch').get(adminController.didSearch)
     router.route('/admin/didPurchase').post(adminController.didPurchase)
+    router.route('/admin/didDelete/:user_id').post(adminController.didDelete);
 
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/select-team').get(ivr.selectTeam)

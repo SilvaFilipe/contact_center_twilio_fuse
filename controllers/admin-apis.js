@@ -47,7 +47,7 @@ module.exports.didSearch = function (req, res) {
     });
   }
 
-}
+};
 
 module.exports.didPurchase = function (req, res) {
   var phoneNumber = req.body.phoneNumber;
@@ -101,6 +101,36 @@ module.exports.didPurchase = function (req, res) {
       });
     }
   });
-}
+};
+
+module.exports.didDelete = function (req, res) {
+  let ids = [];
+  let sids = [];
+
+  for (let did of req.body.data) {
+    ids.push(did.id);
+    sids.push(did.sid);
+  }
+
+  let index = -1;
+  User.findById(req.params.user_id, function (err, user) {
+    ids.filter(function (id) {
+      index = user.dids.indexOf(id);
+      if (index > -1) {
+        user.dids.splice(index, 1);
+      }
+    });
+
+    user.save(function (userErr, user) {
+      if(userErr) return res.status(500).json(userErr);
+      Did.remove({
+        '_id': {$in: ids}
+      }, function (err) {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json('Successfully deleted!');
+      });
+    })
+  });
+};
 
 

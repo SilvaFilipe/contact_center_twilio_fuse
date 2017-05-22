@@ -26,6 +26,19 @@
     vm.user = User;
     console.log(vm.user);
     vm.confirmPassword = vm.user.password;
+    vm.removingDids = [];
+
+    $scope.$watch(function () {
+      return vm.user.dids;
+    },function(dids){
+      vm.removingDids = [];
+      dids.filter(function (did) {
+        if (did.userFlag) {
+          vm.removingDids.push({id: did._id, sid: did.sid});
+        }
+      });
+    }, true);
+
     if (angular.isDefined(User.groups)) {
       vm.user.groups = User.groups.map(function (group) {
         group.userFlag = false;
@@ -36,6 +49,12 @@
       vm.user.queues = User.queues.map(function (queue) {
         queue.userFlag = false;
         return queue;
+      });
+    }
+    if (angular.isDefined(vm.user.dids)) {
+      vm.user.dids = vm.user.dids.map(function (did) {
+        did.userFlag = false;
+        return did;
       });
     }
 
@@ -57,6 +76,7 @@
     vm.roleToggle = roleToggle;
     vm.roleExists = roleExists;
     vm.openAddDidDialog = openAddDidDialog;
+    vm.openDeleteDidDialog = openDeleteDidDialog;
 
     /**
      * Checks if the given form valid
@@ -208,6 +228,33 @@
         $scope.searchDid(0);
       }, 500);
 
+    }
+
+    function openDeleteDidDialog (ev) {
+      // Appending dialog to document.body to cover sidenav in docs app
+      var confirm = $mdDialog.confirm()
+        .title('Confirm')
+        .textContent('Are you sure you want to delete the selected dids?')
+        .ariaLabel('delete dids')
+        .targetEvent(ev)
+        .clickOutsideToClose(true)
+        .parent(angular.element(document.body))
+        .ok('Yes')
+        .cancel('Cancel');
+      $mdDialog.show(confirm).then(function() {
+        AdminUserService.deleteDids(vm.user._id, vm.removingDids).then(function (res) {
+          console.log(res);
+          vm.user.dids = vm.user.dids.filter(function (did) {
+            return !did.userFlag
+          });
+          $mdToast.showSimple("Successfully Deleted Dids.");
+        }, function (err) {
+          console.log(err);
+          $mdToast.showSimple('Internal Server Error.');
+        });
+      }, function() {
+        console.log('Delete is canceled');
+      });
     }
 
   }
