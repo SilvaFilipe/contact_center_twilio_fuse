@@ -308,9 +308,6 @@
           if (callItem.callSid === data.callSid && !$rootScope.currentCall.isCompleted()) {
             if (callItem.isExtensionCall() && data.callEvent.callStatus === 'Completed') {
               callItem.callStatus = 'completed';
-              if ($state.current.name !== 'app.workspace') {
-                $rootScope.showCallNotification();
-              }
             }
             else {
               callItem.callStatus = (typeof data.callEvent.callStatus !== 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
@@ -318,6 +315,9 @@
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
           }
         });
+        if ($state.current.name !== 'app.workspace') {
+          $rootScope.showCallNotification();
+        }
 
       });
 
