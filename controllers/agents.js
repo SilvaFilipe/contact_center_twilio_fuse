@@ -374,7 +374,7 @@ module.exports.registeredSipOutboundCall= function (req, res) {
 }
 
 module.exports.extensionInboundCall = function (req, res) {
-  //listener.log_twiml_event(req);
+  // right now only called from SIP to extension (registeredSipOutboundCall)
   setTimeout(function() {
     // workaround to wait for call to be inserted in db, TODO find a better way
     var fromNumber = unescape(req.query.From);
@@ -411,8 +411,30 @@ module.exports.extensionInboundCall = function (req, res) {
           };
           sync.saveList('m' + userToDial._id, mData);
 
-          var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
-          // TODO - Dial a SIP phone with a timeout
+          var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+          if (userToDial.sipURI.length>0){
+            // Dial a SIP phone with a timeout
+            var escaped_twiml = require('querystring').escape(twiml);
+            client.calls.create({
+              url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+              to: 'sip:' + userToDial.sipURI,
+              from: fromNumber,
+              timeout: 14
+            }, function(err, call) {
+              if (err){
+                console.log(err);
+              } else {
+                console.log('created outbound to SIP call ' + call.sid);
+                // insert into db
+                // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+                // var newCall = new Call( Object.assign(dbFields) );
+                // newCall.save(function (err) {
+                //   if(err){ console.log(err);}
+                // });
+              }
+            });
+          }
+
           //var twiml = '<Response><Dial answerOnBridge="true"><Sip>test@kismettest.sip.us1.twilio.com</Sip> </Dial></Response>';
           setTimeout(inboundExtensionCallToVoicemail, 15000, req.query.CallSid);
           res.send(twiml)
@@ -467,8 +489,30 @@ module.exports.didInboundExtensionCall = function (req, res) {
             };
             sync.saveList('m' + userToDial._id, mData);
 
-            var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
-            // TODO - Dial a SIP phone with a timeout
+            var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+
+            if (userToDial.sipURI.length>0){
+              // Dial a SIP phone with a timeout
+              var escaped_twiml = require('querystring').escape(twiml);
+              client.calls.create({
+                url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+                to: 'sip:' + userToDial.sipURI,
+                from: fromNumber,
+                timeout: 14
+              }, function(err, call) {
+                if (err){
+                  console.log(err);
+                } else {
+                  console.log('created outbound to SIP call ' + call.sid);
+                  // insert into db
+                  // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+                  // var newCall = new Call( Object.assign(dbFields) );
+                  // newCall.save(function (err) {
+                  //   if(err){ console.log(err);}
+                  // });
+                }
+              });
+            }
             //var twiml = '<Response><Dial answerOnBridge="true"><Sip>test@kismettest.sip.us1.twilio.com</Sip> </Dial></Response>';
             setTimeout(inboundExtensionCallToVoicemail, 15000, req.query.CallSid);
             res.send(twiml)

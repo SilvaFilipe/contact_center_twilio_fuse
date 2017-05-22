@@ -60,7 +60,7 @@
       <div class="md-list-item-text fl1" layout="column">
         <div class="column-row" layout="row">
           <div class="fl1">
-            <h3 ng-click="$ctrl.makeCall(call)">{{$ctrl.getNumberByDirection(call)}}</h3>
+            <h3 ng-click="$ctrl.makeCall(call)"><a href="#">{{$ctrl.getNumberByDirection(call) | limitTo: 21 }}</a></h3>
             <p>{{$ctrl.getDirection(call)}}</p>
           </div>
           <div class="fl1">
