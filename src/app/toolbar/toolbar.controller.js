@@ -126,6 +126,7 @@
         {
           authService.logout();
           $mdToast.showSimple("You have been logged out");
+          console.log('logout from toolbar');
           $state.go('auth.login');
         }
 

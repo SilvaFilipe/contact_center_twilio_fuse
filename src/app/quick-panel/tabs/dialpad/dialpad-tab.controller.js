@@ -99,6 +99,7 @@
 
             /* session is not valid anymore */
             if (response.status === 403) {
+              alert('session is not valid anymore');
               window.location.replace('/access/login');
             } else {
               alert(JSON.stringify(response));
@@ -231,6 +232,7 @@
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
+          alert('the worker token expired');
           window.location.replace('/access/login');
 
         });

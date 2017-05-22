@@ -31,8 +31,7 @@ module.exports.didSearch = function (req, res) {
   } else {
     client.availablePhoneNumbers(countryCode).local.list({
       areaCode: areaCode,
-      voiceEnabled: true,
-      smsEnabled: true
+      voiceEnabled: true
     }, function(err, data) {
       if (err) {
         console.log(err);

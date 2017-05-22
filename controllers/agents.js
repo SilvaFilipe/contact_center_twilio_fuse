@@ -405,6 +405,8 @@ module.exports.didInboundExtensionCall = function (req, res) {
             sync.saveList('m' + userToDial._id, mData);
 
             var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+            // TODO - Dial a SIP phone with a timeout
+            //var twiml = '<Response><Dial answerOnBridge="true"><Sip>test@kismettest.sip.us1.twilio.com</Sip> </Dial></Response>';
             setTimeout(inboundExtensionCallToVoicemail, 15000, req.query.CallSid);
             res.send(twiml)
           });
