@@ -119,7 +119,6 @@
         $rootScope.workingInterval = $interval(function () {
           $rootScope.currentCall.duration++;
         }, 1000);
-        $rootScope.showCallNotification();
       };
 
       $rootScope.stopWorkingCounter = function () {
@@ -128,7 +127,6 @@
           $interval.cancel($rootScope.workingInterval);
           $rootScope.workingInterval = undefined;
         }
-        $rootScope.showCallNotification();
       };
 
       $rootScope.showCallNotification = function () {
@@ -150,6 +148,15 @@
             }
           });
 
+        }
+        else {
+          msNavigationService.deleteItem('fuse.workspace');
+          msNavigationService.saveItem('fuse.workspace', {
+            title    : 'Workspace',
+            icon     : 'icon-phone',
+            state    : 'app.workspace',
+            weight   : 1
+          });
         }
       };
 

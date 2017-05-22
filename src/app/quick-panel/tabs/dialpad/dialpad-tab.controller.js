@@ -248,6 +248,9 @@
         $rootScope.callTasks.push($rootScope.currentCall);
         $rootScope.stopWorkingCounter();
         $rootScope.startWorkingCounter();
+        if ($state.current.name !== 'app.workspace') {
+          $rootScope.showCallNotification();
+        }
 
       });
 
@@ -267,6 +270,9 @@
         $rootScope.callTasks.push($rootScope.currentCall);
         $rootScope.stopWorkingCounter();
         $rootScope.startWorkingCounter();
+        if ($state.current.name !== 'app.workspace') {
+          $rootScope.showCallNotification();
+        }
 
       });
 
@@ -292,6 +298,9 @@
             $rootScope.startWorkingCounter();
           });
         }
+        if ($state.current.name !== 'app.workspace') {
+          $rootScope.showCallNotification();
+        }
       });
 
       $scope.$on('callStatusChanged', function (event, data) {
@@ -299,6 +308,9 @@
           if (callItem.callSid === data.callSid && !$rootScope.currentCall.isCompleted()) {
             if (callItem.isExtensionCall() && data.callEvent.callStatus === 'Completed') {
               callItem.callStatus = 'completed';
+              if ($state.current.name !== 'app.workspace') {
+                $rootScope.showCallNotification();
+              }
             }
             else {
               callItem.callStatus = (typeof data.callEvent.callStatus !== 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
@@ -315,6 +327,9 @@
           $rootScope.stopWorkingCounter();
           if (Twilio.Device.activeConnection() !== undefined) {
             $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
+          }
+          if ($state.current.name !== 'app.workspace') {
+            $rootScope.showCallNotification();
           }
 
         }
