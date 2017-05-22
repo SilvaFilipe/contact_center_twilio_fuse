@@ -29,21 +29,38 @@ module.exports.didSearch = function (req, res) {
       }
     });
   } else {
-    client.availablePhoneNumbers(countryCode).local.list({
-      areaCode: areaCode,
-      voiceEnabled: true
-    }, function(err, data) {
-      if (err) {
-        console.log(err);
-        res.setHeader('Cache-Control', 'public, max-age=0')
-        res.statusCode = 500;
-        res.send(err)
-      } else {
-        console.log(data);
-        res.setHeader('Cache-Control', 'public, max-age=0')
-        res.send(data.available_phone_numbers)
-      }
-    });
+    if (areaCode) {
+      client.availablePhoneNumbers(countryCode).local.list({
+        areaCode: areaCode,
+        voiceEnabled: true
+      }, function(err, data) {
+        if (err) {
+          console.log(err);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.statusCode = 500;
+          res.send(err)
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send(data.available_phone_numbers)
+        }
+      });
+    }
+    else {
+      client.availablePhoneNumbers(countryCode).local.list({
+        voiceEnabled: true
+      }, function(err, data) {
+        if (err) {
+          console.log(err);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.statusCode = 500;
+          res.send(err)
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send(data.available_phone_numbers)
+        }
+      });
+    }
+
   }
 
 };

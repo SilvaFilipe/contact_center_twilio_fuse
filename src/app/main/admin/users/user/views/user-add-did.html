@@ -21,11 +21,11 @@
           </md-input-container>
           <input type="text" id="country_code" ng-model="countryCode" hidden/>
         </div>
-        <md-radio-group ng-model="isLocal" layout="row">
-          <md-radio-button value="1">Local</md-radio-button>
-          <md-radio-button value="0"> Toll free </md-radio-button>
+        <md-radio-group ng-model="isTollFree" layout="row">
+          <md-radio-button value="0">Local</md-radio-button>
+          <md-radio-button value="1"> Toll free </md-radio-button>
         </md-radio-group>
-        <div layout="row" layout-align="space-between center" ng-show="isLocal === '1'">
+        <div layout="row" layout-align="space-between center" ng-show="isTollFree === '0'">
           <md-input-container class="md-block mr-30" flex-gt-sm>
             <label>Area Code</label>
             <input type="text" name="areaCode" ng-model="areaCode">

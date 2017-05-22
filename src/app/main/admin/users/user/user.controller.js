@@ -172,7 +172,7 @@
     }
 
     function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, $timeout, userId) {
-      $scope.isLocal = '1';
+      $scope.isTollFree = '0';
       $scope.hide = function() {
         $mdDialog.hide();
       };
@@ -180,12 +180,12 @@
         $mdDialog.cancel();
       };
 
-      $scope.searchDid = function(tollFree) {
+      $scope.searchDid = function() {
         $scope.loadingProgress = true;
         if (!angular.isDefined($scope.areaCode)) {
           $scope.areaCode = "";
         }
-        AdminUserService.didSearch($scope.areaCode, $scope.countryCode.toUpperCase(), tollFree).then(function (res) {
+        AdminUserService.didSearch($scope.areaCode, $scope.countryCode.toUpperCase(), $scope.isTollFree).then(function (res) {
           $scope.loadingProgress = false;
           $mdToast.showSimple("Did Searched Successfully.");
           $scope.didSearch = res.data;
@@ -210,22 +210,21 @@
         });
       };
 
-      $scope.$watch('isLocal', function (newValue, oldValue) {
+      $scope.$watch('isTollFree', function (newValue, oldValue) {
         $scope.didSearch = null;
-        if (newValue === '0') {
-          $scope.searchDid(1);
+        if (newValue === '1') {
+          $scope.searchDid();
         }
       });
 
       $scope.$watch('countryCode', function (newValue, oldValue) {
-        if ($scope.isLocal === '0') {
           $scope.didSearch = null;
-          $scope.searchDid(1);
-        }
+          $scope.areaCode = '';
+          $scope.searchDid();
       });
 
       $timeout(function () {
-        $scope.searchDid(0);
+        $scope.searchDid();
       }, 500);
 
     }
