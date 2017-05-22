@@ -353,11 +353,74 @@ module.exports.outboundCall = function (req, res) {
       }
     });
   }
-
-
-
 }
 
+
+module.exports.registeredSipOutboundCall= function (req, res) {
+  listener.log_twiml_event(req);
+  var to = req.query.To; //sip:8583829141@kismettest.sip.us1.twilio.com:5060;user=phone
+  var from = req.query.From; //sip:test@kismettest.sip.us1.twilio.com:5060
+  console.log("outbound SIP call to %s from %s", to, from);
+  var numberToCall = to.split('@')[0].split(":")[1];
+  if (numberToCall.length < 5) {
+    req.query.To = numberToCall;
+    console.log("SIP dialing extension: " + numberToCall);
+    module.exports.extensionInboundCall(req,res);
+  } else {
+    console.log("dialing: " + numberToCall);
+    var twiml = '<Response><Dial>' + numberToCall  + '</Dial></Response>';
+    res.send(twiml)
+  }
+}
+
+module.exports.extensionInboundCall = function (req, res) {
+  //listener.log_twiml_event(req);
+  setTimeout(function() {
+    // workaround to wait for call to be inserted in db, TODO find a better way
+    var fromNumber = unescape(req.query.From);
+    var toNumber = unescape(req.query.To);
+    console.log('inbound call from: %s to %s' + fromNumber, toNumber);
+
+    User.findOne({ extension: toNumber }, function (err, userToDial) {
+      if (err){ return res.status(500).json(err); }
+      if (!userToDial){ return res.status(500).send(fromNumber + ' not found in any users extension') }
+      console.log ('found user ' + userToDial.email)
+      Call.findOne({'callSid': req.query.CallSid}, function (err, call){
+        if (err){
+          return res.status(500).json(err);
+        }
+        if (call==null){
+          console.log('could not find CallSid %s', req.query.CallSid);
+          return res.status(500).json(err);
+        }
+        call.addUserIds([userToDial._id]);
+        call.conferenceFriendlyName=req.query.CallSid;
+        call.save(function (err) {
+          if (err){
+            return res.status(500).json(err);
+          }
+          call.saveSync();
+          // create sync item in userMessages
+          var mData = {type: 'inboundCall',
+            data: {
+              callSid: call.callSid,
+              conferenceFriendlyName: req.query.CallSid,
+              callerName: fromNumber,
+              fromNumber: fromNumber
+            }
+          };
+          sync.saveList('m' + userToDial._id, mData);
+
+          var twiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+          // TODO - Dial a SIP phone with a timeout
+          //var twiml = '<Response><Dial answerOnBridge="true"><Sip>test@kismettest.sip.us1.twilio.com</Sip> </Dial></Response>';
+          setTimeout(inboundExtensionCallToVoicemail, 15000, req.query.CallSid);
+          res.send(twiml)
+        });
+      })
+    });
+  }, 500);
+};
 
 
 module.exports.didInboundExtensionCall = function (req, res) {
@@ -415,6 +478,7 @@ module.exports.didInboundExtensionCall = function (req, res) {
     }
   });
 };
+
 function inboundExtensionCallToVoicemail (callSid) {
   console.log('checking if inboundExtensionCall was answered: ' + callSid);
   Call.findOne({"callSid": callSid}, function (err, call){
