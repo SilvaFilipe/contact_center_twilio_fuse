@@ -101,12 +101,14 @@
           $http.get(apiUrl + 'api/users/me', {withCredentials: true})
             .then(function (response) {
               console.log(response.data);
-              if (response.data.roles.indexOf('admin') > 0) {
+              if (response.data.roles.indexOf('admin') > -1) {
                   isAdmin = true;
                   $window.sessionStorage.setItem('isAdmin', "true");
+                  console.log('set admin true');
               }
               else {
                 $window.sessionStorage.setItem('isAdmin', "false"); //change to false
+                console.log('set admin false');
               }
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};
               var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
