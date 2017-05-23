@@ -52,6 +52,10 @@
                     console.log('time to update history tab');
                     $rootScope.$broadcast('history.reload');
                   }
+                  if (item.value.type === 'call-end' || item.value.type === 'voicemail-transcription-sent'){
+                    console.log('time to update voicemail tab');
+                    $rootScope.$broadcast('voicemail.reload');
+                  }
                   if (item.value.type === 'inboundCall'&& !$rootScope.extensionCallTask) {
                     $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);
