@@ -4,6 +4,7 @@ const Queue = require('../models/queue.model');
 const Call = require('../models/call.model');
 const _ = require('lodash');
 const Promise = require('bluebird');
+const mongoose = require('mongoose');
 //const differenceWith = require('lodash.differencewith');
 const s3 = require('../controllers/s3.js');
 
@@ -186,7 +187,7 @@ module.exports = {
     },
     getVoicemails: function (req, res) {
         var params = {
-          user_ids: req.user_id,
+          user_ids: req.params.user_id,
           mailRecordingUrl: {$exists: true}
         };
 

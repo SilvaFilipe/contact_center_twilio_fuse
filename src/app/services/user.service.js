@@ -6,13 +6,13 @@
   angular.module('app.services').factory('UserService', UserService);
 
   /** @ngInject */
-  function UserService($http, $resource, $q, authService, $rootScope) {
+  function UserService($http, $resource, $q, authService, $rootScope, $window) {
     var apiUrl = $rootScope.apiBaseUrl;
 
     var UserService = {
 
       getCurrentUser: function getCurrentUser() {
-        return authService.loggedInUser || null;
+        return authService.loggedInUser || JSON.parse($window.sessionStore.currentUser) || null;
       },
 
       getAll: function getAll() {
