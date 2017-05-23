@@ -23,7 +23,7 @@ function VoiceMailController($rootScope, $scope, $mdDialog, UserService) {
     $ctrl.loadCalls();
 
     //emit this to reload calls
-    $scope.$on('history.reload', function () {
+    $scope.$on('voicemail.reload', function () {
       $ctrl.resetPagination();
       $ctrl.loadCalls();
     });
