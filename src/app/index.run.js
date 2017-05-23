@@ -149,15 +149,6 @@
           });
 
         }
-        else {
-          msNavigationService.deleteItem('fuse.workspace');
-          msNavigationService.saveItem('fuse.workspace', {
-            title    : 'Workspace',
-            icon     : 'icon-phone',
-            state    : 'app.workspace',
-            weight   : 1
-          });
-        }
       };
 
     }
