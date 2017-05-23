@@ -8,7 +8,8 @@
   /** @ngInject */
   function secsToDurationFilter() {
     return function (seconds) {
-      if(!angular.isNumber(seconds)){
+      seconds = parseFloat(seconds);
+      if(!seconds || !angular.isNumber(seconds)){
         return '00:00';
       }
       var minutes = Math.floor(seconds / 60);

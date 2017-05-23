@@ -65,15 +65,15 @@
           </div>
           <div class="fl1">
             <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
-            <span>Duration: {{ call.duration | secsToDuration }}</span>
+            <span>Duration: {{ call.mailRecordingDuration | secsToDuration }}</span>
             <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)"></md-icon>
           </div>
         </div>
         <div class="column-row">
           <div class="md-list-item-text fl1" ng-click="$ctrl.openRecordingDialog(call)">
 
-            <div ng-if="!!call.transcription">
-              <p class="ellipsis">{{call.transcription | cleanTranscription }}</p>
+            <div ng-if="!!call.mailTranscription">
+              <p class="ellipsis">{{call.mailTranscription | cleanTranscription }}</p>
             </div>
           </div>
         </div>

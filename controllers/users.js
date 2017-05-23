@@ -194,7 +194,7 @@ module.exports = {
         if(req.query.search){
           var re = new RegExp('^.*' + req.query.search + '.*$', 'i');
 
-          params.$or = [{ 'transcription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
+          params.$or = [{ 'mailTranscription': { $regex: re }}, { 'from': { $regex: re }}, { 'to': { $regex: re }}];
         }
         Call.paginate(params, {
           sort: {
