@@ -6,20 +6,28 @@ angular.module('app.components')
       group: '='
     }
   })
-  .directive("fileread", [function () {
+  .directive("fileread", ['$parse', function ($parse) {
     return {
       scope: {
         fileread: "="
       },
       link: function (scope, element, attributes) {
-        element.bind("change", function (changeEvent) {
+        var model = $parse(attributes.fileread);
+        var modelSetter = model.assign;
+
+        element.bind('change', function () {
           scope.$apply(function () {
-            scope.fileread = null;
-          });
-          scope.$apply(function () {
-            scope.fileread = changeEvent.target.files[0];
+            modelSetter(scope, element[0].files[0]);
           });
         });
+        //element.bind("change", function (changeEvent) {
+          //scope.$apply(function () {
+          //  scope.fileread = null;
+          //});
+          //scope.$apply(function () {
+          //  scope.fileread = changeEvent.target.files[0];
+          //});
+        //});
       }
     }
   }])
@@ -86,7 +94,7 @@ angular.module('app.components')
   }]);
 
 /** @ngInject */
-function ContactModalController($log, $scope, $mdDialog, ContactService) {
+function ContactModalController($log, $scope, $mdDialog, ContactService, $q) {
   var $ctrl = this;
 
   $ctrl.showDialog = showDialog;
@@ -127,7 +135,11 @@ function ContactModalController($log, $scope, $mdDialog, ContactService) {
 
         ContactService.create($ctrl.contact)
           .then(function (contact) {
-            return ContactService.uploadAvatar(contact._id, fileObj);
+            if(fileObj){//only proceed to upload when there's an actual avatar set
+              return ContactService.uploadAvatar(contact._id, fileObj);
+            }else{
+              return $q.resolve({success: true, contact: contact});
+            }
           })
           .then(function (response) {
             if(response.success){
@@ -135,8 +147,7 @@ function ContactModalController($log, $scope, $mdDialog, ContactService) {
             }else{
               $mdDialog.cancel(response);
             }
-
-          })
+          });
       };
 
       $scope.closeDialog = function () {
