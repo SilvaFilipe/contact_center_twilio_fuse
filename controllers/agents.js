@@ -367,9 +367,25 @@ module.exports.registeredSipOutboundCall= function (req, res) {
     console.log("SIP dialing extension: " + numberToCall);
     module.exports.extensionInboundCall(req,res);
   } else {
-    console.log("dialing: " + numberToCall);
-    var twiml = '<Response><Dial>' + numberToCall  + '</Dial></Response>';
-    res.send(twiml)
+    console.log("dialing PSTN: " + numberToCall);
+    var sipAddress = from.split(":")[1];
+    User.findOne({ sipURI: sipAddress })
+      .populate('dids')
+      .exec(function (err, userToDial) {
+        if (err) {return res.status(500).json(err);}
+        var callerId=req.configuration.twilio.callerId;
+        if (!userToDial) {
+          console.log("could not find user with sipAddress: " + sipAddress);
+        } else {
+          var did = userToDial.dids[0];
+          if (did!=null){
+            callerId=did.number;
+          }
+        }
+        var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
+        res.send(twiml)
+
+      });
   }
 }
 
