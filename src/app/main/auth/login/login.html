@@ -33,40 +33,36 @@
                     </div>
                 </md-input-container>
 
-                <!--<div class="remember-forgot-password" layout="row" layout-xs="column"-->
-                     <!--layout-align="space-between center">-->
-                    <!--<md-checkbox class="remember-me" ng-model="data.cb1" aria-label="Remember Me">-->
-                        <!--<span translate="LOGIN.REMEMBER_ME">Remember Me</span>-->
-                    <!--</md-checkbox>-->
-
-                    <!--<a ui-sref="app.pages_auth_forgot-password" class="forgot-password md-accent-color"-->
-                       <!--translate="LOGIN.FORGOT_PASSWORD">Forgot Password?</a>-->
-                <!--</div>-->
-
                 <md-button type="submit" class="md-raised md-accent submit-button" aria-label="LOG IN"
                            ng-disabled="loginForm.$invalid || loginForm.$pristine"
                            translate="LOGIN.LOG_IN" translate-attr-aria-label="LOGIN.LOG_IN">
                     LOG IN
                 </md-button>
+
+              <div class="remember-forgot-password">
+                <a ui-sref="auth.forgot-password" class="forgot-password md-accent-color"
+                   translate="LOGIN.FORGOT_PASSWORD">Forgot Password?</a>
+              </div>
+
             </form>
 
-            <div class="separator">
-                <span class="text" translate="LOGIN.OR">OR</span>
-            </div>
+            <!--<div class="separator">-->
+                <!--<span class="text" translate="LOGIN.OR">OR</span>-->
+            <!--</div>-->
 
-            <md-button class="md-raised google">
-                <div layout="row" layout-align="center center">
-                <span>
-                    <md-icon md-font-icon="icon-google-plus" class="s16"></md-icon>
-                    <span translate="LOGIN.WITH_GOOGLE">Log in with Google</span>
-                </span>
-                </div>
-            </md-button>
+            <!--<md-button class="md-raised google">-->
+                <!--<div layout="row" layout-align="center center">-->
+                <!--<span>-->
+                    <!--<md-icon md-font-icon="icon-google-plus" class="s16"></md-icon>-->
+                    <!--<span translate="LOGIN.WITH_GOOGLE">Log in with Google</span>-->
+                <!--</span>-->
+                <!--</div>-->
+            <!--</md-button>-->
 
-            <div class="register" layout="row" layout-sm="column" layout-align="center center">
-                <span class="text" translate="LOGIN.DONT_HAVE_ACCOUNT">Don't have an account?</span>
-                <a class="link" ui-sref="auth.register" translate="LOGIN.CREATE_ACCOUNT">Create an account</a>
-            </div>
+            <!--<div class="register" layout="row" layout-sm="column" layout-align="center center">-->
+                <!--<span class="text" translate="LOGIN.DONT_HAVE_ACCOUNT">Don't have an account?</span>-->
+                <!--<a class="link" ui-sref="auth.register" translate="LOGIN.CREATE_ACCOUNT">Create an account</a>-->
+            <!--</div>-->
         </div>
     </div>
 </div>

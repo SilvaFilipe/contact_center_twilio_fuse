@@ -57,9 +57,41 @@
       bodyClass: 'register'
     });
 
+    $stateProvider.state('auth.forgot-password', {
+      url      : '/forgot-password',
+      views    : {
+        'main@': {
+          templateUrl: 'app/core/layouts/content-only.html',
+          controller : 'MainController as vm'
+        },
+        'content@auth.forgot-password': {
+          templateUrl: 'app/main/auth/forgot-password/forgot-password.html',
+          controller : 'ForgotPasswordController as vm'
+        }
+      },
+      bodyClass: 'forgot-password'
+    });
+
+    $stateProvider.state('auth.reset-password', {
+      url      : '/reset-password/:token',
+      views    : {
+        'main@': {
+          templateUrl: 'app/core/layouts/content-only.html',
+          controller : 'MainController as vm'
+        },
+        'content@auth.reset-password': {
+          templateUrl: 'app/main/auth/reset-password/reset-password.html',
+          controller : 'ResetPasswordController as vm'
+        }
+      },
+      bodyClass: 'reset-password'
+    });
+
     // Translation
     $translatePartialLoaderProvider.addPart('app/main/auth/login');
     $translatePartialLoaderProvider.addPart('app/main/auth/register');
+    $translatePartialLoaderProvider.addPart('app/main/auth/forgot-password');
+    $translatePartialLoaderProvider.addPart('app/main/auth/reset-password');
     $httpProvider.interceptors.push('authInterceptor');
 
   }

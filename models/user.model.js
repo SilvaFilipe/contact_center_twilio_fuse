@@ -45,6 +45,9 @@ var UserSchema = mongoose.Schema({
     sipURI: String,
     forwarding: String,
     skills: [String],
+    /* For reset password */
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     local: {
         email: {
             type: String

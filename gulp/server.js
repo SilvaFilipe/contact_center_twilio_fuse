@@ -57,7 +57,8 @@ gulp.task('serve', ['config', 'watch'], function ()
 {
   browserSyncInit([path.join(conf.paths.tmp, '/serve'), conf.paths.src]);
   nodemon({
-    script: 'app.js'
+    script: 'app.js',
+    env: { 'NODE_ENV': 'development' }
   });
 });
 

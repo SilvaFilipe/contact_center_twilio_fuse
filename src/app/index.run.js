@@ -40,7 +40,7 @@
       // Activate loading indicator
       var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function (e, toState) {
         $rootScope.loadingProgress = true;
-        var isLogin = (toState.name === 'auth.login') || (toState.name === 'auth.register');
+        var isLogin = (toState.name === 'auth.login') || (toState.name === 'auth.register') || (toState.name === 'auth.forgot-password') || (toState.name === 'auth.reset-password');
         if (isLogin) {
           return;
         }
