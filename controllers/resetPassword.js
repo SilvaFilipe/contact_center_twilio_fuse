@@ -65,11 +65,7 @@ module.exports = {
   },
 
   validateResetToken: function (req, res) {
-    if (process.env.NODE_ENV === 'development')
-      var hosturl = process.env.DEVELOPMENT_HOST;
-
-    else
-      var hosturl = process.env.PRODUCTION_HOST;
+    var hosturl = process.env.SITE_URL;
 
     console.log('Reset password GET from email token', req.params.token);
 
