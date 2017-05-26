@@ -89,9 +89,10 @@ module.exports = {
       console.log(file);
       const contactId = req.params.contact_id;
       try {
-        var response = await S3.upload(file);
+        var avatarUrls = await S3.upload(file);
         let contact = await Contact.findById(contactId).exec();
-        contact.avatarUrl = S3.getS3Url(file.originalname);
+        contact.avatarUrls = avatarUrls;
+        contact.avatarUrl = avatarUrls["80"]; //default avatar
         let savedContact = await contact.save();
         return res.status(200).json({
           contact: savedContact,
