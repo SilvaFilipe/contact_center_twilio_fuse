@@ -56,9 +56,6 @@
           <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)">
             Add Did
           </md-button>
-          <md-button class="md-primary md-raised" ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
-            Delete Did
-          </md-button>
         </div>
         <md-list flex>
           <div layout="row" layout-align="space-between center">
@@ -71,6 +68,11 @@
             <md-checkbox class="md-secondary" ng-model="item.userFlag" aria-label="delete did"></md-checkbox>
           </md-list-item>
         </md-list>
+        <div>
+          <md-button class="md-primary md-raised" ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length" style="float: right">
+            Delete Did
+          </md-button>
+        </div>
       </div>
     </div>
 

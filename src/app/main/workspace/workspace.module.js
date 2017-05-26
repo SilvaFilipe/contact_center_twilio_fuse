@@ -36,7 +36,7 @@
 
         // Navigation
         msNavigationServiceProvider.saveItem('fuse', {
-            title : 'Workspace',
+            title : 'Pages',
             group : true,
             weight: 1
         });
