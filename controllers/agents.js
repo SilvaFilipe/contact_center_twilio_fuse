@@ -357,35 +357,42 @@ module.exports.outboundCall = function (req, res) {
 
 
 module.exports.registeredSipOutboundCall= function (req, res) {
+  // termination for registered SIP client
   listener.log_twiml_event(req);
   var to = req.query.To; //sip:8583829141@kismettest.sip.us1.twilio.com:5060;user=phone
   var from = req.query.From; //sip:test@kismettest.sip.us1.twilio.com:5060
   console.log("outbound SIP call to %s from %s", to, from);
+  var callerId=req.configuration.twilio.callerId;
   var numberToCall = to.split('@')[0].split(":")[1];
-  if (numberToCall.length < 5) {
-    req.query.To = numberToCall;
-    console.log("SIP dialing extension: " + numberToCall);
-    module.exports.extensionInboundCall(req,res);
-  } else {
-    console.log("dialing PSTN: " + numberToCall);
-    var sipAddress = from.split(":")[1];
-    User.findOne({ sipURI: sipAddress })
-      .populate('dids')
-      .exec(function (err, userToDial) {
-        if (err) {return res.status(500).json(err);}
-        var callerId=req.configuration.twilio.callerId;
-        if (!userToDial) {
-          console.log("could not find user with sipAddress: " + sipAddress);
-        } else {
-          var did = userToDial.dids[0];
-          if (did!=null){
-            callerId=did.number;
+  try {
+    if (numberToCall.length < 5) {
+      req.query.To = numberToCall;
+      console.log("SIP dialing extension: " + numberToCall);
+      module.exports.extensionInboundCall(req,res);
+    } else {
+      console.log("dialing PSTN: " + numberToCall);
+      var sipAddress = from.split(":")[1];
+      User.findOne({ sipURI: sipAddress })
+        .populate('dids')
+        .exec(function (err, userToDial) {
+          if (err) {return res.status(500).json(err);}
+          if (!userToDial) {
+            console.log("could not find user with sipAddress: " + sipAddress);
+          } else {
+            var did = userToDial.dids[0];
+            if (did!=null){
+              callerId=did.number;
+            }
           }
-        }
-        var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
-        res.send(twiml)
-
-      });
+          var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
+          res.send(twiml)
+        });
+    }  }
+  catch (e) {
+    console.log("*** Error in registeredSipOutboundCall ***");
+    console.log(e);
+    var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
+    res.send(twiml)
   }
 }
 
