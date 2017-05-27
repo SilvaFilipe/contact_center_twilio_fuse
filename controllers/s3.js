@@ -1,9 +1,9 @@
 const fs = require('fs');
 const S3FS = require('s3fs');
-const s3fsImpl = new S3FS('kismet-dev', { //hardcoded for now
-  accessKeyId: "AKIAI4EUIUI65ONERDCA",
-  secretAccessKey: "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",
-  region: 'us-west-2'
+const s3fsImpl = new S3FS(process.env.S3_BUCKET, {
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_KEY,
+  region: process.env.S3_REGION
 });
 const Promise = require('bluebird');
 
@@ -34,5 +34,5 @@ exports.upload = function upload(file) {
 };
 
 exports.getS3Url = function (filename) {
-  return `https://s3-us-west-2.amazonaws.com/kismet-dev/${filename}`
+  return `https://s3-us-west-2.amazonaws.com/${process.env.S3_BUCKET}/${filename}`
 };
