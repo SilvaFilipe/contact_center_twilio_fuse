@@ -58,7 +58,9 @@ var callSchema = mongoose.Schema({
   mailRecordingSid: String,
   mailVoiceBaseMediaId: String,
   mailRecordingDuration: String,
-  created: {type : Date, default : Date.now}
+  created: {type : Date, default : Date.now},
+  sipCallSid: String,
+  sipAnswered: Boolean
 });
 
 callSchema.methods.saveSync = function () {

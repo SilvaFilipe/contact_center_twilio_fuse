@@ -264,6 +264,7 @@
           CallService.getActiveConnSid(function(ActiveConnSid) {
             if ($rootScope.currentCall) {
               $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
+              $http.get(apiUrl + 'api/callControl/hangupSipLeg?caller_sid=' + $rootScope.currentCall.callSid, {withCredentials: true});
               // subscribe to updated events
               $rootScope.syncClient.document('c' + $rootScope.currentCall.callSid )
                 .then(function(doc) {
@@ -279,7 +280,7 @@
 
           $rootScope.stopWorkingCounter();
           $rootScope.startWorkingCounter();
-        }, 1000);
+        }, 500);
 
       };
 

@@ -237,10 +237,7 @@ module.exports.toVoicemail= function (req, res) {
   var twiml = voiceMailTwiml();
   var escaped_twiml = require('querystring').escape(twiml);
 
-  client.calls(caller_sid).update({
-    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
-    method: "GET"
-  }, function(err, call) {
+  module.exports.toVoicemailCallSid(caller_sid, function(err, call) {
     if (err){
       console.log(err);
       res.setHeader('Content-Type', 'application/json')
@@ -256,9 +253,10 @@ module.exports.toVoicemail= function (req, res) {
 }
 
 module.exports.toVoicemailCallSid = function (caller_sid, callback) {
+  // helper function for toVoicemail() and agent controller inboundExtensionCallToVoicemail()
   var twiml = voiceMailTwiml();
   var escaped_twiml = require('querystring').escape(twiml);
-
+  module.exports.hangupSipLeg(caller_sid);
   client.calls(caller_sid).update({
     url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
     method: "GET"
@@ -267,6 +265,34 @@ module.exports.toVoicemailCallSid = function (caller_sid, callback) {
       callback(err, null);
     } else {
       callback(null, call);
+    }
+  });
+}
+
+module.exports.hangupSipLegRequest = function (req, res){
+  module.exports.hangupSipLeg(req.query.caller_sid);
+  res.setHeader('Content-Type', 'application/json')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(JSON.stringify( 'OK' , null, 3))
+}
+
+module.exports.hangupSipLeg = function(callersCallSid){
+  console.log('hanging up SIP leg for ' + callersCallSid);
+  Call.findOne({"callSid":callersCallSid}, function (err, call){
+    if (err){
+      console.log('hangupSipLeg error ' + err);
+    } else {
+      if (call!=null && call.sipCallSid!=null && call.sipCallSid!=undefined){
+        client.calls(call.sipCallSid).update({
+          status: "completed"
+        }, function (err, sipCall) {
+          if (err) {
+            console.log('Could not end SIP call leg: ' + call.sipCallSid);
+          } else {
+            console.log('Disconnected SIP call leg: ' + call.sipCallSid);
+          }
+        });
+      }
     }
   });
 }

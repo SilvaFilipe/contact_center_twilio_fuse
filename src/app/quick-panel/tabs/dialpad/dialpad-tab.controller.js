@@ -56,12 +56,24 @@
                     console.log('time to update voicemail tab');
                     $rootScope.$broadcast('voicemail.reload');
                   }
+
+                  if (item.value.type === 'answeredBySip'){
+                    console.log('sip phone answered call');
+                    $rootScope.callTasks.filter(function (callItem) {
+                      if (callItem.callSid === item.value.data.callSid) {
+                          //callItem.callStatus = 'completed';
+                        callItem.sipAnswered = true;
+                        $log.log('call:' + data.callSid + ' to sipAnswered' + callItem.sipAnswered);
+                      }
+                    });
+                  }
+
                   if (item.value.type === 'inboundCall'&& !$rootScope.extensionCallTask) {
                     $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);
                       audio.play();
                       var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
-                        conferenceName: item.value.data.conferenceFriendlyName};
+                        conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false};
                       $rootScope.extensionCallTask = new ExtensionCall(callParams);
                       $rootScope.startExtensionCounter();
 

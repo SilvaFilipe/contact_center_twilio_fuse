@@ -78,6 +78,7 @@ module.exports = function(app, acl, multer){
     router.route('/callControl/play_ringing').post(callController.play_ringing)
     router.route('/callControl/inbound_ringing').post(callController.inbound_ringing)
     router.route('/callControl/toVoicemail').get(callController.toVoicemail)
+    router.route('/callControl/hangupSipLeg').get(callController.hangupSipLegRequest)
 
     router.route('/sync/write').get(sync.write)
     router.route('/sync/token').get(sync.token)

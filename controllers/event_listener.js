@@ -6,6 +6,7 @@ const Task = require('../models/task.model');
 const Call = require('../models/call.model');
 const User = require('../models/user.model');
 const sync = require('../controllers/sync.js');
+const callcontrol = require('../controllers/call-control.js');
 const twilio = require('twilio');
 const client = new twilio( process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const taskrouterClient = new twilio.TaskRouterClient(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_WORKSPACE_SID)
@@ -49,7 +50,7 @@ module.exports.voicemail_transcription_events= function (req, res) {
                   to: userToMail.email,
                   from: process.env.FROM_EMAIL,
                   subject: 'Voicemail from ' + call2.from,
-                  html: 'Voicemail from ' + call2.from + ': ' + transcriptionText,
+                  html: 'You have a new voicemail from ' + call2.from + '<br /><br />Transcription: ' + transcriptionText,
                   attachments: [
                     {
                       filename: formatted_time + '.mp3',
@@ -284,8 +285,19 @@ module.exports.log_statuscallback_event = function (req, res) {
       console.log ('updating call: ' + callSid);
       Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
         if(err) console.log("Something wrong when updating call: " + err);
-        console.log('updated with TwuML ' + call2.callSid);
+        console.log('updated with TwiML ' + call2.callSid);
         call2.saveSync();
+
+        if (callStatus=='completed' && call2.sipAnswered==true){
+          //hangup sip call
+          callcontrol.hangupSipLeg(callSid);
+          call2.user_ids.map( function(userid) {
+            var mData = {type: 'call-end', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
+            sync.saveList ('m' + userid, mData);
+          });
+
+        }
+
       });
     }
   });
@@ -435,7 +447,7 @@ module.exports.call_events = function (req, res) {
 }
 
 module.exports.conference_events = function (req, res) {
-    console.log('Conference event requested');
+  console.log('Conference event requested');
 
     var conferenceSid = req.body.ConferenceSid;
     var friendlyName = req.body.FriendlyName;
@@ -483,38 +495,31 @@ module.exports.conference_events = function (req, res) {
       });
     }
 
-/*
-  Call.findOne({'conferenceSid': conferenceSid}, function (err, call) {
-    if (call == null){
-      //insert new call
-      console.log ('error, could not find call with conferenceSid ' + conferenceSid);
-    } else {
-      console.log ('updating call: ' + call.callSid);
-      if (call.sequenceNumber == undefined || sequenceNumber > call.sequenceNumber) {
-        Call.findOneAndUpdate({'callSid': call.callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
-          if(err){
-            console.log("Something wrong when updating call: " + err);
+  if (statusCallbackEvent == 'participant-leave'){
+    // if its a call answered by sip, and only 1 participant is left, SIP caller hung up so end the call
+    client.conferences(conferenceSid).participants.list(function(err, data) {
+      if (data.participants.length == 1) {
+        Call.find({'conferenceSid': conferenceSid}, function (err, calls) {
+          if (err) {
+            console.log('error finding by conferenceSid ' + err);
           } else {
-            console.log('updated with correct sequence ' + call2.callSid);
-            call2.saveSync();
-            if (callStatus == 'completed'){
-              call2.user_ids.map( function(userid) {
-                var mData = {type: 'call-end', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
-                sync.saveList ('m' + userid, mData);
-              });
-            }
+            calls.forEach(function (call) {
+              if (call.sipAnswered == true) {
+                client.calls(call.callSid).update({status: "completed"}, function (err, call) {
+                  if (err) {
+                    console.log('Could not end call: ' + callSid);
+                  } else {
+                    console.log('SIP caller hangup so we disconnected: ' + callSid);
+                  }
+                });
+              }
+            });
           }
         });
-      } else {
-        // event received out of sequence, don't update top level properties
-        Call.findOneAndUpdate({'callSid': callSid}, {$push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
-          if(err) console.log("Something wrong when updating call: " + err);
-          console.log('updated out of sequence ' + call2.callSid);
-        });
       }
-    }
-  });
-    */
+    });
+  }
+
   if (statusCallbackEvent == 'participant-join'){
 
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
@@ -537,6 +542,28 @@ module.exports.conference_events = function (req, res) {
             } else {
                 console.log ('Could not find reservation ' + friendlyName + ' to move caller to conference.')
             }
+        });
+
+        Call.findOne({"sipCallSid":callSid}, function (err, call){
+          if (err){
+            console.log("err finding by sipCallSid " + err);
+          } else {
+            if (call!=null){
+              // call answered by a SIP phone, lets send a sync message to web interface to not answer this call
+              call.sipAnswered=true;
+              call.save(function (err, savedCall){
+                if (!err){
+                  savedCall.saveSync();
+                }
+              });
+             var mData = {type: 'answeredBySip',  data: {callSid: call.callSid,} };
+             call.user_ids.forEach(function (userId) {
+               console.log('notified user %s answeredBySip', userId)
+               sync.saveList('m' + userId, mData);
+               }
+             );
+            }
+          }
         });
 
     }

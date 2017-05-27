@@ -77,9 +77,11 @@ module.exports.didPurchase = function (req, res) {
       client.incomingPhoneNumbers.create({
         phoneNumber:phoneNumber,
         voiceUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionCall',
-        smsUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionSms',
         voiceMethod: "GET",
-        smsMethod: "GET"
+        smsUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionSms',
+        smsMethod: "GET",
+        statusCallback: process.env.PUBLIC_HOST + "/listener/log_statuscallback_event",
+        statusCallbackMethod: "POST"
       }, function(buyError, number) {
         if (buyError) {
           console.error('Buying the number failed. Reason: '+ buyError.message);

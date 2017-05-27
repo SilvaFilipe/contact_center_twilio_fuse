@@ -42,7 +42,7 @@ module.exports = {
           to: user.email,
           from: process.env.FROM_EMAIL,
           subject: 'Password Reset',
-          html: '<p>You are receiving this because you have requested the reset of the password for your account.</p>' +
+          html: '<p>You are receiving this because you have requested the reset of the password for your phone system account.</p>' +
           '<p>Please click on the following link, or paste this into your browser to complete the process:</p>' +
           'http://' + req.headers.host + '/api/reset/' + token +
           '<p>If you did not request this, please ignore this email and your password will remain unchanged</p>'
@@ -113,7 +113,7 @@ module.exports = {
           from: process.env.FROM_EMAIL,
           subject: 'Your password has been changed',
           html: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+          'This is a confirmation that the password for your phone system account ' + user.email + ' has just been changed.\n'
         };
 
         mailer.sendMail(email, function(err, response) {
