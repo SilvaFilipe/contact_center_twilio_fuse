@@ -179,7 +179,15 @@ module.exports = {
         limit: 8,
         page: req.params.page ? req.params.page : 1
       }).then(function (calls) {
-          return res.status(200).json(calls);
+        for (var i=0; i<calls.docs.length; i++){
+          var call = calls.docs[i];
+          if (call.direction == 'inbound' && call.to.indexOf("sip:") > -1){
+            call.to = call.to.split('@')[0].split(":")[1];
+            console.log(call.to);
+            call.direction='outbound-sip';
+          }
+        }
+        return res.status(200).json(calls);
       })
       .catch(function (err) {
         if(err) return res.status(500).send(err);

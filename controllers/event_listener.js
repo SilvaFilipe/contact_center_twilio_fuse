@@ -210,6 +210,71 @@ module.exports.recording_events = function (req, res) {
 
 };
 
+
+module.exports.log_statuscallback_event = function (req, res) {
+  console.log('logging statuscallback twiml');
+  var callStatus = req.body.CallStatus;
+  var duration = req.body.CallDuration || 0;
+  var from = req.body.From;
+  var direction = req.body.Direction;
+  var timestamp = req.body.Timestamp;
+  var accountSid = req.body.AccountSid;
+  var fromCountry = req.body.FromCountry;
+  var fromCity = req.body.FromCity;
+  var callSid = req.body.CallSid;
+  var to = req.body.To;
+  var fromZip = req.body.FromZip;
+  var fromState = req.body.FromState;
+  var callerName = req.body.CallerName;
+  var updated_at = new Date();
+
+  var url_parts = url.parse(req.url);
+  var callbackSource = url_parts.pathname;
+
+  var dbFields = { duration: duration, callStatus: callStatus, from: from, direction: direction, timestamp: timestamp, accountSid: accountSid, callbackSource:callbackSource, fromCountry: fromCountry, fromCity: fromCity, callSid: callSid, to: to, fromZip: fromZip, fromState: fromState, updated_at : updated_at, callerName: callerName };
+  var callEvents =  { callStatus: callStatus, callbackSource: callbackSource, timestamp: timestamp, updated_at: updated_at };
+
+  console.log('TwiML event called: ' + callbackSource);
+  Call.findOne({'callSid': callSid}, function (err, call) {
+    if (call == null){
+      //insert new call
+      console.log ('inserting new call: ' + callSid);
+      var newCall = new Call( Object.assign(dbFields, {callEvents: [callEvents]}) );
+      newCall.save(function (err) {
+        if(err){
+          console.log(err);
+          if (err.code && err.code === 11000) {
+            console.log("unique constraint error on call");
+            // try update again
+            Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+              if(err) {
+                console.log("Something wrong when updating call: " + err);
+              } else {
+                console.log('saved call(2) ' + call2.callSid);
+                call2.saveSync();
+              }
+            });
+          }
+        } else {
+          console.log('saved new call');
+          newCall.saveSync();
+        }
+      });
+    } else {
+      console.log ('updating call: ' + callSid);
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": callEvents} }, {new: true}, function(err, call2){
+        if(err) console.log("Something wrong when updating call: " + err);
+        console.log('updated with TwuML ' + call2.callSid);
+        call2.saveSync();
+      });
+    }
+  });
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send("<Response/>")
+}
+
+
 module.exports.log_twiml_event = function (req) {
   console.log('logging twiml event');
   var callStatus = req.query.CallStatus;

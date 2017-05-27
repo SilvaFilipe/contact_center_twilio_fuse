@@ -53,6 +53,8 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
       return call.from;
     } else if (call.direction === 'outbound-api') {
       return call.to;
+    } else if (call.direction === 'outbound-sip') {
+      return call.to;
     } else {
       return call.to + ' - ' + call.from;
     }
@@ -62,6 +64,8 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
     if (call.direction === 'inbound') {
       return 'inbound';
     } else if (call.direction === 'outbound-api') {
+      return 'outbound';
+    } else if (call.direction === 'outbound-sip') {
       return 'outbound';
     }
   };

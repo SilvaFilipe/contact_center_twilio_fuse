@@ -10,5 +10,6 @@ module.exports = function(app){
     router.route('/voicemail_recording_events').get(listener.voicemail_recording_events)
     router.route('/transcription_events').post(listener.transcription_events)
     router.route('/voicemail_transcription_events').post(listener.voicemail_transcription_events)
+    router.route('/log_statuscallback_event').post(listener.log_statuscallback_event)
     app.use('/listener', router)
 }

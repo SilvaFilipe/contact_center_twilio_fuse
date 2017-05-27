@@ -355,6 +355,26 @@ module.exports.outboundCall = function (req, res) {
   }
 }
 
+function addSipUserToCallSid(sipAddress, callSid){
+  console.log('addSipUserToCallSid called %s %s', sipAddress, callSid);
+  User.findOne({ sipURI: sipAddress }, function (err, foundUser) {
+    if (err) {
+      console.log('err finding user by sip address ' + err);
+    } else {
+      if (foundUser!=null){
+        Call.findOne({ callSid: callSid}, function (err, foundCall) {
+          if (foundCall==null) {
+            console.log('could not find call to add user_id: ' + callSid);
+          } else {
+            console.log('found call ' + callSid + ' and adding ' + foundUser._id);
+            foundCall.addUserIds(foundUser._id);
+            foundCall.save();
+          }
+        });
+      }
+    }
+  });
+}
 
 module.exports.registeredSipOutboundCall= function (req, res) {
   // termination for registered SIP client
@@ -364,14 +384,16 @@ module.exports.registeredSipOutboundCall= function (req, res) {
   console.log("outbound SIP call to %s from %s", to, from);
   var callerId=req.configuration.twilio.callerId;
   var numberToCall = to.split('@')[0].split(":")[1];
+
   try {
+    var sipAddress = from.split(":")[1];
+    setTimeout(addSipUserToCallSid, 1000, sipAddress, req.query.CallSid);
     if (numberToCall.length < 5) {
       req.query.To = numberToCall;
       console.log("SIP dialing extension: " + numberToCall);
       module.exports.extensionInboundCall(req,res);
     } else {
       console.log("dialing PSTN: " + numberToCall);
-      var sipAddress = from.split(":")[1];
       User.findOne({ sipURI: sipAddress })
         .populate('dids')
         .exec(function (err, userToDial) {
@@ -384,16 +406,17 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
             }
           }
-          var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
+          var twiml = '<Response><Dial callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
         });
-    }  }
-  catch (e) {
+    }
+  } catch (e) {
     console.log("*** Error in registeredSipOutboundCall ***");
     console.log(e);
-    var twiml = '<Response><Dial callerId="' + callerId + '">' + numberToCall  + '</Dial></Response>';
+    var twiml = '<Response><Dial callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
     res.send(twiml)
   }
+
 }
 
 module.exports.extensionInboundCall = function (req, res) {
