@@ -585,7 +585,7 @@ function inboundExtensionCallToVoicemail (callSid) {
     } else {
       var sendToVm=true;
       call.callEvents.forEach(function (callEvent){
-        if (callEvent.conferenceStatusCallbackEvent=="conference-start"){
+        if (callEvent.conferenceStatusCallbackEvent=="conference-start" || callEvent.conferenceStatusCallbackEvent=="conference-end"){
           sendToVm=false;
         }
       });

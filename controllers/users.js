@@ -183,7 +183,6 @@ module.exports = {
           var call = calls.docs[i];
           if (call.direction == 'inbound' && call.to.indexOf("sip:") > -1){
             call.to = call.to.split('@')[0].split(":")[1];
-            console.log(call.to);
             call.direction='outbound-sip';
           }
         }

@@ -7,15 +7,13 @@ const Call = require('../models/call.model');
 const User = require('../models/user.model');
 const sync = require('../controllers/sync.js');
 const twilio = require('twilio');
-const client = new twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN);
-const taskrouterClient = new twilio.TaskRouterClient(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN,
-    process.env.TWILIO_WORKSPACE_SID)
-
-
+const client = new twilio( process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const taskrouterClient = new twilio.TaskRouterClient(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN, process.env.TWILIO_WORKSPACE_SID)
+const nodemailer = require('nodemailer');
+const sgTransport = require('nodemailer-sendgrid-transport');
+const options = { auth: { api_user: process.env.SENDGRID_USERNAME,  api_key: process.env.SENDGRID_PASSWORD }};
+const mailer = nodemailer.createTransport(sgTransport(options));
+var moment = require('moment');
 
 module.exports.voicemail_transcription_events= function (req, res) {
   console.log('logging voicemail_transcription_events');
@@ -44,6 +42,28 @@ module.exports.voicemail_transcription_events= function (req, res) {
             var mData = {type: 'voicemail-transcription-sent', data: {callSid: callSid, callerName: call2.callerName, fromNumber: call2.from}};
             sync.saveList ('m' + userid, mData);
             // send vm email
+            User.findOne({_id:userid}, function(err, userToMail){
+              if (userToMail!=null){
+                var formatted_time = moment().format('YYYY-MM-DD_HH-mm')
+                var email = {
+                  to: userToMail.email,
+                  from: process.env.FROM_EMAIL,
+                  subject: 'Voicemail from ' + call2.from,
+                  html: 'Voicemail from ' + call2.from + ': ' + transcriptionText,
+                  attachments: [
+                    {
+                      filename: formatted_time + '.mp3',
+                      path: call2.mailRecordingUrl + ".mp3"
+                    }
+                  ]
+                };
+                // todo - attach audio file
+                mailer.sendMail(email, function(err, response) {
+                  if (err) {console.log(err); } else { console.log('sent vm email to ' + userToMail.email)}
+                });
+              }
+            });
+
           });
 
         }

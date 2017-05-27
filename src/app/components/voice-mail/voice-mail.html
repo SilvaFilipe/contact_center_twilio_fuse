@@ -44,7 +44,7 @@
           <div class="md-list-item-text fl1" ng-click="$ctrl.openRecordingDialog(call)">
 
             <div ng-if="!!call.mailTranscription">
-              <p class="ellipsis">{{call.mailTranscription | cleanTranscription }}</p>
+              <p>{{call.mailTranscription | cleanTranscription | limitTo: 195 }}{{call.mailTranscription.length > 195 ? '...' : ''}}</p>
             </div>
           </div>
         </div>

@@ -40,7 +40,7 @@ module.exports = {
 
         var email = {
           to: user.email,
-          from: 'beans@beanserver.net',
+          from: process.env.FROM_EMAIL,
           subject: 'Password Reset',
           html: '<p>You are receiving this because you have requested the reset of the password for your account.</p>' +
           '<p>Please click on the following link, or paste this into your browser to complete the process:</p>' +
@@ -110,7 +110,7 @@ module.exports = {
 
         var email = {
           to: user.email,
-          from: 'beans@beanserver.net',
+          from: process.env.FROM_EMAIL,
           subject: 'Your password has been changed',
           html: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'

@@ -49,13 +49,14 @@ function VoiceMailController($rootScope, $scope, $mdDialog, UserService) {
   };
 
   $ctrl.getNumberByDirection = function (call) {
-    if (call.direction === 'inbound-api') {
-      return call.from;
-    } else if (call.direction === 'outbound-api') {
-      return call.to;
-    } else {
-      return call.to + ' - ' + call.from;
-    }
+    return call.from;
+    // if (call.direction === 'inbound-api') {
+    //   return call.from;
+    // } else if (call.direction === 'outbound-api') {
+    //   return call.to;
+    // } else {
+    //   return call.to + ' - ' + call.from;
+    // }
   };
 
   $ctrl.getDirection = function (call) {
