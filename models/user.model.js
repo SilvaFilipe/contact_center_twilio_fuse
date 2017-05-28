@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const twilio = require('twilio');
-
+const client = new twilio( process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const colors = require('colors');
+const async 	= require('async')
 
 /* client for Twilio TaskRouter */
 const taskrouterClient = new twilio.TaskRouterClient(
@@ -129,6 +130,38 @@ UserSchema.methods.setExtension = function (extNumber) {
   }
 
 }
+
+UserSchema.methods.syncSipCredential = function (){
+  var user = this;
+  client.sip.credentialLists.list(function(err, data) {
+    data.credentialLists.forEach(function(credentialList) {
+      if(credentialList.friendly_name == "CallCenter"){
+
+        client.sip.credentialLists(credentialList.sid).credentials.list(function(err, data) {
+          var credentialSid=null;
+          data.credentials.forEach(function (credential) {
+            if (credential.username == user.friendlyWorkerName){
+              console.log('found credential' + credential.sid);
+              credentialSid = credential.sid;
+            }
+            if (credentialSid == null){
+              client.sip.credentialLists(credentialList.sid).credentials.create({
+                username:  user.friendlyWorkerName,
+                password: "CallCenter99"
+              }, function(err, credential) {
+                if (err){ console.log(err); } else {
+                  console.log("Created credential " + credential.sid);
+                }
+              });
+            }
+          });
+        });
+      }
+    });
+  });
+
+}
+
 
 UserSchema.methods.syncWorker = function () {
     //var user = this;

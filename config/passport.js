@@ -57,6 +57,8 @@ module.exports = function (passport, acl) {
                             savedUser.syncWorker();
                             //give a phone extension
                             savedUser.setExtension();
+                            //give sip account
+                            savedUser.syncSipCredential();
                             //add default roles
                             acl.addUserRoles(savedUser._id.toString(), 'admin', function (err) {
                                 if (err) return authCheckDone(err);
