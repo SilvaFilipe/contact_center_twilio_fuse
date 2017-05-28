@@ -98,6 +98,7 @@ module.exports = function (passport, acl) {
 
           // TODO - remove after worker definitions are done.
           user.syncWorker();
+          user.syncSipCredential();
 
             acl.userRoles(user._id.toString(), function(err, roles){
               req.session.roles = roles;

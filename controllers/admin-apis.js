@@ -6,6 +6,40 @@ const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN)
 
+module.exports.showSipQR = function (req, res) {
+  var email = req.query.email;
+  User.findOne({"email":email}, function(err, user){
+    if (err){return res.status(500).json(err);}
+    user.sipConfigQRCode(function(err, uri){
+      if (err){return res.status(500).json(err);}
+      res.send(`<img src="${uri}"/>`);
+    });
+  });
+}
+
+
+module.exports.showSipInfo = function (req, res) {
+  var email = req.query.email;
+  User.findOne({"email":email}, function(err, user){
+    if (err){return res.status(500).json(err);}
+    user.sipConfigQRCode(function(err, uri){
+      if (err){return res.status(500).json(err);}
+      res.send(`
+
+<p>To use a SIP phone or mobile app, set Sip Address to ${user.friendlyWorkerName}@${process.env.SIP_DOMAIN}.sip.us1.twilio.com</p>
+<table><tr>
+<td>Mobile App Installation</td>
+<td><a href="https://play.google.com/store/apps/details?id=com.grandstream.wave" target="_blank"><img alt="Download Grandstream Wave" src="http://www.grandstream.com/sites/default/files/googleplay.png" style="height:35px; width:100px" title="Download Grandstream Wave"></a></td>
+<td><a href="https://itunes.apple.com/us/app/grandstream-wave/id1029274043?ls=1&amp;mt=8" target="_blank"><img alt="Grandstream Wave iOS" src="http://www.grandstream.com/sites/default/files/apple_App_Store_Badge.png" style="height:35px; width:120px" title="Grandstream Wave iOS"></a></td>
+</tr></table>
+</p>
+<p>To configure mobile app, choose: "Settings", "Account Settings", "+", "Scan QR Code"</p>
+<p>After scanning code below, touch "Add New Account"</p>
+<img src="${uri}"/>
+`);
+    });
+  });
+}
 
 module.exports.didSearch = function (req, res) {
   var areaCode = req.query.areacode;

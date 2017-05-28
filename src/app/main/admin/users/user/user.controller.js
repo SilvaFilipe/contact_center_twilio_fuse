@@ -7,7 +7,7 @@
     .controller('AdminUserController', AdminUserController);
 
   /** @ngInject */
-  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog, ContactService)
+  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog, ContactService, $rootScope,  $http)
   {
     var vm = this;
     vm.roles = ['phone', 'contact_center', 'admin'];
@@ -154,6 +154,44 @@
     function roleExists (item, list) {
       return list.indexOf(item) > -1;
     }
+
+    $scope.showSipHelpDialog = function(ev) {
+      var apiUrl = $rootScope.apiBaseUrl;
+      $http.get(apiUrl + 'api/admin/showSipInfo?email=' + vm.user.email, {withCredentials: true}).then(function(response) {
+        $mdDialog.show({
+          targetEvent: ev,
+          template:
+          '<md-dialog>' +
+          '  <md-dialog-content>' + response.data + '</md-dialog-content>' +
+          // '  <md-dialog-actions>' +
+          // '    <md-button ng-click="$mdDialog.hide()" class="md-primary">' +
+          // '      Close' +
+          // '    </md-button>' +
+          // '  </md-dialog-actions>' +
+          '</md-dialog>',
+          clickOutsideToClose: true,
+          escapeToClose: true
+        });
+        // $mdDialog.show(
+        //   $mdDialog.alert()
+        //     .parent(angular.element(document.querySelector('#popupContainer')))
+        //     .clickOutsideToClose(true)
+        //     .title('This is an alert title')
+        //     .textContent('You can specify some description text in here.')
+        //     .ariaLabel('Alert Dialog Demo')
+        //     .ok('Got it!')
+        //     .targetEvent(ev)
+        //);
+        console.log(response.data);
+      });
+
+    };
+
+    $scope.closeDialog = function() {
+      // Easily hides most recent dialog shown...
+      // no specific instance reference is needed.
+      $mdDialog.hide();
+    };
 
     function openAddDidDialog (ev) {
       $mdDialog.show({

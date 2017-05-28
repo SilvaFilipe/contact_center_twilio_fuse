@@ -81,10 +81,34 @@ UserSchema.methods.validPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-
 UserSchema.virtual('fullName').get(function () {
   return this.firstName + " " + this.lastName
 });
+
+UserSchema.methods.sipConfigQRCode = (function (callback) {
+  var QRCode = require('qrcode');
+  var user = this;
+  var xml = `<?xml version="1.0" encoding="utf-8"?>
+    <AccountConfig version="1">
+    <Account>
+    <RegisterServer>${process.env.SIP_DOMAIN}.sip.us1.twilio.com</RegisterServer>
+    <UserID>${user.friendlyWorkerName}</UserID>
+    <AuthID>${user.friendlyWorkerName}</AuthID>
+    <AuthPass>CallCenter99</AuthPass>
+    <AccountName>Kismet</AccountName>
+    <DisplayName>${user.friendlyWorkerName}</DisplayName>
+    </Account>
+    </AccountConfig>`;
+
+  QRCode.toDataURL(xml, function (err, url) {
+    if (err){
+      callback(err);
+    } else {
+      callback(null, url);
+    }
+  })
+});
+
 
 UserSchema.methods.setExtension = function (extNumber) {
   var user = this;
@@ -132,36 +156,39 @@ UserSchema.methods.setExtension = function (extNumber) {
 }
 
 UserSchema.methods.syncSipCredential = function (){
+  console.log('syncSipCredential called');
   var user = this;
   client.sip.credentialLists.list(function(err, data) {
     data.credentialLists.forEach(function(credentialList) {
       if(credentialList.friendly_name == "CallCenter"){
-
-        client.sip.credentialLists(credentialList.sid).credentials.list(function(err, data) {
+        console.log("Found credential list "+ credentialList.sid);
+        client.sip.credentialLists(credentialList.sid).credentials.list(function(err, credentialData) {
           var credentialSid=null;
-          data.credentials.forEach(function (credential) {
-            if (credential.username == user.friendlyWorkerName){
+          console.log('showing credentials for ' + credentialList.friendly_name)
+          credentialData.credentials.forEach(function (credential) {
+            if (credential.username == user.friendlyWorkerName) {
               console.log('found credential' + credential.sid);
               credentialSid = credential.sid;
             }
-            if (credentialSid == null){
-              client.sip.credentialLists(credentialList.sid).credentials.create({
-                username:  user.friendlyWorkerName,
-                password: "CallCenter99"
-              }, function(err, credential) {
-                if (err){ console.log(err); } else {
-                  console.log("Created credential " + credential.sid);
-                }
-              });
-            }
           });
+          console.log("credentialSid  is " + credentialSid );
+          if (credentialSid == null){
+            console.log('creating new credential');
+            client.sip.credentialLists(credentialList.sid).credentials.create({
+              username:  user.friendlyWorkerName,
+              password: "CallCenter99"
+            }, function(err, credential) {
+              if (err){ console.log(err); } else {
+                console.log("Created credential " + credential.sid);
+              }
+            });
+          }
         });
       }
     });
   });
 
 }
-
 
 UserSchema.methods.syncWorker = function () {
     //var user = this;

@@ -17,7 +17,7 @@
             <input type="text" ng-model="vm.user.forwarding">
           </md-input-container>
           <md-input-container class="md-block">
-            <label>SipURI</label>
+            <label>Sip Address</label>
             <input type="text" ng-model="vm.user.sipURI">
           </md-input-container>
           <md-switch ng-model="vm.user.hasVoicemail" aria-label="hasVoicemail" name="hasVoicemail">
@@ -75,6 +75,12 @@
         </div>
       </div>
     </div>
+    <div flex="20">
+      <md-button ng-click="showSipHelpDialog($event)">
+        Mobile/SIP Info
+    </md-button>
+    </div>
+
 
   </div>
 
