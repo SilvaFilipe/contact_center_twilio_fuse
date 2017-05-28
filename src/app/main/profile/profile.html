@@ -1,0 +1,287 @@
+<div id="admin-user" class="page-layout simple tabbed" layout="column">
+
+  <!-- HEADER -->
+  <div class="header md-accent-bg" layout="row" layout-align="start center">
+    <div class="white-fg" layout="row" layout-align="start center" flex>
+
+      <div layout="row" layout-align="start center">
+        <div class="product-image" hide-xs ng-show="vm.user._id">
+          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
+        </div>
+
+        <div layout="column" layout-align="start start">
+          <div class="h2">
+            {{vm.user.firstName}} {{vm.user.lastName}}
+          </div>
+          <div class="subtitle secondary-text">
+            <span>User Detail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <md-button class="md-raised md-background" ng-click="vm.saveUser()"
+                 ng-disabled="!vm.isFormValid('productForm')">
+        <span>SAVE</span>
+      </md-button>
+    </div>
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <md-tabs md-dynamic-height>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Basic Info</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+            <form id="productForm" name="productForm">
+              <md-input-container class="md-block">
+                <label>First Name</label>
+                <input type="text" ng-model="vm.user.firstName" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Last Name</label>
+                <input type="text" ng-model="vm.user.lastName" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Phone</label>
+                <input type="text" ng-model="vm.user.phone">
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Email</label>
+                <input type="email" ng-model="vm.user.email" required>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Password</label>
+                <input type="password" ng-model="vm.user.password" name="new_pwd" ng-pattern="vm.confirmPassword|escapeRegex" required>
+                <div ng-messages="productForm.new_pwd.$error">
+                  <div ng-message="pattern">Password different</div>
+                </div>
+              </md-input-container>
+              <md-input-container class="md-block">
+                <label>Confirm Password</label>
+                <input type="password" ng-model="vm.confirmPassword" name="confirm_pwd" ng-pattern="vm.user.password|escapeRegex" required>
+                <div ng-messages="productForm.confirm_pwd.$error">
+                  <div ng-message="pattern">Password different</div>
+                </div>
+              </md-input-container>
+
+            </form>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Profile</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <md-content class="about-tab">
+            <div class="profile_tab" layout="row" layout-wrap>
+
+              <div class="about" flex="100" flex-gt-sm="55" flex-gt-md="55">
+                <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
+                  <header class="md-accent-bg">
+                    <div class="title">General Information</div>
+                  </header>
+
+                  <div class="content">
+                    <form id="profile_form" name="profile_form">
+                      <md-input-container class="md-block">
+                        <label>Extension</label>
+                        <input type="text" ng-model="vm.user.extension">
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Forwarding Number</label>
+                        <input type="text" ng-model="vm.user.forwarding">
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Sip Address</label>
+                        <input type="text" ng-model="vm.user.sipURI">
+                      </md-input-container>
+                    </form>
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="about-sidebar" layout="column" flex="100" flex-gt-sm="45" flex-gt-md="45">
+                <div class="profile-box md-whiteframe-1dp" layout="column" ng-show="vm.user.hasDid">
+                  <header class="md-accent-bg" layout="row" layout-align="space-between center">
+                    <div class="title">User Dids
+                    </div>
+                  </header>
+                  <div class="content" layout="column" layout-wrap>
+                    <md-list flex>
+                      <div layout="row" layout-align="space-between center">
+                        <md-subheader class="md-no-sticky" ng-hide="vm.user.dids.length">User has no dids</md-subheader>
+                        <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length">Did List</md-subheader>
+                      </div>
+                      <md-list-item ng-repeat="item in vm.user.dids" ng-click="false">
+                        <span style="z-index:10000;user-select:text;cursor:text"> {{item.number}} </span>
+                      </md-list-item>
+                    </md-list>
+                  </div>
+                </div>
+                <div>
+                  <md-button ng-click="showSipHelpDialog($event)">
+                    Mobile/SIP Info
+                  </md-button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </md-content>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Skills</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <h3 class="tags secondary-text">Skills</h3>
+            <md-chips ng-model="vm.user.skills" readonly="true" >
+            </md-chips>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Queues</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                   dt-options="vm.dtOptions">
+              <thead>
+              <tr>
+                <th class="secondary-text">
+                  <div class="table-header">
+                    <span class="column-title">Name</span>
+                  </div>
+                </th>
+                <th class="secondary-text actions">
+                  <div class="table-header">
+                    <span class="column-title">Description</span>
+                  </div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="queue in vm.user.queues">
+                <td>{{queue.name}}</td>
+                <td class="actions">{{queue.description}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Groups</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                   dt-options="vm.dtOptions">
+              <thead>
+              <tr>
+                <th class="secondary-text">
+                  <div class="table-header">
+                    <span class="column-title">Name</span>
+                  </div>
+                </th>
+                <th class="secondary-text actions">
+                  <div class="table-header">
+                    <span class="column-title">Description</span>
+                  </div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="group in vm.user.groups">
+                <td>{{group.name}}</td>
+                <td class="actions">{{group.description}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Contacts</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+              <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+                <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+                       dt-options="vm.dtOptions">
+                  <thead>
+                  <tr>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Avatar</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Name</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Phone</span>
+                      </div>
+                    </th>
+                    <th class="secondary-text">
+                      <div class="table-header">
+                        <span class="column-title">Description</span>
+                      </div>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="contact in vm.user.contacts">
+                    <td><img ng-src="{{contact.avatarUrl}}"></td>
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.phone}}</td>
+                    <td>{{contact.description}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <contact-modal></contact-modal>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+    </md-tabs>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

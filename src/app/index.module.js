@@ -37,6 +37,7 @@
             'app.auth',
             'app.config',
             'app.admin',
+            'app.profile',
             'datatables',
             'ngAvatar'
 
