@@ -26,7 +26,7 @@
       title    : 'Profile',
       icon     : 'icon-cog',
       state    : 'app.profile',
-      weight   : 1
+      weight   : 2
     });
   }
 })();

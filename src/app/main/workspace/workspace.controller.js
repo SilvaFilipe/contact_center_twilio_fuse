@@ -16,12 +16,20 @@
         $mdSidenav(sidenavId).toggle();
       };
 
+      // reload navigation tabs
       msNavigationService.deleteItem('fuse.workspace');
+      msNavigationService.deleteItem('fuse.profile');
       msNavigationService.saveItem('fuse.workspace', {
         title    : 'Workspace',
         icon     : 'icon-phone',
         state    : 'app.workspace',
         weight   : 1
+      });
+      msNavigationService.saveItem('fuse.profile', {
+        title    : 'Profile',
+        icon     : 'icon-cog',
+        state    : 'app.profile',
+        weight   : 2
       });
 
 

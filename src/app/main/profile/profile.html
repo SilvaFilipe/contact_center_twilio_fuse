@@ -98,7 +98,7 @@
                     <form id="profile_form" name="profile_form">
                       <md-input-container class="md-block">
                         <label>Extension</label>
-                        <input type="text" ng-model="vm.user.extension">
+                        <input type="text" ng-model="vm.user.extension" disabled>
                       </md-input-container>
                       <md-input-container class="md-block">
                         <label>Forwarding Number</label>
@@ -115,21 +115,33 @@
 
               </div>
               <div class="about-sidebar" layout="column" flex="100" flex-gt-sm="45" flex-gt-md="45">
-                <div class="profile-box md-whiteframe-1dp" layout="column" ng-show="vm.user.hasDid">
+                <div class="profile-box md-whiteframe-1dp" layout="column">
                   <header class="md-accent-bg" layout="row" layout-align="space-between center">
                     <div class="title">User Dids
                     </div>
                   </header>
                   <div class="content" layout="column" layout-wrap>
+                    <div>
+                      <md-button class="md-primary md-raised" ng-click="vm.openAddDidDialog($event)" ng-show="vm.user.hasDid">
+                        Add Did
+                      </md-button>
+                    </div>
                     <md-list flex>
                       <div layout="row" layout-align="space-between center">
                         <md-subheader class="md-no-sticky" ng-hide="vm.user.dids.length">User has no dids</md-subheader>
                         <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length">Did List</md-subheader>
+                        <md-subheader class="md-no-sticky" ng-show="vm.user.dids.length && vm.user.hasDid"> Remove from Dids? </md-subheader>
                       </div>
                       <md-list-item ng-repeat="item in vm.user.dids" ng-click="false">
                         <span style="z-index:10000;user-select:text;cursor:text"> {{item.number}} </span>
+                        <md-checkbox class="md-secondary" ng-show="vm.user.hasDid" ng-model="item.userFlag" aria-label="delete did"></md-checkbox>
                       </md-list-item>
                     </md-list>
+                    <div>
+                        <md-button class="md-primary md-raised" ng-click="vm.openDeleteDidDialog($event)" ng-show="vm.user.hasDid" ng-disabled="!vm.removingDids.length" style="float: right">
+                        Delete Did
+                      </md-button>
+                    </div>
                   </div>
                 </div>
                 <div>
