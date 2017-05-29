@@ -60,6 +60,7 @@ module.exports = function(app, acl, multer){
     router.route('/admin/didDelete/:user_id').post(adminController.didDelete);
     router.route('/admin/showSipQR').get(adminController.showSipQR);
     router.route('/admin/showSipInfo').get(adminController.showSipInfo);
+    router.route('/admin/setVoicemailGreeting').get(adminController.recordVoicemailGreetingCall)
 
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/select-team').get(ivr.selectTeam)

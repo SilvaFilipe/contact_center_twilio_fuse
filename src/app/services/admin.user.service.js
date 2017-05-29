@@ -130,12 +130,12 @@
 
     function setVoiceMailGreeting (user_id, phoneNumber) {
       var deferred = $q.defer();
-      // $http.post(apiUrl + 'api/agent/setVoicemailGreeting?userId=' + user_id + '&number=' + phoneNumber, {withCredentials: true})
-      //   .then(function (response) {
-      //     deferred.resolve(response);
-      //   }, function (err) {
-      //     deferred.reject(err);
-      //   });
+      $http.get(apiUrl + 'api/admin/setVoicemailGreeting?userId=' + user_id + '&number=' + phoneNumber, {withCredentials: true})
+        .then(function (response) {
+          deferred.resolve(response);
+        }, function (err) {
+          deferred.reject(err);
+        });
 
       // replace above code when backend api is ready
       $timeout( function(){

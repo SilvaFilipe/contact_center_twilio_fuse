@@ -2,6 +2,7 @@
 
 const twilio = require('twilio')
 const Call = require('../models/call.model');
+const User = require('../models/user.model');
 
 /* client for Twilio TaskRouter
  const taskrouterClient = new twilio.TaskRouterClient(
@@ -361,3 +362,25 @@ module.exports.playRecording = function (req, res) {
   }
 }
 
+
+module.exports.getCallSidVMGreeting = function (caller_sid, callback) {
+  var vmDefaultUrl=process.env.PUBLIC_HOST + '/sounds/leave_message.wav';
+  console.log('getting greeting for ' + caller_sid);
+  Call.findOne({"callSid":caller_sid}).populate('user_ids').exec(function (err, call) {
+      if (err || call == null) {
+        console.log(err);
+        callback(null, vmDefaultUrl);
+      } else {
+        if (call.user_ids.length==0){
+          callback(null, vmDefaultUrl);
+        } else {
+          var callUser = call.user_ids[call.user_ids.length-1];
+          if (callUser.mailGreetingUrl == undefined || callUser.mailGreetingUrl==null){
+            callback(null, vmDefaultUrl);
+          } else {
+            callback(null, callUser.mailGreetingUrl)
+          }
+        }
+      }
+    });
+}

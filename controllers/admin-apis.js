@@ -185,4 +185,57 @@ module.exports.didDelete = function (req, res) {
   });
 };
 
+module.exports.recordVoicemailGreetingCall = function (req,res){
+  var number = req.query.number;
+  var retry = req.query.retry;
+  var userId = req.query.userId;
+  var recording = req.query.RecordingUrl;
+
+  if (number){
+    //var twiml = '<Response><Say voice="alice">Hello.  At the beep, please record your new voicemail greeting.  Press star when youre done.  Lets get started.</Say><Record action="' + process.env.PUBLIC_HOST + '/api/admin/setVoicemailGreeting?userId=' + userId + '" method="GET" maxLength="60" finishOnKey="*"  />  <Say>Sorry, I did not receive a recording.</Say></Response>';
+    var twiml = '<Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/voicemail/hello_record_at_beep.mp3</Play><Record action="' + process.env.PUBLIC_HOST + '/api/admin/setVoicemailGreeting?userId=' + userId + '" method="GET" maxLength="60" finishOnKey="*"  />  <Say>Sorry, I did not receive a recording.</Say></Response>';
+    var escaped_twiml = require('querystring').escape(twiml);
+    client.calls.create({
+      url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+      method: "GET",
+      to: number,
+      from: req.configuration.twilio.callerId,
+    }, function(err, call) {
+      if (err){
+        console.log(err);
+        return res.status(500).json('Sorry we could not call that number.  Please try again');
+      } else {
+        console.log ("calling phone %s for voicemail", number);
+        res.send(JSON.stringify( 'A call to record your voice mail greeting is on the way.' , null, 3))
+      }
+    });
+  } else if (retry){
+    //var twiml = '<Response><Say voice="alice">Hello.  At the beep, please record your new voicemail greeting.  Press star when youre done.  Lets get started.</Say><Record action="' + process.env.PUBLIC_HOST + '/api/admin/setVoicemailGreeting?userId=' + userId + '" method="GET" maxLength="60" finishOnKey="*"  />  <Say voice="alice">Sorry, I did not receive a recording.</Say></Response>';
+    var twiml = '<Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/voicemail/hello_record_at_beep.mp3</Play><Record action="' + process.env.PUBLIC_HOST + '/api/admin/setVoicemailGreeting?userId=' + userId + '" method="GET" maxLength="60" finishOnKey="*"  />  <Say voice="alice">Sorry, I did not receive a recording.</Say></Response>';
+    res.send(twiml)
+  } else if (recording){
+    User.findOne({"_id":userId}, function (err, user){
+      if (err || user == null){
+        console.log(err);
+        var twiml = '<Response><Say>Sorry, an error occurred saving your voicemail.</Say></Response>';
+        res.send(twiml)
+      } else {
+        console.log ("saving voicemail for %s", user.email);
+        user.mailGreetingUrl=recording;
+        user.save(function (err) {
+          if(err){
+            console.log(err);
+            var twiml = '<Response><Say>Sorry, an error occurred saving your voicemail.</Say></Response>';
+            res.send(twiml)
+          } else {
+            var twiml = '<Response><Gather action="' +  process.env.PUBLIC_HOST + '/api/admin/setVoicemailGreeting?retry=1&amp;userId=' + userId +'" method="GET"><Play>' + process.env.PUBLIC_HOST  + '/sounds/voicemail/received_recording.mp3</Play><Play>' + process.env.PUBLIC_HOST  + '/sounds/voicemail/hangup_if_satisifed_or_star_to_record_again.mp3</Play><Play>' + recording + '</Play><Play>' + process.env.PUBLIC_HOST  + '/sounds/voicemail/hangup_if_satisifed_or_star_to_record_again.mp3</Play></Gather><Say voice="alice">Your greeting has been set. Goodbye!</Say></Response>';
+            res.send(twiml)
+          }
+        })
+      }
+    });
+  }
+
+}
+
 
