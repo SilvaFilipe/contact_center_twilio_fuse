@@ -240,9 +240,6 @@ module.exports.muteOff = function (req, res) {
 
 module.exports.toVoicemail= function (req, res) {
   var caller_sid = req.query.callSid;
-  var twiml = voiceMailTwiml();
-  var escaped_twiml = require('querystring').escape(twiml);
-
   module.exports.toVoicemailCallSid(caller_sid, function(err, call) {
     if (err){
       console.log(err);
@@ -260,18 +257,20 @@ module.exports.toVoicemail= function (req, res) {
 
 module.exports.toVoicemailCallSid = function (caller_sid, callback) {
   // helper function for toVoicemail() and agent controller inboundExtensionCallToVoicemail()
-  var twiml = voiceMailTwiml();
-  var escaped_twiml = require('querystring').escape(twiml);
-  module.exports.hangupSipLeg(caller_sid);
-  client.calls(caller_sid).update({
-    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
-    method: "GET"
-  }, function(err, call) {
-    if (err){
-      callback(err, null);
-    } else {
-      callback(null, call);
-    }
+  voiceMailTwiml(caller_sid, function (err, twiml){
+    console.log('got twiml' + twiml);
+    var escaped_twiml = require('querystring').escape(twiml);
+    module.exports.hangupSipLeg(caller_sid);
+    client.calls(caller_sid).update({
+      url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+      method: "GET"
+    }, function(err, call) {
+      if (err){
+        callback(err, null);
+      } else {
+        callback(null, call);
+      }
+    });
   });
 }
 
@@ -303,9 +302,11 @@ module.exports.hangupSipLeg = function(callersCallSid){
   });
 }
 
-function voiceMailTwiml(){
-  var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + process.env.PUBLIC_HOST  + '/sounds/leave_message.wav</Play><Record recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/voicemail_recording_events" recordingStatusCallbackMethod="GET" action="' + process.env.PUBLIC_HOST + '/api/callControl/hangup" method="GET" maxLength="300" finishOnKey="*"/></Response>';
-  return twiml;
+function voiceMailTwiml(caller_sid, callback){
+  module.exports.getCallSidVMGreeting(caller_sid, function(err, greetingUrl){
+    var twiml = '<?xml version="1.0" encoding="UTF-8"?> <Response><Play>' + greetingUrl+ '</Play><Record recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/voicemail_recording_events" recordingStatusCallbackMethod="GET" action="' + process.env.PUBLIC_HOST + '/api/callControl/hangup" method="GET" maxLength="300" finishOnKey="*"/></Response>';
+    callback(null,twiml);
+  });
 }
 
 module.exports.playRecording = function (req, res) {
@@ -365,7 +366,7 @@ module.exports.playRecording = function (req, res) {
 
 module.exports.getCallSidVMGreeting = function (caller_sid, callback) {
   var vmDefaultUrl=process.env.PUBLIC_HOST + '/sounds/leave_message.wav';
-  console.log('getting greeting for ' + caller_sid);
+  console.log('greeting for ' + caller_sid);
   Call.findOne({"callSid":caller_sid}).populate('user_ids').exec(function (err, call) {
       if (err || call == null) {
         console.log(err);
