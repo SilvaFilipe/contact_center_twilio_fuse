@@ -49,6 +49,7 @@ var UserSchema = mongoose.Schema({
     /* For reset password */
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    mailGreetingUrl: String,
     local: {
         email: {
             type: String

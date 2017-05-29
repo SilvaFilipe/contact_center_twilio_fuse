@@ -75,7 +75,6 @@
     vm.saveUser = saveUser;
     vm.roleToggle = roleToggle;
     vm.roleExists = roleExists;
-    vm.openAddDidDialog = openAddDidDialog;
     vm.openDeleteDidDialog = openDeleteDidDialog;
 
     /**
@@ -192,80 +191,6 @@
       // no specific instance reference is needed.
       $mdDialog.hide();
     };
-
-    function openAddDidDialog (ev) {
-      $mdDialog.show({
-        controller: DidDialogController,
-        templateUrl: 'app/main/admin/users/user/views/user-add-did.html',
-        parent: angular.element(document.body),
-        targetEvent: ev,
-        clickOutsideToClose:true,
-        locals:{userId: vm.user._id},
-      })
-        .then(function(did) {
-          vm.user.dids.push(did);
-        }, function() {
-          $scope.status = 'You cancelled the dialog.';
-        });
-    }
-
-    function DidDialogController($scope, $mdDialog, AdminUserService, $mdToast, $timeout, userId) {
-      $scope.isTollFree = '0';
-      $scope.hide = function() {
-        $mdDialog.hide();
-      };
-      $scope.cancel = function() {
-        $mdDialog.cancel();
-      };
-
-      $scope.searchDid = function() {
-        $scope.loadingProgress = true;
-        if (!angular.isDefined($scope.areaCode)) {
-          $scope.areaCode = "";
-        }
-        AdminUserService.didSearch($scope.areaCode, $scope.countryCode.toUpperCase(), $scope.isTollFree).then(function (res) {
-          $scope.loadingProgress = false;
-          $mdToast.showSimple("Did Searched Successfully.");
-          $scope.didSearch = res.data;
-        }, function (err) {
-          $scope.loadingProgress = false;
-          console.log(err);
-          $mdToast.showSimple('Internal Server Error.');
-        });
-      };
-
-      $scope.purchaseDid = function () {
-        $scope.loadingProgress = true;
-        var data = {phoneNumber: $scope.selectedDid, userId: userId};
-        AdminUserService.didPurchase(data).then(function (res) {
-          $scope.loadingProgress = false;
-          $mdToast.showSimple("Did Purcharsed Successfully.");
-          $mdDialog.hide(res.data);
-        }, function (err) {
-          $scope.loadingProgress = false;
-          console.log(err);
-          $mdToast.showSimple(err.data);
-        });
-      };
-
-      $scope.$watch('isTollFree', function (newValue, oldValue) {
-        $scope.didSearch = null;
-        if (newValue === '1') {
-          $scope.searchDid();
-        }
-      });
-
-      $scope.$watch('countryCode', function (newValue, oldValue) {
-          $scope.didSearch = null;
-          $scope.areaCode = '';
-          $scope.searchDid();
-      });
-
-      $timeout(function () {
-        $scope.searchDid();
-      }, 500);
-
-    }
 
     function openDeleteDidDialog (ev) {
       // Appending dialog to document.body to cover sidenav in docs app
