@@ -288,7 +288,7 @@ module.exports.log_statuscallback_event = function (req, res) {
         console.log('updated with TwiML ' + call2.callSid);
         call2.saveSync();
 
-        if (callStatus=='completed' && call2.sipAnswered==true){
+        if (callStatus=='completed'){
           //hangup sip call
           callcontrol.hangupSipLeg(callSid);
           call2.user_ids.map( function(userid) {
