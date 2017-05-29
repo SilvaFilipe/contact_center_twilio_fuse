@@ -31,6 +31,13 @@
         });
       }, true);
       vm.confirmPassword = vm.user.password;
+      if (angular.isDefined(vm.user.mailGreetingUrl) && vm.user.mailGreetingUrl)
+        vm.mailGreetingUrl = vm.user.mailGreetingUrl;
+      else {
+        $http.post(apiUrl + 'api/callControl/leave_message').then(function(res) {
+          vm.mailGreetingUrl = res.data;
+        });
+      }
 
       activate();
 
@@ -51,6 +58,7 @@
     vm.isFormValid = isFormValid;
     vm.saveUser = saveUser;
     vm.openDeleteDidDialog = openDeleteDidDialog;
+    vm.setVoicemailGreeting = setVoicemailGreeting;
 
     vm.dtOptions = {
       dom       : 'rt<"bottom"<"left"<"length"l>><"right"<"info"i><"pagination"p>>>',
@@ -154,6 +162,27 @@
         });
       }, function() {
         console.log('Delete is canceled');
+      });
+    }
+
+    function setVoicemailGreeting (ev) {
+      var confirm = $mdDialog.prompt()
+        .title('What phone number should we call you at record your voicemail greeting?')
+        .ariaLabel('Set Voicemail Greeting')
+        .targetEvent(ev)
+        .parent(angular.element(document.body))
+        .ok('OKAY')
+        .cancel('CANCEL');
+      $mdDialog.show(confirm).then(function(number) {
+        AdminUserService.setVoiceMailGreeting(vm.user._id, number).then(function (res) {
+          console.log(res);
+          $mdToast.showSimple("Successfully Set Voicemail Greeting.");
+        }, function (err) {
+          console.log(err);
+          $mdToast.showSimple('Internal Server Error.');
+        });
+      }, function() {
+        console.log('set voicemail greeting is canceled');
       });
     }
 

@@ -84,6 +84,11 @@ module.exports.inbound_ringing = function (req, res) {
   res.send(ringUrl);
 }
 
+module.exports.leave_message = function (req, res) {
+  var ringUrl = process.env.PUBLIC_HOST + '/sounds/leave_message.wav';
+  res.send(ringUrl);
+}
+
 module.exports.hangup = function (req, res) {
   var callSid = req.query.callSid;
   if (callSid==undefined){

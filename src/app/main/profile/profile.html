@@ -108,6 +108,11 @@
                         <label>Sip Address</label>
                         <input type="text" ng-model="vm.user.sipURI">
                       </md-input-container>
+                      <div layout="row">
+                        <span class="mt-5">Voicemail greeting:</span>
+                        <audio ng-src="{{vm.mailGreetingUrl}}" controls></audio>
+                      </div>
+                      <md-button class="mt-20" ng-click="vm.setVoicemailGreeting($event)">Set Voicemail Greeting</md-button>
                     </form>
 
                   </div>

@@ -7,7 +7,7 @@
     .factory('AdminUserService', AdminUserService);
 
   /** @ngInject */
-  function AdminUserService($q, $mdToast, $http, $rootScope)
+  function AdminUserService($q, $mdToast, $http, $rootScope, $timeout)
   {
     var apiUrl = $rootScope.apiBaseUrl;
 
@@ -18,7 +18,8 @@
       createUser  : createUser,
       didSearch   : didSearch,
       didPurchase : didPurchase,
-      deleteDids  : deleteDids
+      deleteDids  : deleteDids,
+      setVoiceMailGreeting: setVoiceMailGreeting
     };
 
     return service;
@@ -121,6 +122,28 @@
         });
 
       return deferred.promise;
+    }
+
+    /**
+     * Set voicemail greeting for user
+     */
+
+    function setVoiceMailGreeting (user_id, phoneNumber) {
+      var deferred = $q.defer();
+      // $http.post(apiUrl + 'api/agent/setVoicemailGreeting?userId=' + user_id + '&number=' + phoneNumber, {withCredentials: true})
+      //   .then(function (response) {
+      //     deferred.resolve(response);
+      //   }, function (err) {
+      //     deferred.reject(err);
+      //   });
+
+      // replace above code when backend api is ready
+      $timeout( function(){
+        deferred.resolve("call is on the way");
+      }, 500);
+
+      return deferred.promise;
+
     }
   }
 
