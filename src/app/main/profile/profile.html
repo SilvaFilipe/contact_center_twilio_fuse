@@ -21,7 +21,7 @@
     </div>
 
     <div>
-      <md-button class="md-raised md-background" ng-click="vm.saveUser()"
+      <md-button class="md-raised md-background" ng-click="vm.saveUser()" ng-show="vm.tabIndex == 1 || vm.tabIndex == 0"
                  ng-disabled="!vm.isFormValid('productForm')">
         <span>SAVE</span>
       </md-button>
@@ -32,7 +32,7 @@
   <!-- CONTENT -->
   <div class="content">
 
-    <md-tabs md-dynamic-height>
+    <md-tabs md-dynamic-height md-selected="vm.tabIndex">
 
       <md-tab>
         <md-tab-label>
