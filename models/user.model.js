@@ -37,6 +37,10 @@ var UserSchema = mongoose.Schema({
     },
     imageUrl: String,
     avatarUrl: String,
+    avatarUrls: [{
+      80: String,
+      320: String
+    }],
     workerSid: String,
     workerFriendlyName: String,
     friendlyWorkerName: String,

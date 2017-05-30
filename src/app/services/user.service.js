@@ -124,6 +124,19 @@
           return users;
         });
       },
+      uploadAvatar: function uploadAvatar(user_id, avatarFile) {
+        var fd = new FormData();
+        console.log(avatarFile);
+        fd.append('file', avatarFile);
+
+        return $http.post(apiUrl + 'api/users/' + user_id + '/uploadAvatar', fd, {
+            headers: { 'Content-Type': undefined },
+            transformRequest: angular.identity
+          })
+          .then(function (response) {
+            return response.data;
+          });
+      },
       starUser: function starUser(user, starStatus) {
         return $http({
           url: apiUrl + 'api/users/' + user._id + '/star',

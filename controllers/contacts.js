@@ -1,5 +1,5 @@
 const Contact = require('../models/contact.model');
-const S3 = require('../controllers/s3');
+const S3 = require('../services/s3');
 
 module.exports = {
     create: function (req, res) {
