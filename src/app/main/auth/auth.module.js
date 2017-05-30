@@ -139,7 +139,7 @@
                   console.log('set admin true');
               }
               else {
-                $window.sessionStorage.setItem('isAdmin', true); //change to false
+                $window.sessionStorage.setItem('isAdmin', "false"); //change to false
                 console.log('set admin false');
               }
               var worker =  {friendlyName: response.data.user.friendlyWorkerName};

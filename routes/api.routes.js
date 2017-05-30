@@ -28,7 +28,6 @@ var users = require('../controllers/users.js')
 var groups = require('../controllers/groups.js')
 var queues = require('../controllers/queues.js')
 var contacts = require('../controllers/contacts.js')
-var resetPwdController = require('../controllers/resetPassword.js')
 var dids = require('../controllers/dids.js')
 //var s3 = require('../controllers/s3.js')
 
@@ -95,11 +94,6 @@ module.exports = function(app, acl, multer){
 
     router.route('/messaging-adapter/inbound').post(messagingAdapter.inbound)
     router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
-
-    //reset password api
-    router.route('/reset/forgot').post(resetPwdController.forgot);
-    router.route('/reset/:token').get(resetPwdController.validateResetToken);
-    router.route('/reset/:token').post(resetPwdController.resetPassword);
 
     //Users api
     router.route('/users/me').get(users.me);

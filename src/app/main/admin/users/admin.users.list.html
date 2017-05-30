@@ -81,7 +81,12 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="user in ::vm.users">
-                            <td><a ui-sref="app.admin.users.edit({id: user._id})"><ng-avatar string="{{user.firstName + ' ' + user.lastName}}" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar></a></td>
+                            <td>
+                              <a ui-sref="app.admin.users.edit({id: user._id})">
+                                <ng-avatar ng-if="!user.avatarUrl" string="{{user.firstName + ' ' + user.lastName}}" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
+                                <img ng-if="user.avatarUrl" ng-src="{{user.avatarUrl}}" alt="{{user.firstName + ' ' + user.lastName}}">
+                              </a>
+                            </td>
                             <td>{{user.firstName}}</td>
                             <td>{{user.lastName}}</td>
                             <td>{{user.email}}</td>

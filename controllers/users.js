@@ -6,7 +6,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 //const differenceWith = require('lodash.differencewith');
-const s3 = require('../controllers/s3.js');
+const S3 = require('../services/S3');
 
 module.exports = {
     me: function (req, res) {
@@ -328,24 +328,29 @@ module.exports = {
         })
     },
     uploadAvatarImage: async function uploadAvatarImage(req, res) {
-        let file = req.file;
-        const userId = req.params.user_id;
-        try {
-            var response = await s3.upload(file);
-            let user = await User.findById(userId).exec();
-            user.avatarUrl = s3.getS3Url(file.originalname);
-            let savedUser = await user.save();
-            return res.status(200).json({
-                user: savedUser,
-                success: true
-            });
-        } catch(e) {
-            return res.status(400).json({
-                err: err,
-                errString: JSON.stringify(err),
-                success: false
-            });
-        }
+      console.log('controllers/users uploadAvatarImage()')
+      let file = req.file;
+      console.log(file);
+      const userId = req.params.user_id;
+      try {
+        var avatarUrls = await S3.upload(file);
+        console.log('avatarUrls', avatarUrls);
+        let user = await User.findById(userId).exec();
+        user.avatarUrls = avatarUrls;
+        user.avatarUrl = avatarUrls["80"]; //default avatar
+        console.log('user', user);
+        let savedUser = await user.save();
+        return res.status(200).json({
+          user: savedUser,
+          success: true
+        });
+      } catch (err) {
+        return res.status(400).json({
+          err: err,
+          errString: JSON.stringify(err),
+          success: false
+        });
+      }
     },
     addContact: function (req, res) {
       User.findByIdAndUpdate(req.params.user_id,

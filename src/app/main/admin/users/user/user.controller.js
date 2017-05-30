@@ -7,7 +7,7 @@
     .controller('AdminUserController', AdminUserController);
 
   /** @ngInject */
-  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog, ContactService, $rootScope,  $http)
+  function AdminUserController($scope, $document, $state, User, AdminUserService, $mdToast, $mdDialog, ContactService, $rootScope,  $http, $q, UserService)
   {
     var vm = this;
     vm.roles = ['phone', 'contact_center', 'admin'];
@@ -93,8 +93,7 @@
     /**
      * Save user
      */
-    function saveUser()
-    {
+    function saveUser() {
       if (angular.isDefined(vm.user.groups)) {
         vm.user.groups = vm.user.groups
           .filter(function (group) {
@@ -115,29 +114,41 @@
       }
 
 
-      if ( vm.user._id )
-      {
-        AdminUserService.updateUser(vm.user._id, vm.user).then(function (res) {
-          $mdToast.showSimple("User Information Saved.");
-          $state.go("app.admin.users");
-        }, function (err) {
-          console.log(err);
-          $mdToast.showSimple(err.data);
-        });
-      }
-      else
-      {
-        AdminUserService.createUser(vm.user).then(function (res) {
-          $mdToast.showSimple("New User Added Successfully.");
-          vm.user = res.data;
-          vm.confirmPassword = vm.user.password;
-          vm.tabIndex = 1;
-        }, function (err) {
-          console.log(err);
-          $mdToast.showSimple(err.data);
-        });
+      var file = vm.user.avatarUrl;
+      var isUpdate = angular.isDefined(vm.user._id);
+      var promise;
+      if (isUpdate) {
+        promise = AdminUserService.updateUser(vm.user._id, vm.user)
+      } else {
+        promise = AdminUserService.createUser(vm.user)
       }
 
+      promise
+        .then(function (response) {
+          vm.user = response.data;
+          if (file) {
+            return UserService.uploadAvatar(vm.user._id, file);
+          } else {
+            return $q.resolve({success: true, user: vm.user});
+          }
+        })
+        .then(function (response) {
+          if (!isUpdate && response.success) {
+            //vm.user = response.user;
+            vm.confirmPassword = response.user.password;
+            vm.tabIndex = 1;
+          }
+          if (isUpdate) {
+            $mdToast.showSimple("User Information Saved.");
+            $state.go("app.admin.users");
+          } else {
+            $mdToast.showSimple("New User Added Successfully.");
+          }
+        })
+        .catch(function (err) {
+          console.log(err);
+          $mdToast.showSimple(err.data);
+        });
     }
 
     function roleToggle (item, list) {
@@ -151,7 +162,7 @@
     }
 
     function roleExists (item, list) {
-      return list.indexOf(item) > -1;
+      return list && list.indexOf(item) > -1;
     }
 
     $scope.showSipHelpDialog = function(ev) {

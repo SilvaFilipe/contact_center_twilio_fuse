@@ -1,5 +1,5 @@
 const Contact = require('../models/contact.model');
-const S3 = require('../controllers/s3');
+const S3 = require('../services/s3');
 
 module.exports = {
     create: function (req, res) {
@@ -8,29 +8,11 @@ module.exports = {
         contact.name = req.body.name;
         contact.description = req.body.description;
         contact.phone = req.body.phone;
-        //contact.avatarUrl = req.body.avatarUrl || null;
-        console.log('before', req.body)
-        //if(contact.avatarUrl){
-        //    console.log('before s3')
-        //    S3.upload(contact.avatarUrl)
-        //      .then(function (response) {
-        //        console.log(response);
-        //        var filename = contact.avatarUrl.originalname;
-        //        var fileurl = S3.getS3Url(filename);
-        //        contact.avatarUrl = fileurl;
-        //        contact.save(function (err) {
-        //          if(err) return res.status(500).send(err);
-        //          return res.status(200).json(contact);
-        //        });
-        //      })
-        //}else{
-          console.log('before noral')
         contact.save(function (err) {
           if(err) return res.status(500).send(err);
 
           return res.status(200).json(contact);
         });
-        //}
     },
     all: function (req, res) {
         Contact.find(function (err, contacts) {
@@ -86,12 +68,12 @@ module.exports = {
     },
     uploadAvatarImage: async function uploadAvatarImage(req, res) {
       let file = req.file;
-      console.log(file);
       const contactId = req.params.contact_id;
       try {
-        var response = await S3.upload(file);
+        var avatarUrls = await S3.upload(file);
         let contact = await Contact.findById(contactId).exec();
-        contact.avatarUrl = S3.getS3Url(file.originalname);
+        contact.avatarUrls = avatarUrls;
+        contact.avatarUrl = avatarUrls["80"]; //default avatar
         let savedContact = await contact.save();
         return res.status(200).json({
           contact: savedContact,

@@ -6,8 +6,7 @@ var ContactSchema = mongoose.Schema({
         required: [true, 'Required field.']
     },
     phone: {
-        type: String,
-        required: [true, 'Required field.']
+        type: String
     },
     description: {
         type: String
@@ -17,7 +16,11 @@ var ContactSchema = mongoose.Schema({
     },
     avatarUrl: {
         type: String
-    }
+    },
+    avatarUrls: [{
+        80: String,
+        320: String
+    }]
 });
 
 module.exports = mongoose.model('Contact', ContactSchema);

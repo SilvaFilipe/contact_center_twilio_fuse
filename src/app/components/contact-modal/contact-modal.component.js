@@ -6,28 +6,20 @@ angular.module('app.components')
       group: '='
     }
   })
-  .directive("fileread", ['$parse', function ($parse) {
+  .directive("fileread", [function () {
     return {
       scope: {
         fileread: "="
       },
       link: function (scope, element, attributes) {
-        var model = $parse(attributes.fileread);
-        var modelSetter = model.assign;
-
-        element.bind('change', function () {
+        element.bind("change", function (changeEvent) {
           scope.$apply(function () {
-            modelSetter(scope, element[0].files[0]);
+            scope.fileread = null;
           });
+          scope.$apply(function () {
+            scope.fileread = changeEvent.target.files[0];
         });
-        //element.bind("change", function (changeEvent) {
-          //scope.$apply(function () {
-          //  scope.fileread = null;
-          //});
-          //scope.$apply(function () {
-          //  scope.fileread = changeEvent.target.files[0];
-          //});
-        //});
+        });
       }
     }
   }])
