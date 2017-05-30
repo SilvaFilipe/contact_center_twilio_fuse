@@ -5,7 +5,9 @@ const s3fsImpl = new S3FS(process.env.S3_BUCKET, {
   secretAccessKey: process.env.S3_SECRET_KEY,
   region: process.env.S3_REGION
 });
+
 const Promise = require('bluebird');
+const sharp = require('sharp');
 
 exports.upload = function upload(file) {
   if (!file) {

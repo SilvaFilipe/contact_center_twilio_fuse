@@ -68,7 +68,6 @@ module.exports = {
     },
     uploadAvatarImage: async function uploadAvatarImage(req, res) {
       let file = req.file;
-      console.log(file);
       const contactId = req.params.contact_id;
       try {
         var avatarUrls = await S3.upload(file);
