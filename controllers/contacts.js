@@ -8,29 +8,11 @@ module.exports = {
         contact.name = req.body.name;
         contact.description = req.body.description;
         contact.phone = req.body.phone;
-        //contact.avatarUrl = req.body.avatarUrl || null;
-        console.log('before', req.body)
-        //if(contact.avatarUrl){
-        //    console.log('before s3')
-        //    S3.upload(contact.avatarUrl)
-        //      .then(function (response) {
-        //        console.log(response);
-        //        var filename = contact.avatarUrl.originalname;
-        //        var fileurl = S3.getS3Url(filename);
-        //        contact.avatarUrl = fileurl;
-        //        contact.save(function (err) {
-        //          if(err) return res.status(500).send(err);
-        //          return res.status(200).json(contact);
-        //        });
-        //      })
-        //}else{
-          console.log('before noral')
         contact.save(function (err) {
           if(err) return res.status(500).send(err);
 
           return res.status(200).json(contact);
         });
-        //}
     },
     all: function (req, res) {
         Contact.find(function (err, contacts) {
