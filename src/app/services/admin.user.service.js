@@ -137,11 +137,6 @@
           deferred.reject(err);
         });
 
-      // replace above code when backend api is ready
-      $timeout( function(){
-        deferred.resolve("call is on the way");
-      }, 500);
-
       return deferred.promise;
 
     }
