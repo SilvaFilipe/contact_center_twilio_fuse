@@ -29,6 +29,7 @@ var groups = require('../controllers/groups.js')
 var queues = require('../controllers/queues.js')
 var contacts = require('../controllers/contacts.js')
 var resetPwdController = require('../controllers/resetPassword.js')
+var dids = require('../controllers/dids.js')
 //var s3 = require('../controllers/s3.js')
 
 module.exports = function(app, acl, multer){
@@ -178,6 +179,9 @@ module.exports = function(app, acl, multer){
       .post(contacts.create)
       .get(contacts.all);
 
+    //Dids api
+    router.route('/dids')
+      .get(dids.all);
 
     router.route('/contacts/:contact_id')
       .put(contacts.update)

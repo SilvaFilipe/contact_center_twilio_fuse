@@ -134,35 +134,54 @@
                   return QueueService.getQueue($stateParams.id);
                 }
               }
+            })
+
+
+            //Dids
+
+            .state('app.admin.dids', {
+              url      : '/dids',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/dids/admin.dids.html',
+                  controller : 'AdminDidsController as vm'
+                }
+              }
             });
 
-      msNavigationServiceProvider.saveItem('admin', {
-        title : 'Admin',
-        group : true,
-        hidden: function ()
-        {
-          return !authService.userIsAdmin(); // must be a boolean value
-        },
-        weight: 1
-      });
+        msNavigationServiceProvider.saveItem('admin', {
+          title : 'Admin',
+          group : true,
+          hidden: function ()
+          {
+            return !authService.userIsAdmin(); // must be a boolean value
+          },
+          weight: 1
+        });
 
-      msNavigationServiceProvider.saveItem('admin.users', {
-        title    : 'Users',
-        icon     : 'icon-account',
-        state    : 'app.admin.users'
-      });
+        msNavigationServiceProvider.saveItem('admin.users', {
+          title    : 'Users',
+          icon     : 'icon-account',
+          state    : 'app.admin.users'
+        });
 
-      msNavigationServiceProvider.saveItem('admin.groups', {
-        title    : 'Groups',
-        icon     : 'icon-account-multiple',
-        state    : 'app.admin.groups'
-      });
+        msNavigationServiceProvider.saveItem('admin.groups', {
+          title    : 'Groups',
+          icon     : 'icon-account-multiple',
+          state    : 'app.admin.groups'
+        });
 
-      msNavigationServiceProvider.saveItem('admin.queues', {
-        title    : 'Queues',
-        icon     : 'icon-layers',
-        state    : 'app.admin.queues'
-      });
+        msNavigationServiceProvider.saveItem('admin.queues', {
+          title    : 'Queues',
+          icon     : 'icon-layers',
+          state    : 'app.admin.queues'
+        });
+
+        msNavigationServiceProvider.saveItem('admin.dids', {
+          title    : 'Dids',
+          icon     : 'icon-cellphone',
+          state    : 'app.admin.dids'
+        });
 
     }
 })();

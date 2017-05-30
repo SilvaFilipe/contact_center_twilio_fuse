@@ -1,0 +1,90 @@
+<div id="admin-dids" class="page-layout carded fullwidth" layout="row">
+
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg md-accent-bg" style="height: 150px !important;"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center" layout="column" flex>
+
+    <!-- CONTENT HEADER -->
+    <div class="header" layout="row" layout-align="space-between center">
+      <div class="white-fg" layout="column" layout-align="start start">
+        <div class="h1" layout="row" layout-align="start center">
+          <md-icon md-font-icon="icon-cellphone"></md-icon>
+          <span>Dids</span>
+        </div>
+        <div class="product-count secondary-text">
+          <span>Total Dids:</span>
+          <span>{{vm.dids.length}}</span>
+        </div>
+      </div>
+
+      <div class="search" layout="row" layout-align="start center" flex>
+        <md-icon md-font-icon="icon-magnify" class="white-text icon search-icon"></md-icon>
+        <input id="admin-dids-search" class="search-input" type="text" placeholder="Search" flex>
+      </div>
+
+      <div>
+        <md-button class="md-raised md-background" ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
+          Delete Did
+        </md-button>
+        <md-button class="md-raised md-background">
+          <span>Add New Did</span>
+        </md-button>
+      </div>
+    </div>
+    <!-- / CONTENT HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card" layout="column" flex>
+
+      <!-- CONTENT TOOLBAR -->
+
+      <!-- / CONTENT TOOLBAR -->
+
+      <!-- CONTENT -->
+      <div class="content fullpage-datatable" layout="column" flex>
+
+        <table class="dataTable row-border hover" datatable="ng" dt-instance="vm.dtInstance"
+               dt-options="vm.dtOptions">
+          <thead>
+          <tr>
+            <th class="secondary-text">
+              <div class="table-header">
+                <span class="column-title">Phone Number</span>
+              </div>
+            </th>
+            <th class="secondary-text">
+              <div class="table-header">
+                <span class="column-title">Assigned User</span>
+              </div>
+            </th>
+            <th class="secondary-text actions">
+              <div class="table-header">
+                <span class="column-title">Remove?</span>
+              </div>
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="did in ::vm.dids">
+            <td>{{did.number}}</td>
+            <td>{{did.user}}</td>
+            <td class="actions">
+              <md-checkbox class="md-secondary" ng-model="did.userFlag" aria-label="delete did"></md-checkbox>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CONTENT CARD -->
+
+  </div>
+  <!-- / CENTER -->
+
+</div>
