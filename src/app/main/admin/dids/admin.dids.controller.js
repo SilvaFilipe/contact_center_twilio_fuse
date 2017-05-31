@@ -38,9 +38,9 @@
     //get all dids
     DidService.getAll().then(function (dids) {
       vm.dids = dids;
-      console.log(dids);
       vm.removingDids = [];
-      if (vm.dids.length) {
+      var didCounts = vm.dids.length;
+      if (didCounts) {
         vm.dids = vm.dids.map(function (did) {
           did.userFlag = false;
           return did;
@@ -52,10 +52,26 @@
         vm.removingDids = [];
         dids.filter(function (did) {
           if (did.userFlag) {
-            vm.removingDids.push({id: did._id, sid: did.sid, userId: did.user._id});
+            if (!angular.isDefined(did.user)) {
+              vm.removingDids.push({id: did._id, sid: did.sid, userId: ''});
+            }
+            else vm.removingDids.push({id: did._id, sid: did.sid, userId: did.user._id});
           }
         });
       }, true);
+
+      // for add did
+      vm.user = {_id: '', dids: vm.dids};
+
+      $scope.$watch(function () {
+        return vm.user;
+      },function(user){
+        if (user.dids.length === didCounts + 1) {
+          didCounts = user.dids.length;
+          vm.dtInstance.rerender();
+        }
+      }, true);
+
     });
 
     vm.openDeleteDidDialog = openDeleteDidDialog;

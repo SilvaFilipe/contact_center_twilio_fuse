@@ -25,13 +25,11 @@
         <input id="admin-dids-search" class="search-input" type="text" placeholder="Search" flex>
       </div>
 
-      <div>
-        <md-button class="md-raised md-background" ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
+      <div layout="row">
+        <md-button class="md-primary md-raised"  ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
           Delete Did
         </md-button>
-        <md-button class="md-raised md-background">
-          <span>Add New Did</span>
-        </md-button>
+        <add-did user="vm.user"></add-did>
       </div>
     </div>
     <!-- / CONTENT HEADER -->

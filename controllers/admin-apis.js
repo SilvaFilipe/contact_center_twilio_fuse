@@ -179,33 +179,37 @@ module.exports.didDelete = function (req, res) {
   }
 
   let index = -1;
-  User.findById(req.params.user_id, function (err, user) {
-    ids.filter(function (id) {
-      index = user.dids.indexOf(id);
-      if (index > -1) {
-        user.dids.splice(index, 1);
-      }
-    });
+  Did.remove({
+    '_id': {$in: ids}
+  }, function (err) {
+    if (err) return res.status(500).json(err);
+    for (let sid of sids) {
+      promises.push(deleteDidFromTwilio(sid));
+    }
+    Promise.all(promises)
+      .then(function(data){
+        if (req.params.user_id !== 'admin') {
+          User.findById(req.params.user_id, function (err, user) {
+            ids.filter(function (id) {
+              index = user.dids.indexOf(id);
+              if (index > -1) {
+                user.dids.splice(index, 1);
+              }
+            });
 
-    user.save(function (userErr, user) {
-      if(userErr) return res.status(500).json(userErr);
-      Did.remove({
-        '_id': {$in: ids}
-      }, function (err) {
-        if (err) return res.status(500).json(err);
-        for (let sid of sids) {
-            promises.push(deleteDidFromTwilio(sid));
-        }
-        Promise.all(promises)
-          .then(function(data){
-            return res.status(200).json('Successfully deleted!');
-          })
-          .catch(function(err){
-            return res.status(500).json(err);
+            user.save(function (userErr, user) {
+              if(userErr) return res.status(500).json(userErr);
+              return res.status(200).json('Successfully deleted!');
+            });
           });
-
+        } else {
+          return res.status(200).json('Successfully deleted!');
+        }
+      })
+      .catch(function(err){
+        return res.status(500).json(err);
       });
-    })
+
   });
 };
 

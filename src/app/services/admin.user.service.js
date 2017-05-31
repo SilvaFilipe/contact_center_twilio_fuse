@@ -114,6 +114,9 @@
 
     function deleteDids (user_id, dids) {
       var deferred = $q.defer();
+      if (!user_id) {
+        user_id = 'admin';
+      }
       $http.post(apiUrl + 'api/admin/didDelete/' + user_id, {data: dids}, {withCredentials: true})
         .then(function (response) {
           deferred.resolve(response);

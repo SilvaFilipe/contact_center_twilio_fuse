@@ -26,8 +26,14 @@ module.exports = {
               return new Promise(function(resolve, reject){
                 User.findOne({ dids: { "$in" : [did._id]} }).then(function (user) {
                   did.user = {};
-                  did.user._id = user._id;
-                  did.user.name = user.fullName;
+                  if (user) {
+                    did.user._id = user._id;
+                    did.user.name = user.fullName;
+                  }
+                  else {
+                    did.user._id = '';
+                    did.user.name = '';
+                  }
                   return resolve(did);
                 }, function (err) {
                   if(err) return reject(err);
