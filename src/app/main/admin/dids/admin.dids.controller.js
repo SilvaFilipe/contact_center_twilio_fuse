@@ -39,8 +39,7 @@
     DidService.getAll().then(function (dids) {
       vm.dids = dids;
       vm.removingDids = [];
-      var didCounts = vm.dids.length;
-      if (didCounts) {
+      if (vm.dids.length) {
         vm.dids = vm.dids.map(function (did) {
           did.userFlag = false;
           return did;
@@ -61,13 +60,14 @@
       }, true);
 
       // for add did
-      vm.user = {_id: '', dids: vm.dids};
+      vm.user = {_id: '', dids: []};
 
       $scope.$watch(function () {
         return vm.user;
       },function(user){
-        if (user.dids.length === didCounts + 1) {
-          didCounts = user.dids.length;
+        if (user.dids.length) {
+          vm.dids.push(user.dids[0]);
+          user.dids = [];
           vm.dtInstance.rerender();
         }
       }, true);
