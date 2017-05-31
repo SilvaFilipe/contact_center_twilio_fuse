@@ -70,7 +70,7 @@
           <tbody>
           <tr ng-repeat="did in ::vm.dids">
             <td>{{did.number}}</td>
-            <td>{{did.user}}</td>
+            <td>{{did.user.name}}</td>
             <td class="actions">
               <md-checkbox class="md-secondary" ng-model="did.userFlag" aria-label="delete did"></md-checkbox>
             </td>

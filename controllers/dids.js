@@ -25,7 +25,9 @@ module.exports = {
             function getUserHasDid(did){
               return new Promise(function(resolve, reject){
                 User.findOne({ dids: { "$in" : [did._id]} }).then(function (user) {
-                  did.user = user.fullName;
+                  did.user = {};
+                  did.user._id = user._id;
+                  did.user.name = user.fullName;
                   return resolve(did);
                 }, function (err) {
                   if(err) return reject(err);

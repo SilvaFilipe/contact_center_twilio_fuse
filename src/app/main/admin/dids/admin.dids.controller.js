@@ -7,7 +7,7 @@
     .controller('AdminDidsController', AdminDidsController);
 
   /** @ngInject */
-  function AdminDidsController($scope, $mdDialog, DidService)
+  function AdminDidsController($scope, $mdDialog, $mdToast, DidService)
   {
     var vm = this;
     vm.dtOptions = {
@@ -38,6 +38,7 @@
     //get all dids
     DidService.getAll().then(function (dids) {
       vm.dids = dids;
+      console.log(dids);
       vm.removingDids = [];
       if (vm.dids.length) {
         vm.dids = vm.dids.map(function (did) {
@@ -51,7 +52,7 @@
         vm.removingDids = [];
         dids.filter(function (did) {
           if (did.userFlag) {
-            vm.removingDids.push({id: did._id, sid: did.sid});
+            vm.removingDids.push({id: did._id, sid: did.sid, userId: did.user._id});
           }
         });
       }, true);
@@ -75,6 +76,7 @@
           vm.dids = vm.dids.filter(function (did) {
             return !did.userFlag
           });
+          vm.dtInstance.rerender();
           $mdToast.showSimple("Successfully Deleted Dids.");
         }, function (err) {
           console.log(err);

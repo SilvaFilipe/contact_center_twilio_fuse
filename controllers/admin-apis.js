@@ -5,6 +5,7 @@ const twilio = require('twilio')
 const client = new twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN)
+const Promise = require('bluebird');
 
 module.exports.showSipQR = function (req, res) {
   var email = req.query.email;
@@ -158,10 +159,23 @@ module.exports.didPurchase = function (req, res) {
 module.exports.didDelete = function (req, res) {
   let ids = [];
   let sids = [];
+  let promises = [];
 
   for (let did of req.body.data) {
     ids.push(did.id);
     sids.push(did.sid);
+  }
+
+  function deleteDidFromTwilio(sid) {
+    return new Promise(function(resolve, reject){
+      client.incomingPhoneNumbers(sid).delete(function (err, deleted) {
+        if (err) return reject(err);
+        else {
+          console.log('successfully deleted sid from twilio');
+          return resolve('success');
+        }
+      });
+    });
   }
 
   let index = -1;
@@ -179,7 +193,17 @@ module.exports.didDelete = function (req, res) {
         '_id': {$in: ids}
       }, function (err) {
         if (err) return res.status(500).json(err);
-        return res.status(200).json('Successfully deleted!');
+        for (let sid of sids) {
+            promises.push(deleteDidFromTwilio(sid));
+        }
+        Promise.all(promises)
+          .then(function(data){
+            return res.status(200).json('Successfully deleted!');
+          })
+          .catch(function(err){
+            return res.status(500).json(err);
+          });
+
       });
     })
   });
