@@ -65,10 +65,14 @@ module.exports.didSearch = function (req, res) {
     });
   } else {
     if (areaCode) {
-      client.availablePhoneNumbers(countryCode).local.list({
-        areaCode: areaCode,
-        voiceEnabled: true
-      }, function(err, data) {
+      if (countryCode=="US") {
+        var params = {areaCode: areaCode,
+          voiceEnabled: true}
+      } else {
+        var params = {contains: areaCode, //areaCode.replace('+','').trim(),
+          voiceEnabled: true}
+      }
+      client.availablePhoneNumbers(countryCode).local.list(params , function(err, data) {
         if (err) {
           console.log(err);
           res.setHeader('Cache-Control', 'public, max-age=0')
