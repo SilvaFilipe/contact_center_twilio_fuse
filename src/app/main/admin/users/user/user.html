@@ -11,7 +11,7 @@
       <div layout="row" layout-align="start center">
         <div class="product-image" hide-xs ng-show="vm.user._id">
           <ng-avatar ng-if="!vm.user.avatarUrl" string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
-          <img ng-if="vm.user.avatarUrl" width="64" height="64" ng-src="{{vm.user.avatarUrl}}" >
+          <img ng-if="vm.user.avatarUrl" width="64" height="64" ng-src="{{::vm.user.avatarUrl}}" >
         </div>
         <div class="product-image" hide-xs ng-hide="vm.user._id">
           <img class="profile-image avatar" width="64" height="64" src="assets/images/avatars/profile.jpg">

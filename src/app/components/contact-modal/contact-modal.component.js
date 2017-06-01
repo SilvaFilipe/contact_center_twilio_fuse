@@ -33,7 +33,7 @@ angular.module('app.components')
       restrict: 'E',
       scope: { model: '=?' },
       template:   '<input type="file" accept="image/*,video/*,audio/*" ng-model="model" />' +
-      '<span ng-click="clearPreview()">X</span>',
+      '<span ng-click="clearPreview()" ng-show="model">X</span>',
       link: _link
     }
 
@@ -83,7 +83,7 @@ angular.module('app.components')
 
       // the change function
       function onChange(e) {
-
+        console.log('change ???')
         // get files from target
         var files = $input[0].files;
 
@@ -151,10 +151,24 @@ angular.module('app.components')
 
       }
 
+      console.log(ngModel, ngModel.$modelValue);
+      scope.$watch(function () {
+        return ngModel.$modelValue
+      }, function () {
+        if(angular.isString(ngModel.$modelValue)){
+          console.log('?????????')
+          var $mediaElement = angular.element( document.createElement('img') );
+          $mediaElement.attr('src', ngModel.$modelValue);
+          container.append( $mediaElement );
+        }
+      });
+
+
       // clear the preview and the input on click
       scope.clearPreview = function () {
         // clear the input value
         $input.val('');
+        //ngModel.$setViewValue(undefined);
         // reset container
         container.empty();
       }
