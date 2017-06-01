@@ -10,10 +10,11 @@
 
       <div layout="row" layout-align="start center">
         <div class="product-image" hide-xs ng-show="vm.user._id">
-          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
+          <ng-avatar ng-if="!vm.user.avatarUrl" string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
+          <img ng-if="vm.user.avatarUrl" width="64" height="64" ng-src="{{vm.user.avatarUrl}}" >
         </div>
         <div class="product-image" hide-xs ng-hide="vm.user._id">
-          <img class="profile-image avatar" src="assets/images/avatars/profile.jpg">
+          <img class="profile-image avatar" width="64" height="64" src="assets/images/avatars/profile.jpg">
         </div>
 
         <div layout="column" layout-align="start start">
@@ -51,15 +52,8 @@
 
             <form id="productForm" name="productForm">
               <md-input-container class="md-block">
-                <label>
-                  Avatar
-                  <!--<img ng-show="!vm.user.avatarUrl" ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge">-->
-                  <div ng-if="!!vm.user.avatarUrl" ng-thumb="{ file: vm.user.avatarUrl, height: 80, width: 80 }"></div>
-                </label>
-                <input type="file"
-                       fileread="vm.user.avatarUrl"
-                       class=""
-                       id="avatar-url">
+                <label>Avatar</label>
+                <media-preview model="vm.user.avatarUrl" preview-class="md-avatar avatar contact-avatar huge"></media-preview>
               </md-input-container>
               <md-input-container class="md-block">
                 <label>First Name</label>

@@ -137,8 +137,7 @@
                   isAdmin = true;
                   $window.sessionStorage.setItem('isAdmin', "true");
                   console.log('set admin true');
-              }
-              else {
+              } else {
                 $window.sessionStorage.setItem('isAdmin', "false"); //change to false
                 console.log('set admin false');
               }

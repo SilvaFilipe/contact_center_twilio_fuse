@@ -12,15 +12,13 @@
       <div class="md-toolbar-tools md-toolbar-tools-middle layout-align-center-center layout-column flex" flex=""
            layout="column" layout-align="center center">
         <div layout="column" layout-align="center center" class="layout-align-center-center layout-column">
-          <label for="avatar-url">
-            <img ng-show="!$ctrl.contact.avatarUrl" ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge">
-            <div ng-if="!!$ctrl.contact.avatarUrl" ng-thumb="{ file: $ctrl.contact.avatarUrl, height: 80, width: 80 }"></div>
+          <label ng-show="!$ctrl.contact.avatarUrl" >
+            <img src="assets/images/avatars/profile.jpg" class="md-avatar avatar contact-avatar huge">
+            <!--<div ng-if="!!$ctrl.contact.avatarUrl" ng-thumb="{ file: $ctrl.contact.avatarUrl, height: 80, width: 80 }"></div>-->
           </label>
           <div class="contact-name">{{$ctrl.contact.name}}</div>
-          <input type="file"
-                 fileread="$ctrl.contact.avatarUrl"
-                 class="hidden"
-                 id="avatar-url">
+          <media-preview model="$ctrl.contact.avatarUrl" preview-class="md-avatar avatar contact-avatar huge"></media-preview>
+
         </div>
       </div>
 

@@ -7,7 +7,7 @@
     .controller('userProfileController', userProfileController);
 
   /** @ngInject */
-  function userProfileController($scope, $document, $state, $mdToast, $mdDialog, $rootScope,  $http, $window, AdminUserService, ContactService)
+  function userProfileController($scope, $document, $q, $mdToast, $mdDialog, $rootScope,  $http, $window, AdminUserService, ContactService, UserService)
   {
     var vm = this;
     var apiUrl = $rootScope.apiBaseUrl;
@@ -128,13 +128,23 @@
             return group;
           });
       }
-
-      AdminUserService.updateUser(vm.user._id, vm.user).then(function (res) {
-        $mdToast.showSimple("User Information Saved.");
-      }, function (err) {
-        console.log(err);
-        $mdToast.showSimple(err.data);
-      });
+      var file = vm.user.avatarUrl;
+      var promises = [];
+      promises.push(AdminUserService.updateUser(vm.user._id, vm.user));
+      if (file) {
+        promises.push(UserService.uploadAvatar(vm.user._id, file));
+      }
+      $q.all(promises)
+        .then(function (results) {
+          $mdToast.showSimple("User Information Saved.");
+           if(results.length > 1){
+              $mdToast.showSimple("User avatar saved.");
+           }
+        })
+        .catch(function (err) {
+          console.log(err);
+          $mdToast.showSimple(err.data);
+        });
 
     }
 

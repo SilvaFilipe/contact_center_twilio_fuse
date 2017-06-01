@@ -5,10 +5,13 @@
     <div class="white-fg" layout="row" layout-align="start center" flex>
 
       <div layout="row" layout-align="start center">
-        <div class="product-image" hide-xs ng-show="vm.user._id">
-          <ng-avatar  string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
+        <div class="product-image" hide-xs ng-show="vm.user._id && !vm.user.avatarUrl">
+          <ng-avatar string="{{vm.user.firstName + ' ' + vm.user.lastName}}" bind="true" width="64" round-shape="true" bg-color="#3875d7" upper-case="true"></ng-avatar>
         </div>
 
+        <div class="product-image" ng-show="vm.user.avatarUrl">
+          <img ng-src="{{vm.user.avatarUrl}}">
+        </div>
         <div layout="column" layout-align="start start">
           <div class="h2">
             {{vm.user.firstName}} {{vm.user.lastName}}
@@ -43,6 +46,12 @@
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
 
             <form id="productForm" name="productForm">
+              <md-input-container class="md-block">
+                <label">
+                  Avatar
+                </label>
+                <media-preview model="vm.user.avatarUrl" preview-class="md-avatar avatar contact-avatar huge"></media-preview>
+              </md-input-container>
               <md-input-container class="md-block">
                 <label>First Name</label>
                 <input type="text" ng-model="vm.user.firstName" required>
