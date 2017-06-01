@@ -35,12 +35,12 @@
                 </md-button>
 
                 <md-menu-content width="3">
-                    <md-menu-item class="md-indent" ui-sref="app.pages_profile">
+                    <md-menu-item class="md-indent" ui-sref="app.profile">
                         <md-icon md-font-icon="icon-account" class="icon"></md-icon>
                         <md-button>My Profile</md-button>
                     </md-menu-item>
 
-                  <md-menu-item class="md-indent" ui-sref="app.voiceMail">
+                  <md-menu-item class="md-indent" ng-click="vm.voicemailClick()">
                     <md-icon md-font-icon="icon-email" class="icon"></md-icon>
                     <md-button>Voicemail</md-button>
                   </md-menu-item>

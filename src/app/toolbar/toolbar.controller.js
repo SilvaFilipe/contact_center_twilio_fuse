@@ -81,6 +81,7 @@
         vm.toggleMsNavigationFolded = toggleMsNavigationFolded;
         vm.search = search;
         vm.searchResultClick = searchResultClick;
+        vm.voicemailClick = voicemailClick;
 
         //////////
 
@@ -96,6 +97,19 @@
 
             // Get the selected language directly from angular-translate module setting
             vm.selectedLanguage = vm.languages[$translate.preferredLanguage()];
+        }
+
+        /**
+         * Voicemail link click
+         */
+
+        function voicemailClick() {
+          $state.go('app.workspace');
+          $timeout(function () {
+            $mdSidenav('left-quick-panel').toggle();
+            $rootScope.leftPanelTabIndex = 1;
+          }, 500);
+
         }
 
 
