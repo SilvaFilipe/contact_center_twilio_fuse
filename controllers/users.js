@@ -6,7 +6,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
 //const differenceWith = require('lodash.differencewith');
-const S3 = require('../services/S3');
+const S3 = require('../services/s3');
 
 module.exports = {
     me: function (req, res) {
