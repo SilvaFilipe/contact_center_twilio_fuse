@@ -97,7 +97,8 @@ gulp.task('other', function ()
 });
 
 gulp.task('config:build', function () {
-  return gulp.src(path.join(conf.paths.src, '/app/config.json'))
+  var configUrl = '../' + process.argv[4];
+  return gulp.src(path.join(conf.paths.src, configUrl))
     .pipe(gulpNgConfig('app.config', {
       environment: 'production'
     }))

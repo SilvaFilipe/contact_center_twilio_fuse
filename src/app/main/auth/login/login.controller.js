@@ -7,10 +7,12 @@
         .controller('LoginController', LoginController);
 
     /** @ngInject */
-    function LoginController($http, $state, $scope, authService)
+    function LoginController($http, $state, $scope, $rootScope, authService, LogoUrl)
     {
+      $rootScope.logoUrl = LogoUrl;
       var vm = this;
       vm.form = {};
+      vm.logoUrl = LogoUrl;
       vm.login = function() {
 
         authService.login(vm.form.email, vm.form.password).then(

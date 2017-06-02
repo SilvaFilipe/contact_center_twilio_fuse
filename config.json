@@ -1,0 +1,10 @@
+{
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://personable.herokuapp.com/",
+      "Auth": "https://personable.herokuapp.com/"
+    },
+    "LogoUrl": "/assets/images/logos/logo.png"
+  }
+}
+
