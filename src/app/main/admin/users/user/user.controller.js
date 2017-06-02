@@ -27,6 +27,7 @@
     console.log(vm.user);
     vm.confirmPassword = vm.user.password;
     vm.removingDids = [];
+    var originalAvatarUrl = vm.user.avatarUrl;
 
     $scope.$watch(function () {
       return vm.user.dids;
@@ -126,7 +127,7 @@
       promise
         .then(function (response) {
           vm.user = response.data;
-          if (file) {
+          if (file !== originalAvatarUrl && file) {
             return UserService.uploadAvatar(vm.user._id, file);
           } else {
             return $q.resolve({success: true, user: vm.user});
