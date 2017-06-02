@@ -4,6 +4,7 @@ var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
 var gulpNgConfig = require('gulp-ng-config');
+var rename = require('gulp-rename');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
@@ -102,6 +103,7 @@ gulp.task('config:build', function () {
     .pipe(gulpNgConfig('app.config', {
       environment: 'production'
     }))
+    .pipe(rename('config.js'))
     .pipe(gulp.dest(path.join(conf.paths.src, '/app')))
 });
 
