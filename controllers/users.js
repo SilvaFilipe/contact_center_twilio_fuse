@@ -261,7 +261,6 @@ module.exports = {
       });
 
       function addOrRemoveRoles(id, bodyRoles, roles){
-        bodyRoles = ['admin'];
         let rolesPromise;
         if (roles.length > 0) {
           rolesPromise = req.acl.removeUserRoles(id, roles)

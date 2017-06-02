@@ -9,18 +9,25 @@
   <md-list-item class="contact-item md-white-bg"
                 md-ink-ripple
                 ng-repeat="user in $ctrl.users | orderBy:'-starred' | filter:$ctrl.searchText track by user._id"
-                ng-class="{'selected': $ctrl.isSelected(user)}">
+                ng-class="{'selected': $ctrl.isSelected(user)}" layout="row">
 
-    <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/><div class="status {{user.activity}}"></div>
-    <p class="text-truncate font-weight-600" ng-click="$ctrl.callUser(user)">{{user.firstName}} {{user.lastName}}</p>
-    <p class="phone text-truncate hide show-gt-md" ng-click="$ctrl.callUser(user)">
-      {{user.extension}}
-    </p>
-    <md-button class="md-icon-button" aria-label="Call" ng-click="$ctrl.callUser(user)">
-      <md-icon md-font-icon="icon-phone"></md-icon>
-    </md-button>
-    <md-icon md-font-icon="icon-star" ng-class="{'amber-fg': $ctrl.isStarred(user)}"
-             ng-click="$ctrl.updateStarredUser(user, user._id)"></md-icon>
+    <div flex="50" layout="row">
+      <img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/><div class="status {{user.activity}}"></div>
+      <p class="text-truncate font-weight-600" ng-click="$ctrl.callUser(user)">{{user.firstName}} {{user.lastName}}</p>
+    </div>
+    <div flex="25">
+      <p class="phone text-truncate hide show-gt-md" ng-click="$ctrl.callUser(user)">
+        {{user.extension}}
+      </p>
+    </div>
+    <div flex="25">
+      <md-button class="md-icon-button" aria-label="Call" ng-click="$ctrl.callUser(user)">
+        <md-icon md-font-icon="icon-phone"></md-icon>
+      </md-button>
+      <md-icon md-font-icon="icon-star" ng-class="{'amber-fg': $ctrl.isStarred(user)}"
+               ng-click="$ctrl.updateStarredUser(user, user._id)"></md-icon>
+    </div>
+
   </md-list-item>
   <!-- CONTACT ITEM -->
 </md-list>
