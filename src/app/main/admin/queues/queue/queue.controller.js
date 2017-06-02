@@ -7,7 +7,7 @@
     .controller('AdminQueueController', AdminQueueController);
 
   /** @ngInject */
-  function AdminQueueController($scope, $q, UserService, Queue, QueueService, $mdToast, ContactService)
+  function AdminQueueController($scope, $q, $state, UserService, Queue, QueueService, $mdToast, ContactService)
   {
     var vm = this;
 
@@ -74,6 +74,7 @@
           $mdToast.showSimple("Queue Information Saved.");
           //vm.queue = queue;
           flagUsers();
+          $state.go("app.admin.queues");
 
         }, function (err) {
           console.log(err);

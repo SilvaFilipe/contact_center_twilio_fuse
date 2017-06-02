@@ -67,6 +67,7 @@
 
         GroupService.update(vm.group._id, vm.group).then(function (res) {
           $mdToast.showSimple("Group Information Saved.");
+          $state.go("app.admin.groups");
         }, function (err) {
           console.log(err);
           $mdToast.showSimple("Something went wrong, Please try again");
