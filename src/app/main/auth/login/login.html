@@ -34,7 +34,7 @@
                 </md-input-container>
 
                 <md-button type="submit" class="md-raised md-accent submit-button" aria-label="LOG IN"
-                           ng-disabled="loginForm.$invalid || loginForm.$pristine"
+                           ng-disabled="loginForm.$invalid || loginForm.$pristine || vm.submitting"
                            translate="LOGIN.LOG_IN" translate-attr-aria-label="LOGIN.LOG_IN">
                     LOG IN
                 </md-button>
