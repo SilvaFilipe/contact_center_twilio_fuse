@@ -363,5 +363,16 @@ module.exports = {
         .catch(function (err) {
           if (err) return res.status(500).json(err);
         })
+    },
+    getContacts: function (req, res) {
+      console.log(req.params.user_id)
+      User.findById(req.params.user_id)
+        .populate('contacts')
+        .exec().then(function (user) {
+          return res.status(200).json(user.contacts);
+        })
+        .catch(function (err) {
+          if (err) return res.status(500).json(err);
+        })
     }
 };

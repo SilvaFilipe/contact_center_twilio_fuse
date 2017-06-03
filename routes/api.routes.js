@@ -113,6 +113,9 @@ module.exports = function(app, acl, multer){
         .put(users.update)
         .delete(users.delete);
 
+    router.route('/users/:user_id/contacts')
+      .get(users.getContacts);
+
     router.route('/users/:user_id/contacts/:contact_id')
       .post(users.addContact);
 
