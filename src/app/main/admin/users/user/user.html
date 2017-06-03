@@ -249,7 +249,10 @@
                   </thead>
                   <tbody>
                   <tr ng-repeat="contact in vm.user.contacts">
-                    <td><img class="md-avatar avatar contact-avatar" ng-src="{{contact.avatarUrl}}"></td>
+                    <td>
+                      <ng-avatar ng-if="!contact.avatarUrl" string="{{contact.name}}" round-shape="true" auto-color="true" upper-case="true"></ng-avatar>
+                      <img ng-if="contact.avatarUrl" class="md-avatar avatar contact-avatar" ng-src="{{contact.avatarUrl}}">
+                    </td>
                     <td>{{contact.name}}</td>
                     <td>{{contact.phone}}</td>
                     <td>{{contact.description}}</td>
