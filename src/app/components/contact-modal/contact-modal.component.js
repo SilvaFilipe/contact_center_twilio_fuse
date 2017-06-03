@@ -33,7 +33,8 @@ angular.module('app.components')
       restrict: 'E',
       scope: { model: '=?' },
       template:   '<input type="file" accept="image/*,video/*,audio/*" class="fileInput ng-hide" ng-model="model" />' +
-      '<md-button class="uploadButton md-raised md-primary"> Choose File </md-button>',
+      '<md-button class="uploadButton md-raised md-primary"> Choose File </md-button>' +
+      '<md-input-container  md-no-float>    <input class="textInput" ng-model="fileName" type="text" placeholder="No file chosen" ng-readonly="true"></md-input-container>',
       link: _link
     };
 
@@ -42,10 +43,14 @@ angular.module('app.components')
     function _link(scope, elem, attrs) {
       var input = elem.find('.fileInput');
       var button = elem.find('.uploadButton');
+      var textInput = elem.find('.textInput');
 
       if (input.length && button.length) {
         button.click(function (e) {
           input.click()
+        });
+        textInput.click(function(e) {
+          input.click();
         });
       }
       var $input = angular.element( elem.children().eq(0) );
@@ -90,7 +95,6 @@ angular.module('app.components')
 
       // the change function
       function onChange(e) {
-        console.log('change ???')
         // get files from target
         var files = $input[0].files;
 
@@ -146,19 +150,20 @@ angular.module('app.components')
               $mediaElement.addClass(previewClass);
               // append to the preview container
               container.append( $mediaElement );
+              scope.$apply(function () {
+                scope.fileName = data.name;
+              });
 
-            }
+            };
 
             // read file
             $reader.readAsDataURL( data );
-
           });
 
         }
 
       }
 
-      console.log(ngModel, ngModel.$modelValue);
       scope.$watch(function () {
         return ngModel.$modelValue
       }, function () {
@@ -178,7 +183,7 @@ angular.module('app.components')
         //ngModel.$setViewValue(undefined);
         // reset container
         container.empty();
-      }
+      };
 
       // bind change event
       elem.on('change', onChange);
