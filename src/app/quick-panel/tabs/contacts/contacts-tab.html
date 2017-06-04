@@ -1,0 +1,20 @@
+<div class="main animate-slide-left" ng-hide="vm.chatActive">
+    <md-list class="recent">
+        <md-list-item class="contact md-3-line" ng-repeat="contact in vm.contacts"
+                      ng-click="vm.makeCall(contact)">
+            <img ng-src="{{contact.avatarUrl}}" class="md-avatar" alt="{{contact.name}}"/>
+
+            <!--<div ng-if="contact.unread" class="md-accent-bg unread-message-count">{{contact.unread}}</div>-->
+
+            <div class="md-list-item-text">
+                <h3>{{contact.name}}</h3>
+                <p class="last-message">{{contact.description}}</p>
+            </div>
+          <md-button class="md-icon-button" aria-label="Call" translate
+                     translate-attr-aria-label="QUICKPANEL.CALL">
+            <md-icon ng-show="contact.phone" md-font-icon="icon-phone"></md-icon>
+          </md-button>
+        </md-list-item>
+    </md-list>
+
+</div>

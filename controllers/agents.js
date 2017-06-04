@@ -244,6 +244,31 @@ module.exports.agentToConference = function (req, res) {
   });
 }
 
+
+module.exports.dialCustomerTransfer = function (req, res) {
+  var toNumber = req.query.toNumber;
+  var caller_sid = req.query.caller_sid;
+  console.log('transfer call %s to %s', caller_sid, toNumber );
+  var twiml = '<Response><Dial>' + toNumber + '</Dial></Response>';
+  var escaped_twiml = require('querystring').escape(twiml);
+  client.calls(caller_sid).update({
+    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+    method: "GET"
+  }, function(err, call) {
+    if (err){
+      console.log(err);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'ERROR' , null, 3))
+    } else {
+      console.log ("transferred " + caller_sid + ' to  ' + toNumber);
+      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(JSON.stringify( 'OK' , null, 3))
+    }
+  });
+}
+
 module.exports.outboundCall = function (req, res) {
   if (req.query.phone.length < 5) {
     console.log('dialing an extension: ' + req.query.phone);

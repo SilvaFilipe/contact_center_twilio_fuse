@@ -47,6 +47,7 @@
           ContactService.addToUser(vm.user._id, args.contact._id)
             .then(function (user) {
               vm.user.contacts = user.contacts;
+              $rootScope.$broadcast('quickpanel.contacts.reload');
               //$state.go("app.admin.users.edit", {id: vm.user._id})
             })
         });

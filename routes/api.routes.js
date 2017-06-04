@@ -55,6 +55,7 @@ module.exports = function(app, acl, multer){
     router.route('/agents/agentToSilence').get(agents.agentToSilence)
     router.route('/agents/didInboundExtensionCall').get(agents.didInboundExtensionCall)
     router.route('/agents/registeredSipOutboundCall').get(agents.registeredSipOutboundCall)
+    router.route('/agents/dialCustomerTransfer').get(agents.dialCustomerTransfer)
 
     router.route('/admin/didSearch').get(adminController.didSearch)
     router.route('/admin/didPurchase').post(adminController.didPurchase)
@@ -112,6 +113,9 @@ module.exports = function(app, acl, multer){
         .get(users.get)
         .put(users.update)
         .delete(users.delete);
+
+    router.route('/users/:user_id/contacts')
+      .get(users.getContacts);
 
     router.route('/users/:user_id/contacts/:contact_id')
       .post(users.addContact);

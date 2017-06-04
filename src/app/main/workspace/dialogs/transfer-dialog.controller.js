@@ -39,26 +39,38 @@
     }
 
     vm.confirmChange = function () {
-      console.log($scope.selected );
-      var uniqueId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      });
-      var callParams = {fromNumber: 'Conference', duration: 0, callSid: uniqueId, conferenceName: uniqueId , name: 'Conference'};
-      var newConference = new ConferenceCall(callParams);
-      $scope.selected.forEach(function (call) {
-        newConference.calls.push(call);
-        $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + call.callSid + '&roomName=' + uniqueId, {withCredentials: true});
-        var index = $scope.callTasks.indexOf(call);
-        $scope.callTasks.splice(index, 1);
-      });
-      console.log('newConference', newConference);
-      $rootScope.$broadcast('AddCallTask', newConference);
-      CallService.getActiveConnSid(function(ActiveConnSid) {
-        $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + uniqueId, {withCredentials: true});
-      });
-      vm.displayableAction = vm.selectedAction;
-      $mdDialog.hide();
+      if (vm.displayableAction == 'transfer-call') {
+        console.log('transfer to ' + vm.transferExternalNumber);
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get(apiUrl + 'api/agents/dialCustomerTransfer?caller_sid=' + $rootScope.currentCall.callSid + '&toNumber=' + vm.transferExternalNumber, {withCredentials: true});
+          var index = $scope.callTasks.indexOf($rootScope.currentCall);
+          $scope.callTasks.splice(index, 1);
+        });
+        vm.displayableAction = vm.selectedAction;
+        $mdDialog.hide();
+      } else {
+        //join lines
+        console.log($scope.selected );
+        var uniqueId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+          return v.toString(16);
+        });
+        var callParams = {fromNumber: 'Conference', duration: 0, callSid: uniqueId, conferenceName: uniqueId , name: 'Conference'};
+        var newConference = new ConferenceCall(callParams);
+        $scope.selected.forEach(function (call) {
+          newConference.calls.push(call);
+          $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + call.callSid + '&roomName=' + uniqueId, {withCredentials: true});
+          var index = $scope.callTasks.indexOf(call);
+          $scope.callTasks.splice(index, 1);
+        });
+        console.log('newConference', newConference);
+        $rootScope.$broadcast('AddCallTask', newConference);
+        CallService.getActiveConnSid(function(ActiveConnSid) {
+          $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + uniqueId, {withCredentials: true});
+        });
+        vm.displayableAction = vm.selectedAction;
+        $mdDialog.hide();
+      }
     };
 
     vm.cancelChange = function () {
