@@ -19,6 +19,7 @@
       </md-input-container>
 
       <md-tabs ng-if="vm.displayableAction === 'transfer-call'">
+        <!--
         <md-tab label="Active Calls">
           <md-input-container class="md-icon-float md-icon-right md-block">
             <label>Search</label>
@@ -33,36 +34,11 @@
             <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
           </md-input-container>
         </md-tab>
+        -->
         <md-tab label="Directory">
-
           <contacts-directory users="vm.users"></contacts-directory>
-
-          <!--<md-input-container class="md-icon-float md-icon-right md-block">-->
-            <!--<label>Search</label>-->
-            <!--<input ng-model="vm.searchText" type="text">-->
-            <!--<md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>-->
-          <!--</md-input-container>-->
-          <!--<md-list class="contacts-list">-->
-              <!--&lt;!&ndash; CONTACT ITEM &ndash;&gt;-->
-              <!--<md-list-item class="contact-item md-white-bg"-->
-                            <!--md-ink-ripple ng-repeat="user in vm.users | orderBy:'-starred' | filter:vm.searchText track by user._id"-->
-                            <!--ng-class="{'selected': vm.isSelected(user)}">-->
-
-                <!--<div class="status  {{user.status}}"></div>-->
-                <!--<img avatar-image ng-src="{{user.imageUrl}}" class="md-avatar" alt="{{user.firstName}}"/>-->
-                <!--<div class="status  {{user.status}}"></div>-->
-                <!--<p class="text-truncate font-weight-600">{{user.firstName}} {{user.lastName}}</p>-->
-                <!--<p class="phone text-truncate hide show-gt-md" ng-click="vm.callUser(user)">-->
-                  <!--{{user.phone}}-->
-                <!--</p>-->
-                <!--<md-button class="md-icon-button" aria-label="Call" ng-click="vm.callUser(user)">-->
-                  <!--<md-icon md-font-icon="icon-phone"></md-icon>-->
-                <!--</md-button>-->
-                <!--<md-icon md-font-icon="icon-star" ng-class="{'amber-fg': vm.isStarred(user)}" ng-click="vm.updateStarredUser(user, user._id)"></md-icon>-->
-              <!--</md-list-item>-->
-              <!--&lt;!&ndash; CONTACT ITEM &ndash;&gt;-->
-            <!--</md-list>-->
         </md-tab>
+        <!--
         <md-tab label="Contacts">
           <md-input-container class="md-icon-float md-icon-right md-block">
             <label>Search</label>
@@ -70,11 +46,16 @@
             <md-icon md-svg-src="assets/icons/img/ic_search_black_24px.svg"></md-icon>
           </md-input-container>
         </md-tab>
+        -->
+        <md-tab label="Phone Number">
+          <md-input-container class="md-icon-float md-icon-right md-block">
+            <label>Enter Phone Number</label>
+            <input ng-model="vm.transferExternalNumber" type="text">
+          </md-input-container>
+        </md-tab>
       </md-tabs>
       <div ng-if="vm.displayableAction === 'join-lines'">
         <div class="md-warn" ng-show="callTasks.length < 2">Two or more active calls are required to join.</div>
-
-
 
         <fieldset class="standard" ng-show="callTasks.length > 1">
           <legend>Calls to Join</legend>
@@ -90,19 +71,8 @@
             </div>
           </div>
         </fieldset>
-
-        <!--<div layout="row" ng-repeat="task in callTasks">-->
-          <!--<md-input-container>-->
-            <!--<md-checkbox  ng-model="vm.lineToJoin" ng-checked="vm.lineToJoin == 1" ng-value="1" aria-label="Finished?">-->
-              <!--{{ task.fromNumber }}-->
-            <!--</md-checkbox>-->
-          <!--</md-input-container>-->
-        <!--</div>-->
-      <!--</div>-->
-
-
+      </div>
     </md-dialog-content>
-
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="center center">
         <div></div>
