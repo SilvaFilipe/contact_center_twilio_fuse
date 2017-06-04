@@ -329,7 +329,6 @@ module.exports = {
     uploadAvatarImage: async function uploadAvatarImage(req, res) {
       console.log('controllers/users uploadAvatarImage()')
       let file = req.file;
-      console.log(file);
       const userId = req.params.user_id;
       try {
         var avatarUrls = await S3.upload(file);
@@ -337,7 +336,6 @@ module.exports = {
         let user = await User.findById(userId).exec();
         user.avatarUrls = avatarUrls;
         user.avatarUrl = avatarUrls["80"]; //default avatar
-        console.log('user', user);
         let savedUser = await user.save();
         return res.status(200).json({
           user: savedUser,
@@ -365,11 +363,36 @@ module.exports = {
         })
     },
     getContacts: function (req, res) {
-      console.log(req.params.user_id)
+      var contacts = [];
+
       User.findById(req.params.user_id)
-        .populate('contacts')
+        .populate('contacts queues')
         .exec().then(function (user) {
-          return res.status(200).json(user.contacts);
+          contacts.push(...user.contacts);
+          if(user.queues.length > 0){
+            let queues = user.queues.map((queue) => queue._id);
+            return Queue.find({
+              _id: {$in: queues}
+            }).populate('contacts').exec()
+          }else{
+            return [];
+          }
+        })
+        .then(function (queues) {
+          if(queues.length > 0){
+            let qcontacts = queues.map((queue) => queue.contacts);
+            contacts.push(...qcontacts[0]);
+          }
+          return Group.find({
+            users: req.params.user_id
+          }).populate('contacts').exec()
+        })
+        .then(function (groups) {
+          if(groups.length > 0){
+            let gcontacts = groups.map((group) => group.contacts);
+            contacts.push(...gcontacts[0]);
+          }
+          return res.status(200).json(contacts);
         })
         .catch(function (err) {
           if (err) return res.status(500).json(err);
