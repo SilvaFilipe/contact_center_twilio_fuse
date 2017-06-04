@@ -1,0 +1,9 @@
+{
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://carling.herokuapp.com/",
+      "Auth": "https://carling.herokuapp.com/"
+    },
+    "LogoUrl": "assets/images/logos/CarlingLogo.jpg"
+  }
+}

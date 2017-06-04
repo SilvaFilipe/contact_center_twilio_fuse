@@ -1,9 +1,0 @@
-{
-  "local": {
-    "EnvironmentConfig": {
-      "API": "/",
-      "Auth": "/"
-    },
-    "LogoUrl": "/assets/images/logos/logo.png"
-  }
-}
