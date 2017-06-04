@@ -24,10 +24,11 @@
     function activate(){
       UserService.usersWithStars()
         .then(function (users) {
-          vm.users = users;
+          vm.users = users.filter(function (user) {
+            return user._id !== $rootScope.currentUser._id;
+          });
+
         });
-
-
 
     }
 

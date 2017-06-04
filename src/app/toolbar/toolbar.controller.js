@@ -17,12 +17,12 @@
         };
 
         vm.isAdmin = authService.userIsAdmin();
-        var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-        vm.userName = currentUser.firstName + ' ' + currentUser.lastName;
+        vm.currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
+        vm.userName = vm.currentUser.firstName + ' ' + vm.currentUser.lastName;
         vm.userName = vm.userName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
           return letter.toUpperCase();
         });
-        vm.userExtension = currentUser.extension;
+        vm.userExtension = vm.currentUser.extension;
 
         vm.bodyEl = angular.element('body');
         vm.userStatusOptions = [

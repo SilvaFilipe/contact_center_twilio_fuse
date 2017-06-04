@@ -31,6 +31,7 @@
         });
       }, true);
       vm.confirmPassword = vm.user.password;
+      $scope.originalAvatarUrl = vm.user.avatarUrl;
       if (angular.isDefined(vm.user.mailGreetingUrl) && vm.user.mailGreetingUrl)
         vm.mailGreetingUrl = vm.user.mailGreetingUrl;
       else {
@@ -38,6 +39,18 @@
           vm.mailGreetingUrl = res.data;
         });
       }
+
+      $scope.$watch(function () {
+        return vm.user.mailGreetingUrl;
+      }, function (changedUrl) {
+        if (changedUrl)
+          vm.mailGreetingUrl = changedUrl;
+        else {
+          $http.post(apiUrl + 'api/callControl/leave_message').then(function(res) {
+            vm.mailGreetingUrl = res.data;
+          });
+        }
+      });
 
       activate();
 
@@ -132,7 +145,7 @@
       var file = vm.user.avatarUrl;
       var promises = [];
       promises.push(AdminUserService.updateUser(vm.user._id, vm.user));
-      if (file) {
+      if (file !== $scope.originalAvatarUrl && file) {
         promises.push(UserService.uploadAvatar(vm.user._id, file));
       }
       $q.all(promises)

@@ -22,7 +22,8 @@
                            translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
                     <div layout="row" layout-align="space-between center">
                         <div class="avatar-wrapper">
-                            <img md-menu-align-target class="avatar" src="assets/images/avatars/profile.jpg">
+                            <img md-menu-align-target class="avatar" ng-if="!vm.currentUser.avatarUrl" src="assets/images/avatars/profile.jpg">
+                            <img ng-if="vm.currentUser.avatarUrl" class="md-avatar avatar contact-avatar" ng-src="{{vm.currentUser.avatarUrl}}" alt="{{vm.currentUser.firstName + ' ' + vm.currentUser.lastName}}">
                             <md-icon md-font-icon ng-class="vm.userStatus.icon"
                                      ng-style="{'color': vm.userStatus.color }"
                                      class="icon status s16">

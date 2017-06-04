@@ -46,42 +46,63 @@
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
 
             <form id="productForm" name="productForm">
-              <md-input-container class="md-block">
-                <label>
-                  Avatar
-                </label>
-                <media-preview model="vm.user.avatarUrl" preview-class="md-avatar avatar contact-avatar huge"></media-preview>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>First Name</label>
-                <input type="text" ng-model="vm.user.firstName" required>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Last Name</label>
-                <input type="text" ng-model="vm.user.lastName" required>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Phone</label>
-                <input type="text" ng-model="vm.user.phone">
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Email</label>
-                <input type="email" ng-model="vm.user.email" required>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Password</label>
-                <input type="password" ng-model="vm.user.password" name="new_pwd" ng-pattern="vm.confirmPassword|escapeRegex" required>
-                <div ng-messages="productForm.new_pwd.$error">
-                  <div ng-message="pattern">Password different</div>
+              <div layout="row" layout-wrap>
+                <div flex="100" flex-gt-sm="55" flex-gt-md="55">
+                  <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
+                    <header class="md-accent-bg">
+                      <div class="title">Basic Information</div>
+                    </header>
+
+                    <div class="content">
+                      <md-input-container class="md-block">
+                        <label>First Name</label>
+                        <input type="text" ng-model="vm.user.firstName" required>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Last Name</label>
+                        <input type="text" ng-model="vm.user.lastName" required>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Phone</label>
+                        <input type="text" ng-model="vm.user.phone">
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Email</label>
+                        <input type="email" ng-model="vm.user.email" required>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Password</label>
+                        <input type="password" ng-model="vm.user.password" name="new_pwd" ng-pattern="vm.confirmPassword|escapeRegex" required>
+                        <div ng-messages="productForm.new_pwd.$error">
+                          <div ng-message="pattern">Password different</div>
+                        </div>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <label>Confirm Password</label>
+                        <input type="password" ng-model="vm.confirmPassword" name="confirm_pwd" ng-pattern="vm.user.password|escapeRegex" required>
+                        <div ng-messages="productForm.confirm_pwd.$error">
+                          <div ng-message="pattern">Password different</div>
+                        </div>
+                      </md-input-container>
+                    </div>
+                  </div>
                 </div>
-              </md-input-container>
-              <md-input-container class="md-block">
-                <label>Confirm Password</label>
-                <input type="password" ng-model="vm.confirmPassword" name="confirm_pwd" ng-pattern="vm.user.password|escapeRegex" required>
-                <div ng-messages="productForm.confirm_pwd.$error">
-                  <div ng-message="pattern">Password different</div>
+
+                <div class="pl-30" layout="column" flex="100" flex-gt-sm="45" flex-gt-md="45">
+                  <div class="profile-box md-whiteframe-1dp" layout="column">
+                    <header class="md-accent-bg" layout="row" layout-align="space-between center">
+                      <div class="title">Avatar Upload
+                      </div>
+                    </header>
+                    <div class="content" layout="column" layout-wrap>
+                      <md-input-container class="md-block">
+                        <img md-menu-align-target style="border-radius: 50%" ng-if="!vm.user.avatarUrl" src="assets/images/avatars/profile.jpg">
+                        <media-preview model="vm.user.avatarUrl" preview-class="md-avatar avatar contact-avatar huge"></media-preview>
+                      </md-input-container>
+                    </div>
+                  </div>
                 </div>
-              </md-input-container>
+              </div>
 
             </form>
           </div>
