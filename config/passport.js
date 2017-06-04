@@ -60,13 +60,20 @@ module.exports = function (passport, acl) {
                             //give sip account
                             savedUser.syncSipCredential();
                             //add default roles
-                            acl.addUserRoles(savedUser._id.toString(), 'admin', function (err) {
+                            acl.addUserRoles(savedUser._id.toString(), 'phone', function (err) {
                                 if (err) return authCheckDone(err);
-                                acl.addUserRoles(savedUser._id.toString(), 'admin', function () {
+                                acl.addUserRoles(savedUser._id.toString(), 'contact_center', function () {
                                     if (err) return authCheckDone(err);
-
-                                    req.session.userId = savedUser._id;
-                                    return authCheckDone(null, savedUser);
+                                    if (req.body.newAdmin){
+                                      acl.addUserRoles(savedUser._id.toString(), 'admin', function () {
+                                        if (err) return authCheckDone(err);
+                                          req.session.userId = savedUser._id;
+                                          return authCheckDone(null, savedUser);
+                                      });
+                                    } else {
+                                      req.session.userId = savedUser._id;
+                                      return authCheckDone(null, savedUser);
+                                    }
                                 });
                             });
                         })
