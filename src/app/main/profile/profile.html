@@ -1,4 +1,4 @@
-<div id="admin-user" class="page-layout simple tabbed" layout="column">
+<div id="user-profile" class="page-layout simple tabbed" layout="column">
 
   <!-- HEADER -->
   <div class="header md-accent-bg" layout="row" layout-align="start center">
@@ -119,7 +119,9 @@
                       </md-input-container>
                       <div layout="row">
                         <span class="mt-5">Voicemail greeting:</span>
-                        <audio ng-src="{{vm.mailGreetingUrl}}" controls></audio>
+                        <div id="aPlayer">
+                          <audio ng-src="{{vm.mailGreetingUrl}}" controls></audio>
+                        </div>
                       </div>
                       <md-button class="mt-20" ng-click="vm.setVoicemailGreeting($event)">Set Voicemail Greeting</md-button>
                     </form>
