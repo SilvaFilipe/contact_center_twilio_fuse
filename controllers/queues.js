@@ -26,6 +26,7 @@ module.exports = {
     get: function (req, res) {
       User.find({ queues: { "$in" : [req.params.queue_id]} }).then(function (users) {
         Queue.findById(req.params.queue_id)
+          .populate('contacts')
           .exec(function (err, queue) {
             if(err) return res.status(500).json(err);
             var convertedJSON = JSON.parse(JSON.stringify(queue));
