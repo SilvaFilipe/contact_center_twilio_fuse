@@ -90,6 +90,25 @@ module.exports.saveDoc = function (docName, data) {
 };
 
 
+module.exports.createMap = function (mapName, cb) {
+
+  var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Maps';
+  var formData = { UniqueName: mapName};
+  request({ url: url, method: 'POST', formData: formData })
+    .then(response => {
+    console.log('got sync response: ' + JSON.parse(response).unique_name + " " + JSON.parse(response).revision);
+  cb(null, response);
+})
+  .catch(err => {
+  if (err.response.body.indexOf('54301')>-1){
+    cb(null, null);
+  } else {
+    console.log('error posting to sync: ' + err);
+    cb(err, null);
+  }
+});
+};
+
 module.exports.createDoc = function (docName, data, cb) {
 
     var url = 'https://' + process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN + '@preview.twilio.com/Sync/Services/' + process.env.SYNC_SERVICE_SID + '/Documents';

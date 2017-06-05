@@ -1,6 +1,8 @@
 'use strict'
 
+const nodeutil = require('util')
 const twilio 	= require('twilio')
+const sync = require('./sync.js');
 const async 	= require('async')
 
 /* client for Twilio Programmable Voice / SMS */
@@ -36,10 +38,32 @@ module.exports.createSiteConfig = function(){
   async.waterfall([
     module.exports.createOrUpdateSipDomain,
     module.exports.createOrUpdateSipCredentialList,
-    module.exports.mapCredentialToSipDomain
+    module.exports.mapCredentialToSipDomain,
+    module.exports.createInitialSyncDocs
   ], function (error, result) {
-    if (error) { console.log (error) }
+    if (error) {
+      console.log ('failed with  error')
+      console.log(nodeutil.inspect(error, false, null))
+    }
     console.log('Done!');
+  });
+}
+
+module.exports.createInitialSyncDocs = function (callback){
+  sync.createMap('workers', function (err, workerMap){
+    if (err) {
+      callback(err, null)
+    } else {
+      console.log('created workerMap');
+      sync.createMap('taskQueues', function (err, workerMap){
+        if (err) {
+          callback(err, null)
+        } else {
+          console.log('created taskQueues map');
+          callback(null, null);
+        }
+      });
+    }
   });
 }
 
@@ -51,7 +75,7 @@ module.exports.createOrUpdateSipDomain = function (callback) {
       } else {
         var domainSid=null;
         data.domains.forEach(function (domain) {
-          if (domain.domain_name == "CallCenter"){
+          if (domain.friendlyName == "CallCenter"){
             domainSid=domain.sid
           };
         });
