@@ -82,9 +82,9 @@ module.exports.createOrUpdateSipDomain = function (callback) {
         if (domainSid == null) {
           client.sip.domains.create({
             friendlyName: "CallCenter",
-            voiceUrl: process.env.PUBLIC_HOST + "/api/agents/registeredSipOutboundCall",
+            voiceUrl: process.env.SITE_URL + "/api/agents/registeredSipOutboundCall",
             VoiceMethod: "GET",
-            VoiceStatusCallbackUrl: process.env.PUBLIC_HOST + "/listener/log_statuscallback_event",
+            VoiceStatusCallbackUrl: process.env.SITE_URL + "/listener/log_statuscallback_event",
             VoiceStatusCallbackMethod: "POST",
             authType: "CREDENTIAL_LIST",
             SipRegistration: true,
