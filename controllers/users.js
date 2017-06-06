@@ -242,7 +242,7 @@ module.exports = {
                   user.password = hashedPassword;
                   user.local.password = hashedPassword;
                 }
-
+                console.log('queues part ?', req.body.queues)
                 if (Array.isArray(req.body.queues)) {
                   user.queues = req.body.queues.map(function (queue) {
                     return queue._id;
@@ -252,7 +252,10 @@ module.exports = {
                   .then(roles => addOrRemoveRoles(req.params.user_id, req.body.roles, roles))
                   .then(() =>  user.save())
                   .then(_user => res.status(200).json(_user))
-                  .catch(err => res.status(500).json(err));
+                  .catch(err => {
+                    console.log(err);
+                    return res.status(500).json(err)
+                  });
               });
 
             })
@@ -269,7 +272,7 @@ module.exports = {
         }
 
         return rolesPromise.then(() => {
-          if(bodyRoles.length > 0){ //error when sending empty array
+          if(bodyRoles && bodyRoles.length > 0){ //error when sending empty array
             return req.acl.addUserRoles(id, bodyRoles)
           }else{
             return Promise.resolve()
