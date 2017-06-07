@@ -451,13 +451,13 @@ module.exports.extensionInboundCall = function (req, res) {
   // right now only called from SIP to extension (registeredSipOutboundCall)
   setTimeout(function() {
     // workaround to wait for call to be inserted in db, TODO find a better way
-    var fromNumber = unescape(req.query.From);
+    var fromSipAddress = unescape(req.query.From);
     var toNumber = unescape(req.query.To);
-    console.log('extensionInboundCall call from: %s to %s' + fromNumber, toNumber);
+    console.log('extensionInboundCall call from %s to %s', fromSipAddress, toNumber);
 
     User.findOne({ extension: toNumber }, function (err, userToDial) {
       if (err){ return res.status(500).json(err); }
-      if (!userToDial){ return res.status(500).send(fromNumber + ' not found in any users extension') }
+      if (!userToDial){ return res.status(500).send(toNumber + ' not found in any users extension') }
       console.log ('found user ' + userToDial.email)
       Call.findOne({'callSid': req.query.CallSid}, function (err, call){
         if (err){
@@ -479,8 +479,8 @@ module.exports.extensionInboundCall = function (req, res) {
             data: {
               callSid: call.callSid,
               conferenceFriendlyName: req.query.CallSid,
-              callerName: fromNumber,
-              fromNumber: fromNumber
+              callerName: fromSipAddress,
+              fromNumber: fromSipAddress
             }
           };
           sync.saveList('m' + userToDial._id, mData);
@@ -493,9 +493,9 @@ module.exports.extensionInboundCall = function (req, res) {
             if (userToDial.sipURI.indexOf("sip:")==-1){
               toSipURI = 'sip:' + userToDial.sipURI;
             }
-            console.log('creating extension call leg from %s to %s url %s', fromNumber, toSipURI, twiml)
-            var sipAddress = toSipURI.split(":")[1];
-            User.findOne({ sipURI: sipAddress }, function(err, user){
+            console.log('creating extension call leg from %s to %s url %s', fromSipAddress, toSipURI, twiml)
+            fromSipAddress = fromSipAddress.split(":")[1];
+            User.findOne({ sipURI: fromSipAddress }, function(err, user){
               var fromCallerId=req.configuration.twilio.callerId;
               if (user!=null){
                 fromCallerId=user.extension;
