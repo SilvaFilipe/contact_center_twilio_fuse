@@ -411,6 +411,9 @@ module.exports.registeredSipOutboundCall= function (req, res) {
   var numberToCall = to.split('@')[0].split(":")[1];
 
   try {
+    if (process.env.DEFAULT_COUNTY_CODE == "44" && numberToCall.length==10){
+      numberToCall = "44" + numberToCall
+    }
     var sipAddress = from.split(":")[1];
     setTimeout(addSipUserToCallSid, 1000, sipAddress, req.query.CallSid);
     if (numberToCall.length < 5) {
