@@ -504,7 +504,7 @@ module.exports.extensionInboundCall = function (req, res) {
               client.calls.create({
                 url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
                 to: toSipURI,
-                from: fromNumber,
+                from: fromCallerId,
                 timeout: 14
               }, function(err, call) {
                 if (err){
