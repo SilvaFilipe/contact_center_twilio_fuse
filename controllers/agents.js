@@ -453,7 +453,7 @@ module.exports.extensionInboundCall = function (req, res) {
     // workaround to wait for call to be inserted in db, TODO find a better way
     var fromNumber = unescape(req.query.From);
     var toNumber = unescape(req.query.To);
-    console.log('inbound call from: %s to %s' + fromNumber, toNumber);
+    console.log('extensionInboundCall call from: %s to %s' + fromNumber, toNumber);
 
     User.findOne({ extension: toNumber }, function (err, userToDial) {
       if (err){ return res.status(500).json(err); }
@@ -493,6 +493,7 @@ module.exports.extensionInboundCall = function (req, res) {
             if (userToDial.sipURI.indexOf("sip:")==-1){
               toSipURI = 'sip:' + userToDial.sipURI;
             }
+            console.log('creating extension call leg from %s to %s url %s', from, to, url)
             client.calls.create({
               url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
               to: toSipURI,
