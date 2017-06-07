@@ -493,7 +493,7 @@ module.exports.extensionInboundCall = function (req, res) {
             if (userToDial.sipURI.indexOf("sip:")==-1){
               toSipURI = 'sip:' + userToDial.sipURI;
             }
-            console.log('creating extension call leg from %s to %s url %s', from, to, url)
+            console.log('creating extension call leg from %s to %s url %s', fromNumber, toSipURI, twiml)
             client.calls.create({
               url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
               to: toSipURI,
