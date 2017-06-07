@@ -31,6 +31,10 @@
         $rootScope.callTasks = [];
       }
 
+      if (!angular.isDefined($rootScope.extensionCallTasks)) {
+        $rootScope.extensionCallTasks = [];
+      }
+
 
       $http.get(apiUrl + 'api/users/me', {withCredentials: true})
         .then(function (response) {
@@ -68,14 +72,16 @@
                     });
                   }
 
-                  if (item.value.type === 'inboundCall'&& !$rootScope.extensionCallTask) {
+                  if (item.value.type === 'inboundCall') {
                     $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
                       var audio = new Audio(res.data);
                       audio.play();
                       var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
                         conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false};
-                      $rootScope.extensionCallTask = new ExtensionCall(callParams);
-                      $rootScope.startExtensionCounter();
+                      var task = new ExtensionCall(callParams);
+                      $rootScope.extensionCallTasks.push(task);
+                      $rootScope.stopExtensionCounter();
+                      $rootScope.startExtensionCounter(task);
 
                       if ($state.current.name !== 'app.workspace') {
                         $rootScope.showCallNotification();

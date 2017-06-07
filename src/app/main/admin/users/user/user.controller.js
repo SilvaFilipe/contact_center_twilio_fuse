@@ -33,11 +33,14 @@
       return vm.user.dids;
     },function(dids){
       vm.removingDids = [];
-      dids.filter(function (did) {
-        if (did.userFlag) {
-          vm.removingDids.push({id: did._id, sid: did.sid});
-        }
-      });
+      if (angular.isDefined(dids)) {
+        dids.filter(function (did) {
+          if (did.userFlag) {
+            vm.removingDids.push({id: did._id, sid: did.sid});
+          }
+        });
+      }
+
     }, true);
 
     if (angular.isDefined(User.groups)) {
