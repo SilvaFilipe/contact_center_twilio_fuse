@@ -485,7 +485,7 @@ module.exports.extensionInboundCall = function (req, res) {
           };
           sync.saveList('m' + userToDial._id, mData);
 
-          var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + 'api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+          var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
           if (userToDial.sipURI!=undefined && userToDial.sipURI.length>0){
             // Dial a SIP phone with a timeout
             var escaped_twiml = require('querystring').escape(twiml);
@@ -494,23 +494,31 @@ module.exports.extensionInboundCall = function (req, res) {
               toSipURI = 'sip:' + userToDial.sipURI;
             }
             console.log('creating extension call leg from %s to %s url %s', fromNumber, toSipURI, twiml)
-            client.calls.create({
-              url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
-              to: toSipURI,
-              from: fromNumber,
-              timeout: 14
-            }, function(err, call) {
-              if (err){
-                console.log(err);
-              } else {
-                console.log('created outbound to SIP call ' + call.sid + ' to ' + toSipURI);
-                // insert into db
-                // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
-                // var newCall = new Call( Object.assign(dbFields) );
-                // newCall.save(function (err) {
-                //   if(err){ console.log(err);}
-                // });
+            var sipAddress = toSipURI.split(":")[1];
+            User.findOne({ sipURI: sipAddress }, function(err, user){
+              var fromCallerId=req.configuration.twilio.callerId;
+              if (user!=null){
+                fromCallerId=user.extension;
               }
+              console.log('fromNumber is ' + fromCallerId);
+              client.calls.create({
+                url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+                to: toSipURI,
+                from: fromNumber,
+                timeout: 14
+              }, function(err, call) {
+                if (err){
+                  console.log(err);
+                } else {
+                  console.log('created outbound to SIP call ' + call.sid + ' to ' + toSipURI);
+                  // insert into db
+                  // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+                  // var newCall = new Call( Object.assign(dbFields) );
+                  // newCall.save(function (err) {
+                  //   if(err){ console.log(err);}
+                  // });
+                }
+              });
             });
           }
 
