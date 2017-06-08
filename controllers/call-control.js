@@ -122,9 +122,13 @@ module.exports.hangup = function (req, res) {
         res.setHeader('Cache-Control', 'public, max-age=0')
         res.send("ERROR")
       } else {
-        console.log('updated call(2) ' + call2.callSid);
-        call2.saveSync();
-        console.log('Disconnected: ' + callSid);
+        if (call2 == null){
+          console.log('call2 is null');
+        } else {
+          console.log('updated call(2) ' + call2.callSid);
+          call2.saveSync();
+          console.log('Disconnected: ' + callSid);
+        }
         res.setHeader('Cache-Control', 'public, max-age=0')
         res.send("OK")
       }
