@@ -12,12 +12,12 @@
     <md-dialog-content style="max-width:800px;max-height:810px;">
       <div class="demo__iphone-numbers">
         Numbers:
-        <input type="text" data-ng-model="vm.numbers">
+        <input type="text" data-ng-model="vm.numbers" ng-keyup="vm.keyDowned($event)">
       </div>
       <div class="mt-20">
         <bc-keypad
           bc-number-model="vm.numbers"
-          ng-click="vm.keyPressed(vm.numbers)"
+          ng-click="vm.digitClicked()"
         >
         </bc-keypad>
       </div>

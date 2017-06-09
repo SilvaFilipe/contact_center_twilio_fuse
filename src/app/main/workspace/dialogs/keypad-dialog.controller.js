@@ -6,9 +6,8 @@
     .controller('KeypadDialogController', KeypadDialogController);
 
   /** @ngInject */
-  function KeypadDialogController($scope, $rootScope, $log, $mdDialog,  $http) {
+  function KeypadDialogController($scope, $rootScope, $mdDialog) {
     var vm = this;
-    var apiUrl = $rootScope.apiBaseUrl;
     $scope.hide = function() {
       $mdDialog.hide();
     };
@@ -16,12 +15,19 @@
       $mdDialog.cancel();
     };
 
-    vm.keyPressed = function (numbers) {
-      var number = numbers.charAt(numbers.length-1);
+    vm.digitClicked = function () {
       if($rootScope.connection){
-        $rootScope.connection.sendDigits(number);
+        $rootScope.connection.sendDigits(vm.numbers.charAt(vm.numbers.length-1));
       }
-    }
+    };
+
+    vm.keyDowned = function (keyEvent) {
+      if (keyEvent.which >= 48 && keyEvent.which <= 57) {
+        if($rootScope.connection){
+          $rootScope.connection.sendDigits(vm.numbers.charAt(vm.numbers.length-1));
+        }
+      }
+    };
   }
 
 })();
