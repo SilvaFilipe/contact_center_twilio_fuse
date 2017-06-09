@@ -413,7 +413,7 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
             }
           }
-          var twiml = '<Response><Dial ringTone ="process.env.DEFAULT_COUNTY_CODE" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
+          var twiml = '<Response><Dial ringTone ="' + process.env.DEFAULT_COUNTY_CODE+ '" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
         });
     }
