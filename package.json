@@ -39,6 +39,7 @@
     "email-validator": "^1.0.7",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "google-libphonenumber": "^2.0.18",
     "lodash": "^3.10.1",
     "lodash.differencewith": "^4.5.0",
     "lodash.isarraylike": "^4.2.0",

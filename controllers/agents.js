@@ -1,6 +1,8 @@
 'use strict';
 
 const colors = require('colors');
+var PNF = require('google-libphonenumber').PhoneNumberFormat;
+var phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 const async 	= require('async');
 const twilio = require('twilio');
 const uuidV1 = require('uuid/v1');
@@ -118,41 +120,9 @@ module.exports.getSession = function (req, res) {
 
 module.exports.call = function (req, res) {
   var twiml = new twilio.TwimlResponse()
-
   twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
     node.conference(req.query.workerName, {waitUrl: process.env.PUBLIC_HOST  + "/api/callControl/play_ringing", waitMethod: "POST"})
   });
-
-  /*
-
-   var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" record="record-from-answer-dual"><Conference endConferenceOnExit="true" waitMethod="GET" waitUrl="/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.workerName + '</Conference></Dial></Response>';
-   var escaped_twiml = require('querystring').escape(twiml);
-   client.calls.create({
-   url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
-   to: req.query.phone,
-   from: req.configuration.twilio.callerId,
-   statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',
-   statusCallbackMethod: "POST",
-   statusCallbackEvent: ["initiated", "answered", "completed"]
-   }, function(err, call) {
-   if (err){
-   console.log(err);
-   } else {
-   console.log('created outbound call ' + call.sid);
-   // insert into db
-   var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
-   var newCall = new Call( Object.assign(dbFields) );
-   newCall.save(function (err) {
-   if(err){ console.log(err);}
-   });
-   }
-   });
-
-   //req.query.phone
-   // twiml.dial({ callerId: req.configuration.twilio.callerId }, function (node) {
-   //   node.number(req.query.phone)
-   // })
-   */
   res.setHeader('Content-Type', 'application/xml')
   res.setHeader('Cache-Control', 'public, max-age=0')
   res.send(twiml.toString())
@@ -411,9 +381,18 @@ module.exports.registeredSipOutboundCall= function (req, res) {
   var numberToCall = to.split('@')[0].split(":")[1];
 
   try {
-    if (process.env.DEFAULT_COUNTY_CODE == "44" && numberToCall.length==10){
-      numberToCall = "44" + numberToCall
+    var phoneNumber = phoneUtil.parseAndKeepRawInput(numberToCall, process.env.DEFAULT_COUNTY_CODE);
+    var isPossible = phoneUtil.isPossibleNumber(phoneNumber);
+    if (!isPossible){
+      console.log('%s not possible, trying as country', numberToCall);
+      phoneNumber = phoneUtil.parseAndKeepRawInput('+' + numberToCall, process.env.DEFAULT_COUNTY_CODE);
     }
+    var toCallE164 = phoneUtil.format(phoneNumber, PNF.E164);
+    console.log ('e164 %s', toCallE164);
+    numberToCall = toCallE164;
+    // if (process.env.DEFAULT_COUNTY_CODE == "44" && numberToCall.length==10){
+    //   numberToCall = "44" + numberToCall
+    // }
     var sipAddress = from.split(":")[1];
     setTimeout(addSipUserToCallSid, 1000, sipAddress, req.query.CallSid);
     if (numberToCall.length < 5) {
@@ -434,7 +413,7 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
             }
           }
-          var twiml = '<Response><Dial callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
+          var twiml = '<Response><Dial ringTone ="process.env.DEFAULT_COUNTY_CODE" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
         });
     }

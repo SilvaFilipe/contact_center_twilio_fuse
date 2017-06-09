@@ -93,7 +93,6 @@ module.exports = function(app, acl, multer){
     router.route('/workers').post(workers.create)
     router.route('/workers/:id').delete(workers.delete)
 
-
     router.route('/messaging-adapter/inbound').post(messagingAdapter.inbound)
     router.route('/messaging-adapter/outbound').post(messagingAdapter.outbound)
 

@@ -289,7 +289,7 @@
 
           $rootScope.stopWorkingCounter();
           $rootScope.startWorkingCounter();
-        }, 1000);
+        }, 500);
 
       };
 

@@ -100,7 +100,7 @@ UserSchema.methods.sipConfigQRCode = (function (callback) {
     <UserID>${user.friendlyWorkerName}</UserID>
     <AuthID>${user.friendlyWorkerName}</AuthID>
     <AuthPass>CallCenter99</AuthPass>
-    <AccountName>Kismet</AccountName>
+    <AccountName>${process.env.SIP_DOMAIN}</AccountName>
     <DisplayName>${user.friendlyWorkerName}</DisplayName>
     </Account>
     </AccountConfig>`;

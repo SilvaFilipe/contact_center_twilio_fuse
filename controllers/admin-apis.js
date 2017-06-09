@@ -26,7 +26,6 @@ module.exports.showSipInfo = function (req, res) {
     user.sipConfigQRCode(function(err, uri){
       if (err){return res.status(500).json(err);}
       res.send(`
-
 <p>To use a SIP phone or mobile app, set Sip Address to ${user.friendlyWorkerName}@${process.env.SIP_DOMAIN}.sip.us1.twilio.com</p>
 <table><tr>
 <td>Mobile App Installation</td>
@@ -113,12 +112,19 @@ module.exports.didPurchase = function (req, res) {
       console.log('number already purchased!')
       return res.status(500).json('Did already purchased');
     } else {
+      if (userId) {
+        var voiceUrl = process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionCall';
+        var smsUrl = process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionSms';
+      } else {
+        var voiceUrl = process.env.PUBLIC_HOST + '/api/ivr/welcome';
+        var smsUrl = process.env.PUBLIC_HOST + '/api/messaging-adapter/inbound';
+      }
       client.incomingPhoneNumbers.create({
         phoneNumber:phoneNumber,
-        voiceUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionCall',
+        voiceUrl: voiceUrl,
         voiceMethod: "GET",
-        smsUrl: process.env.PUBLIC_HOST + '/api/agents/didInboundExtensionSms',
-        smsMethod: "GET",
+        smsUrl: smsUrl,
+        smsMethod: "POST",
         statusCallback: process.env.PUBLIC_HOST + "/listener/log_statuscallback_event",
         statusCallbackMethod: "POST"
       }, function(buyError, number) {
