@@ -27,7 +27,7 @@ module.exports.login = function (req, res) {
   var friendlyName = req.body.worker.friendlyName
 
   /* all token we generate are valid for 1 hour */
-  const lifetime = 3600
+  const lifetime = 60 * 60 * 24  * 7 // 1 week in seconds
   taskrouterClient.workspace.workers.get({FriendlyName: friendlyName}, function (err, data) {
     if (err) {
       res.status(500).json(err)

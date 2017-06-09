@@ -254,7 +254,7 @@
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
-          alert('the worker token expired');
+          alert('Your worker token expired, please login again.');
           window.location.replace('/access/login');
 
         });
