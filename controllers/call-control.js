@@ -81,7 +81,7 @@ module.exports.play_ringing = function (req, res) {
 }
 
 module.exports.inbound_ringing = function (req, res) {
-  var ringUrl = process.env.PUBLIC_HOST + '/sounds/chime.mp3';
+  var ringUrl = process.env.PUBLIC_HOST + '/sounds/chime2.wav';
   res.send(ringUrl);
 }
 
