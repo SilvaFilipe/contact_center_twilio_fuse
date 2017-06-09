@@ -225,6 +225,17 @@
         });
       };
 
+      $scope.showKeypad = function (ev) {
+        $mdDialog.show({
+          controller: 'KeypadDialogController',
+          controllerAs: 'vm',
+          templateUrl: 'app/main/workspace/dialogs/keypad.html',
+          parent: angular.element($document.body),
+          targetEvent: ev,
+          clickOutsideToClose: true
+        });
+      };
+
       $scope.complete = function (isChat) {
         if ($rootScope.currentCall && !isChat) {
           if ($rootScope.currentCall.type === 'outbound') {

@@ -1,0 +1,32 @@
+<md-dialog aria-label="Mango (Fruit)">
+  <form>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools">
+        <h2>Keypad</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px;">
+      <div class="demo__iphone-numbers">
+        Numbers:
+        <input type="text" data-ng-model="vm.numbers">
+      </div>
+      <div class="mt-20">
+        <bc-keypad
+          bc-number-model="vm.numbers"
+          ng-click="vm.keyPressed(vm.numbers)"
+        >
+        </bc-keypad>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()" style="margin-right:20px;">
+        Cancel
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
