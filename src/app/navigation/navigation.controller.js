@@ -7,9 +7,17 @@
         .controller('NavigationController', NavigationController);
 
     /** @ngInject */
-    function NavigationController($scope)
+    function NavigationController($scope, EnvironmentConfig)
     {
         var vm = this;
+        if (angular.isDefined(EnvironmentConfig.MenuLogoImageUrl))
+          vm.MenuLogoImageUrl = EnvironmentConfig.MenuLogoImageUrl;
+        else vm.LogoLetter = EnvironmentConfig.LogoLetter;
+
+        if (angular.isDefined(EnvironmentConfig.MenuLogoTextUrl))
+          vm.MenuLogoTextUrl = EnvironmentConfig.MenuLogoTextUrl;
+        else vm.MenuLogoText = EnvironmentConfig.MenuLogoText;
+
 
         // Data
         vm.bodyEl = angular.element('body');

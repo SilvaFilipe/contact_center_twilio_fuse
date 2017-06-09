@@ -7,11 +7,10 @@
         .controller('LoginController', LoginController);
 
     /** @ngInject */
-    function LoginController($http, $state, $scope, $rootScope, authService, LogoUrl) {
-      $rootScope.logoUrl = LogoUrl;
+    function LoginController($http, $state, $scope, $rootScope, authService, EnvironmentConfig) {
       var vm = this;
       vm.form = {};
-      vm.logoUrl = LogoUrl;
+      vm.logoUrl = EnvironmentConfig.LogoUrl;
       vm.submitting = false;
       vm.login = function() {
         if(vm.submitting) return;
