@@ -95,11 +95,11 @@
 
       };
 
-      $rootScope.startExtensionCounter = function () {
+      $rootScope.startExtensionCounter = function (task) {
 
         $log.log('start working counter');
         $rootScope.extensionInterval = $interval(function () {
-          $rootScope.extensionCallTask.duration++;
+          task.duration++;
         }, 1000);
 
       };

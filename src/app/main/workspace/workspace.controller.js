@@ -263,10 +263,11 @@
 
 
 
-      $scope.acceptInboundCall = function () {
+      $scope.acceptInboundCall = function (task) {
         $rootScope.stopExtensionCounter();
-        $rootScope.currentCall = angular.copy($rootScope.extensionCallTask);
-        $rootScope.extensionCallTask = null;
+        $rootScope.currentCall = angular.copy(task);
+        var index = $rootScope.extensionCallTasks.indexOf(task);
+        $rootScope.extensionCallTasks.splice(index, 1);
         setTimeout(function(){
           $rootScope.callTasks.push($rootScope.currentCall);
           CallService.getActiveConnSid(function(ActiveConnSid) {
@@ -288,14 +289,15 @@
 
           $rootScope.stopWorkingCounter();
           $rootScope.startWorkingCounter();
-        }, 500);
+        }, 1000);
 
       };
 
-      $scope.declineInboundCall = function () {
-        CallService.toVoicemail($rootScope.extensionCallTask.callSid)
+      $scope.declineInboundCall = function (task) {
+        CallService.toVoicemail(task.callSid)
           .then(function (response) {
-            $rootScope.extensionCallTask = null;
+            var index = $rootScope.extensionCallTasks.indexOf(task);
+            $rootScope.extensionCallTasks.splice(index, 1);
             $rootScope.stopExtensionCounter();
           })
       };
