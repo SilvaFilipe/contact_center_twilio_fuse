@@ -3,11 +3,11 @@
     "EnvironmentConfig": {
       "API": "https://carling.herokuapp.com/",
       "Auth": "https://carling.herokuapp.com/",
-      "LogoUrl": "assets/images/logos/CarlingLogo.jpg",
+      "LogoUrl": "assets/images/logos/carling/LogoUrl.png",
       "LogoLetter": "C",
       "MenuLogoText": "Carling",
-      "MenuLogoImageUrl": "assets/images/logos/menulogo.jpg",
-      "MenuLogoTextUrl": "assets/images/logos/menulogo.jpg"
+      "MenuLogoImageUrl": "assets/images/logos/carling/menulogo.png",
+      "MenuLogoTextUrl": "assets/images/logos/carling/menulogotext.png"
     }
   }
 }

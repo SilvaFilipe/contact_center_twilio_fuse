@@ -1,12 +1,12 @@
 <md-toolbar class="navigation-header md-whiteframe-1dp" layout="row" layout-align="space-between center">
     <div class="logo" layout="row" layout-align="start center">
-        <span class="logo-image">
-          <img src="{{vm.MenuLogoImageUrl}}" ng-show="vm.MenuLogoImageUrl" style="width: 35px; height: 35px;">
-          <span ng-hide="vm.MenuLogoImageUrl">{{vm.LogoLetter}}</span>
+        <span class="logo-image" ng-style="vm.MenuLogoTextUrl && {'background': 'none'}" >
+          <img src="{{vm.MenuLogoTextUrl}}" ng-show="vm.MenuLogoTextUrl" style="width: 35px; height: 35px;">
+          <span ng-hide="vm.MenuLogoTextUrl">{{vm.LogoLetter}}</span>
         </span>
         <span class="logo-text">
-          <img src="{{vm.MenuLogoTextUrl}}" ng-show="vm.MenuLogoTextUrl" style="width: 130px; height: 35px;">
-          <span ng-hide="vm.MenuLogoTextUrl">{{vm.MenuLogoText}}</span>
+          <img src="{{vm.MenuLogoImageUrl}}" ng-show="vm.MenuLogoImageUrl" style="width: 130px; height: 35px;">
+          <span ng-hide="vm.MenuLogoImageUrl">{{vm.MenuLogoText}}</span>
         </span>
 
     </div>
