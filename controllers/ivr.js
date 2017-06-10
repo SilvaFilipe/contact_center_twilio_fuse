@@ -48,6 +48,24 @@ module.exports.welcome = function (req, res) {
     });
 }
 
+module.exports.welcomePBX = function (req, res) {
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
+
+  twiml.gather({
+    action: 'select-extension',
+    method: 'GET',
+    numDigits: 1,
+    timeout: 10
+  }, function (node) {
+    node.play(process.env.PBX_GREETING_URL)
+  })
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(twiml.toString())
+}
+
 module.exports.welcomeOld = function (req, res) {
   listener.log_twiml_event(req);
   var twiml = new twilio.TwimlResponse()
