@@ -2,8 +2,10 @@
   "local": {
     "EnvironmentConfig": {
       "API": "/",
-      "Auth": "/"
-    },
-    "LogoUrl": "/assets/images/logos/logo.png"
+      "Auth": "/",
+      "LogoUrl": "/assets/images/logos/logo.png",
+      "LogoLetter": "K",
+      "MenuLogoText": "Kismet"
+    }
   }
 }

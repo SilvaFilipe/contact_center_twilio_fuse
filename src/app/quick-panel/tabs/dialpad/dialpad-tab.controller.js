@@ -366,7 +366,7 @@
       $scope.toggleRight = function() {
         $mdSidenav('right').toggle();
       };
-      $scope.connection = null;
+      $rootScope.connection = null;
       $scope.isOutboundCall = false;
 
 
@@ -399,7 +399,7 @@
         });
 
         Twilio.Device.connect(function (conn) {
-          $scope.connection = conn;
+          $rootScope.connection = conn;
           bindVolumeIndicators(conn);
           $scope.status = 'successfully established call';
           $scope.isActive = true;
@@ -413,7 +413,7 @@
         Twilio.Device.disconnect(function (conn) {
           $scope.status = 'call disconnected';
           $scope.isActive = false;
-          $scope.connection = null;
+          $rootScope.connection = null;
 
           $timeout(function(){
             $scope.$apply();
@@ -444,7 +444,7 @@
             $scope.$apply();
           });
 
-          $scope.connection = conn;
+          $rootScope.connection = conn;
           vm.phoneNumber = conn.parameters.From;
 
         });
@@ -524,8 +524,8 @@
 
         addAnimationToButton(event.target);
 
-        if($scope.connection){
-          $scope.connection.sendDigits(digit);
+        if($rootScope.connection){
+          $rootScope.connection.sendDigits(digit);
         }
         $('.phoneNumberTxt').focus();
 

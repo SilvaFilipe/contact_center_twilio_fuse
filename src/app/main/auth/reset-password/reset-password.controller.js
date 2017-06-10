@@ -7,12 +7,12 @@
         .controller('ResetPasswordController', ResetPasswordController);
 
     /** @ngInject */
-    function ResetPasswordController($http, $rootScope, $state)
+    function ResetPasswordController($http, $rootScope, $state, EnvironmentConfig)
     {
       var vm = this;
       vm.form = {};
       var apiUrl = $rootScope.apiBaseUrl;
-      vm.logoUrl = $rootScope.logoUrl;
+      vm.logoUrl = EnvironmentConfig.logoUrl;
 
       vm.resetPassword = function () {
         $http.post(apiUrl + 'api/reset/' + $state.params.token, {password: vm.form.password}, {withCredentials: true})

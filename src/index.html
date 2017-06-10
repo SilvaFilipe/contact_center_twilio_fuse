@@ -85,4 +85,11 @@
         <script src="https://media.twiliocdn.com/sdk/rtc/js/ip-messaging/v0.10/twilio-ip-messaging.js"></script>
         <script src="https://media.twiliocdn.com/sdk/js/sync/v0.3/twilio-sync.min.js"></script>
     </body>
+    <script type="text/javascript">
+      if (window.location.href.indexOf('localhost') === -1 && window.location.protocol === "http:") {
+        var restOfUrl = window.location.href.substr(5);
+        window.location = "https:" + restOfUrl;
+      }
+    </script>
+
 </html>
