@@ -6,7 +6,7 @@
     .controller('TransferDialogController', TransferDialogController);
 
   /** @ngInject */
-  function TransferDialogController($scope, $rootScope, $log, $mdDialog,  $http, UserService, callTasks, ConferenceCall, CallService) {
+  function TransferDialogController($scope, $rootScope, $log, $mdDialog,  $http, UserService, callTasks, ConferenceCall, CallService, ContactsDirectoryService) {
     var vm = this;
     var apiUrl = $rootScope.apiBaseUrl;
     $scope.callTasks = callTasks;
@@ -27,7 +27,7 @@
     };
 
 
-    vm.selectedAction = vm.displayableAction = 'transfer-call';
+    vm.selectedAction = vm.displayableAction = 'start-screen';
 
     activate();
 
@@ -39,6 +39,8 @@
     }
 
     vm.confirmChange = function () {
+      vm.transferExternalNumber = ContactsDirectoryService.selectedUser.extension;
+
       if (vm.displayableAction == 'transfer-call') {
         console.log('transfer to ' + vm.transferExternalNumber);
         CallService.getActiveConnSid(function(ActiveConnSid) {
@@ -51,6 +53,7 @@
       } else {
         //join lines
         console.log($scope.selected );
+        //TODO: should probably be a service
         var uniqueId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
           var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
           return v.toString(16);

@@ -10,14 +10,17 @@
     </md-toolbar>
 
     <md-dialog-content ms-scroll>
-      <md-input-container class="md-block">
-        <md-select class="account-selection simplified" placeholder="Transfer Selection"
-                   ng-model="vm.selectedAction" ng-change="vm.onTransferChange()">
-          <md-option value="transfer-call">Transfer call</md-option>
-          <md-option value="join-lines">Join Lines</md-option>
-        </md-select>
-      </md-input-container>
-
+      <!--<md-input-container class="md-block">-->
+        <!--<md-select class="account-selection simplified" placeholder="Transfer Selection"-->
+                   <!--ng-model="vm.selectedAction" ng-change="vm.onTransferChange()">-->
+          <!--<md-option value="transfer-call">Transfer call</md-option>-->
+          <!--<md-option value="join-lines">Join Lines</md-option>-->
+        <!--</md-select>-->
+      <!--</md-input-container>-->
+      <div ng-if="vm.displayableAction == 'start-screen'">
+        <md-button class="md-raised" ng-click="vm.displayableAction = 'transfer-call'"> Transfer </md-button>
+        <md-button class="md-raised" ng-click="vm.displayableAction = 'join-lines'"> Join Lines </md-button>
+      </div>
       <md-tabs ng-if="vm.displayableAction === 'transfer-call'">
         <!--
         <md-tab label="Active Calls">
@@ -36,7 +39,7 @@
         </md-tab>
         -->
         <md-tab label="Directory">
-          <contacts-directory users="vm.users"></contacts-directory>
+          <contacts-directory users="vm.users" no-star="true" no-call="true"></contacts-directory>
         </md-tab>
         <!--
         <md-tab label="Contacts">
@@ -75,9 +78,11 @@
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="center center">
-        <div></div>
-        <md-button ng-click="vm.cancelChange()" class="send-button md-accent md-active" aria-label="Cancel">
+        <md-button ng-if="vm.displayableAction == 'start-screen'" ng-click="vm.cancelChange()" class="send-button md-accent md-active" aria-label="Cancel">
           Cancel
+        </md-button>
+        <md-button ng-if="vm.displayableAction != 'start-screen'" ng-click="vm.displayableAction = 'start-screen'" class="send-button md-accent md-active" aria-label="Cancel">
+          Back
         </md-button>
         </div>
       <div>
