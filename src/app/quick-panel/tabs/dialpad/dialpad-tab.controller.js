@@ -66,8 +66,11 @@
                     $rootScope.callTasks.filter(function (callItem) {
                       if (callItem.callSid === item.value.data.callSid) {
                           //callItem.callStatus = 'completed';
+                        console.log('callItem');
+                        console.log(callItem);
                         callItem.sipAnswered = true;
-                        $log.log('call:' + data.callSid + ' to sipAnswered' + callItem.sipAnswered);
+                        //$log.log('call:' + data.callSid + ' to sipAnswered' + callItem.sipAnswered);
+                        $log.log('call:' + item.value.data.callSid + ' to sipAnswered' + callItem.sipAnswered);
                       }
                     });
                   }
