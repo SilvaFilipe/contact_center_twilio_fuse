@@ -19,7 +19,7 @@
       <!--</md-input-container>-->
       <div ng-if="vm.displayableAction == 'start-screen'">
         <md-button class="md-raised" ng-click="vm.displayableAction = 'transfer-call'"> Transfer </md-button>
-        <md-button class="md-raised" ng-click="vm.displayableAction = 'join-lines'"> Join Lines </md-button>
+        <md-button class="md-raised" ng-click="vm.displayableAction = 'join-lines'"> Conference </md-button>
       </div>
       <md-tabs ng-if="vm.displayableAction === 'transfer-call'">
         <!--
@@ -76,7 +76,7 @@
         </fieldset>
       </div>
     </md-dialog-content>
-    <md-dialog-actions layout="row" layout-align="space-between center">
+    <md-dialog-actions layout="row" layout-align="space-between center" ng-if="vm.displayableAction != 'start-screen'">
       <div layout="row" layout-align="center center">
         <md-button ng-if="vm.displayableAction == 'start-screen'" ng-click="vm.cancelChange()" class="send-button md-accent md-active" aria-label="Cancel">
           Cancel

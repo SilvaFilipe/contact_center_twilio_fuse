@@ -249,24 +249,32 @@ module.exports.dialCustomerTransfer = function (req, res) {
   var toNumber = req.query.toNumber;
   var caller_sid = req.query.caller_sid;
   console.log('transfer call %s to %s', caller_sid, toNumber );
-  var twiml = '<Response><Dial>' + toNumber + '</Dial></Response>';
-  var escaped_twiml = require('querystring').escape(twiml);
-  client.calls(caller_sid).update({
-    url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
-    method: "GET"
-  }, function(err, call) {
-    if (err){
-      console.log(err);
-      res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Cache-Control', 'public, max-age=0')
-      res.send(JSON.stringify( 'ERROR' , null, 3))
-    } else {
-      console.log ("transferred " + caller_sid + ' to  ' + toNumber);
-      res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Cache-Control', 'public, max-age=0')
-      res.send(JSON.stringify( 'OK' , null, 3))
-    }
-  });
+  if (toNumber.length < 5){
+    console.log('transferring to extension call');
+    req.query.CallSid = caller_sid
+    req.query.From = req.configuration.twilio.callerId
+    req.query.To = toNumber
+    module.exports.extensionInboundCall(req,res);
+  } else {
+    var twiml = '<Response><Dial>' + toNumber + '</Dial></Response>';
+    var escaped_twiml = require('querystring').escape(twiml);
+    client.calls(caller_sid).update({
+      url: "http://twimlets.com/echo?Twiml=" + escaped_twiml ,
+      method: "GET"
+    }, function(err, call) {
+      if (err){
+        console.log(err);
+        res.setHeader('Content-Type', 'application/json')
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send(JSON.stringify( 'ERROR' , null, 3))
+      } else {
+        console.log ("transferred " + caller_sid + ' to  ' + toNumber);
+        res.setHeader('Content-Type', 'application/json')
+        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.send(JSON.stringify( 'OK' , null, 3))
+      }
+    });
+  }
 }
 
 module.exports.outboundCall = function (req, res) {
@@ -279,14 +287,14 @@ module.exports.outboundCall = function (req, res) {
         return res.send("ERROR")
       } else {
         if (userToDial != null) {
-          console.log('userToDial: ' + userToDial._id);
+          console.log('userToDial: ' + userToDial.email);
           User.findOne({'_id': req.query.user_id}, function (err, thisUser) {
             if (err) {
               console.log ('error finding user ' + req.query.user_id);
               res.setHeader('Cache-Control', 'public, max-age=0')
               res.send("ERROR")
             } else {
-              console.log ('found user ' + thisUser._id);
+              console.log ('found user ' + thisUser.email);
               var confName = 'ex_' + req.query.phone + '_' + thisUser._id;
               // insert into db
               var dbFields = { callSid: uuidV1(), recipientName: userToDial.fullName, callerName: thisUser.fullName, user_id: req.query.user_id, from: thisUser.extension, conferenceFriendlyName:confName, to: req.query.phone, updated_at: new Date(), direction: 'extension'};
@@ -309,6 +317,48 @@ module.exports.outboundCall = function (req, res) {
                   sync.saveList ('m' + userToDial._id, mData);
                   res.setHeader('Cache-Control', 'public, max-age=0')
                   res.send({call: newCall})
+
+                  // TODO also call SIP phone
+                  if (userToDial.sipURI != undefined && userToDial.sipURI.length > 0) {
+                    console.log('extension call to ' + userToDial.sipURI)
+                    // Dial a SIP phone with a timeout
+                    // dont record the sip leg or you get double transcriptions
+                    var sipTwiml = '<Response><Dial><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="' + process.env.PUBLIC_HOST + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + confName+ '</Conference></Dial></Response>';
+                    var escaped_twiml = require('querystring').escape(sipTwiml);
+                    var toSipURI = userToDial.sipURI;
+                    if (userToDial.sipURI.indexOf("sip:") == -1) {
+                      toSipURI = 'sip:' + userToDial.sipURI;
+                    }
+                    client.calls.create({
+                      url: "http://twimlets.com/echo?Twiml=" + escaped_twiml,
+                      to: toSipURI,
+                      from: req.configuration.twilio.callerId,
+                      timeout: 15
+                    }, function (err, sipCall) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log('created outbound to SIP call ' + sipCall.sid);
+                        newCall.sipCallSid = sipCall.sid;
+                        newCall.save(function (err) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            newCall.saveSync();
+                          }
+                        });
+
+                        // insert into db
+                        // var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+                        // var newCall = new Call( Object.assign(dbFields) );
+                        // newCall.save(function (err) {
+                        //   if(err){ console.log(err);}
+                        // });
+                      }
+                    });
+                  }
+
+
                 }
               });
             }
@@ -445,7 +495,7 @@ module.exports.registeredSipOutboundCall= function (req, res) {
 }
 
 module.exports.extensionInboundCall = function (req, res) {
-  // right now only called from SIP to extension (registeredSipOutboundCall)
+  // right now called from SIP to extension (registeredSipOutboundCall), or from transfer (dialCustomerTransfer)
   setTimeout(function() {
     // workaround to wait for call to be inserted in db, TODO find a better way
     var fromNumber = unescape(req.query.From);

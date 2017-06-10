@@ -36,7 +36,8 @@
       return this.callStatus !== 'completed' && this.type === 'conference';
     };
     Call.prototype.isCompleted = function() {
-      return this.callStatus === 'completed' || this.sipAnswered === true;
+       //&& this.direction == "extension"
+      return this.callStatus === 'completed' || (this.sipAnswered === true && this.type != "outbound");
     };
 
     Call.prototype.isInGoingCall = function() {
