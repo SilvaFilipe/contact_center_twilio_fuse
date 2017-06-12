@@ -16,7 +16,6 @@
         pageLength: 50,
         autoWidth : false,
         responsive: true,
-        scrollY     : 'auto',
         order: [[ 1, "asc" ]],
         columnDefs: [{"orderable": false, "targets": 0}, {"orderable": false, "targets": 5}],
         language: {
