@@ -82,6 +82,10 @@
     vm.onTransferChange = function onTransferChange() {
       vm.displayableAction = vm.selectedAction;
     };
+
+    vm.closeDialog = function () {
+      $mdDialog.hide();
+    }
   }
 
 })();
