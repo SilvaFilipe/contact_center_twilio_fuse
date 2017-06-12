@@ -19,6 +19,7 @@
       if($rootScope.connection){
         $rootScope.connection.sendDigits(vm.numbers.charAt(vm.numbers.length-1));
       }
+      $('.inputKeypad').focus();
     };
 
     vm.keyDowned = function (keyEvent) {
