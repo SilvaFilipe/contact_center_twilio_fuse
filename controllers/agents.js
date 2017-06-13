@@ -130,7 +130,7 @@ module.exports.call = function (req, res) {
 
 module.exports.sendToCallSidConference = function (req, res) {
   var callSid = req.query.CallSid;
-  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
+  var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '"><Conference endConferenceOnExit="false" waitMethod="GET" waitUrl="'+ process.env.PUBLIC_HOST  + '/sounds/ringing.xml" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + callSid + '</Conference></Dial></Response>';
   res.setHeader('Content-Type', 'application/xml')
   res.setHeader('Cache-Control', 'public, max-age=0')
   res.send(twiml.toString())
@@ -463,14 +463,14 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
             }
           }
-          var twiml = '<Response><Dial ringTone ="' + process.env.DEFAULT_COUNTY_CODE+ '" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
+          var twiml = '<Response><Dial ringTone ="' + process.env.DEFAULT_COUNTY_CODE+ '" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
         });
     }
   } catch (e) {
     console.log("*** Error in registeredSipOutboundCall ***");
     console.log(e);
-    var twiml = '<Response><Dial callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual">' + numberToCall  + '</Dial></Response>';
+    var twiml = '<Response><Dial callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '">' + numberToCall  + '</Dial></Response>';
     res.send(twiml)
   }
 
@@ -514,7 +514,7 @@ module.exports.extensionInboundCall = function (req, res) {
           };
           sync.saveList('m' + userToDial._id, mData);
 
-          var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+          var twiml = '<Response><Dial  recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="'+ process.env.PUBLIC_HOST  + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
           if (userToDial.sipURI!=undefined && userToDial.sipURI.length>0){
             // Dial a SIP phone with a timeout
             var escaped_twiml = require('querystring').escape(twiml);
@@ -646,7 +646,7 @@ module.exports.didInboundExtensionCall = function (req, res) {
               }
               //var twiml = '<Response><Dial answerOnBridge="true"><Sip>test@kismettest.sip.us1.twilio.com</Sip> </Dial></Response>';
               setTimeout(inboundExtensionCallToVoicemail, 15000, req.query.CallSid);
-              var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="record-from-answer-dual"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="' + process.env.PUBLIC_HOST + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
+              var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '"><Conference endConferenceOnExit="false" waitMethod="POST" waitUrl="' + process.env.PUBLIC_HOST + '/api/callControl/play_ringing" beep="false" statusCallback="' + process.env.PUBLIC_HOST + '/listener/conference_events" statusCallbackEvent="start end join leave mute hold">' + req.query.CallSid + '</Conference></Dial></Response>';
               res.send(twiml)
             });
           })
