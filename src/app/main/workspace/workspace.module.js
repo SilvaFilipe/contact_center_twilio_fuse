@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.callcenterApplication', ['ngMessages', 'luegg.directives', 'bc.AngularKeypad', 'angularRipple'])
+        .module('app.callcenterApplication', ['ngMessages', 'luegg.directives'])
         .config(config);
 
     /** @ngInject */

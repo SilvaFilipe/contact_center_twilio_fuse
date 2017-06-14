@@ -39,7 +39,9 @@
             'app.admin',
             'app.profile',
             'datatables',
-            'ngAvatar'
+            'ngAvatar',
+            'bc.AngularKeypad',
+            'angularRipple'
 
         ]);
 })();

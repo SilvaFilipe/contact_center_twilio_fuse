@@ -497,55 +497,6 @@
         Twilio.Device.disconnectAll();
       });
 
-      $scope.hangup = function (event) {
-        addAnimationToButton(event.target);
-        $(".callbtn").removeClass("addCall");
-        $(".callbtn").addClass("newCall");
-        $timeout(function(){
-          $rootScope.$broadcast('endAllOutCalls');
-        });
-
-      };
-
-      $scope.call = function (phoneNumber, event) {
-        addAnimationToButton(event.target);
-        if (!$scope.isAcitve) {
-          $(".callbtn").removeClass("newCall");
-          $(".callbtn").addClass("addCall");
-        }
-
-        // here we can put call's info
-        $scope.$broadcast('CallPhoneNumber', { phoneNumber: phoneNumber});
-      };
-
-      $scope.addDigit = function(digit, event){
-
-        vm.phoneNumber = vm.phoneNumber + digit;
-
-        addAnimationToButton(event.target);
-
-        if($rootScope.connection){
-          $rootScope.connection.sendDigits(digit);
-        }
-        $('.phoneNumberTxt').focus();
-
-      };
-
-      $scope.goBack = function (event) {
-        addAnimationToButton(event.target);
-        vm.phoneNumber = vm.phoneNumber.substring(0, vm.phoneNumber.length - 1);
-        $('.phoneNumberTxt').focus();
-      };
-
-      var addAnimationToButton = function(thisButton){
-        //add animation
-        $(thisButton).removeClass('clicked');
-        var _this = thisButton;
-        setTimeout(function(){
-          $(_this).addClass('clicked');
-        },1);
-      };
-
       function bindVolumeIndicators(connection) {
         connection.volume(function(inputVolume, outputVolume) {
           var inputVolumeBar = document.getElementById('input-volume');
@@ -586,6 +537,38 @@
         }
 
       });
+
+      // dialpad events
+      vm.digitClicked = function () {
+        if($rootScope.connection){
+          $rootScope.connection.sendDigits(vm.phoneNumber.charAt(vm.phoneNumber.length-1));
+        }
+        angular.element('.inputDialpad').focus();
+      };
+
+      vm.keyDowned = function (keyEvent) {
+        if (keyEvent.which >= 48 && keyEvent.which <= 57) {
+          if($rootScope.connection){
+            $rootScope.connection.sendDigits(vm.phoneNumber.charAt(vm.phoneNumber.length-1));
+          }
+        }
+      };
+
+      vm.backBtnClicked = function () {
+        vm.phoneNumber = vm.phoneNumber.substring(0, vm.phoneNumber.length - 1);
+        angular.element('.inputDialpad').focus();
+      };
+
+      vm.call = function() {
+        // here we can put call's info
+        $scope.$broadcast('CallPhoneNumber', { phoneNumber: vm.phoneNumber});
+      };
+
+      vm.hangup = function () {
+        $timeout(function(){
+          $rootScope.$broadcast('endAllOutCalls');
+        });
+      }
 
     }
 

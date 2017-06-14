@@ -1,59 +1,40 @@
 <section layout="row" flex>
-  <div class="pad">
-    <div class="dial-pad">
-
-      <div class="phoneString">
-        <input class="phoneNumberTxt" type="text" ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? call(vm.phoneNumber, $event) : null" placeholder="+..">
-      </div>
-      <div class="digits">
-        <div class="dig number-dig" name="1" ng-click="addDigit('1', $event)">1</div>
-        <div class="dig number-dig" name="2" ng-click="addDigit('2', $event)">2
-          <div class="sub-dig">ABC</div>
-        </div>
-        <div class="dig number-dig" name="3" ng-click="addDigit('3', $event)">3
-          <div class="sub-dig">DEF</div>
-        </div>
-        <div class="dig number-dig" name="4" ng-click="addDigit('4', $event)">4
-          <div class="sub-dig">GHI</div>
-        </div>
-        <div class="dig number-dig" name="5" ng-click="addDigit('5', $event)">5
-          <div class="sub-dig">JKL</div>
-        </div>
-        <div class="dig number-dig" name="6" ng-click="addDigit('6', $event)">6
-          <div class="sub-dig">MNO</div>
-        </div>
-        <div class="dig number-dig" name="7" ng-click="addDigit('7', $event)">7
-          <div class="sub-dig">PQRS</div>
-        </div>
-        <div class="dig number-dig" name="8" ng-click="addDigit('8', $event)">8
-          <div class="sub-dig">TUV</div>
-        </div>
-        <div class="dig number-dig" name="9" ng-click="addDigit('9', $event)">9
-          <div class="sub-dig">WXYZ</div>
-        </div>
-        <div class="dig number-dig pound" name="*" ng-click="addDigit('*', $event)">*</div>
-        <div class="dig number-dig pound" name="0" ng-click="addDigit('0', $event)">0</div>
-        <div class="dig number-dig pound" name="#" ng-click="addDigit('#', $event)">#</div>
-      </div>
-      <div class="digits">
-        <div class="dig callbtn newCall" ng-click="call(vm.phoneNumber, $event)">
-        </div>
-        <div class="dig hangup" ng-style="{'visibility': isActive ?'visible':'hidden'}" ng-click="hangup($event)">
-        </div>
-        <div class="dig goBack" ng-click="goBack($event)">
-        </div>
-      </div>
-
+  <div layout="column" style="width: 96%; margin-left: 2%">
+    <div style="margin-left: 5px; margin-top: 15px">
+      <span class="status">Status: {{status}}</span>
     </div>
-
-    <div layout="row" layout-align="center center">
+    <div style="text-align: center; margin-top: 20px">
+      <input type="text" class="inputDialpad" data-ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? vm.call(vm.phoneNumber, $event) : vm.keyDowned($event)" style="font-size: 30px; width: 80%;" placeholder="+..">
+    </div>
+    <div layout="column" class="mt-20">
+      <bc-keypad style="font-size: 28px; padding-bottom: 0"
+        bc-number-model="vm.phoneNumber"
+        ng-click="vm.digitClicked()"
+      >
+      </bc-keypad>
+      <div class="bc-keypad" layout="row" layout-align="space-between center">
+        <div class="bc-keypad__key">
+          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.call()">
+            <md-icon md-font-icon="icon-phone" style="font-size: 34px; color: black" aria-label="call-button"></md-icon>
+          </button>
+        </div>
+        <div class="bc-keypad__key">
+          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.hangup()">
+            <md-icon md-font-icon="icon-phone-hangup" style="font-size: 34px; color: black" aria-label="call-hangup-button"></md-icon>
+          </button>
+        </div>
+        <div class="bc-keypad__key">
+          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.backBtnClicked()">
+            <md-icon md-font-icon="icon-keyboard-backspace" style="font-size: 34px; color: black" aria-label="key-backspace-button"></md-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div layout="row" layout-align="center center" class="mt-30">
       <md-button ng-click="toggleRight()" class="md-raised md-primary"  ng-if="isActive == true">
         Volume Monitor
       </md-button>
     </div>
-  </div>
-  <div class="status-dig">
-    <span class="status">Status: {{status}}</span>
   </div>
 
   <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
