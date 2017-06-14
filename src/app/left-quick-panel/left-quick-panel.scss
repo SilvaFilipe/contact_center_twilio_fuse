@@ -1,4 +1,4 @@
-$quickPanelWidth: 320px;
+$quickPanelWidth: 450px;
 $quickPanelMobileWidth: 80%;
 
 #left-quick-panel {
@@ -6,7 +6,6 @@ $quickPanelMobileWidth: 80%;
     min-width: $quickPanelWidth;
     max-width: $quickPanelWidth;
     z-index: 99;
-    top: 64px;
 
     md-content {
         height: 100%;
