@@ -51,7 +51,7 @@ $quickPanelMobileWidth: 80%;
 // RESPONSIVE
 @media screen and (max-width: $layout-breakpoint-xs) {
 
-    #quick-panel {
+    #left-quick-panel {
         width: $quickPanelMobileWidth;
         min-width: $quickPanelMobileWidth;
         max-width: $quickPanelMobileWidth;

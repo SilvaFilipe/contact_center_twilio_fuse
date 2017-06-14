@@ -11,9 +11,9 @@
     <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')" aria-label="Toggle Left Sidenav">
       <md-icon md-font-icon="icon-menu" class="icon"></md-icon>
     </md-button>
-    <div class="title">{{currentUser.firstName}}&#39;s Agent Interface</div>
+    <div class="title" style="text-align: center">{{currentUser.firstName}}&#39;s Agent Interface</div>
     <div class="status-div" layout="row">
-      <div class="tag" layout="row" layout-align="start center">
+      <div class="tag" layout="row" layout-align="space-between center">
         <div>Status: &nbsp;</div>
         <div ng-class="{'label-success': worker.activityName == 'Idle', 'label-danger': worker.activityName == 'Busy', 'label-default': worker.activityName == 'Offline', 'label-warning':worker.activityName == 'Reserved'}"></div>
         <div class="tag-label">{{worker.activityName}}</div>

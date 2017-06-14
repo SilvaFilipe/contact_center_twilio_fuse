@@ -591,3 +591,13 @@
 ._md.md-default-theme._md-toolbar-transitions.reservation-bar {
   background-color: rgb(29, 135, 187);
 }
+
+// RESPONSIVE
+@media screen and (max-width: $layout-breakpoint-xs) {
+
+  .status-div {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    width: 200px;
+  }
+}
