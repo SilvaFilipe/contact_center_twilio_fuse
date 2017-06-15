@@ -34,10 +34,14 @@
             <h3 ng-click="$ctrl.makeCall(call)">{{$ctrl.getNumberByDirection(call)}}</h3>
             <p>{{$ctrl.getDirection(call)}}</p>
           </div>
-          <div class="fl1">
-            <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
-            <span>Duration: {{ call.mailRecordingDuration | secsToDuration }}</span>
-            <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)"></md-icon>
+          <div class="fl1" layout="column" layout-align="space-between center">
+            <div>
+              <span>{{call.created_at | date : 'MM/dd/yyyy h:mm a' }}</span>
+            </div>
+            <div>
+              <span>Duration: {{ call.mailRecordingDuration | secsToDuration }}</span>
+              <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)"></md-icon>
+            </div>
           </div>
         </div>
         <div class="column-row">

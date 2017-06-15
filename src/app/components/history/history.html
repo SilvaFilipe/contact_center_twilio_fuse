@@ -63,10 +63,14 @@
             <h3 ng-click="$ctrl.makeCall(call)"><a href="#">{{$ctrl.getNumberByDirection(call) | limitTo: 21 }}</a></h3>
             <p>{{$ctrl.getDirection(call)}}</p>
           </div>
-          <div class="fl1">
-            <span>{{call.created | date : 'MM/dd/yyyy h:mm a' }}</span>
-            <span>Duration: {{ call.duration | secsToDuration }}</span>
-            <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" ng-show="call.recordingUrl!=null"></md-icon>
+          <div class="fl1" layout="column" layout-align="space-between center">
+            <div>
+              <span>{{call.created | date : 'MM/dd/yyyy h:mm a' }}</span>
+            </div>
+            <div>
+              <span>Duration: {{ call.duration | secsToDuration }}</span>
+              <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" ng-show="call.recordingUrl!=null"></md-icon>
+            </div>
           </div>
         </div>
         <div class="column-row">

@@ -1,10 +1,10 @@
-<section layout="row" flex>
-  <div layout="column" style="width: 96%; margin-left: 2%">
-    <div style="margin-left: 5px; margin-top: 15px">
+<section id="dialpad-layout" layout="row" flex>
+  <div layout="column">
+    <div>
       <span class="status">Status: {{status}}</span>
     </div>
-    <div style="text-align: center; margin-top: 20px">
-      <input type="text" class="inputDialpad" data-ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? vm.call(vm.phoneNumber, $event) : vm.keyDowned($event)" style="font-size: 30px; width: 80%;" placeholder="+..">
+    <div class="dialpad-input">
+      <input type="text" class="inputDialpad" data-ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? vm.call(vm.phoneNumber, $event) : vm.keyDowned($event)">
     </div>
     <div layout="column" class="mt-20">
       <bc-keypad style="font-size: 28px; padding-bottom: 0"
@@ -14,18 +14,18 @@
       </bc-keypad>
       <div class="bc-keypad" layout="row" layout-align="space-between center">
         <div class="bc-keypad__key">
-          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.call()">
-            <md-icon md-font-icon="icon-phone" style="font-size: 34px; color: black" aria-label="call-button"></md-icon>
+          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.hangup()">
+            <md-icon md-font-icon="icon-phone-hangup" style="font-size: 40px; font-weight: 900; color: red" aria-label="call-hangup-button"></md-icon>
           </button>
         </div>
         <div class="bc-keypad__key">
-          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.hangup()">
-            <md-icon md-font-icon="icon-phone-hangup" style="font-size: 34px; color: black" aria-label="call-hangup-button"></md-icon>
+          <button class="bc-keypad__key-button" angular-ripple ng-click="vm.call()">
+            <md-icon md-font-icon="icon-phone" style="font-size: 40px; font-weight: 900; color: green" aria-label="call-button"></md-icon>
           </button>
         </div>
         <div class="bc-keypad__key">
           <button class="bc-keypad__key-button" angular-ripple ng-click="vm.backBtnClicked()">
-            <md-icon md-font-icon="icon-keyboard-backspace" style="font-size: 34px; color: black" aria-label="key-backspace-button"></md-icon>
+            <md-icon md-font-icon="icon-keyboard-backspace" style="font-size: 40px; font-weight: 900; color: black" aria-label="key-backspace-button"></md-icon>
           </button>
         </div>
       </div>
