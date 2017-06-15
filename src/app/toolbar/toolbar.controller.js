@@ -121,6 +121,10 @@
         function toggleSidenav(sidenavId)
         {
             $mdSidenav(sidenavId).toggle();
+
+            $timeout(function () {
+              angular.element('.inputDialpad').focus();
+            }, 1000);
         }
 
         /**
