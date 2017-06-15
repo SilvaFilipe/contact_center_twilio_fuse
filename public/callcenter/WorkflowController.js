@@ -212,7 +212,7 @@ app.controller('WorkflowController', function ($scope, $rootScope, $http, $inter
 
       $log.log('dequeue reservation with  callerId: ' + $scope.configuration.twilio.callerId);
       //reservation.dequeue($scope.configuration.twilio.callerId);
-      //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, 'record-from-answer');
+      //reservation.dequeue($scope.configuration.twilio.callerId, $scope.configuration.twilio.workerIdleActivitySid, process.env.CALL_RECORDING_DEFAULT);
         reservation.accept(
             function(error, reservation) {
                 if(error) {

@@ -52,27 +52,27 @@
                                     <span class="column-title">Avatar</span>
                                 </div>
                             </th>
-                            <th class="secondary-text">
+                            <th class="secondary-text center">
                                 <div class="table-header">
                                     <span class="column-title">First Name</span>
                                 </div>
                             </th>
-                            <th class="secondary-text">
+                            <th class="secondary-text center">
                                 <div class="table-header">
                                     <span class="column-title">Last Name</span>
                                 </div>
                             </th>
-                            <th class="secondary-text">
+                            <th class="secondary-text center">
                                 <div class="table-header">
                                     <span class="column-title">Email</span>
                                 </div>
                             </th>
-                            <th class="secondary-text">
+                            <th class="secondary-text center">
                                 <div class="table-header">
                                     <span class="column-title">Extension</span>
                                 </div>
                             </th>
-                            <th class="secondary-text">
+                            <th class="secondary-text center">
                               <div class="table-header">
                                 <span class="column-title">Action</span>
                               </div>
@@ -87,11 +87,11 @@
                                 <img ng-if="user.avatarUrl" class="md-avatar avatar contact-avatar" ng-src="{{user.avatarUrl}}" alt="{{user.firstName + ' ' + user.lastName}}">
                               </a>
                             </td>
-                            <td>{{user.firstName}}</td>
-                            <td>{{user.lastName}}</td>
-                            <td>{{user.email}}</td>
-                            <td>{{user.extension}}</td>
-                            <td>
+                            <td class="center">{{user.firstName}}</td>
+                            <td class="center">{{user.lastName}}</td>
+                            <td class="center">{{user.email}}</td>
+                            <td class="center">{{user.extension}}</td>
+                            <td class="center">
                                 <md-button class="edit-button md-icon-button" ui-sref="app.admin.users.edit({id: user._id})" aria-label="User details">
                                     <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
                                 </md-button>

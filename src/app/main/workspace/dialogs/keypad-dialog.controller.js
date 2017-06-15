@@ -6,7 +6,7 @@
     .controller('KeypadDialogController', KeypadDialogController);
 
   /** @ngInject */
-  function KeypadDialogController($scope, $rootScope, $mdDialog) {
+  function KeypadDialogController($scope, $timeout, $rootScope, $mdDialog) {
     var vm = this;
     $scope.hide = function() {
       $mdDialog.hide();
@@ -19,6 +19,7 @@
       if($rootScope.connection){
         $rootScope.connection.sendDigits(vm.numbers.charAt(vm.numbers.length-1));
       }
+      angular.element('.inputKeypad').focus();
     };
 
     vm.keyDowned = function (keyEvent) {
@@ -28,6 +29,9 @@
         }
       }
     };
+    $timeout(function () {
+      angular.element('.inputKeypad').focus();
+    }, 1000);
   }
 
 })();

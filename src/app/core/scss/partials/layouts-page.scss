@@ -68,7 +68,7 @@ $card-header-height-sm: $header-height-xs - $card-toolbar-height;
                     .content-card {
 
                         .content {
-                            overflow: hidden;
+                            overflow: scroll;
                         }
                     }
                 }
@@ -91,7 +91,7 @@ $card-header-height-sm: $header-height-xs - $card-toolbar-height;
                 .content-card {
                     background: #FFFFFF;
                     box-shadow: $whiteframe-shadow-7dp;
-                    overflow: hidden;
+                    overflow: scroll;
 
                     .toolbar {
                         padding: 8px 24px;
