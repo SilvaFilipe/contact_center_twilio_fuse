@@ -529,7 +529,7 @@
         $log.log('call: ' + data.phoneNumber);
         $scope.isOutboundCall = true;
         vm.phoneNumber = data.phoneNumber;
-        if (Twilio.Device.activeConnection() === undefined) {
+        if (!Twilio.Device.activeConnection()) {
           Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
         }
         else {
