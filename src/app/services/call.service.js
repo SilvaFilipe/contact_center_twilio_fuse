@@ -63,10 +63,14 @@
       if (!Twilio.Device.activeConnection()) {
         Twilio.Device.connect({'workerName': workerName, 'user_id': currentUser._id });
         Twilio.Device.connect(function (conn) {
-          callback(Twilio.Device.activeConnection().parameters.CallSid);
+          if(Twilio.Device.activeConnection()){
+            callback(Twilio.Device.activeConnection().parameters.CallSid);
+          }
         });
       } else {
-        callback(Twilio.Device.activeConnection().parameters.CallSid);
+        if(Twilio.Device.activeConnection()){
+          callback(Twilio.Device.activeConnection().parameters.CallSid);
+        }
       }
 
     };

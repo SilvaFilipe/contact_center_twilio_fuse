@@ -43,6 +43,9 @@ function ContactsDirectoryController($log, $rootScope, $scope, UserService, Cont
   $ctrl.updateUserActivity = function (worker) {
     // console.log('from worker map');
     // console.log(worker);
+    if(!$ctrl.users){
+      return;
+    }
     var workerName = worker.key;
     var workerActivity = worker.value.activity;
     var workerActivitySid = worker.value.activitySid;
