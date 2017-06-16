@@ -1,0 +1,11 @@
+{
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://personable.herokuapp.com/",
+      "Auth": "https://personable.herokuapp.com/",
+      "LogoUrl": "assets/images/logos/jbeans/jbeans_logo.png",
+      "LogoLetter": "JB",
+      "MenuLogoText": "JBeans"
+    }
+  }
+}
