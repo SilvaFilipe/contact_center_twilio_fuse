@@ -39,7 +39,7 @@
     }
 
     vm.confirmChange = function () {
-      vm.transferExternalNumber = ContactsDirectoryService.selectedUser.extension;
+      vm.transferExternalNumber = vm.displayableAction=='transfer-call' ? ContactsDirectoryService.selectedUser.extension : vm.transferExternalNumber;
 
       if (vm.displayableAction == 'transfer-call') {
         console.log('transfer to ' + vm.transferExternalNumber);
