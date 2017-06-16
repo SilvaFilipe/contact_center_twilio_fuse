@@ -60,7 +60,7 @@
     };
 
     CallService.getActiveConnSid = function (callback) {
-      if (Twilio.Device.activeConnection() === undefined) {
+      if (!Twilio.Device.activeConnection()) {
         Twilio.Device.connect({'workerName': workerName, 'user_id': currentUser._id });
         Twilio.Device.connect(function (conn) {
           if(Twilio.Device.activeConnection()){

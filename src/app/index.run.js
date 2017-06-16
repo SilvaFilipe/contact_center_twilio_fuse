@@ -134,9 +134,10 @@
           return !task.isCompleted();
         });
         var number = nonCompletedCallTasks.length;
-        if (angular.isDefined($rootScope.extensionCallTask) && $rootScope.extensionCallTask) {
-          number += 1;
-        }
+        var nonCompletedExTasks = $rootScope.extensionCallTasks.filter(function (task) {
+          return !task.isCompleted();
+        });
+        number += nonCompletedExTasks.length;
         if (angular.isDefined($rootScope.reservation) && $rootScope.reservation) {
           number += 1;
         }

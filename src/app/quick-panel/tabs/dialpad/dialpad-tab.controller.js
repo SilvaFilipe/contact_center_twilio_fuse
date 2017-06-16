@@ -350,7 +350,7 @@
       $scope.$watch('currentCall.callStatus', function (newVal, oldVal) {
         if (newVal === 'completed') {
           $rootScope.stopWorkingCounter();
-          if (Twilio.Device.activeConnection() !== undefined) {
+          if (Twilio.Device.activeConnection()) {
             $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
           }
           if ($state.current.name !== 'app.workspace') {
@@ -484,7 +484,8 @@
 
             }
             $scope.state = 'isActive';
-            $mdSidenav('quick-panel').toggle();
+            $mdSidenav('quick-panel').close();
+            $mdSidenav('left-quick-panel').close();
 
           }
           vm.phoneNumber = '';

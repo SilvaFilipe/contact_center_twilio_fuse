@@ -321,7 +321,7 @@
         $rootScope.currentCall = selectedTask;
         if ($rootScope.currentCall.isCompleted()) {
           $rootScope.stopWorkingCounter();
-          if (Twilio.Device.activeConnection() !== undefined) {
+          if (Twilio.Device.activeConnection()) {
             $http.get(apiUrl + 'api/agents/agentToSilence?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
           }
         }
