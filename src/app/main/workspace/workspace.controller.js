@@ -276,7 +276,7 @@
 
       $scope.acceptInboundCall = function (task) {
         $rootScope.stopExtensionCounter();
-        $rootScope.currentCall = angular.copy(task);
+        $rootScope.currentCall = task;
         var index = $rootScope.extensionCallTasks.indexOf(task);
         $rootScope.extensionCallTasks.splice(index, 1);
         setTimeout(function(){
@@ -295,12 +295,11 @@
                   }, function onError(response) {
                   });
                 });
+              $rootScope.stopWorkingCounter();
+              $rootScope.startWorkingCounter();
             }
           });
-
-          $rootScope.stopWorkingCounter();
-          $rootScope.startWorkingCounter();
-        }, 500);
+        }, 800);
 
       };
 
