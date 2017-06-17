@@ -13,13 +13,13 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 module.exports.welcome = function (req, res) {
   listener.log_twiml_event(req);
-  var sayText='';
+  var sayText='Welcome! ';
   var twiml = new twilio.TwimlResponse()
 
   var promise = Queue.find({}).exec();
   promise.then(function(queues) {
-    for (var digit=0; digit<queues.length; digit++){
-      var queue = queues[digit];
+    for (var digit=1; digit<queues.length; digit++){
+      var queue = queues[digit-1];
       console.log('found queue %s', queue.name)
       sayText = sayText + 'Press ' + digit + ' for ' + queue.name + '. ';
     }
@@ -91,8 +91,8 @@ module.exports.selectTeam = function (req, res) {
 
   var promise = Queue.find({}).exec();
   promise.then(function(queues) {
-    for (var digit=0; digit<queues.length; digit++){
-      var queue = queues[digit];
+    for (var digit=1; digit<queues.length; digit++){
+      var queue = queues[digit-1];
       console.log('found queue %s', queue.name)
 
       if (parseInt(req.query.Digits) === digit) {

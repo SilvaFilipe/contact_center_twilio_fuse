@@ -700,7 +700,6 @@ module.exports.workspace_events = function (req, res) {
                 var newTask= new Task(dbFields);
                 newTask.save(function (err) {
                     if(err){
-                        console.log(err);
                         if (err.code && err.code === 11000) {
                             console.log("unique constraint error");
                             // try update again
@@ -708,6 +707,8 @@ module.exports.workspace_events = function (req, res) {
                                 if(err) console.log("Something wrong when updating task: " + err);
                                 console.log('updated task(2) ' + task2.taskSid);
                             });
+                        } else {
+                          console.log(err);
                         }
                     }
                 });
