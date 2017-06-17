@@ -286,10 +286,11 @@
 
 .chat-canvas
 {
-  height: 400px;
+  height: 220px;
   margin: 0;
   overflow-y: scroll;
   overflow-x: hidden;
+  max-width:650px;
 }
 
 .chat-canvas .message-list
@@ -425,6 +426,7 @@
 .chat-message-form
 {
   padding-left: 10px;
+  max-width:650px;
 }
 
 .chat-message-form input

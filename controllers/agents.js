@@ -1,5 +1,6 @@
 'use strict';
-
+var AccessToken = require('twilio').AccessToken;
+var IpMessagingGrant = AccessToken.IpMessagingGrant;
 const colors = require('colors');
 var PNF = require('google-libphonenumber').PhoneNumberFormat;
 var phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -57,24 +58,18 @@ module.exports.login = function (req, res) {
         phoneCapability.allowClientIncoming(friendlyName.toLowerCase())
 
         /* create token for Twilio IP Messaging */
-        var grant = new twilio.AccessToken.IpMessagingGrant({
+        var token = new twilio.AccessToken(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_API_KEY, process.env.TWILIO_API_SECRET);
+        var ipmGrant = new IpMessagingGrant({
           serviceSid: process.env.TWILIO_IPM_SERVICE_SID,
-          endpointId: req.body.endpoint
-        })
-
-        var accessToken = new twilio.AccessToken(
-          process.env.TWILIO_ACCOUNT_SID,
-          process.env.TWILIO_API_KEY,
-          process.env.TWILIO_API_SECRET,
-          { ttl: lifetime })
-
-        accessToken.addGrant(grant)
-        accessToken.identity = worker.friendlyName
+          endpointId: process.env.TWILIO_IPM_SERVICE_SID + worker.friendlyName  + req.body.endpoint
+        });
+        token.addGrant(ipmGrant);
+        token.identity = worker.friendlyName ;
 
         var tokens = {
           worker: workerCapability.generate(lifetime),
           phone: phoneCapability.generate(lifetime),
-          chat: accessToken.toJwt()
+          chat: token.toJwt()
         }
 
         req.session.tokens = tokens;

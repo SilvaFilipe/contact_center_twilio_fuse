@@ -138,7 +138,8 @@
 
             /* session is not valid anymore */
             if (response.status === 403) {
-              alert('session is not valid anymore');
+              console.log('session is not valid anymore');
+              $log.error('session is not valid anymore');
               window.location.replace('/access/login');
             } else {
               alert(JSON.stringify(response));
