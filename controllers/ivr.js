@@ -13,8 +13,9 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 module.exports.welcome = function (req, res) {
   listener.log_twiml_event(req);
-  var sayText='Welcome! ';
+  var sayText='Welcome! Please say or ';
   var twiml = new twilio.TwimlResponse()
+  let keywords = []
 
   var promise = Queue.find({}).exec();
   promise.then(function(queues) {
@@ -22,6 +23,7 @@ module.exports.welcome = function (req, res) {
       var queue = queues[digit-1];
       console.log('found queue %s', queue.name)
       sayText = sayText + 'Press ' + digit + ' for ' + queue.name + '. ';
+      keywords.push(queue.name )
     }
     return; // returns a promise
   })
@@ -29,13 +31,20 @@ module.exports.welcome = function (req, res) {
       console.log('beginning twiml');
 
       twiml.gather({
+        input: 'dtmf speech',
         action: 'select-team',
         method: 'GET',
         numDigits: 1,
-        timeout: 10
+        timeout: 4,
+        language: 'en-us',
+        hints: keywords.join()
       }, function (node) {
         node.say(sayText) //, {'voice':'alice'}
       })
+
+      twiml.say('You did not say anything or enter any digits.')
+      twiml.pause({length: 2})
+      twiml.redirect({method: 'GET'}, 'welcome')
 
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')
@@ -48,60 +57,29 @@ module.exports.welcome = function (req, res) {
     });
 }
 
-module.exports.welcomePBX = function (req, res) {
-  listener.log_twiml_event(req);
-  var twiml = new twilio.TwimlResponse()
-
-  twiml.gather({
-    action: 'select-extension',
-    method: 'GET',
-    numDigits: 1,
-    timeout: 10
-  }, function (node) {
-    node.play(process.env.PBX_GREETING_URL)
-  })
-
-  res.setHeader('Content-Type', 'application/xml')
-  res.setHeader('Cache-Control', 'public, max-age=0')
-  res.send(twiml.toString())
-}
-
-module.exports.welcomeOld = function (req, res) {
-  listener.log_twiml_event(req);
-  var twiml = new twilio.TwimlResponse()
-
-	twiml.gather({
-		action: 'select-team',
-		method: 'GET',
-		numDigits: 1,
-		timeout: 10
-	}, function (node) {
-		node.say(req.configuration.ivr.text, {'voice':'alice'})
-	})
-
-	res.setHeader('Content-Type', 'application/xml')
-	res.setHeader('Cache-Control', 'public, max-age=0')
-	res.send(twiml.toString())
-}
-
-
 module.exports.selectTeam = function (req, res) {
   listener.log_twiml_event(req);
-  var selectedQueue = null;
-
+  var selectedQueue=null;
   var promise = Queue.find({}).exec();
+  if (req.query.SpeechResult) {
+    console.log('speech ' + req.query.SpeechResult)
+  }
   promise.then(function(queues) {
     for (var digit=1; digit<queues.length; digit++){
       var queue = queues[digit-1];
-      console.log('found queue %s', queue.name)
-
-      if (parseInt(req.query.Digits) === digit) {
+      if (req.query.Digits && parseInt(req.query.Digits) === digit) {
         selectedQueue = queue;
+        console.log('selected ' + queue.name)
+      }
+      if (req.query.SpeechResult && req.query.SpeechResult.toLowerCase() == queue.name.toLowerCase()) {
+        selectedQueue = queue;
+        console.log('selected ' + queue.name)
       }
     }
     return; // returns a promise
   })
     .then(function() {
+      console.log('got queue %s' + selectedQueue)
       var twiml = new twilio.TwimlResponse()
 
       /* the caller pressed a key that does not match any team */
@@ -117,7 +95,7 @@ module.exports.selectTeam = function (req, res) {
           numDigits: 1,
           timeout: 3
         }, function (node) {
-          node.say('Press any key if you want a callback, if you want to talk to an agent please wait in the line')
+          node.say('OK lets connect to ' + selectedQueue.name + '. Press any key if you want a callback, if you want to talk to an agent please wait in the line')
         })
 
         /* create task attributes */
@@ -144,6 +122,7 @@ module.exports.selectTeam = function (req, res) {
 
     })
     .catch(function(err){
+      console.log(err)
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send('<Response><Say>Sorry an select team error occurred</Say></Response>')
@@ -237,3 +216,41 @@ module.exports.createTask = function (req, res) {
 	})
 
 }
+
+
+module.exports.welcomePBX = function (req, res) {
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
+
+  twiml.gather({
+    action: 'select-extension',
+    method: 'GET',
+    numDigits: 1,
+    timeout: 10
+  }, function (node) {
+    node.play(process.env.PBX_GREETING_URL)
+  })
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(twiml.toString())
+}
+
+module.exports.welcomeOld = function (req, res) {
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
+
+  twiml.gather({
+    action: 'select-team',
+    method: 'GET',
+    numDigits: 1,
+    timeout: 10
+  }, function (node) {
+    node.say(req.configuration.ivr.text, {'voice':'alice'})
+  })
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(twiml.toString())
+}
+
