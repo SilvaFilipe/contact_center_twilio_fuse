@@ -65,7 +65,9 @@ module.exports = function(app, acl, multer){
     router.route('/admin/setVoicemailGreeting').get(adminController.recordVoicemailGreetingCall)
 
     router.route('/ivr/welcome').get(ivr.welcome)
-     router.route('/ivr/welcomePBX').get(ivr.welcomePBX)
+    router.route('/ivr/welcomePBX').get(ivr.welcomePBX)
+    router.route('/ivr/select-extension').get(ivr.selectExtension)
+    router.route('/ivr/company-directory').get(ivr.companyDirectory)
     router.route('/ivr/select-team').get(ivr.selectTeam)
     router.route('/ivr/create-task').get(ivr.createTask)
 
