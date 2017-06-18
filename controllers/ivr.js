@@ -304,7 +304,8 @@ module.exports.selectExtension = function (req, res) {
         twiml.pause({length: 2})
         twiml.redirect({ method: 'GET' }, 'welcomePBX')
       } else {
-        twiml.say('Connecting you to ' + selectedUser.fullName )
+        twiml.say('Connecting you to ' + selectedUser.fullName)
+        twiml.redirect({ method: 'GET' }, '/api/agents/extensionInboundCall?extension=' + selectedUser.extension)
       }
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')

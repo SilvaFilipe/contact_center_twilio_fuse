@@ -218,7 +218,7 @@ module.exports.dialCustomerTransfer = function (req, res) {
     console.log('transferring to extension call');
     req.query.CallSid = caller_sid
     req.query.From = req.configuration.twilio.callerId
-    req.query.To = toNumber
+    req.query.extension = toNumber
     module.exports.extensionInboundCall(req,res);
   } else {
     var twiml = '<Response><Dial>' + toNumber + '</Dial></Response>';
@@ -472,11 +472,16 @@ module.exports.registeredSipOutboundCall= function (req, res) {
 }
 
 module.exports.extensionInboundCall = function (req, res) {
-  // right now called from SIP to extension (registeredSipOutboundCall), or from transfer (dialCustomerTransfer)
   setTimeout(function() {
     // workaround to wait for call to be inserted in db, TODO find a better way
     var fromSipAddress = unescape(req.query.From);
-    var toNumber = unescape(req.query.To);
+    if (req.query.extension){
+      // called from ivr selectExtension or from transfer dialCustomerTransfer
+      var toNumber = unescape(req.query.extension);
+    } else {
+      // called from SIP to extension (registeredSipOutboundCall)
+      var toNumber = unescape(req.query.To);
+    }
     console.log('extensionInboundCall call from %s to %s', fromSipAddress, toNumber);
 
     User.findOne({ extension: toNumber }, function (err, userToDial) {
