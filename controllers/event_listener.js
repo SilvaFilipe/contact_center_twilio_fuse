@@ -154,9 +154,9 @@ module.exports.voicemail_recording_events = function (req, res) {
     var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
   } else {
     //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
-    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
   }
-//  console.log(configuration);
+  console.log(configuration);
 
   request.post({
     url:'https://apis.voicebase.com/v2-beta/media',
@@ -213,13 +213,13 @@ module.exports.recording_events = function (req, res) {
 
   console.log ('recordingUrl: ' + recordingUrl);
   if (process.env.DEFAULT_LANGUAGE=="en-US"){
-    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
   } else {
     //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
-    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
   }
 
-  //  console.log(configuration);
+  console.log(configuration);
 
   request.post({
     url:'https://apis.voicebase.com/v2-beta/media',
@@ -228,10 +228,12 @@ module.exports.recording_events = function (req, res) {
       'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
     }
   }, function(err,httpResponse,body){
-    //console.log('voicebase response');
-    console.log('err: '+ err);
+    if (err!=null){
+      console.log('voicebase err: '+ err);
+    }
+    console.log('voicebase response');
+    console.log('body' + body);
     //console.log(util.inspect(httpResponse, false, null))
-    //console.log('body' + body);
 
   })
 
