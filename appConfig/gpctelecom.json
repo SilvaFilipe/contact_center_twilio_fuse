@@ -1,0 +1,11 @@
+{
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://gpctelecom.herokuapp.com/",
+      "Auth": "https://gpctelecom.herokuapp.com/",
+      "LogoUrl": "assets/images/logos/gpctelecom/logo.png",
+      "LogoLetter": "GPC",
+      "MenuLogoText": "GPC Telecom"
+    }
+  }
+}

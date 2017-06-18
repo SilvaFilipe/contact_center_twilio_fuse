@@ -441,8 +441,8 @@
 
         $log.log('setup channel: ' + channelSid);
 
-        let accessManager = new Twilio.AccessManager($scope.session.token);
-        let messagingClient = new Twilio.Chat.Client($scope.session.token, { logLevel: 'debug' });
+        var accessManager = new Twilio.AccessManager($scope.session.token);
+        var messagingClient = new Twilio.Chat.Client($scope.session.token, { logLevel: 'debug' });
 
         /**
          * you'll want to be sure to listen to the tokenExpired event either update
