@@ -37,7 +37,7 @@ module.exports.welcome = function (req, res) {
         method: 'GET',
         numDigits: 1,
         timeout: 4,
-        language: process.env.DEFAULT_LANGUAGE,
+        language: process.env.LANGUAGE_BCP47,
         hints: keywords.join()
       }, function (node) {
         node.say(sayText) //, {'voice':'alice'}
@@ -244,7 +244,7 @@ module.exports.companyDirectory = function (req, res) {
         action: 'select-extension',
         method: 'GET',
         timeout: 4,
-        language: process.env.DEFAULT_LANGUAGE,
+        language: process.env.LANGUAGE_BCP47,
         hints: keywords.join()
       }, function (node) {
         node.say(sayText) //, {'voice':'alice'}
@@ -341,7 +341,7 @@ module.exports.welcomePBX = function (req, res) {
         action: 'select-extension',
         method: 'GET',
         timeout: 4,
-        language: process.env.DEFAULT_LANGUAGE,
+        language: process.env.LANGUAGE_BCP47,
         hints: keywords.join()
       }, function (node) {
         node.play(process.env.PBX_GREETING_URL)
