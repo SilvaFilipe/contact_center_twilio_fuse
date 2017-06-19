@@ -181,6 +181,7 @@ module.exports.createTask = function (req, channel) {
 				title: title,
 				text: text,
 				channel: 'chat',
+        queue: 'chat',
 				endpoint: endpoint,
 				team: 'support',
 				name: req.body.From,

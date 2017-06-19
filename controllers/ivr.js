@@ -2,6 +2,7 @@
 
 const twilio = require('twilio')
 const Queue = require('../models/queue.model');
+const User = require('../models/user.model');
 const listener = require('./event_listener.js')
 const Promise = require('bluebird');
 
@@ -13,15 +14,17 @@ const taskrouterClient = new twilio.TaskRouterClient(
 
 module.exports.welcome = function (req, res) {
   listener.log_twiml_event(req);
-  var sayText='';
+  var sayText='Welcome! Please say or ';
   var twiml = new twilio.TwimlResponse()
+  let keywords = []
 
   var promise = Queue.find({}).exec();
   promise.then(function(queues) {
-    for (var digit=0; digit<queues.length; digit++){
-      var queue = queues[digit];
+    for (var digit=1; digit<queues.length; digit++){
+      var queue = queues[digit-1];
       console.log('found queue %s', queue.name)
       sayText = sayText + 'Press ' + digit + ' for ' + queue.name + '. ';
+      keywords.push(queue.name )
     }
     return; // returns a promise
   })
@@ -29,79 +32,56 @@ module.exports.welcome = function (req, res) {
       console.log('beginning twiml');
 
       twiml.gather({
+        input: 'dtmf speech',
         action: 'select-team',
         method: 'GET',
         numDigits: 1,
-        timeout: 10
+        timeout: 4,
+        language: process.env.DEFAULT_LANGUAGE,
+        hints: keywords.join()
       }, function (node) {
         node.say(sayText) //, {'voice':'alice'}
       })
+
+      twiml.say('You did not say anything or enter any digits.')
+      twiml.pause({length: 2})
+      twiml.redirect({method: 'GET'}, 'welcome')
 
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send(twiml.toString())
     })
     .catch(function(err){
+      console.log('err: ' + err);
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send('<Response><Say>Sorry an INVRerror occurred</Say></Response>')
     });
 }
 
-module.exports.welcomePBX = function (req, res) {
-  listener.log_twiml_event(req);
-  var twiml = new twilio.TwimlResponse()
-
-  twiml.gather({
-    action: 'select-extension',
-    method: 'GET',
-    numDigits: 1,
-    timeout: 10
-  }, function (node) {
-    node.play(process.env.PBX_GREETING_URL)
-  })
-
-  res.setHeader('Content-Type', 'application/xml')
-  res.setHeader('Cache-Control', 'public, max-age=0')
-  res.send(twiml.toString())
-}
-
-module.exports.welcomeOld = function (req, res) {
-  listener.log_twiml_event(req);
-  var twiml = new twilio.TwimlResponse()
-
-	twiml.gather({
-		action: 'select-team',
-		method: 'GET',
-		numDigits: 1,
-		timeout: 10
-	}, function (node) {
-		node.say(req.configuration.ivr.text, {'voice':'alice'})
-	})
-
-	res.setHeader('Content-Type', 'application/xml')
-	res.setHeader('Cache-Control', 'public, max-age=0')
-	res.send(twiml.toString())
-}
-
-
 module.exports.selectTeam = function (req, res) {
   listener.log_twiml_event(req);
-  var selectedQueue = null;
-
+  var selectedQueue=null;
   var promise = Queue.find({}).exec();
+  if (req.query.SpeechResult) {
+    console.log('speech ' + req.query.SpeechResult)
+  }
   promise.then(function(queues) {
-    for (var digit=0; digit<queues.length; digit++){
-      var queue = queues[digit];
-      console.log('found queue %s', queue.name)
-
-      if (parseInt(req.query.Digits) === digit) {
+    for (var digit=1; digit<queues.length; digit++){
+      var queue = queues[digit-1];
+      if (req.query.Digits && parseInt(req.query.Digits) === digit) {
         selectedQueue = queue;
+        console.log('selected ' + queue.name)
+      }
+      if (req.query.SpeechResult && req.query.SpeechResult.toLowerCase() == queue.name.toLowerCase()) {
+        selectedQueue = queue;
+        console.log('selected ' + queue.name)
       }
     }
     return; // returns a promise
   })
     .then(function() {
+      console.log('got queue %s' + selectedQueue)
       var twiml = new twilio.TwimlResponse()
 
       /* the caller pressed a key that does not match any team */
@@ -117,7 +97,7 @@ module.exports.selectTeam = function (req, res) {
           numDigits: 1,
           timeout: 3
         }, function (node) {
-          node.say('Press any key if you want a callback, if you want to talk to an agent please wait in the line')
+          node.say('OK lets connect to ' + selectedQueue.name + '. Press any key if you want a callback, if you want to talk to an agent please wait in the line')
         })
 
         /* create task attributes */
@@ -144,6 +124,7 @@ module.exports.selectTeam = function (req, res) {
 
     })
     .catch(function(err){
+      console.log(err)
       res.setHeader('Content-Type', 'application/xml')
       res.setHeader('Cache-Control', 'public, max-age=0')
       res.send('<Response><Say>Sorry an select team error occurred</Say></Response>')
@@ -237,3 +218,166 @@ module.exports.createTask = function (req, res) {
 	})
 
 }
+
+
+module.exports.companyDirectory = function (req, res) {
+
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
+  let keywords = []
+  var sayText='';
+  var promise = User.find({}).exec();
+  promise.then(function(users) {
+    for (var digit=1; digit<users.length; digit++){
+      var user = users[digit-1];
+      if (user.extension){
+        sayText = sayText + 'Press ' + user.extension + ' for ' + user.fullName+ '. ';
+      }
+      keywords.push(user.fullName )
+    }
+    return; // returns a promise
+  })
+    .then(function() {
+      console.log('beginning twiml');
+      twiml.gather({
+        input: 'dtmf speech',
+        action: 'select-extension',
+        method: 'GET',
+        timeout: 4,
+        language: process.env.DEFAULT_LANGUAGE,
+        hints: keywords.join()
+      }, function (node) {
+        node.say(sayText) //, {'voice':'alice'}
+      })
+
+
+
+      twiml.say('You did not say anything or enter any digits.')
+      twiml.pause({length: 2})
+      twiml.redirect({method: 'GET'}, 'welcomePBX')
+
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(twiml.toString())
+    })
+    .catch(function(err){
+      console.log('err: ' + err);
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send('<Response><Say>Sorry a PBX IVR error occurred</Say></Response>')
+    });
+
+}
+module.exports.selectExtension = function (req, res) {
+  listener.log_twiml_event(req);
+  var selectedUser=null;
+  var promise = User.find({}).exec();
+  if (req.query.SpeechResult) {
+    console.log('speech ' + req.query.SpeechResult)
+  }
+  promise.then(function(users) {
+    for (var digit=1; digit<users.length; digit++){
+      var user = users[digit-1];
+      if (req.query.Digits && parseInt(req.query.Digits) === user.extension) {
+        selectedUser = user;
+        console.log('selected ' + user.fullName)
+      }
+      if (req.query.SpeechResult && req.query.SpeechResult.toLowerCase() == user.fullName.toLowerCase()) {
+        selectedUser = user;
+        console.log('selected ' + user.fullName)
+      }
+    }
+    return; // returns a promise
+  })
+    .then(function() {
+      console.log('got user %s' + selectedUser)
+      var twiml = new twilio.TwimlResponse()
+
+      /* the caller pressed a key that does not match any team */
+      if (req.query.Digits && req.query.Digits == "*") {
+        twiml.redirect({ method: 'GET' }, 'company-directory')
+      } else if (req.query.SpeechResult && req.query.SpeechResult.toLowerCase() == 'directory') {
+        twiml.redirect({ method: 'GET' }, 'company-directory')
+      } else if (selectedUser  === null) {
+        // redirect the call to the previous twiml
+        twiml.say('Your selection was not valid, please try again')
+        twiml.pause({length: 2})
+        twiml.redirect({ method: 'GET' }, 'welcomePBX')
+      } else {
+        twiml.say('Connecting you to ' + selectedUser.fullName)
+        twiml.redirect({ method: 'GET' }, '/api/agents/extensionInboundCall?extension=' + selectedUser.extension)
+      }
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(twiml.toString())
+
+    })
+    .catch(function(err){
+      console.log(err)
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send('<Response><Say>Sorry an select extension error occurred</Say></Response>')
+    });
+
+}
+
+module.exports.welcomePBX = function (req, res) {
+
+  listener.log_twiml_event(req);
+  var keywords=['directory'];
+  var promise = User.find({}).exec();
+
+  promise.then(function(users) {
+    for (var digit=1; digit<users.length; digit++){
+      keywords.push(users[digit-1].fullName)
+    }
+    return; // returns a promise
+  })
+    .then(function() {
+      var twiml = new twilio.TwimlResponse()
+      console.log('beginning twiml');
+      twiml.gather({
+        input: 'dtmf speech',
+        action: 'select-extension',
+        method: 'GET',
+        timeout: 4,
+        language: process.env.DEFAULT_LANGUAGE,
+        hints: keywords.join()
+      }, function (node) {
+        node.play(process.env.PBX_GREETING_URL)
+      })
+
+      twiml.say('You did not say anything or enter any digits.')
+      twiml.pause({length: 2})
+      twiml.redirect({method: 'GET'}, 'welcomePBX')
+
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send(twiml.toString())
+    }).catch(function(err){
+      console.log(err)
+      res.setHeader('Content-Type', 'application/xml')
+      res.setHeader('Cache-Control', 'public, max-age=0')
+      res.send('<Response><Say>Sorry an select extension error occurred</Say></Response>')
+    });
+
+}
+
+module.exports.welcomeOld = function (req, res) {
+  listener.log_twiml_event(req);
+  var twiml = new twilio.TwimlResponse()
+
+  twiml.gather({
+    action: 'select-team',
+    method: 'GET',
+    numDigits: 1,
+    timeout: 10
+  }, function (node) {
+    node.say(req.configuration.ivr.text, {'voice':'alice'})
+  })
+
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=0')
+  res.send(twiml.toString())
+}
+

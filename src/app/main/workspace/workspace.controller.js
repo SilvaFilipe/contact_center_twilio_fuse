@@ -420,6 +420,8 @@
 
         $scope.session.token = data.token;
         $scope.session.identity = data.identity;
+        console.log('chat session')
+        console.log($scope.session)
 
       });
 
@@ -438,7 +440,9 @@
       $scope.setupClient = function (channelSid) {
 
         $log.log('setup channel: ' + channelSid);
+
         var accessManager = new Twilio.AccessManager($scope.session.token);
+        var messagingClient = new Twilio.Chat.Client($scope.session.token, { logLevel: 'debug' });
 
         /**
          * you'll want to be sure to listen to the tokenExpired event either update
@@ -453,7 +457,6 @@
           $log.error('An error occurred');
         });
 
-        var messagingClient = new Twilio.IPMessaging.Client(accessManager);
 
         var promise = messagingClient.getChannelBySid(channelSid);
 
@@ -468,16 +471,22 @@
       };
 
       $scope.setupChannel = function (channel) {
+        // console.log('setup channel:')
+        // console.log(channel)
 
         channel.join().then(function (member) {
+          // console.log('joined as member:')
+          // console.log(member)
 
           /* first we read the history of this channel, afterwards we join */
-          channel.getMessages().then(function (messages) {
-            for (var i = 0; i < messages.length; i++) {
-              var message = messages[i];
+          channel.getMessages(3).then(function(page) {
+            page.items.forEach(function (message) {
+              // console.log('found message')
+              // console.log(message)
               $scope.addMessage(message);
-            }
-            $log.log('Total Messages in Channel:' + messages.length);
+            });
+
+            $log.log('Total Messages in Channel:' + channel.getMessagesCount());
 
             $scope.messages.push({
               body: 'You are now connected to the customer',

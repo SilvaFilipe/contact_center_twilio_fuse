@@ -60,7 +60,21 @@
                     console.log('time to update voicemail tab');
                     $rootScope.$broadcast('voicemail.reload');
                   }
+                  if (item.value.type === 'call-end'){
+                      // hide any unaccepted incoming call dialog
+                    console.log('time to hide extension dialogs');
+                    $rootScope.extensionCallTasks.filter(function (callItem) {
+                      if (callItem.callSid === item.value.data.callSid) {
+                        console.log('callItem ' + callItem);
+                        var index = $rootScope.extensionCallTasks.indexOf(callItem);
+                        $rootScope.extensionCallTasks.splice(index, 1);
+                        $rootScope.stopExtensionCounter();
+                        $log.log('call:' + item.value.data.callSid + ' hidden');
+                      }
+                    });
 
+
+                  }
                   if (item.value.type === 'answeredBySip'){
                     console.log('sip phone answered call');
                     $rootScope.callTasks.filter(function (callItem) {
@@ -124,7 +138,8 @@
 
             /* session is not valid anymore */
             if (response.status === 403) {
-              alert('session is not valid anymore');
+              console.log('session is not valid anymore');
+              $log.error('session is not valid anymore');
               window.location.replace('/access/login');
             } else {
               alert(JSON.stringify(response));

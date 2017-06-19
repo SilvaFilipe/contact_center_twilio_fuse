@@ -61,23 +61,18 @@ QueueSchema.statics.syncWorkflow = function (callback) {
         expression: "queue == \"" + queue.taskQueueFriendlyName + "\"",
         filter_friendly_name: queue.taskQueueFriendlyName,
         targets: [
+          /*
           {
             queue: queue.taskQueueSid,
             priority: queue.priority,
-            timeout: 20,
+            timeout: 1,
             expression: 'task.requested_agent==worker.agent_name'
           },
-        ],
-      }
-      workflowConfiguration.task_routing.filters.push(target);
-      var target = {
-        expression: "queue == \"" + queue.taskQueueFriendlyName + "\"",
-        filter_friendly_name: queue.taskQueueFriendlyName,
-        targets: [
+          */
           {
             queue: queue.taskQueueSid,
             priority: queue.priority,
-            timeout: 20,
+            expression: '1==1'
           }
         ],
       }

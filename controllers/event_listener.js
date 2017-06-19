@@ -150,8 +150,13 @@ module.exports.voicemail_recording_events = function (req, res) {
 
 
   console.log ('recordingUrl: ' + recordingUrl);
-  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
-//  console.log(configuration);
+  if (process.env.DEFAULT_LANGUAGE=="en-US"){
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+  } else {
+    //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/voicemail_transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+  }
+  console.log(configuration);
 
   request.post({
     url:'https://apis.voicebase.com/v2-beta/media',
@@ -207,8 +212,14 @@ module.exports.recording_events = function (req, res) {
 
 
   console.log ('recordingUrl: ' + recordingUrl);
-  var configuration= '{"configuration" : { "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
-//  console.log(configuration);
+  if (process.env.DEFAULT_LANGUAGE=="en-US"){
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+  } else {
+    //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
+    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+  }
+
+  console.log(configuration);
 
   request.post({
     url:'https://apis.voicebase.com/v2-beta/media',
@@ -217,10 +228,12 @@ module.exports.recording_events = function (req, res) {
       'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
     }
   }, function(err,httpResponse,body){
-    //console.log('voicebase response');
-    console.log('err: '+ err);
+    if (err!=null){
+      console.log('voicebase err: '+ err);
+    }
+    console.log('voicebase response');
+    console.log('body' + body);
     //console.log(util.inspect(httpResponse, false, null))
-    //console.log('body' + body);
 
   })
 
@@ -700,7 +713,6 @@ module.exports.workspace_events = function (req, res) {
                 var newTask= new Task(dbFields);
                 newTask.save(function (err) {
                     if(err){
-                        console.log(err);
                         if (err.code && err.code === 11000) {
                             console.log("unique constraint error");
                             // try update again
@@ -708,6 +720,8 @@ module.exports.workspace_events = function (req, res) {
                                 if(err) console.log("Something wrong when updating task: " + err);
                                 console.log('updated task(2) ' + task2.taskSid);
                             });
+                        } else {
+                          console.log(err);
                         }
                     }
                 });

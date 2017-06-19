@@ -1,5 +1,6 @@
 'use strict';
-
+var AccessToken = require('twilio').AccessToken;
+var IpMessagingGrant = AccessToken.IpMessagingGrant;
 const colors = require('colors');
 var PNF = require('google-libphonenumber').PhoneNumberFormat;
 var phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -57,24 +58,18 @@ module.exports.login = function (req, res) {
         phoneCapability.allowClientIncoming(friendlyName.toLowerCase())
 
         /* create token for Twilio IP Messaging */
-        var grant = new twilio.AccessToken.IpMessagingGrant({
+        var token = new twilio.AccessToken(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_API_KEY, process.env.TWILIO_API_SECRET);
+        var ipmGrant = new IpMessagingGrant({
           serviceSid: process.env.TWILIO_IPM_SERVICE_SID,
-          endpointId: req.body.endpoint
-        })
-
-        var accessToken = new twilio.AccessToken(
-          process.env.TWILIO_ACCOUNT_SID,
-          process.env.TWILIO_API_KEY,
-          process.env.TWILIO_API_SECRET,
-          { ttl: lifetime })
-
-        accessToken.addGrant(grant)
-        accessToken.identity = worker.friendlyName
+          endpointId: process.env.TWILIO_IPM_SERVICE_SID + worker.friendlyName  + req.body.endpoint
+        });
+        token.addGrant(ipmGrant);
+        token.identity = worker.friendlyName ;
 
         var tokens = {
           worker: workerCapability.generate(lifetime),
           phone: phoneCapability.generate(lifetime),
-          chat: accessToken.toJwt()
+          chat: token.toJwt()
         }
 
         req.session.tokens = tokens;
@@ -223,7 +218,7 @@ module.exports.dialCustomerTransfer = function (req, res) {
     console.log('transferring to extension call');
     req.query.CallSid = caller_sid
     req.query.From = req.configuration.twilio.callerId
-    req.query.To = toNumber
+    req.query.extension = toNumber
     module.exports.extensionInboundCall(req,res);
   } else {
     var twiml = '<Response><Dial>' + toNumber + '</Dial></Response>';
@@ -477,11 +472,16 @@ module.exports.registeredSipOutboundCall= function (req, res) {
 }
 
 module.exports.extensionInboundCall = function (req, res) {
-  // right now called from SIP to extension (registeredSipOutboundCall), or from transfer (dialCustomerTransfer)
   setTimeout(function() {
     // workaround to wait for call to be inserted in db, TODO find a better way
     var fromSipAddress = unescape(req.query.From);
-    var toNumber = unescape(req.query.To);
+    if (req.query.extension){
+      // called from ivr selectExtension or from transfer dialCustomerTransfer
+      var toNumber = unescape(req.query.extension);
+    } else {
+      // called from SIP to extension (registeredSipOutboundCall)
+      var toNumber = unescape(req.query.To);
+    }
     console.log('extensionInboundCall call from %s to %s', fromSipAddress, toNumber);
 
     User.findOne({ extension: toNumber }, function (err, userToDial) {
