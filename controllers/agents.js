@@ -367,6 +367,8 @@ module.exports.outboundCall = function (req, res) {
               Call.findOneAndUpdate({'callSid': call.sid}, {$set:dbFields}, function(err, call2){
                 if(err) {
                   console.log("Something wrong when updating call: " + err);
+                  res.setHeader('Cache-Control', 'public, max-age=0')
+                  res.send("ERROR")
                 } else {
                   console.log('updated call(2) ' + call2.callSid);
                   call2.addUserIds(req.query.user_id);
@@ -374,22 +376,28 @@ module.exports.outboundCall = function (req, res) {
                     if (response != 'err') {
                       res.setHeader('Cache-Control', 'public, max-age=0');
                       res.send({call: call, document: JSON.parse(response).unique_name})
+                    } else {
+                      console.log(response)
+                      res.setHeader('Cache-Control', 'public, max-age=0')
+                      res.send({call: call, document: null})
                     }
                   });
                 }
               });
-
             }
           } else {
             newCall.createSync(function (response) {
               if (response != 'err') {
                 res.setHeader('Cache-Control', 'public, max-age=0');
                 res.send({call: call, document: JSON.parse(response).unique_name})
+              } else {
+                console.log(response)
+                res.setHeader('Cache-Control', 'public, max-age=0')
+                res.send({call: call, document: null})
               }
             });
           }
         });
-
       }
     });
   }
