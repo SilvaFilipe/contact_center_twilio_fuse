@@ -62,6 +62,6 @@ function getResizeName(name, width, height) {
   return `${width}x${height}_${name}`;
 }
 function getS3Url(filename) {
-  return `https://s3-us-west-2.amazonaws.com/kismet-dev/${filename}`
+  return `https://s3-us-west-2.amazonaws.com/${process.env.S3_BUCKET}/${filename}`
 }
 exports.getS3Url = getS3Url;
