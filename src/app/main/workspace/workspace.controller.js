@@ -42,13 +42,29 @@
 
           reservation.accept(
             function (err, reservation) {
-
               if (err) {
                 $log.error(err);
                 return;
               }
 
-              $scope.$broadcast('ActivateChat', {channelSid: reservation.task.attributes.channelSid});
+              // create new chat task
+              var newChatTask = reservation.task;
+              newChatTask.channel = null;
+              newChatTask.messages = [];
+              newChatTask.sendMessage = null;
+
+              newChatTask.session = {
+                token: $rootScope.session.token,
+                identity: $rootScope.session.identity,
+                isInitialized: false,
+                isLoading: true,
+                expired: false,
+                channelSid: reservation.task.attributes.channelSid
+              };
+
+              $rootScope.chatTasks.push(newChatTask);
+
+              $scope.setupClient(newChatTask);
 
             });
 
@@ -232,8 +248,8 @@
         });
       };
 
-      $scope.complete = function (isChat) {
-        if ($rootScope.currentCall && !isChat) {
+      $scope.complete = function (task) {
+        if ($rootScope.currentCall && !task) {
           if ($rootScope.currentCall.type === 'outbound') {
             $rootScope.stopWorkingCounter();
             $scope.closeTab();
@@ -247,24 +263,27 @@
 
         }
 
-        if ($rootScope.task.attributes.channel === 'chat') {
-          $scope.$broadcast('DestroyChat');
+        if (angular.isDefined(task.attributes) && task.attributes.channel === 'chat') {
+          $scope.$broadcast('DestroyChat', {chatTask: task});
+          var index = $rootScope.chatTasks.indexOf(task);
+          $rootScope.chatTasks.splice(index, 1);
         }
 
-        $rootScope.task.complete();
 
-        $rootScope.workerJS.update('ActivitySid', $rootScope.configuration.twilio.workerIdleActivitySid, function (err, worker) {
+        // TODO not sure whether to include inboundCalls. task.complete() is needed?
+        if (!$rootScope.chatTasks.length && !$rootScope.reservations.length) {
+          $rootScope.workerJS.update('ActivitySid', $rootScope.configuration.twilio.workerIdleActivitySid, function (err, worker) {
 
-          if (err) {
-            $log.error(err);
-            return;
-          }
+            if (err) {
+              $log.error(err);
+              return;
+            }
 
-          $rootScope.reservation = null;
-          $rootScope.task = null;
-          $scope.$apply();
+            $scope.$apply();
 
-        });
+          });
+        }
+
 
       };
 
@@ -373,92 +392,53 @@
       };
 
       // ChatController
-      $scope.channel = null;
-      $scope.messages = [];
-      $scope.session = {
-        token: null,
-        identity: null,
-        isInitialized: false,
-        isLoading: false,
-        expired: false
-      };
 
-      $scope.$on('DestroyChat', function (event) {
+      $scope.$on('DestroyChat', function (event, data) {
 
         $log.log('DestroyChat event received');
 
-        $scope.channel.leave().then(function () {
+        data.chatTask.channel.leave().then(function () {
           $log.log('channel left');
-          $scope.channel = null;
+          data.chatTask.channel = null;
         });
 
-        $scope.messages = [];
-        $scope.session.isInitialized = false;
-        $scope.session.channelSid = null;
+        data.chatTask.messages = [];
+        data.chatTask.session.isInitialized = false;
+        data.chatTask.session.channelSid = null;
 
       });
 
-      $rootScope.$on('InitializeChat', function (event, data) {
+      $scope.setupClient = function (newChatTask) {
 
-        $log.log('InitializeChat event received');
-        $log.log(data);
+        $log.log('setup channel: ' + newChatTask.session.channelSid);
 
-        /* clean up  */
-        $scope.channel = null;
-        $scope.messages = [];
-        $scope.session = {
-          token: null,
-          identity: null,
-          isInitialized: false,
-          isLoading: false,
-          expired: false
-        };
+        if (!angular.isDefined($rootScope.accessManager)) {
+          $rootScope.accessManager = new Twilio.AccessManager($rootScope.session.token);
+        }
 
-        $scope.session.token = data.token;
-        $scope.session.identity = data.identity;
-        console.log('chat session')
-        console.log($scope.session)
-
-      });
-
-      $scope.$on('ActivateChat', function (event, data) {
-
-        $log.log('ActivateChat event received');
-        $log.log(data);
-
-        $scope.session.channelSid = data.channelSid;
-
-        $scope.session.isLoading = true;
-        $scope.setupClient($scope.session.channelSid);
-
-      });
-
-      $scope.setupClient = function (channelSid) {
-
-        $log.log('setup channel: ' + channelSid);
-
-        var accessManager = new Twilio.AccessManager($scope.session.token);
-        var messagingClient = new Twilio.Chat.Client($scope.session.token, { logLevel: 'debug' });
+        if (!angular.isDefined($rootScope.messagingClient)) {
+          $rootScope.messagingClient = new Twilio.Chat.Client($rootScope.session.token, { logLevel: 'debug' });
+        }
 
         /**
          * you'll want to be sure to listen to the tokenExpired event either update
          * the token via accessManager.updateToken(<token>) or let your page tell the user
          * the chat is not active anymore
          **/
-        accessManager.on('tokenExpired', function () {
+        $rootScope.accessManager.on('tokenExpired', function () {
           $log.error('live chat token expired');
         });
 
-        accessManager.on('error', function () {
+        $rootScope.accessManager.on('error', function () {
           $log.error('An error occurred');
         });
 
 
-        var promise = messagingClient.getChannelBySid(channelSid);
+        var promise = $rootScope.messagingClient.getChannelBySid(newChatTask.session.channelSid);
 
         promise.then(function (channel) {
           $log.log('channel is: ' + channel.uniqueName);
-          $scope.setupChannel(channel);
+          $scope.setupChannel(channel, newChatTask);
         }, function (reason) {
           /* client could not access the channel */
           $log.error(reason);
@@ -466,32 +446,26 @@
 
       };
 
-      $scope.setupChannel = function (channel) {
-        // console.log('setup channel:')
-        // console.log(channel)
+      $scope.setupChannel = function (channel, newChatTask) {
 
         channel.join().then(function (member) {
-          // console.log('joined as member:')
-          // console.log(member)
 
           /* first we read the history of this channel, afterwards we join */
           channel.getMessages(3).then(function(page) {
             page.items.forEach(function (message) {
-              // console.log('found message')
-              // console.log(message)
-              $scope.addMessage(message);
+              $scope.addMessage(message, newChatTask);
             });
 
             $log.log('Total Messages in Channel:' + channel.getMessagesCount());
 
-            $scope.messages.push({
+            newChatTask.messages.push({
               body: 'You are now connected to the customer',
               author: 'System'
             });
 
             /* use now joined the channel, display canvas */
-            $scope.session.isInitialized = true;
-            $scope.session.isLoading = false;
+            newChatTask.session.isInitialized = true;
+            newChatTask.session.isLoading = false;
 
             $scope.$apply();
 
@@ -500,11 +474,11 @@
         });
 
         channel.on('messageAdded', function (message) {
-          $scope.addMessage(message);
+          $scope.addMessage(message, newChatTask);
         });
 
         channel.on('memberJoined', function (member) {
-          $scope.messages.push({
+          newChatTask.messages.push({
             body: member.identity + ' has joined the channel.',
             author: 'System'
           });
@@ -513,7 +487,7 @@
         });
 
         channel.on('memberLeft', function (member) {
-          $scope.messages.push({
+          newChatTask.messages.push({
             body: member.identity + ' has left the channel.',
             author: 'System'
           });
@@ -522,31 +496,36 @@
 
         channel.on('typingStarted', function (member) {
           $log.log(member.identity + ' started typing');
-          $scope.typingNotification = member.identity + ' is typing ...';
+          newChatTask.typingNotification = member.identity + ' is typing ...';
           $scope.$apply();
         });
 
         channel.on('typingEnded', function (member) {
           $log.log(member.identity + ' stopped typing');
-          $scope.typingNotification = '';
+          newChatTask.typingNotification = '';
           $scope.$apply();
         });
 
-        $scope.channel = channel;
+        newChatTask.channel = channel;
 
       };
 
       /* if the message input changes the user is typing */
-      $scope.$watch('vm.message', function (newValue, oldValue) {
-        if ($scope.channel) {
-          $log.log('send typing notification to channel');
-          $scope.channel.typing();
-        }
-      });
+      // $scope.$watch('task.sendMessage', function (newValue, oldValue) {
+      //   console.log('I am typing');
+      //   console.log(newValue);
+      //   if (task.channel) {
+      //     $log.log('send typing notification to channel');
+      //     task.channel.typing();
+      //   }
+      // });
 
-      $scope.send = function () {
-        $scope.channel.sendMessage(vm.message);
-        vm.message = '';
+      $scope.send = function (index) {
+        var task = $rootScope.chatTasks[index];
+        if (task.sendMessage) {
+          task.channel.sendMessage(task.sendMessage);
+          task.sendMessage = '';
+        }
       };
 
       $scope.callInlineNumber = function (phone) {
@@ -554,7 +533,7 @@
         $rootScope.$broadcast('CallPhoneNumber', {phoneNumber: phone});
       };
 
-      $scope.addMessage = function (message) {
+      $scope.addMessage = function (message, newChatTask) {
 
         var pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
 
@@ -565,7 +544,7 @@
           m = message.body.replace(pattern, template);
         }
 
-        $scope.messages.push({body: m, author: message.author, timestamp: message.timestamp});
+        newChatTask.messages.push({body: m, author: message.author, timestamp: message.timestamp});
         $scope.$apply();
 
       };

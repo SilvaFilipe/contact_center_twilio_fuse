@@ -26,11 +26,11 @@
 
     <div class="simple-table-container md-whiteframe-4dp">
       <div class="reservations">
-        <div style="text-align: center; padding: 30px; font-size: 28px" ng-hide="callTasks.length || reservation || task || extensionCallTasks.length">
+        <div style="text-align: center; padding: 30px; font-size: 28px" ng-hide="callTasks.length || reservations.length || chatTasks.length || extensionCallTasks.length">
           <h>Waiting for calls...</h>
         </div>
 
-        <div class="content" ng-show="callTasks.length || reservation || task || extensionCallTasks.length">
+        <div class="content" ng-show="callTasks.length || reservations.length || chatTasks.length || extensionCallTasks.length">
           <md-tabs md-dynamic-height>
             <md-tab data-ng-if="callTasks.length" ng-repeat="task in callTasks" ng-click="changeCurrentCall(task)" md-active="isActive(task)">
               <md-tab-label>
@@ -141,7 +141,7 @@
               </md-tab-body>
             </md-tab>
 
-            <md-tab data-ng-if="reservation != null" label="{{reservation.task.attributes.team}} Caller">
+            <md-tab data-ng-if="reservations.length" ng-repeat="reservation in reservations"  label="{{reservation.task.attributes.team}} Caller">
               <md-toolbar class="mt-10">
                 <div class="md-toolbar-tools">
                   <div class="description">{{reservation.task.attributes.title}} from {{reservation.task.attributes.name}}</div>
@@ -152,6 +152,7 @@
                 <md-button class="md-raised md-accent" ng-click="acceptReservation(reservation)">Accept</md-button>
               </div>
             </md-tab>
+
             <md-tab data-ng-if="extensionCallTasks.length" ng-repeat="task in extensionCallTasks"  label="{{task.callerName}}">
               <md-toolbar class="mt-10">
                 <div class="md-toolbar-tools">
@@ -165,9 +166,9 @@
                   <md-button class="md-raised md-primary" ng-click="declineInboundCall(task)">Decline</md-button>
                 </div>
               </div>
-
             </md-tab>
-            <md-tab ng-if="task != null && !task.attributes.nameIsPhoneNumber"	 md-active="false" label="CHAT">
+
+            <md-tab data-ng-if="chatTasks.length" ng-repeat="task in chatTasks track by $index"  label="{{task.attributes.team}} Caller">
               <md-toolbar>
                 <div class="md-toolbar-tools">
                   <div class="description">{{task.attributes.title}} from
@@ -178,22 +179,22 @@
 
               <div layout="row" layout-align="space-between center" style="padding: 10px">
                 <div style="font-size: 16px">{{task.attributes.text}}</div>
-                <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete(true)">Complete Task</md-button>
+                <md-button ng-show="task != null"  class="md-raised md-accent" ng-click="complete(task)">Complete Task</md-button>
               </div>
               <!-- chat -->
-              <section ng-show="session.channelSid" class="chat-controller" ng-cloak>
+              <section ng-show="task.session.channelSid" class="chat-controller" ng-cloak>
 
-                <div class="load-indicator" ng-show="session.isLoading">
+                <div class="load-indicator" ng-show="task.session.isLoading">
                   <i class="fa fa-refresh fa-spin" style="font-size:20px"></i>
                 </div>
 
-                <div ng-show="session.isInitialized">
+                <div ng-show="task.session.isInitialized">
 
                   <div class="chat-canvas" scroll-glue>
 
                     <ul class="message-list" >
 
-                      <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in messages">
+                      <li ng-class="{'me': message.author == session.identity}" class="message" ng-repeat="message in task.messages">
 
                         <div>
 
@@ -215,17 +216,17 @@
 
                   </div>
 
-                  <div class="typing-notification"><span>{{typingNotification}}</span></div>
+                  <div class="typing-notification"><span>{{task.typingNotification}}</span></div>
 
                   <form class="chat-message-form form-horizontal" name="chatMessageForm">
                     <div layout="row" layout-align="between-space center">
                       <div flex="70">
                         <md-input-container class="md-block">
-                          <input ng-model="vm.message" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-required="true" autocomplete="off" ng-focus="focused()" name="text" type="text">
+                          <input ng-model="task.sendMessage" aria-label="msg" ng-model-options="{ debounce: 250 }" ng-keyup="$event.keyCode == 13 ? send($index) : null" name="text" type="text">
                         </md-input-container>
                       </div>
                       <div flex="30" class="mt-10">
-                        <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-disabled="chatMessageForm.$invalid || chatMessageForm.$pristine" ng-click="send()">Send</md-button>
+                        <md-button class="md-raised md-deep-purple-500-bg" style="color: white" ng-click="send($index)">Send</md-button>
                       </div>
                     </div>
                   </form>

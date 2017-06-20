@@ -75,10 +75,10 @@
 
       $rootScope.syncClient = null;
 
-      $rootScope.startReservationCounter = function () {
+      $rootScope.startReservationCounter = function (reservation) {
 
         $log.log('start reservation counter');
-        $rootScope.reservationCounter = $rootScope.reservation.task.age;
+        $rootScope.reservationCounter = reservation.task.age;
 
         $rootScope.reservationInterval = $interval(function () {
           $rootScope.reservationCounter++;
