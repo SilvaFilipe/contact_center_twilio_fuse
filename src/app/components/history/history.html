@@ -70,6 +70,7 @@
             <div>
               <span>Duration: {{ call.duration | secsToDuration }}</span>
               <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" ng-show="call.recordingUrl!=null"></md-icon>
+              <img ng-src="{{call.sentimentScore < 1 && 'assets/images/sentiment/bad.png' || call.sentimentScore > 1 && 'assets/images/sentiment/good.png' ||  'assets/images/sentiment/neutral.png'}}" width="30"/>
             </div>
           </div>
         </div>

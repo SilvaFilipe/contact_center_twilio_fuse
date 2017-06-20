@@ -60,7 +60,11 @@ var callSchema = mongoose.Schema({
   mailRecordingDuration: String,
   created: {type : Date, default : Date.now},
   sipCallSid: String,
-  sipAnswered: Boolean
+  sipAnswered: Boolean,
+  sentimentScore: Number,
+  sentimentComparative: Number,
+  positiveWords: Array,
+  negativeWords: Array
 });
 
 callSchema.methods.saveSync = function () {
