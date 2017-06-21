@@ -250,17 +250,7 @@
 
       $scope.complete = function (task) {
         if ($rootScope.currentCall && !task) {
-          if ($rootScope.currentCall.type === 'outbound') {
-            $rootScope.stopWorkingCounter();
-            $scope.closeTab();
-            return;
-          }
-          if ($rootScope.currentCall.isExtensionCall()) {
-            $scope.closeTab();
-            return;
-          }
-          $scope.closeTab();
-
+          $rootScope.closeTab();
         }
 
         if (angular.isDefined(task.attributes) && task.attributes.channel === 'chat') {
@@ -353,7 +343,7 @@
       };
 
 
-      $scope.closeTab = function () {
+      $rootScope.closeTab = function () {
         var index = $rootScope.callTasks.indexOf($rootScope.currentCall);
         $rootScope.callTasks.splice(index, 1);
         if (index === $rootScope.callTasks.length && index !== 0) {

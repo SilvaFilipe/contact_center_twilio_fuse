@@ -360,6 +360,14 @@
               callItem.callStatus = (typeof data.callEvent.callStatus !== 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
             }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
+            if (callItem.isCompleted() && callItem !== $rootScope.currentCall && (callItem.isOutGoingCall() || callItem.isExtensionCall())) {
+
+              var index = $rootScope.callTasks.indexOf(callItem);
+              $rootScope.callTasks.splice(index, 1);
+              if ($state.current.name !== 'app.workspace') {
+                $rootScope.showCallNotification();
+              }
+            }
           }
         });
         if ($state.current.name !== 'app.workspace') {
@@ -374,6 +382,9 @@
           $rootScope.stopWorkingCounter();
           if (Twilio.Device.activeConnection()) {
             $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
+          }
+          if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+            $rootScope.closeTab();
           }
           if ($state.current.name !== 'app.workspace') {
             $rootScope.showCallNotification();
