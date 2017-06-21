@@ -3,9 +3,9 @@
     "EnvironmentConfig": {
       "API": "https://personable.herokuapp.com/",
       "Auth": "https://personable.herokuapp.com/",
-      "LogoUrl": "assets/images/logos/logo.png",
-      "LogoLetter": "K",
-      "MenuLogoText": "Kismet"
+      "LogoUrl": "assets/images/logos/innovision/logo.png",
+      "LogoLetter": "I",
+      "MenuLogoText": "Innovision"
     }
   }
 }
