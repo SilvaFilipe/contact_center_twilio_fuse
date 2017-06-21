@@ -86,6 +86,21 @@ module.exports.transcription_events = function (req, res) {
   console.log('mediaID: ' + voiceBaseMediaId);
   //console.log(transcriptionText);
   var callSid = req.query.callSid;
+  var sentiment = require('sentiment');
+  var r1 = sentiment(transcriptionText);
+  console.log('sentiment:')
+  console.log(r1);
+  try {
+    var sentimentScore = r1.score
+    var sentimentComparative= r1.comparative
+    var positiveWords = r1.positive
+    var negativeWords = r1.negative
+  } catch (e) {
+    var sentimentScore = null
+    var sentimentComparative = null
+    var positiveWords = []
+    var negativeWords = []
+  }
   Call.findOne({'callSid': callSid}, function (err, call) {
     if (call == null){
       console.log ('Could not find call to update transcription: ' + callSid);
@@ -95,7 +110,7 @@ module.exports.transcription_events = function (req, res) {
       return res.send("<Response/>")
     } else {
       console.log ('updating transcription: ' + callSid);
-      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId}}, function(err, call2){
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
         if(err) {
           console.log("Something wrong when updating call: " + err);
         } else {
