@@ -381,14 +381,25 @@
         if (newVal === 'completed') {
           $rootScope.stopWorkingCounter();
           if (Twilio.Device.activeConnection()) {
-            $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
+            $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true}).then(function(res){
+              if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+                $rootScope.closeTab();
+              }
+            }, function(err) {
+              if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+                $rootScope.closeTab();
+              }
+            });
           }
-          if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
-            $rootScope.closeTab();
+          else {
+            if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+              $rootScope.closeTab();
+            }
           }
           if ($state.current.name !== 'app.workspace') {
             $rootScope.showCallNotification();
           }
+
 
         }
       });
