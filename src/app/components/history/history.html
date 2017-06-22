@@ -70,7 +70,12 @@
             <div>
               <span>Duration: {{ call.duration | secsToDuration }}</span>
               <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" ng-show="call.recordingUrl!=null"></md-icon>
-              <img ng-src="{{call.sentimentScore < 1 && 'assets/images/sentiment/bad.png' || call.sentimentScore > 1 && 'assets/images/sentiment/good.png' ||  'assets/images/sentiment/neutral.png'}}" width="30"/>
+              <span ng-if="call.sentimentScore">
+                <img ng-src="{{call.sentimentScore < -1 && 'assets/images/sentiment/bad.png' || call.sentimentScore > 1 && 'assets/images/sentiment/good.png' ||  'assets/images/sentiment/neutral.png'}}" width="30"/>
+                  <md-tooltip md-direction="'right'">
+                      Sentiment: Score: {{call.sentimentScore }}, Weight: {{call.sentimentComparative | number : 2}}
+                  </md-tooltip>
+             </span>
             </div>
           </div>
         </div>
@@ -89,7 +94,7 @@
     </md-list-item>
   </md-list>
   <cl-paging flex cl-pages="$ctrl.historyPagination.pages"
-             cl-steps="4"
+             cl-steps="5"
              cl-align="center center"
              cl-page-changed="$ctrl.loadCalls()"
              cl-current-page="$ctrl.historyPagination.currentPage"></cl-paging>
