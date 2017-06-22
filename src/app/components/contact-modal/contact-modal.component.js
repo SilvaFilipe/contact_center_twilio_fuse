@@ -32,7 +32,7 @@ angular.module('app.components')
     var directive = {
       restrict: 'E',
       scope: { model: '=?' },
-      template:   '<input type="file" accept="image/*,video/*,audio/*" class="fileInput ng-hide" ng-model="model" />' +
+      template:   '<input type="file" accept="image/*,video/*,audio/*" class="fileInput ng-hide" ng-model="model" aria-label="mediapreview"/>' +
       '<md-button class="uploadButton md-raised md-primary"> Choose File </md-button>' +
       '<md-input-container  md-no-float>    <input class="textInput" ng-model="fileName" type="text" placeholder="No file chosen" ng-readonly="true"></md-input-container>',
       link: _link

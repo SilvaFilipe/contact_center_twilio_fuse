@@ -35,6 +35,14 @@
         $rootScope.extensionCallTasks = [];
       }
 
+      if (!angular.isDefined($rootScope.reservations)) {
+        $rootScope.reservations = [];
+      }
+
+      if (!angular.isDefined($rootScope.chatTasks)) {
+        $rootScope.chatTasks = [];
+      }
+
 
       $http.get(apiUrl + 'api/users/me', {withCredentials: true})
         .then(function (response) {
@@ -126,10 +134,10 @@
             $scope.initWorker(response.data.tokens.worker);
 
             /* initialize Twilio client with token received from the backend */
-            $rootScope.$broadcast('InitializePhone', {token: response.data.tokens.phone});
+            $scope.$broadcast('InitializePhone', {token: response.data.tokens.phone});
 
             /* initialize Twilio IP Messaging client with token received from the backend */
-            $rootScope.$broadcast('InitializeChat', {
+            $scope.$broadcast('InitializeChat', {
               token: response.data.tokens.chat,
               identity: response.data.worker.friendlyName
             });
@@ -175,8 +183,10 @@
           $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
             var audio = new Audio(res.data);
             audio.play();
-            $rootScope.reservation = reservation;
-            $rootScope.startReservationCounter();
+            // $rootScope.reservation = reservation;
+            $rootScope.reservations.push(reservation);
+            $rootScope.stopReservationCounter();
+            $rootScope.startReservationCounter(reservation);
             if ($state.current.name !== 'app.workspace') {
               $rootScope.showCallNotification();
             }
@@ -189,17 +199,12 @@
           $log.log('TaskRouter Worker: reservation.accepted');
           $log.log(reservation);
 
-          $rootScope.task = reservation.task;
+          // $rootScope.task = reservation.task;
 
-          /* check if the customer name is a phone number */
-          var pattern = /(.*)(\+[0-9]{8,20})(.*)$/;
-
-          if (pattern.test($rootScope.task.attributes.name) === true) {
-            $rootScope.task.attributes.nameIsPhoneNumber = true;
-          }
-
-          $rootScope.task.completed = false;
-          $rootScope.reservation = null;
+          // $rootScope.task.completed = false;
+          var index = $rootScope.reservations.indexOf(reservation);
+          $rootScope.reservations.splice(index, 1);
+          // $rootScope.reservation = null;
           $rootScope.stopReservationCounter();
           var caller_sid = reservation.task.attributes.call_sid;
           var agent_sid = reservation.task.attributes.worker_call_sid;
@@ -224,8 +229,9 @@
           $log.log(reservation);
 
           /* reset all data */
-          $rootScope.reservation = null;
-          $rootScope.task = null;
+          // $rootScope.reservation = null;
+          var index = $rootScope.reservations.indexOf(reservation);
+          $rootScope.reservations.splice(index, 1);
           $scope.$apply();
 
         });
@@ -236,8 +242,9 @@
           $log.log(reservation);
 
           /* reset all data */
-          $rootScope.reservation = null;
-          $rootScope.task = null;
+          // $rootScope.reservation = null;
+          var index = $rootScope.reservations.indexOf(reservation);
+          $rootScope.reservations.splice(index, 1);
           $scope.$apply();
 
         });
@@ -247,8 +254,9 @@
           $log.log('TaskRouter Worker: reservation.cancelled');
           $log.log(reservation);
 
-          $rootScope.reservation = null;
-          $rootScope.task = null;
+          // $rootScope.reservation = null;
+          var index = $rootScope.reservations.indexOf(reservation);
+          $rootScope.reservations.splice(index, 1);
           $scope.$apply();
 
         });
@@ -267,8 +275,7 @@
 
           $log.log('TaskRouter Worker: token.expired');
 
-          $rootScope.reservation = null;
-          $rootScope.task = null;
+          $rootScope.reservations = null;
           $scope.$apply();
 
           /* the worker token expired, the agent shoud log in again, token is generated upon log in */
@@ -353,6 +360,14 @@
               callItem.callStatus = (typeof data.callEvent.callStatus !== 'undefined') ? data.callEvent.callStatus : data.callEvent.conferenceStatusCallbackEvent;
             }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
+            if (callItem.isCompleted() && callItem !== $rootScope.currentCall && (callItem.isOutGoingCall() || callItem.isExtensionCall())) {
+
+              var index = $rootScope.callTasks.indexOf(callItem);
+              $rootScope.callTasks.splice(index, 1);
+              if ($state.current.name !== 'app.workspace') {
+                $rootScope.showCallNotification();
+              }
+            }
           }
         });
         if ($state.current.name !== 'app.workspace') {
@@ -366,11 +381,25 @@
         if (newVal === 'completed') {
           $rootScope.stopWorkingCounter();
           if (Twilio.Device.activeConnection()) {
-            $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
+            $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true}).then(function(res){
+              if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+                $rootScope.closeTab();
+              }
+            }, function(err) {
+              if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+                $rootScope.closeTab();
+              }
+            });
+          }
+          else {
+            if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
+              $rootScope.closeTab();
+            }
           }
           if ($state.current.name !== 'app.workspace') {
             $rootScope.showCallNotification();
           }
+
 
         }
       });
@@ -385,7 +414,7 @@
       $scope.isOutboundCall = false;
 
 
-      $rootScope.$on('InitializePhone', function(event, data) {
+      $scope.$on('InitializePhone', function(event, data) {
 
         $log.log('InitializePhone event received');
 
@@ -584,7 +613,24 @@
         $timeout(function(){
           $rootScope.$broadcast('endAllOutCalls');
         });
-      }
+      };
+
+      // Text Chat
+
+      $rootScope.session = {
+        token: null,
+        identity: null
+      };
+
+      $scope.$on('InitializeChat', function (event, data) {
+
+        $log.log('InitializeChat event received');
+        $log.log(data);
+
+        $rootScope.session.token = data.token;
+        $rootScope.session.identity = data.identity;
+
+      });
 
     }
 
