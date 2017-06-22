@@ -30,18 +30,17 @@
             Search
           </md-button>
         </div>
-        <div layout="row" ng-show="isTollFree === '0'" layout-align="space-between center">
-          <div>
-            <md-input-container class="md-block">
-              <label>Search(optional)</label>
-              <input type="text" name="contains" ng-model="contains">
-            </md-input-container>
-          </div>
-          <div flex="5"></div>
+        <div layout="row" ng-show="isTollFree === '0'" layout-align="start center">
           <div ng-show="countryCode === 'us'">
             <md-input-container class="md-block">
               <label>Area Code(optional)</label>
               <input type="text" name="areaCode" ng-model="areaCode">
+            </md-input-container>
+          </div>
+          <div>
+            <md-input-container class="md-block">
+              <label>Search(optional)</label>
+              <input type="text" name="contains" ng-model="contains">
             </md-input-container>
           </div>
         </div>
