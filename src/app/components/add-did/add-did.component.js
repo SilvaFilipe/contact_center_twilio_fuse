@@ -43,7 +43,10 @@ function AddDidController($scope, $rootScope, $mdDialog, AdminUserService) {
       if (!angular.isDefined($scope.areaCode)) {
         $scope.areaCode = "";
       }
-      AdminUserService.didSearch($scope.areaCode, $scope.countryCode.toUpperCase(), $scope.isTollFree).then(function (res) {
+      if (!angular.isDefined($scope.contains)) {
+        $scope.contains = "";
+      }
+      AdminUserService.didSearch($scope.areaCode, $scope.contains, $scope.countryCode.toUpperCase(), $scope.isTollFree).then(function (res) {
         $scope.loadingProgress = false;
         $mdToast.showSimple("Did Searched Successfully.");
         $scope.didSearch = res.data;
@@ -80,10 +83,6 @@ function AddDidController($scope, $rootScope, $mdDialog, AdminUserService) {
       $scope.areaCode = '';
       $scope.searchDid();
     });
-
-    $timeout(function () {
-      $scope.searchDid();
-    }, 500);
 
   }
 

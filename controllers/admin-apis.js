@@ -45,6 +45,7 @@ module.exports.didSearch = function (req, res) {
   var areaCode = req.query.areacode;
   var tollFree = req.query.tollfree;
   var countryCode = req.query.countryCode;
+  var contains = req.query.contains;
 
   if (tollFree === "1"){
     client.availablePhoneNumbers(countryCode).tollFree.list({
@@ -53,51 +54,32 @@ module.exports.didSearch = function (req, res) {
     }, function(err, data) {
       if (err) {
         console.log(err);
-        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.setHeader('Cache-Control', 'public, max-age=0');
         res.statusCode = 500;
         res.send(err)
       } else {
         console.log(data);
-        res.setHeader('Cache-Control', 'public, max-age=0')
+        res.setHeader('Cache-Control', 'public, max-age=0');
         res.send(data.available_phone_numbers)
       }
     });
   } else {
-    if (areaCode) {
-      if (countryCode=="US") {
-        var params = {areaCode: areaCode,
-          voiceEnabled: true}
+    var params = {voiceEnabled: true};
+    if (contains) params.contains = contains;
+    if (countryCode === 'US') {
+      if (areaCode) params.areaCode = areaCode;
+    }
+    client.availablePhoneNumbers(countryCode).local.list(params , function(err, data) {
+      if (err) {
+        console.log(err);
+        res.setHeader('Cache-Control', 'public, max-age=0');
+        res.statusCode = 500;
+        res.send(err)
       } else {
-        var params = {contains: areaCode, //areaCode.replace('+','').trim(),
-          voiceEnabled: true}
+        res.setHeader('Cache-Control', 'public, max-age=0');
+        res.send(data.available_phone_numbers)
       }
-      client.availablePhoneNumbers(countryCode).local.list(params , function(err, data) {
-        if (err) {
-          console.log(err);
-          res.setHeader('Cache-Control', 'public, max-age=0')
-          res.statusCode = 500;
-          res.send(err)
-        } else {
-          res.setHeader('Cache-Control', 'public, max-age=0')
-          res.send(data.available_phone_numbers)
-        }
-      });
-    }
-    else {
-      client.availablePhoneNumbers(countryCode).local.list({
-        voiceEnabled: true
-      }, function(err, data) {
-        if (err) {
-          console.log(err);
-          res.setHeader('Cache-Control', 'public, max-age=0')
-          res.statusCode = 500;
-          res.send(err)
-        } else {
-          res.setHeader('Cache-Control', 'public, max-age=0')
-          res.send(data.available_phone_numbers)
-        }
-      });
-    }
+    });
 
   }
 
