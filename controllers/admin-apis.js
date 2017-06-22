@@ -65,7 +65,10 @@ module.exports.didSearch = function (req, res) {
     });
   } else {
     var params = {voiceEnabled: true};
-    if (contains) params.contains = contains;
+    if (contains) {
+      if (contains.length === 1) params.contains = contains + '*';
+      else params.contains = contains;
+    }
     if (countryCode === 'US') {
       if (areaCode) params.areaCode = areaCode;
     }

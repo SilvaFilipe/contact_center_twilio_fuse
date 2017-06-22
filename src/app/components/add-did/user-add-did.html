@@ -1,4 +1,4 @@
-<md-dialog aria-label="Mango (Fruit)">
+<md-dialog aria-label="Mango (Fruit)" style="width: 400px">
   <form>
     <md-toolbar>
       <div class="md-toolbar-tools">
@@ -21,25 +21,28 @@
           </md-input-container>
           <input type="text" id="country_code" ng-model="countryCode" hidden/>
         </div>
-        <md-radio-group ng-model="isTollFree" layout="row">
-          <md-radio-button value="0">Local</md-radio-button>
-          <md-radio-button value="1"> Toll free </md-radio-button>
-        </md-radio-group>
-        <div layout="column" ng-show="isTollFree === '0'">
-          <div ng-show="countryCode === 'us'">
-            <md-input-container class="md-block mr-30" flex="55">
-              <label>Area Code</label>
-              <input type="text" name="areaCode" ng-model="areaCode">
-            </md-input-container>
-          </div>
-          <div layout="row" layout-align="space-between center">
-            <md-input-container class="md-block mr-30" flex-gt-sm>
-              <label>Search</label>
+        <div layout="row" layout-align="space-between center">
+          <md-radio-group ng-model="isTollFree" layout="row">
+            <md-radio-button value="0">Local</md-radio-button>
+            <md-radio-button value="1"> Toll free </md-radio-button>
+          </md-radio-group>
+          <md-button class="md-primary md-raised mb-10" ng-click="searchDid(0)" ng-disabled="didForm.$invalid || didForm.$pristine">
+            Search
+          </md-button>
+        </div>
+        <div layout="row" ng-show="isTollFree === '0'" layout-align="space-between center">
+          <div>
+            <md-input-container class="md-block">
+              <label>Search(optional)</label>
               <input type="text" name="contains" ng-model="contains">
             </md-input-container>
-            <md-button class="md-primary md-raised mb-35" ng-click="searchDid(0)" ng-disabled="didForm.$invalid || didForm.$pristine">
-              Search
-            </md-button>
+          </div>
+          <div flex="5"></div>
+          <div ng-show="countryCode === 'us'">
+            <md-input-container class="md-block">
+              <label>Area Code(optional)</label>
+              <input type="text" name="areaCode" ng-model="areaCode">
+            </md-input-container>
           </div>
         </div>
         <div layout="row" layout-align="space-between center">
