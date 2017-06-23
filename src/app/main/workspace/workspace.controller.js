@@ -7,9 +7,10 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall, EnvironmentConfig) {
       var vm = this;
       var apiUrl = $rootScope.apiBaseUrl;
+      var isStartRecording = EnvironmentConfig.CallRecordingDefault;
       $scope.currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
 
       vm.toggleLeftSidenav = function (sidenavId) {
@@ -83,7 +84,7 @@
                 return;
               }
               $log.log("reservation accepted");
-              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: reservation.task.attributes.call_sid, conferenceName: reservation.sid};
+              var callParams = {fromNumber: reservation.task.attributes.from, duration: reservation.task.age, callSid: reservation.task.attributes.call_sid, conferenceName: reservation.sid, recording: isStartRecording};
               $rootScope.currentCall = new InboundCall(callParams);
               $rootScope.callTasks.push($rootScope.currentCall);
               CallService.getActiveConnSid(function(ActiveConnSid) {

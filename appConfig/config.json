@@ -5,7 +5,8 @@
       "Auth": "https://personable.herokuapp.com/",
       "LogoUrl": "assets/images/logos/logo.png",
       "LogoLetter": "K",
-      "MenuLogoText": "Kismet"
+      "MenuLogoText": "Kismet",
+      "CallRecordingDefault": false
     }
   }
 }

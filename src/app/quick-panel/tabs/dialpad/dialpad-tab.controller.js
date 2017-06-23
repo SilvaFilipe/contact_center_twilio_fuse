@@ -7,12 +7,13 @@
         .controller('PhoneController', PhoneController);
 
     /** @ngInject */
-    function PhoneController($scope, $state, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall)
+    function PhoneController($scope, $state, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall, EnvironmentConfig)
     {
       var vm = this;
       var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
       var workerName =  currentUser.friendlyWorkerName;
       var apiUrl = $rootScope.apiBaseUrl;
+      var isStartRecording = EnvironmentConfig.CallRecordingDefault;
 
       //Generate random UUID to identify this browser tab
       //For a more robust solution consider a library like
@@ -102,7 +103,7 @@
                       var audio = new Audio(res.data);
                       audio.play();
                       var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
-                        conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false};
+                        conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false, recording: isStartRecording};
                       var task = new ExtensionCall(callParams);
                       $rootScope.extensionCallTasks.push(task);
                       $rootScope.stopExtensionCounter();
@@ -290,7 +291,7 @@
       $scope.$on('NewOutBoundingCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid};
+        var callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid, recording: isStartRecording};
         $rootScope.currentCall = new OutboundCall(callParams);
         $rootScope.callTasks.push($rootScope.currentCall);
         $rootScope.stopWorkingCounter();
@@ -312,7 +313,7 @@
       $scope.$on('NewExtensionCall', function (event, data) {
         $log.log('call: ' + data.phoneNumber);
 
-        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName};
+        var callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName, recording: isStartRecording};
         $rootScope.currentCall = new ExtensionCall(callParams);
         $rootScope.callTasks.push($rootScope.currentCall);
         $rootScope.stopWorkingCounter();

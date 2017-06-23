@@ -5,7 +5,8 @@
       "Auth": "https://gpctelecom.herokuapp.com/",
       "LogoUrl": "assets/images/logos/gpctelecom/logo.png",
       "LogoLetter": "GPC",
-      "MenuLogoText": "GPC Telecom"
+      "MenuLogoText": "GPC Telecom",
+      "CallRecordingDefault": false
     }
   }
 }

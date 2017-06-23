@@ -5,7 +5,8 @@
       "Auth": "https://personable.herokuapp.com/",
       "LogoUrl": "assets/images/logos/innovision/logo.png",
       "LogoLetter": "I",
-      "MenuLogoText": "Innovision"
+      "MenuLogoText": "Innovision",
+      "CallRecordingDefault": false
     }
   }
 }

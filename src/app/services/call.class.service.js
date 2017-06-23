@@ -67,6 +67,7 @@
       this.direction = 'extension';
       this.callerName = params.callerName;
       this.type = params.type;
+      this.recording = params.recording;
 
     };
 
@@ -87,6 +88,7 @@
       Call.apply(this, arguments);
       this.direction = 'inbound';
       this.type = 'inbound';
+      this.recording = params.recording;
 
     };
 
@@ -108,6 +110,7 @@
       Call.apply(this, arguments);
       this.direction = 'outbound';
       this.type = 'outbound';
+      this.recording = params.recording;
 
     };
 

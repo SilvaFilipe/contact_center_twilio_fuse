@@ -7,7 +7,8 @@
       "LogoLetter": "C",
       "MenuLogoText": "Carling",
       "MenuLogoImageUrl": "assets/images/logos/carling/menulogo.png",
-      "MenuLogoTextUrl": "assets/images/logos/carling/menulogotext.png"
+      "MenuLogoTextUrl": "assets/images/logos/carling/menulogotext.png",
+      "CallRecordingDefault": false
     }
   }
 }
