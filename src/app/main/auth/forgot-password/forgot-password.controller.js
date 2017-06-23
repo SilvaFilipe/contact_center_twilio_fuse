@@ -7,11 +7,12 @@
         .controller('ForgotPasswordController', ForgotPasswordController);
 
     /** @ngInject */
-    function ForgotPasswordController($http, $rootScope)
+    function ForgotPasswordController($http, $rootScope, EnvironmentConfig)
     {
       var vm = this;
       vm.form = {};
       var apiUrl = $rootScope.apiBaseUrl;
+      vm.logoUrl = EnvironmentConfig.LogoUrl;
       vm.isSubmitted = false;
 
       vm.sendRecoverEmail = function () {
