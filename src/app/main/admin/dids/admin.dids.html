@@ -58,9 +58,14 @@
                 <span class="column-title">Assigned User</span>
               </div>
             </th>
-            <th class="secondary-text actions">
+            <th class="secondary-text center">
               <div class="table-header">
                 <span class="column-title">Remove?</span>
+              </div>
+            </th>
+            <th class="secondary-text actions">
+              <div class="table-header">
+                <span class="column-title">Action</span>
               </div>
             </th>
           </tr>
@@ -69,8 +74,13 @@
           <tr ng-repeat="did in ::vm.dids">
             <td>{{did.number}}</td>
             <td>{{did.user.name}}</td>
-            <td class="actions">
+            <td class="center">
               <md-checkbox class="md-secondary" ng-model="did.userFlag" aria-label="delete did"></md-checkbox>
+            </td>
+            <td class="actions">
+              <md-button class="edit-button md-icon-button" ui-sref="app.admin.dids.edit({id: did._id})" aria-label="Did Edit">
+                <md-icon md-font-icon="icon-pencil" class="s16"></md-icon>
+              </md-button>
             </td>
           </tr>
           </tbody>

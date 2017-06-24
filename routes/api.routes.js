@@ -191,6 +191,10 @@ module.exports = function(app, acl, multer){
     router.route('/dids')
       .get(dids.all);
 
+    router.route('/dids/:id')
+      .put(dids.update)
+      .get(dids.get);
+
     router.route('/contacts/:contact_id')
       .put(contacts.update)
       .get(contacts.get);

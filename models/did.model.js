@@ -6,6 +6,15 @@ var DidSchema = mongoose.Schema({
     },
     sid: {
         type: String
+    },
+    greetingText: {
+        type: String
+    },
+    greetingAudioUrl: {
+        type: String
+    },
+    flow: {
+        type: String
     }
 });
 

@@ -42,6 +42,33 @@ module.exports = {
             }
 
         })
+    },
+
+    get: function (req, res) {
+
+      Did.findById(req.params.id)
+        .exec(function (err, did) {
+          if(err) return res.status(500).json(err);
+
+          if(!did) return res.status(404).send("No Did found");
+
+          return res.status(200).json(did);
+        })
+    },
+
+    update: function (req, res) {
+      Did.findById(req.params.id, function (err, did) {
+        if(err) return res.send(err);
+
+        did.greetingText = req.body.greetingText;
+        did.flow = req.body.flow;
+
+        did.save(function(err){
+          if(err) return res.send(err);
+
+          return res.status(200).json(did);
+        });
+      })
     }
 
 };

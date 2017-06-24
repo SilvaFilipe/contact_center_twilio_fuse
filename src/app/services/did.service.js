@@ -12,9 +12,29 @@
     var DidService = {
 
       getAll: function getAll() {
-        return $http.get(apiUrl + '/dids')
+        return $http.get(apiUrl + '/dids', {withCredentials: true})
           .then(function (response) {
             return response.data;
+          });
+      },
+
+      getDid: function getDid(id) {
+        return $http.get(apiUrl + '/dids/' + id, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          }, function (err) {
+            console.log(err);
+            return err.data;
+          });
+      },
+
+      updateDid: function updateDid(did) {
+        return $http.put(apiUrl + '/dids/' + did._id, did, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          }, function (err) {
+            console.log(err);
+            return err.data;
           });
       },
 

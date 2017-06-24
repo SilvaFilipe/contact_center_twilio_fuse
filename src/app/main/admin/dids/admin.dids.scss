@@ -103,3 +103,64 @@
     }
   }
 }
+
+#admin-did-edit {
+  .content {
+    font-size: 16px;
+    .product-detail-form-container {
+      padding: 24px;
+
+      .profile-box {
+        margin-bottom: 16px;
+
+        header {
+          padding: 16px;
+
+          .title {
+            font-size: 17px;
+          }
+
+          .more {
+            cursor: pointer;
+          }
+        }
+
+        .content {
+          padding: 16px;
+          background-color: #FFF;
+        }
+
+        footer {
+          padding: 8px;
+          border-top: 1px solid rgba(0, 0, 0, 0.08);
+          background-color: rgba(0, 0, 0, 0.06);
+        }
+
+        &.info-box {
+
+          .info-line {
+            margin-bottom: 24px;
+
+            .title {
+              font-size: 15px;
+              font-weight: 500;
+              padding-bottom: 4px;
+            }
+
+            .info {
+
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+    }
+
+
+
+  }
+}

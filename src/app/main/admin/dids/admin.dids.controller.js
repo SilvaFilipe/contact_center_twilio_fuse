@@ -17,7 +17,7 @@
       autoWidth : false,
       responsive: true,
       order: [[ 1, "asc" ]],
-      columnDefs: [{"orderable": false, "targets": 2}],
+      columnDefs: [{"orderable": false, "targets": 2}, {"orderable": false, "targets": 3}],
 
     };
     vm.dtInstance = {};

@@ -1,0 +1,65 @@
+<div id="admin-did-edit" class="page-layout simple fullwidth doc-page element-doc-page" layout="column">
+  <!-- HEADER -->
+  <div class="header md-accent-bg" layout="row" layout-align="start center">
+    <div class="white-fg" layout="row" layout-align="start center" flex>
+      <md-button class="goto-products-button md-icon-button" aria-label="Go to dids"
+                 ui-sref="app.admin.dids">
+        <md-icon md-font-icon="icon-arrow-left"></md-icon>
+      </md-button>
+
+      <div layout="row" layout-align="start center">
+
+        <div layout="column" layout-align="start start">
+          <div class="h2">
+            {{vm.did.number}}
+          </div>
+          <div class="subtitle secondary-text">
+            <span>Did Detail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <md-button class="md-raised md-background" ng-click="vm.saveDid()">
+        <span>SAVE</span>
+      </md-button>
+    </div>
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+
+      <div layout="row">
+        <div flex="100" flex-gt-sm="55" flex-gt-md="55">
+          <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
+            <header class="md-accent-bg">
+              <div class="title">Did Information</div>
+            </header>
+
+            <div class="content">
+              <md-input-container class="md-block" aria-label="select did greeting text">
+                <label>Greeting Text</label>
+                <input type="text" ng-model="vm.did.greetingText">
+              </md-input-container>
+              <div layout="row" layout-align="space-between center">
+                <span>which one is did assigned to?</span>
+                <md-select ng-model="vm.did.flow" class="md-no-underline" aria-label="select did flow">
+                  <md-option value="user">User</md-option>
+                  <md-option value="companyDirectory">Company Directory</md-option>
+                  <md-option value="queues">Queues</md-option>
+                  <md-option value="conferenceCall">ConferenceCall</md-option>
+                </md-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

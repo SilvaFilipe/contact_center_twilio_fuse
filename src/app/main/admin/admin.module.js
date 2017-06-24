@@ -147,6 +147,21 @@
                   controller : 'AdminDidsController as vm'
                 }
               }
+            })
+
+            .state('app.admin.dids.edit', {
+              url      : '/:id',
+              views    : {
+                'content@app': {
+                  templateUrl: 'app/main/admin/dids/did/admin.did.edit.html',
+                  controller : 'AdminDidEditController as vm'
+                }
+              },
+              resolve  : {
+                Did: function ($stateParams, DidService) {
+                  return DidService.getDid($stateParams.id);
+                }
+              }
             });
 
         msNavigationServiceProvider.saveItem('admin', {
