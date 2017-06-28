@@ -9,6 +9,26 @@ const s3fsImpl = new S3FS(process.env.S3_BUCKET, {
 const Promise = require('bluebird');
 const sharp = require('sharp');
 
+exports.uploadSingleFile = function uploadSingleFile(file) {
+  if (!file) {
+    return Promise.reject('file expected');
+  }
+
+  return new Promise(function(resolve, reject){
+    s3fsImpl.writeFile(file.originalname, file.buffer).then(function () {
+      fs.unlink(file.buffer, function (err) {
+        if (err) {
+          console.error(err);
+        }
+      });
+      return resolve(getS3Url(file.originalname));
+    }, function (err) {
+      if(err) return reject(err);
+    });
+  });
+
+};
+
 exports.upload = function upload(file) {
   if (!file) {
     return Promise.reject('file expected');

@@ -38,6 +38,20 @@
           });
       },
 
+      uploadAudio: function uploadAudio(did_id, audioFile) {
+        var fd = new FormData();
+        fd.append('file', audioFile);
+
+        return $http.post(apiUrl + '/dids/' + did_id + '/uploadAudio', fd, {
+          headers: { 'Content-Type': undefined },
+          transformRequest: angular.identity,
+          withCredentials: true
+        })
+          .then(function (response) {
+            return response.data;
+          });
+      },
+
       deleteDids: function deleteDids(dids) {
         var promises = dids.map(function (did) {
           var data = [{id: did.id, sid: did.sid}];

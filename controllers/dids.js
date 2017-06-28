@@ -1,7 +1,7 @@
 const Did = require('../models/did.model');
 const User = require('../models/user.model');
 const Promise = require('bluebird');
-
+const S3 = require('../services/s3');
 
 module.exports = {
 
@@ -69,6 +69,28 @@ module.exports = {
           return res.status(200).json(did);
         });
       })
+    },
+
+  uploadGreetingAudio: async function uploadGreetingAudio(req, res) {
+      console.log('upload greeting audio file to s3');
+      let file = req.file;
+      const didId = req.params.did_id;
+      try {
+        var audioUrl = await S3.uploadSingleFile(file);
+        let did = await Did.findById(didId).exec();
+        did.greetingAudioUrl = audioUrl;
+        let savedDid= await did.save();
+        return res.status(200).json({
+          did: savedDid,
+          success: true
+        });
+      } catch (err) {
+        return res.status(400).json({
+          err: err,
+          errString: JSON.stringify(err),
+          success: false
+        });
+      }
     }
 
 };

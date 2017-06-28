@@ -195,6 +195,9 @@ module.exports = function(app, acl, multer){
       .put(dids.update)
       .get(dids.get);
 
+    router.route('/dids/:did_id/uploadAudio')
+      .post(multer().single('file'), dids.uploadGreetingAudio);
+
     router.route('/contacts/:contact_id')
       .put(contacts.update)
       .get(contacts.get);

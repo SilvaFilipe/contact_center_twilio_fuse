@@ -34,7 +34,7 @@ angular.module('app.components')
       scope: { model: '=?' },
       template:   '<input type="file" accept="image/*,video/*,audio/*" class="fileInput ng-hide" ng-model="model" aria-label="mediapreview"/>' +
       '<md-button class="uploadButton md-raised md-primary"> Choose File </md-button>' +
-      '<md-input-container  md-no-float>    <input class="textInput" ng-model="fileName" type="text" placeholder="No file chosen" ng-readonly="true"></md-input-container>',
+      '<md-input-container  md-no-float>    <input class="textInput" ng-model="fileName" type="text" placeholder="No file chosen" style="width: 200px" ng-readonly="true"></md-input-container>',
       link: _link
     };
 
@@ -168,7 +168,13 @@ angular.module('app.components')
         return ngModel.$modelValue
       }, function () {
         if(angular.isString(ngModel.$modelValue)){
-          var $mediaElement = angular.element( document.createElement('img') );
+          if (previewClass === 'audio') {
+            var $mediaElement = angular.element( document.createElement('audio') );
+            $mediaElement.attr("controls", "controls");
+          }
+          else {
+            var $mediaElement = angular.element( document.createElement('img') );
+          }
           $mediaElement.attr('src', ngModel.$modelValue);
           $mediaElement.addClass(previewClass);
           container.append( $mediaElement );
