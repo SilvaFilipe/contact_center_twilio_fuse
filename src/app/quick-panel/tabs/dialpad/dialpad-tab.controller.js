@@ -351,7 +351,7 @@
             }
             $log.log('call status changed:' + data.callSid + ' to ' + callItem.callStatus);
             if (callItem.isCompleted() && callItem !== $rootScope.currentCall && (callItem.isOutGoingCall() || callItem.isExtensionCall())) {
-
+              callItem.stopCallTimer();
               var index = $rootScope.callTasks.indexOf(callItem);
               $rootScope.callTasks.splice(index, 1);
             }
