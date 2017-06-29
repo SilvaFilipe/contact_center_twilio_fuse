@@ -29,6 +29,7 @@
           if(results.length > 1){
             $mdToast.showSimple("Greeting audio file has been saved.");
           }
+          $state.go("app.admin.dids");
         })
         .catch(function (err) {
           console.log(err);

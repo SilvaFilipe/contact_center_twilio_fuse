@@ -16,11 +16,6 @@ exports.uploadSingleFile = function uploadSingleFile(file) {
 
   return new Promise(function(resolve, reject){
     s3fsImpl.writeFile(file.originalname, file.buffer).then(function () {
-      fs.unlink(file.buffer, function (err) {
-        if (err) {
-          console.error(err);
-        }
-      });
       return resolve(getS3Url(file.originalname));
     }, function (err) {
       if(err) return reject(err);
