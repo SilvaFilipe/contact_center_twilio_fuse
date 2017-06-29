@@ -57,7 +57,7 @@
     "request-promise": "^4.1.1",
     "s3fs": "^2.5.0",
     "sentiment": "^4.0.0",
-    "sharp": "^0.17.3",
+    "sharp": "^0.18.1",
     "twilio": "^2.9.x",
     "uuid": "^3.0.1"
   },
