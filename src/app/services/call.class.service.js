@@ -9,9 +9,10 @@
     .factory('OutboundCall', OutboundCall)
     .factory('ConferenceCall', ConferenceCall);
 
-  function Call() {
+  function Call($interval, $log) {
     // instantiate Call class
     var Call = function (params) {
+      var _this = this;
       if (params) {
         this.fromNumber = params.fromNumber;
         this.duration = (params.duration === undefined ? 0: params.duration);
@@ -22,6 +23,9 @@
         this.createdAt = new Date();
         this.callStatus = 'active';
         this.conferenceName = params.conferenceName;
+        this.workingInterval = $interval(function () {
+          _this.duration++;
+        }, 1000);
       }
     };
 
@@ -54,6 +58,14 @@
 
     Call.prototype.isConferenceCall = function() {
       return this.direction === 'conference';
+    };
+
+    Call.prototype.stopCallTimer = function () {
+      if (angular.isDefined(this.workingInterval)) {
+        $interval.cancel(this.workingInterval);
+        this.workingInterval = undefined;
+      }
+      $log.log('call timer stoped');
     };
 
     return Call;

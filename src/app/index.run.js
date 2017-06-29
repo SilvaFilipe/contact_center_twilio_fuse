@@ -95,40 +95,6 @@
 
       };
 
-      $rootScope.startExtensionCounter = function (task) {
-
-        $log.log('start working counter');
-        $rootScope.extensionInterval = $interval(function () {
-          task.duration++;
-        }, 1000);
-
-      };
-
-      $rootScope.stopExtensionCounter = function () {
-        $log.log('stop working counter');
-        if (angular.isDefined($rootScope.extensionInterval)) {
-          $interval.cancel($rootScope.extensionInterval);
-          $rootScope.extensionInterval = undefined;
-        }
-
-      };
-
-      $rootScope.startWorkingCounter = function () {
-
-        $log.log('start working counter');
-        $rootScope.workingInterval = $interval(function () {
-          $rootScope.currentCall.duration++;
-        }, 1000);
-      };
-
-      $rootScope.stopWorkingCounter = function () {
-        $log.log('stop working counter');
-        if (angular.isDefined($rootScope.workingInterval)) {
-          $interval.cancel($rootScope.workingInterval);
-          $rootScope.workingInterval = undefined;
-        }
-      };
-
       $rootScope.showCallNotification = function () {
         var nonCompletedCallTasks = $rootScope.callTasks.filter(function (task) {
           return !task.isCompleted();

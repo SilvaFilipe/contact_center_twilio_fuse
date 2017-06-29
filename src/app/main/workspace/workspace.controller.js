@@ -90,8 +90,6 @@
               CallService.getActiveConnSid(function(ActiveConnSid) {
                 if ($rootScope.currentCall) {
                   $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
-                  $rootScope.stopWorkingCounter();
-                  $rootScope.startWorkingCounter();
                 }
               });
             }
@@ -139,7 +137,6 @@
         CallService.hangup($rootScope.currentCall.callSid)
           .then(function (response) {
             $rootScope.currentCall.callStatus = 'completed';
-            $rootScope.stopWorkingCounter();
           })
       };
 
@@ -147,7 +144,6 @@
         CallService.toVoicemail($rootScope.currentCall.callSid)
           .then(function (response) {
             $rootScope.currentCall.callStatus = 'completed';
-            $rootScope.stopWorkingCounter();
           })
       };
 
@@ -281,7 +277,6 @@
 
 
       $scope.acceptInboundCall = function (task) {
-        $rootScope.stopExtensionCounter();
         $rootScope.currentCall = task;
         var index = $rootScope.extensionCallTasks.indexOf(task);
         $rootScope.extensionCallTasks.splice(index, 1);
@@ -301,8 +296,6 @@
                   }, function onError(response) {
                   });
                 });
-              $rootScope.stopWorkingCounter();
-              $rootScope.startWorkingCounter();
             }
           });
         }, 800);
@@ -312,9 +305,9 @@
       $scope.declineInboundCall = function (task) {
         CallService.toVoicemail(task.callSid)
           .then(function (response) {
+            task.stopCallTimer();
             var index = $rootScope.extensionCallTasks.indexOf(task);
             $rootScope.extensionCallTasks.splice(index, 1);
-            $rootScope.stopExtensionCounter();
           })
       };
 
@@ -325,7 +318,6 @@
         }
         $rootScope.currentCall = selectedTask;
         if ($rootScope.currentCall.isCompleted()) {
-          $rootScope.stopWorkingCounter();
           if (Twilio.Device.activeConnection()) {
             $http.get(apiUrl + 'api/agents/agentToSilence?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true});
           }
@@ -333,8 +325,6 @@
         else {
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
-            $rootScope.stopWorkingCounter();
-            $rootScope.startWorkingCounter();
           });
         }
       };
@@ -360,15 +350,12 @@
         if ($rootScope.currentCall && !$rootScope.currentCall.isCompleted()) {
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
-            $rootScope.startWorkingCounter();
           });
         }
 
       };
 
       $scope.logout = function () {
-        $rootScope.stopWorkingCounter();
-
         $http.post(apiUrl + 'api/agents/logout')
 
           .then(function onSuccess(response) {
@@ -545,8 +532,6 @@
           var callParams = {fromNumber: 12345, duration: 0, callSid: 'CA12345', conferenceName: 'ConferenceTest'};
           $rootScope.currentCall = new OutboundCall(callParams);
           $rootScope.callTasks.push($rootScope.currentCall);
-          $rootScope.stopWorkingCounter();
-          $rootScope.startWorkingCounter();
         }
       };
 

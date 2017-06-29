@@ -75,9 +75,9 @@
                     $rootScope.extensionCallTasks.filter(function (callItem) {
                       if (callItem.callSid === item.value.data.callSid) {
                         console.log('callItem ' + callItem);
+                        callItem.stopCallTimer();
                         var index = $rootScope.extensionCallTasks.indexOf(callItem);
                         $rootScope.extensionCallTasks.splice(index, 1);
-                        $rootScope.stopExtensionCounter();
                         $log.log('call:' + item.value.data.callSid + ' hidden');
                       }
                     });
@@ -106,9 +106,6 @@
                         conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false, recording: isStartRecording};
                       var task = new ExtensionCall(callParams);
                       $rootScope.extensionCallTasks.push(task);
-                      $rootScope.stopExtensionCounter();
-                      $rootScope.startExtensionCounter(task);
-
                       if ($state.current.name !== 'app.workspace') {
                         $rootScope.showCallNotification();
                       }
@@ -184,7 +181,6 @@
           $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
             var audio = new Audio(res.data);
             audio.play();
-            // $rootScope.reservation = reservation;
             $rootScope.reservations.push(reservation);
             $rootScope.stopReservationCounter();
             $rootScope.startReservationCounter(reservation);
@@ -294,8 +290,6 @@
         var callParams = {fromNumber: data.phoneNumber, callSid: data.callSid, conferenceName: data.callSid, recording: isStartRecording};
         $rootScope.currentCall = new OutboundCall(callParams);
         $rootScope.callTasks.push($rootScope.currentCall);
-        $rootScope.stopWorkingCounter();
-        $rootScope.startWorkingCounter();
         if ($state.current.name !== 'app.workspace') {
           $rootScope.showCallNotification();
         }
@@ -306,8 +300,6 @@
         $log.log('AddCallTask: ' + data);
         $rootScope.currentCall = data;
         $rootScope.callTasks.push($rootScope.currentCall);
-        $rootScope.stopWorkingCounter();
-        $rootScope.startWorkingCounter();
       });
 
       $scope.$on('NewExtensionCall', function (event, data) {
@@ -316,8 +308,6 @@
         var callParams = {fromNumber: data.phoneNumber, type: 'outbound', callSid: data.callSid, callerName: data.recipientName, conferenceName: data.conferenceName, recording: isStartRecording};
         $rootScope.currentCall = new ExtensionCall(callParams);
         $rootScope.callTasks.push($rootScope.currentCall);
-        $rootScope.stopWorkingCounter();
-        $rootScope.startWorkingCounter();
         if ($state.current.name !== 'app.workspace') {
           $rootScope.showCallNotification();
         }
@@ -328,12 +318,12 @@
       $scope.$on('endAllOutCalls', function (event) {
         $log.log('end all outbounding calls');
         if ($rootScope.currentCall && $rootScope.currentCall.isOutGoingCall()) {
-          $rootScope.stopWorkingCounter();
+          $rootScope.currentCall.stopCallTimer();
           $rootScope.currentCall = null;
 
         }
         $rootScope.callTasks = $rootScope.callTasks.filter(function (callItem) {
-          return callItem.type !== 'outbound';
+          return !callItem.isOutGoingCall();
         });
 
         if ($rootScope.callTasks.length === 0) {
@@ -343,7 +333,6 @@
           $rootScope.currentCall = $rootScope.callTasks[0];
           CallService.getActiveConnSid(function(ActiveConnSid) {
             $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
-            $rootScope.startWorkingCounter();
           });
         }
         if ($state.current.name !== 'app.workspace') {
@@ -365,9 +354,6 @@
 
               var index = $rootScope.callTasks.indexOf(callItem);
               $rootScope.callTasks.splice(index, 1);
-              if ($state.current.name !== 'app.workspace') {
-                $rootScope.showCallNotification();
-              }
             }
           }
         });
@@ -380,7 +366,7 @@
 
       $scope.$watch('currentCall.callStatus', function (newVal, oldVal) {
         if (newVal === 'completed') {
-          $rootScope.stopWorkingCounter();
+          $rootScope.currentCall.stopCallTimer();
           if (Twilio.Device.activeConnection()) {
             $http.get(apiUrl + 'api/agents/toCallEnded?caller_sid=' + Twilio.Device.activeConnection().parameters.CallSid, {withCredentials: true}).then(function(res){
               if ($rootScope.currentCall.isOutGoingCall() || $rootScope.currentCall.isExtensionCall()) {
