@@ -138,30 +138,43 @@ QueueSchema.methods.syncQueue = function () {
 
 };
 
+/**
+ * Keywords group doesn't allow empty arrays, if you want to remove all the
+ * keywords you need at least pass "" empty string
+ */
 QueueSchema.methods.syncVoicebase = function () {
     const queue = this;
 
-    let url = 'https://apis.voicebase.com/v2-beta/definitions/keywords/groups/data';
-    let headers = {'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN};
+    let url = 'https://apis.voicebase.com/v2-beta/definitions/keywords/groups/';
+    let headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
+    };
+    let json = true;
+    let scriptKWname = `queue-${queue.taskQueueFriendlyName}-script-keywords`;
+    let positiveKWname = `queue-${queue.taskQueueFriendlyName}-positive-keywords`;
+    let negativeKWname = `queue-${queue.taskQueueFriendlyName}-negative-keywords`;
+    let promises = [];
+    const validKeywordArray = array => Array.isArray(array) && array.length > 0 ? array : [""];
 
-    let ensureArray = array => Array.isArray(array) ? array : [];
+    promises.push(request.put({ url: url + scriptKWname, headers, json, body: {
+      name: scriptKWname, keywords: validKeywordArray(queue.scriptKeywords) }
+    }));
 
-    let scriptKeywordsP = request.post({ url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-script-keywords`, keywords: ensureArray(queue.scriptKeywords) }
-    });
-    let positiveKeywordsP = request.post({url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-positive-keywords`, keywords: ensureArray(queue.positiveKeywords) }
-    });
-    let negativeKeywordsP = request.post({url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-negative-keywords`, keywords: ensureArray(queue.negativeKeywords) }
-    });
+    promises.push(request.put({url: url + positiveKWname, headers, json, body: {
+      name: positiveKWname, keywords: validKeywordArray(queue.positiveKeywords) }
+    }));
 
-    Promise.all([scriptKeywordsP, positiveKeywordsP, negativeKeywordsP])
+    promises.push(request.put({url: url + negativeKWname, headers, json, body: {
+      name: negativeKWname, keywords: validKeywordArray(queue.negativeKeywords) }
+    }));
+
+    Promise.all(promises)
       .then((response) => {
         console.log(response);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err.error)
       });
 
 };
