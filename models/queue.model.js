@@ -144,14 +144,16 @@ QueueSchema.methods.syncVoicebase = function () {
     let url = 'https://apis.voicebase.com/v2-beta/definitions/keywords/groups/data';
     let headers = {'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN};
 
+    let ensureArray = array => Array.isArray(array) ? array : [];
+
     let scriptKeywordsP = request.post({ url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-script-keywords`, keywords: queue.scriptKeywords }
+      name: `queue-${queue.taskQueueFriendlyName}-script-keywords`, keywords: ensureArray(queue.scriptKeywords) }
     });
     let positiveKeywordsP = request.post({url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-positive-keywords`, keywords: queue.positiveKeywords }
+      name: `queue-${queue.taskQueueFriendlyName}-positive-keywords`, keywords: ensureArray(queue.positiveKeywords) }
     });
     let negativeKeywordsP = request.post({url, headers, formData: {
-      name: `queue-${queue.taskQueueFriendlyName}-negative-keywords`, keywords: queue.negativeKeywords }
+      name: `queue-${queue.taskQueueFriendlyName}-negative-keywords`, keywords: ensureArray(queue.negativeKeywords) }
     });
 
     Promise.all([scriptKeywordsP, positiveKeywordsP, negativeKeywordsP])
@@ -161,6 +163,7 @@ QueueSchema.methods.syncVoicebase = function () {
       .catch((err) => {
         console.log(err)
       });
+
 };
 
 QueueSchema.pre('save', function(next){
