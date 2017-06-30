@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const twilio 	= require('twilio');
+const request = require('request-promise');
+const Promise = require('bluebird');
 const taskrouterClient = new twilio.TaskRouterClient(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN,
-  process.env.TWILIO_WORKSPACE_SID)
-
+  process.env.TWILIO_WORKSPACE_SID);
+let util;
 if (process.env.DYNO) {
   util = require('../util-pg.js')
 } else {
@@ -33,8 +35,10 @@ var QueueSchema = mongoose.Schema({
     targetWorkerExpression: { type: String},
     reservationActivitySid: { type: String},
     assignmentActivitySid: { type: String},
-    maxReservedWorkers: { type: Number}
-
+    maxReservedWorkers: { type: Number},
+    scriptKeywords: [{type: String}],
+    positiveKeywords: [{type: String}],
+    negativeKeywords: [{type: String}]
 });
 
 
@@ -103,56 +107,84 @@ QueueSchema.statics.syncWorkflow = function (callback) {
 
 
 QueueSchema.methods.syncQueue = function () {
-  var queue = this;
+  const queue = this;
   util.getConfiguration(function (err, config) {
-    if (err) {
-      console.log(err);
+    if (err) return console.log(err);
+    var queueForSync = {
+      sid: queue.taskQueueSid,
+      friendlyName: queue.taskQueueFriendlyName,
+      reservationActivitySid: config.twilio.workerReservationActivitySid,
+      assignmentActivitySid: config.twilio.workerAssignmentActivitySid,
+      targetWorkers: 'queues HAS "' + queue.taskQueueFriendlyName + '"'
+    };
+
+    if (queue.taskQueueSid) {
+      taskrouterClient.workspace.taskQueues(queue.taskQueueSid).update(queueForSync, function (err) {
+        if (err) return console.log(err);
+          console.log('updated taskqueue ' + queue.taskQueueFriendlyName);
+          console.log(queueForSync);
+      })
     } else {
-      var queueForSync = {
-        sid: queue.taskQueueSid,
-        friendlyName: queue.taskQueueFriendlyName,
-        reservationActivitySid: config.twilio.workerReservationActivitySid,
-        assignmentActivitySid: config.twilio.workerAssignmentActivitySid,
-        targetWorkers: 'queues HAS "' + queue.taskQueueFriendlyName + '"'
-      }
-
-      if (queue.taskQueueSid) {
-
-        taskrouterClient.workspace.taskQueues(queue.taskQueueSid).update(queueForSync, function (err) {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log('updated taskqueue ' + queue.taskQueueFriendlyName
-            );
-            console.log(queueForSync);
-          }
-        })
-
-      } else  {
-
-        taskrouterClient.workspace.taskQueues.create(queueForSync, function (err, queueFromApi) {
-          if (err) {
-            console.log(err)
-          } else {
-            queue.model('Queue').update({_id: queue._id}, {
-              taskQueueSid: queueFromApi.sid
-            }, function(err, affected, resp) {
-              console.log(resp);
-            })
-          }
-        })
-      }
+      taskrouterClient.workspace.taskQueues.create(queueForSync, function (err, queueFromApi) {
+        if (err) return console.log(err);
+          queue.model('Queue').update({_id: queue._id}, {
+            taskQueueSid: queueFromApi.sid
+          }, function(err, affected, resp) {
+            console.log(resp);
+          })
+      });
     }
-  })
+  });
 
-}
+};
+
+/**
+ * Keywords group doesn't allow empty arrays, if you want to remove all the
+ * keywords you need at least pass "" empty string
+ */
+QueueSchema.methods.syncVoicebase = function () {
+    const queue = this;
+
+    let url = 'https://apis.voicebase.com/v2-beta/definitions/keywords/groups/';
+    let headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
+    };
+    let json = true;
+    let scriptKWname = `queue-${queue.taskQueueFriendlyName}-script-keywords`;
+    let positiveKWname = `queue-${queue.taskQueueFriendlyName}-positive-keywords`;
+    let negativeKWname = `queue-${queue.taskQueueFriendlyName}-negative-keywords`;
+    let promises = [];
+    const validKeywordArray = array => Array.isArray(array) && array.length > 0 ? array : [""];
+
+    promises.push(request.put({ url: url + scriptKWname, headers, json, body: {
+      name: scriptKWname, keywords: validKeywordArray(queue.scriptKeywords) }
+    }));
+
+    promises.push(request.put({url: url + positiveKWname, headers, json, body: {
+      name: positiveKWname, keywords: validKeywordArray(queue.positiveKeywords) }
+    }));
+
+    promises.push(request.put({url: url + negativeKWname, headers, json, body: {
+      name: negativeKWname, keywords: validKeywordArray(queue.negativeKeywords) }
+    }));
+
+    Promise.all(promises)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err.error)
+      });
+
+};
 
 QueueSchema.pre('save', function(next){
-  doc = this;
+  let doc = this;
   console.log('queue %s pre 1', doc._id);
   doc.setFriendlyName();
   next();
-})
+});
 /*
 QueueSchema.post('save', function(doc, next) {
   console.log('queue %s post 1', doc._id);
@@ -165,6 +197,7 @@ QueueSchema.post('save', function(doc, next) {
 QueueSchema.post('save', function(doc, next) {
   console.log('queue %s post 1', doc._id);
   doc.syncQueue();
+  doc.syncVoicebase();
   next();
 });
 QueueSchema.post('save', function(doc, next) {
