@@ -44,6 +44,12 @@ module.exports = {
 
         queue.name = req.body.name;
         queue.description = req.body.description;
+        queue.scriptKeywords = req.body.scriptKeywords;
+        queue.positiveKeywords = req.body.positiveKeywords;
+        queue.negativeKeywords = req.body.negativeKeywords;
+        queue.customVocabulary = req.body.customVocabulary;
+        queue.disposition = req.body.disposition;
+        queue.script = req.body.script;
 
         if (Array.isArray(req.body.users) && req.body.users.length > 0) {
           queue.users = req.body.users.map(function (user) {
