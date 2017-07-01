@@ -43,6 +43,7 @@
     "lodash": "^3.10.1",
     "lodash.differencewith": "^4.5.0",
     "lodash.isarraylike": "^4.2.0",
+    "mime-types": "^2.1.15",
     "moment": "^2.18.1",
     "mongoose": "^4.7.6",
     "mongoose-paginate": "^5.0.3",

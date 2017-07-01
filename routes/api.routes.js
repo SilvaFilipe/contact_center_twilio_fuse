@@ -66,6 +66,8 @@ module.exports = function(app, acl, multer){
     router.route('/admin/showSipInfo').get(adminController.showSipInfo);
     router.route('/admin/setVoicemailGreeting').get(adminController.recordVoicemailGreetingCall)
 
+
+    router.route('/ivr/didInboundCallHandler').get(ivr.didInboundCallHandler)
     router.route('/ivr/welcome').get(ivr.welcome)
     router.route('/ivr/welcomePBX').get(ivr.welcomePBX)
     router.route('/ivr/select-extension').get(ivr.selectExtension)

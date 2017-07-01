@@ -65,7 +65,7 @@ module.exports = {
 
         did.save(function(err){
           if(err) return res.send(err);
-
+          did.setVoiceUrl(process.env.PUBLIC_HOST + '/api/ivr/didInboundCallHandler')
           return res.status(200).json(did);
         });
       })

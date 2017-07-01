@@ -587,7 +587,9 @@ module.exports.didInboundExtensionCall = function (req, res) {
           return res.status(500).json(err);
         }
         if (!userToDial){
-          return res.status(500).send(fromNumber + ' not found in any users dids')
+          console.log('could not find any user to dial')
+          return res.send('<Response><Redirect method="GET">/api/ivr/welcomePBX</Redirect></Response>');
+          //return res.status(500).send(fromNumber + ' not found in any users dids')
         }
         console.log ('found user ' + userToDial.email)
         setTimeout(function() { // pause to ensure callSid is in db

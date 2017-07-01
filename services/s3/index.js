@@ -15,7 +15,10 @@ exports.uploadSingleFile = function uploadSingleFile(file) {
   }
 
   return new Promise(function(resolve, reject){
-    s3fsImpl.writeFile(file.originalname, file.buffer).then(function () {
+    var mime = require('mime-types')
+    var contentType = mime.lookup(file.originalname)
+    console.log('setting content type to ' + contentType);
+    s3fsImpl.writeFile(file.originalname, file.buffer, {"ContentType":contentType}).then(function () {
       return resolve(getS3Url(file.originalname));
     }, function (err) {
       if(err) return reject(err);

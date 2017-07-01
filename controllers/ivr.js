@@ -2,6 +2,7 @@
 
 const twilio = require('twilio')
 const Queue = require('../models/queue.model');
+const Did = require('../models/did.model');
 const User = require('../models/user.model');
 const listener = require('./event_listener.js')
 const Promise = require('bluebird');
@@ -12,9 +13,60 @@ const taskrouterClient = new twilio.TaskRouterClient(
 	process.env.TWILIO_AUTH_TOKEN,
 	process.env.TWILIO_WORKSPACE_SID)
 
+
+module.exports.didInboundCallHandler = function (req, res) {
+
+  // primary handler for incoming calls
+  var fromNumber = unescape(req.query.From);
+  var toNumber = unescape(req.query.To);
+  console.log('inbound call from: %s to %s', fromNumber, toNumber);
+
+  Did.findOne({'number': toNumber}, function (err, did) {
+    if (err) {
+      console.log('error finding did: ' + err);
+      module.exports.welcomePBX(req,res);
+    } else {
+      if (!did) {
+        console.log('could not find did: ' + toNumber);
+        module.exports.welcomePBX(req,res);
+      } else {
+        if (!did.flow){
+          module.exports.welcomePBX(req,res);
+        } else {
+
+          let twiml = new twilio.TwimlResponse();
+          if (did.greetingText){
+            twiml.say(did.greetingText, {voice: 'alice'});
+          }
+          if (did.greetingAudioUrl){
+            twiml.play(did.greetingAudioUrl);
+          }
+
+
+          // Render the response as XML in reply to the webhook request
+          if (did.flow == "queues") {
+            twiml.redirect('/api/ivr/welcome', {method: "GET"});
+          } else if (did.flow=="conferenceCall"){
+            twiml.dial(function(dialNode) { dialNode.conference(toNumber) });
+          } else if (did.flow=="user"){
+            twiml.redirect('/api/agents/didInboundExtensionCall', {method: "GET"});
+          } else if (did.flow=="companyDirectory"){
+            twiml.redirect('/api/ivr/welcomePBX', {method: "GET"});
+          }
+
+          res.type('text/xml');
+          res.send(twiml.toString());
+
+        }
+
+      }
+    }
+  });
+}
+
 module.exports.welcome = function (req, res) {
   listener.log_twiml_event(req);
-  var sayText='Welcome! Please say or ';
+  var sayText='Please say or ';
   var twiml = new twilio.TwimlResponse()
   let keywords = []
 
@@ -40,7 +92,7 @@ module.exports.welcome = function (req, res) {
         language: process.env.LANGUAGE_BCP47,
         hints: keywords.join()
       }, function (node) {
-        node.say(sayText) //, {'voice':'alice'}
+        node.say(sayText, {voice: 'alice'})
       })
 
       twiml.say('You did not say anything or enter any digits.')
@@ -219,7 +271,6 @@ module.exports.createTask = function (req, res) {
 
 }
 
-
 module.exports.companyDirectory = function (req, res) {
 
   listener.log_twiml_event(req);
@@ -268,6 +319,7 @@ module.exports.companyDirectory = function (req, res) {
     });
 
 }
+
 module.exports.selectExtension = function (req, res) {
   listener.log_twiml_event(req);
   var selectedUser=null;
@@ -362,22 +414,3 @@ module.exports.welcomePBX = function (req, res) {
     });
 
 }
-
-module.exports.welcomeOld = function (req, res) {
-  listener.log_twiml_event(req);
-  var twiml = new twilio.TwimlResponse()
-
-  twiml.gather({
-    action: 'select-team',
-    method: 'GET',
-    numDigits: 1,
-    timeout: 10
-  }, function (node) {
-    node.say(req.configuration.ivr.text, {'voice':'alice'})
-  })
-
-  res.setHeader('Content-Type', 'application/xml')
-  res.setHeader('Cache-Control', 'public, max-age=0')
-  res.send(twiml.toString())
-}
-

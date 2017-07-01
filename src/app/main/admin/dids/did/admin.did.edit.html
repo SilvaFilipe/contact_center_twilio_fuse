@@ -40,10 +40,6 @@
             </header>
 
             <div class="content">
-              <md-input-container class="md-block" aria-label="select did greeting text">
-                <label>Greeting Text</label>
-                <input type="text" ng-model="vm.did.greetingText">
-              </md-input-container>
               <div layout="row" layout-align="space-between center">
                 <span>Did Workflow</span>
                 <md-select ng-model="vm.did.flow" class="md-no-underline" placeholder="Select here" aria-label="select did flow">
@@ -53,6 +49,10 @@
                   <md-option value="conferenceCall">Conference Call</md-option>
                 </md-select>
               </div>
+              <md-input-container class="md-block" aria-label="select did greeting text">
+                <label>Greeting Text</label>
+                <input type="text" ng-model="vm.did.greetingText">
+              </md-input-container>
               <div layout="column">
                 <span class="mt-35 mr-10">Upload greeting audio file:</span>
                 <media-preview model="vm.did.greetingAudioUrl" preview-class="audio"></media-preview>
