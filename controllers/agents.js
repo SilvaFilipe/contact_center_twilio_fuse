@@ -337,69 +337,87 @@ module.exports.outboundCall = function (req, res) {
     });
   } else {
     // dial phone number
-    client.calls.create({
-      url: process.env.PUBLIC_HOST + "/api/agents/sendToCallSidConference",
-      method: "GET",
-      to: req.query.phone,
-      from: req.configuration.twilio.callerId,
-      statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',
-      statusCallbackMethod: "POST",
-      statusCallbackEvent: ["initiated", "answered", "completed"]
-    }, function(err, call) {
-      if (err){
-        console.log(err);
-        res.setHeader('Cache-Control', 'public, max-age=0')
-        res.send("ERROR")
-      } else {
-        console.log('created outbound call ' + call.sid);
-        // insert into db
-        var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
-        var newCall = new Call( Object.assign(dbFields) );
-        console.log('using addUserIds'.underline.red);
-        console.log('call to: ', req.query.phone);
 
-        newCall.addUserIds(req.query.user_id);
-        newCall.save(function (err) {
-          if(err){
-            console.log(err);
-            if (err.code && err.code === 11000) {
-              console.log("unique constraint error on call");
-              Call.findOneAndUpdate({'callSid': call.sid}, {$set:dbFields}, function(err, call2){
-                if(err) {
-                  console.log("Something wrong when updating call: " + err);
-                  res.setHeader('Cache-Control', 'public, max-age=0')
-                  res.send("ERROR")
+    User.findOne({'_id': req.query.user_id}).populate('dids').exec(function (err, userRequestingDial) {
+      var fromNumber = req.configuration.twilio.callerId
+
+      if (!err && userRequestingDial != null) {
+        console.log('userRequestingDial: ' + userRequestingDial.email);
+        if (userRequestingDial.dids.length>0){
+          fromNumber=userRequestingDial.dids[0].number;
+        }
+        if (userRequestingDial.forwarding && userRequestingDial.forwarding.length >= 10){
+          fromNumber=userRequestingDial.forwarding
+        }
+      }
+      console.log('fromNumber: ' + fromNumber);
+
+      client.calls.create({
+        url: process.env.PUBLIC_HOST + "/api/agents/sendToCallSidConference",
+        method: "GET",
+        to: req.query.phone,
+        from: fromNumber,
+        statusCallback: process.env.PUBLIC_HOST + '/listener/call_events',
+        statusCallbackMethod: "POST",
+        statusCallbackEvent: ["initiated", "answered", "completed"]
+      }, function(err, call) {
+        if (err){
+          console.log(err);
+          res.setHeader('Cache-Control', 'public, max-age=0')
+          res.send("ERROR")
+        } else {
+          console.log('created outbound call ' + call.sid);
+          // insert into db
+          var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+          var newCall = new Call( Object.assign(dbFields) );
+          console.log('using addUserIds'.underline.red);
+          console.log('call to: ', req.query.phone);
+
+          newCall.addUserIds(req.query.user_id);
+          newCall.save(function (err) {
+            if(err){
+              console.log(err);
+              if (err.code && err.code === 11000) {
+                console.log("unique constraint error on call");
+                Call.findOneAndUpdate({'callSid': call.sid}, {$set:dbFields}, function(err, call2){
+                  if(err) {
+                    console.log("Something wrong when updating call: " + err);
+                    res.setHeader('Cache-Control', 'public, max-age=0')
+                    res.send("ERROR")
+                  } else {
+                    console.log('updated call(2) ' + call2.callSid);
+                    call2.addUserIds(req.query.user_id);
+                    call2.createSync(function (response) {
+                      if (response != 'err') {
+                        res.setHeader('Cache-Control', 'public, max-age=0');
+                        res.send({call: call, document: JSON.parse(response).unique_name})
+                      } else {
+                        console.log(response)
+                        res.setHeader('Cache-Control', 'public, max-age=0')
+                        res.send({call: call, document: null})
+                      }
+                    });
+                  }
+                });
+              }
+            } else {
+              newCall.createSync(function (response) {
+                if (response != 'err') {
+                  res.setHeader('Cache-Control', 'public, max-age=0');
+                  res.send({call: call, document: JSON.parse(response).unique_name})
                 } else {
-                  console.log('updated call(2) ' + call2.callSid);
-                  call2.addUserIds(req.query.user_id);
-                  call2.createSync(function (response) {
-                    if (response != 'err') {
-                      res.setHeader('Cache-Control', 'public, max-age=0');
-                      res.send({call: call, document: JSON.parse(response).unique_name})
-                    } else {
-                      console.log(response)
-                      res.setHeader('Cache-Control', 'public, max-age=0')
-                      res.send({call: call, document: null})
-                    }
-                  });
+                  console.log(response)
+                  res.setHeader('Cache-Control', 'public, max-age=0')
+                  res.send({call: call, document: null})
                 }
               });
             }
-          } else {
-            newCall.createSync(function (response) {
-              if (response != 'err') {
-                res.setHeader('Cache-Control', 'public, max-age=0');
-                res.send({call: call, document: JSON.parse(response).unique_name})
-              } else {
-                console.log(response)
-                res.setHeader('Cache-Control', 'public, max-age=0')
-                res.send({call: call, document: null})
-              }
-            });
-          }
-        });
-      }
+          });
+        }
+      });
+
     });
+
   }
 }
 
@@ -466,6 +484,10 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
             }
           }
+          if (userToDial.forwarding && userToDial.forwarding.length >= 10){
+            callerId=userToDial.forwarding
+          }
+
           var twiml = '<Response><Dial ringTone ="' + process.env.DEFAULT_COUNTY_CODE+ '" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
         });
