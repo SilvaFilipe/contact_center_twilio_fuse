@@ -38,7 +38,10 @@ var QueueSchema = mongoose.Schema({
     maxReservedWorkers: { type: Number},
     scriptKeywords: [{type: String}],
     positiveKeywords: [{type: String}],
-    negativeKeywords: [{type: String}]
+    negativeKeywords: [{type: String}],
+    customVocabulary: [{type: String}],
+    disposition: [{type: String}],
+    script: { type: String }
 });
 
 

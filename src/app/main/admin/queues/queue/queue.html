@@ -1,4 +1,4 @@
-<div id="admin-user" class="page-layout simple tabbed" layout="column">
+<div id="admin-queue-edit" class="page-layout simple tabbed" layout="column">
 
   <!-- HEADER -->
   <div class="header md-accent-bg" layout="row" layout-align="start center">
@@ -170,6 +170,61 @@
               </div>
             </section>
             <contact-modal></contact-modal>
+          </div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span>Intelligence</span>
+        </md-tab-label>
+
+        <md-tab-body>
+          <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
+            <md-input-container class="md-block" aria-label="queue script">
+              <label>Script</label>
+              <input type="text" ng-model="vm.queue.script" style="font-size: 16px">
+            </md-input-container>
+            <md-chips ng-model="vm.queue.scriptKeywords"
+                      placeholder="Enter script keyword"
+                      delete-button-label="Remove scrpt keywords"
+                      delete-hint="Press delete to remove tag"
+                      secondary-placeholder="+Script">
+            </md-chips>
+            <span class="font-weight-200">To enter a new script keyword, type it above and <span class="font-weight-400">press return</span></span>
+
+            <md-chips ng-model="vm.queue.positiveKeywords"
+                      placeholder="Enter positive keyword"
+                      delete-button-label="Remove positive keywords"
+                      delete-hint="Press delete to remove tag"
+                      secondary-placeholder="+Positive">
+            </md-chips>
+            <span class="font-weight-200">To enter a new positive keyword, type it above and <span class="font-weight-400">press return</span></span>
+
+            <md-chips ng-model="vm.queue.negativeKeywords"
+                      placeholder="Enter negative keyword"
+                      delete-button-label="Remove negative keywords"
+                      delete-hint="Press delete to remove tag"
+                      secondary-placeholder="+Negative">
+            </md-chips>
+            <span class="font-weight-200">To enter a new negative keyword, type it above and <span class="font-weight-400">press return</span></span>
+
+            <md-chips ng-model="vm.queue.customVocabulary"
+                      placeholder="Enter custom vocabulary"
+                      delete-button-label="Remove custom vocabulary"
+                      delete-hint="Press delete to remove tag"
+                      secondary-placeholder="+Vocabulary">
+            </md-chips>
+            <span class="font-weight-200">To enter a new custom vocabulary, type it above and <span class="font-weight-400">press return</span></span>
+
+            <md-chips ng-model="vm.queue.disposition"
+                      placeholder="Enter call disposition"
+                      delete-button-label="Remove call disposition"
+                      delete-hint="Press delete to remove tag"
+                      secondary-placeholder="+Disposition">
+            </md-chips>
+            <span class="font-weight-200">To enter a new call disposition, type it above and <span class="font-weight-400">press return</span></span>
+
           </div>
         </md-tab-body>
       </md-tab>
