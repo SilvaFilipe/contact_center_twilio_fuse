@@ -79,7 +79,7 @@ module.exports.voicemail_transcription_events= function (req, res) {
 }
 
 module.exports.transcription_events = function (req, res) {
-  console.log('logging transcription event');
+  console.log('logging transcription event for '  + req.query.callSid);
   var data = req.body;
   var transcriptionText =req.body.media.transcripts.text;
   var voiceBaseMediaId = req.body.media.mediaId;
@@ -96,6 +96,7 @@ module.exports.transcription_events = function (req, res) {
     var positiveWords = r1.positive
     var negativeWords = r1.negative
   } catch (e) {
+    console.log('sentiment error: ' + e.message)
     var sentimentScore = null
     var sentimentComparative = null
     var positiveWords = []
@@ -110,7 +111,7 @@ module.exports.transcription_events = function (req, res) {
       return res.send("<Response/>")
     } else {
       console.log ('updating transcription: ' + callSid);
-      Call.findOneAndUpdate({'callSid': callSid}, {$set:{transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{voicebaseResponse: req.body, transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
         if(err) {
           console.log("Something wrong when updating call: " + err);
         } else {
@@ -205,8 +206,9 @@ module.exports.recording_events = function (req, res) {
   var updated_at = new Date();
   var dbFields = { accountSid: accountSid, callSid: callSid, updated_at: updated_at, recordingSid: recordingSid, recordingUrl: recordingUrl, recordingDuration: recordingDuration, recordingChannels: recordingChannels};
   console.log('recording event called: ' + callSid);
+  var queue = null;
 
-  Call.findOne({'callSid': callSid}, function (err, call) {
+  Call.findOne({'callSid': callSid}).populate('queue').exec(function (err, call) {
     if (call == null){
       //insert new call
       console.log ('null call with recording: ' + callSid);
@@ -220,37 +222,95 @@ module.exports.recording_events = function (req, res) {
           call2.saveSync();
         }
       });
+
+      queue = call.queue;
     }
+
+
+    if (process.env.DEFAULT_LANGUAGE=="en-US"){
+      //var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+      var configuration = {
+        configuration:
+          { language:  process.env.DEFAULT_LANGUAGE,
+            executor:"v2",
+            publish:
+              { callbacks: [
+                { url: process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid,
+                  method: "POST",
+                  include: ["transcripts", "keywords", "topics", "metadata" ]
+                } ]
+              },
+            ingest:
+              { channels:
+                { left: { speaker: "caller" }, right: { speaker: "agent" } }
+              }
+          }
+      };
+
+      if (queue!=null){
+        var scriptKWname = `queue-${queue.taskQueueFriendlyName}-script-keywords`;
+        var positiveKWname = `queue-${queue.taskQueueFriendlyName}-positive-keywords`;
+        var negativeKWname = `queue-${queue.taskQueueFriendlyName}-negative-keywords`;
+        var keywordGroups=[]
+        if (queue.scriptKeywords && queue.scriptKeywords.length > 0){
+          keywordGroups.push(scriptKWname);
+        }
+        if (queue.positiveKeywords && queue.positiveKeywords.length > 0){
+          keywordGroups.push(positiveKWname);
+        }
+        if (queue.negativeKeywords && queue.negativeKeywords.length > 0){
+          keywordGroups.push(negativeKWname);
+        }
+        configuration.configuration.keywords = { groups: keywordGroups };
+      }
+
+      configuration = JSON.stringify(configuration)
+
+
+      var p = {"transcripts": {
+        "vocabularies": [
+          {
+            "terms" : [
+              "Bob Okunski",
+              "Chuck Boynton",
+              "Tom Werner",
+              "gnocchi; nyohki, nokey, nochi; 2",
+              "Bryon from VoiceBase",
+              "Bryon M.",
+              "CEO; C.E.O."
+            ]
+          }
+        ]
+      }}
+
+    } else {
+      //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
+      var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
+    }
+
+    console.log(configuration);
+
+    request.post({
+      url:'https://apis.voicebase.com/v2-beta/media',
+      formData: { media:recordingUrl + ".wav", configuration: configuration},
+      headers: {
+        'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
+      }
+    }, function(err,httpResponse,body){
+      if (err!=null){
+        console.log('voicebase err: '+ err);
+      }
+      console.log('voicebase response');
+      console.log('body' + body);
+      //console.log(util.inspect(httpResponse, false, null))
+
+    })
+
   });
 
   // send for transcription
 
 
-  console.log ('recordingUrl: ' + recordingUrl);
-  if (process.env.DEFAULT_LANGUAGE=="en-US"){
-    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "keywords", "topics", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
-  } else {
-    //Language 'es-LA' does not support feature 'Semantic Keywords and Topics Configuration
-    var configuration= '{"configuration" : { "language":"' + process.env.DEFAULT_LANGUAGE + '", "keywords":{"semantic":false},"topics":{"semantic":false}, "executor":"v2", "publish": { "callbacks": [ { "url" : "' + process.env.PUBLIC_HOST + '/listener/transcription_events?callSid=' + callSid + '", "method" : "POST", "include" : [ "transcripts", "metadata" ] } ] }, "ingest":{ "channels":{ "left":{ "speaker":"caller" }, "right":{ "speaker":"agent" } } } } }';
-  }
-
-  console.log(configuration);
-
-  request.post({
-    url:'https://apis.voicebase.com/v2-beta/media',
-    formData: { media:recordingUrl + ".wav", configuration: configuration},
-    headers: {
-      'Authorization': 'Bearer ' + process.env.VOICEBASE_TOKEN
-    }
-  }, function(err,httpResponse,body){
-    if (err!=null){
-      console.log('voicebase err: '+ err);
-    }
-    console.log('voicebase response');
-    console.log('body' + body);
-    //console.log(util.inspect(httpResponse, false, null))
-
-  })
 
   res.status(200);
   res.setHeader('Content-Type', 'application/xml')
@@ -553,7 +613,7 @@ module.exports.conference_events = function (req, res) {
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
 
             if (task && task.call_sid != callSid) { // agent is joining conference (not caller)
-                var twiml = '<Response><Dial><Conference beep="false" startConferenceOnEnter="true" statusCallbackEvent="start end join leave mute hold">' + friendlyName + '</Conference></Dial></Response>';
+                var twiml = '<Response><Dial recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '"><Conference beep="false" startConferenceOnEnter="true" statusCallbackEvent="start end join leave mute hold">' + friendlyName + '</Conference></Dial></Response>';
                 var escaped_twiml = require('querystring').escape(twiml);
 
                 client.calls(task.call_sid).update({
@@ -600,6 +660,33 @@ module.exports.conference_events = function (req, res) {
       console.log('conference-start')
         Task.findOne({'reservationSid': friendlyName}, function (err, task) {
             if (task) {
+
+              taskrouterClient.workspace.tasks(task.taskSid).reservations(friendlyName).get(function(err, reservation) {
+                console.log('reservation status: ' + reservation.reservation_status);
+                console.log('reservation worker: ' + reservation.worker_name);
+
+                User.findByFriendlyName(reservation.worker_name, function (err, user) {
+                  //Conference start and end events have no callSid
+                  Call.findOne({'conferenceFriendlyName': friendlyName}, function (err, call) {
+                    if (call == null){
+                      console.log ('Could not find call to update user (conf): ' + friendlyName);
+                    } else {
+                      console.log ('updating call: ' + call.callSid);
+                      if(user){
+                        console.log('adding user '+ user._id + ' to call and saving');
+                        call.addUserIds(user._id);
+                        call.save(function(err){
+                          call.saveSync();
+                        })
+
+                      }
+                    }
+                  });
+                })
+              });
+
+              /*
+
                 taskrouterClient.workspace.tasks(task.taskSid).reservations(friendlyName).update({
                     reservationStatus: 'accepted'
                 }, function(err, reservation) {
@@ -607,72 +694,16 @@ module.exports.conference_events = function (req, res) {
                         console.log(err);
                     } else {
                         console.log('Accepted reservation ' + friendlyName + ': ' + reservation.reservation_status + ' ' + reservation.worker_name);
-                        // TODO: update call with user_id
-                      console.log('todo')
-                      User.findByFriendlyName(reservation.worker_name, function (err, user) {
-                        if (err){
-                          console.log(err);
-                        }
-                        console.log('user?', user);
-                          if (callSid){
-                            //Conference start and end events have no callSid
-                            Call.findOne({'callSid': callSid}, function (err, call) {
-                              if (call == null){
-                                console.log ('Could not find call to update conference: ' + callSid);
-                              } else {
-                                console.log ('updating call: ' + callSid);
-
-                                if(user){
-                                  console.log('adding user to call and saving');
-                                  call.addUserIds(user._id);
-                                  call.saveSync();
-                                }
-                                /*
-                                This is done earlier now
-                                Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
-                                  if(err) {
-                                    console.log("Something wrong when updating call: " + err);
-                                  } else {
-                                    console.log('updated with conference info ' + call2.callSid);
-                                    call2.saveSync();
-                                  }
-                                });
-                                */
-                              }
-                            });
-                          }
-
-                      })
-
                     }
                 });
 
+               */
             } else {
-                console.log ('Could not find reservation ' + friendlyName + ' to accept.')
+                console.log ('Could not find task ' + friendlyName + ' to update user.')
             }
         });
 
     }
-/*
-  if (callSid && statusCallbackEvent != 'conference-start'){
-      //Conference start and end events have no callSid
-      Call.findOne({'callSid': callSid}, function (err, call) {
-        if (call == null){
-          console.log ('Could not find call to update conference: ' + callSid);
-        } else {
-          console.log ('updating call: ' + callSid);
-          Call.findOneAndUpdate({'callSid': callSid}, {$set:dbFields, $push: {"callEvents": dbFields} }, {new: true}, function(err, call2){
-            if(err) {
-              console.log("Something wrong when updating call: " + err);
-            } else {
-              console.log('updated with conference info ' + call2.callSid);
-              call2.saveSync();
-            }
-          });
-        }
-      });
-    }
-*/
     res.setHeader('Content-Type', 'application/xml')
     res.setHeader('Cache-Control', 'public, max-age=0')
     res.send("<Response/>")

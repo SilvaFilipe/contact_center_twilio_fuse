@@ -3,6 +3,7 @@
 const twilio = require('twilio')
 const Queue = require('../models/queue.model');
 const Did = require('../models/did.model');
+const Call = require('../models/call.model');
 const User = require('../models/user.model');
 const listener = require('./event_listener.js')
 const Promise = require('bluebird');
@@ -162,6 +163,8 @@ module.exports.selectTeam = function (req, res) {
           type: 'inbound_call',
           queue: selectedQueue.taskQueueFriendlyName
         }
+
+        Call.addQueueByCallSid(selectedQueue._id, req.query.CallSid);
 
         twiml.enqueue({ workflowSid: req.configuration.twilio.workflowSid }, function (node) {
           node.task(JSON.stringify(attributes), {

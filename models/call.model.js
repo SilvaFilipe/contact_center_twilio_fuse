@@ -64,7 +64,9 @@ var callSchema = mongoose.Schema({
   sentimentScore: Number,
   sentimentComparative: Number,
   positiveWords: Array,
-  negativeWords: Array
+  negativeWords: Array,
+  queue: {type: mongoose.Schema.ObjectId, ref: 'Queue'},
+  voicebaseResponse: Object
 });
 
 callSchema.methods.saveSync = function () {
@@ -92,6 +94,18 @@ callSchema.methods.addUserIds = function addUserIds(userIds) {
   }
 
 };
+
+callSchema.static('addQueueByCallSid', function (queueId, callSid) {
+  this.findOne({ callSid: callSid }, function(err, callToUpdate){
+    if (callToUpdate){
+      callToUpdate.queue = queueId
+      callToUpdate.save(function (err) {
+        if (err){ console.log('err adding queue to call: '+ err);}
+      });
+    }
+  });
+});
+
 
 callSchema.plugin(mongoosePaginate);
 
