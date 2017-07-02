@@ -182,14 +182,14 @@
         <md-tab-body>
           <div class="product-detail-form-container md-background-bg md-whiteframe-1dp">
             <md-input-container class="md-block" aria-label="queue script">
-              <label>Script</label>
-              <input type="text" ng-model="vm.queue.script" style="font-size: 16px">
+              <label>Call Script</label>
+              <input type="text" ng-model="vm.queue.script" style="font-size: 16px" placeholder="Enter Call Script">
             </md-input-container>
             <md-chips ng-model="vm.queue.scriptKeywords"
                       placeholder="Enter script keyword"
                       delete-button-label="Remove scrpt keywords"
                       delete-hint="Press delete to remove tag"
-                      secondary-placeholder="+Script">
+                      secondary-placeholder="+Script Keyword">
             </md-chips>
             <p class="font-weight-200 mb-30 mt-0">To enter a new script keyword, type it above and <span class="font-weight-400">press return</span></p>
 
@@ -197,7 +197,7 @@
                       placeholder="Enter positive keyword"
                       delete-button-label="Remove positive keywords"
                       delete-hint="Press delete to remove tag"
-                      secondary-placeholder="+Positive">
+                      secondary-placeholder="+Positive Keyword">
             </md-chips>
             <p class="font-weight-200 mb-30 mt-0">To enter a new positive keyword, type it above and <span class="font-weight-400">press return</span></p>
 
@@ -205,15 +205,15 @@
                       placeholder="Enter negative keyword"
                       delete-button-label="Remove negative keywords"
                       delete-hint="Press delete to remove tag"
-                      secondary-placeholder="+Negative">
+                      secondary-placeholder="+Negative Keyword">
             </md-chips>
             <p class="font-weight-200 mb-30 mt-0">To enter a new negative keyword, type it above and <span class="font-weight-400">press return</span></p>
 
             <md-chips ng-model="vm.queue.customVocabulary"
-                      placeholder="Enter custom vocabulary"
+                      placeholder="Enter custom vocab"
                       delete-button-label="Remove custom vocabulary"
                       delete-hint="Press delete to remove tag"
-                      secondary-placeholder="+Vocabulary">
+                      secondary-placeholder="+Vocabulary Word">
             </md-chips>
             <p class="font-weight-200 mb-30 mt-0">To enter a new custom vocabulary, type it above and <span class="font-weight-400">press return</span></p>
 
