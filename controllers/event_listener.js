@@ -137,17 +137,6 @@ module.exports.transcription_events = function (req, res) {
     var positiveWords = []
     var negativeWords = []
   }
-  if (sentimentScore || agentTalkRatio){
-    //set qscore
-    if (sentimentScore){
-      qscore = sentimentScore * sentimentComparative * 50;
-    }
-    if (agentTalkRatio){
-      qscore = qscore - agentTalkRatio
-    }
-
-    console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
-  }
 
   Call.findOne({'callSid': callSid}).populate('queue').exec(function (err, call) {
     if (call == null){
@@ -198,6 +187,22 @@ module.exports.transcription_events = function (req, res) {
         }
       } catch (e) {
         console.log('keyword groups: ' + e.message)
+      }
+
+      if (sentimentScore || agentTalkRatio){
+        //set qscore
+        if (sentimentScore){
+          qscore = sentimentScore * sentimentComparative * 30;
+        }
+        if (agentTalkRatio){
+          qscore = qscore - agentTalkRatio * 33
+        }
+
+        if (scriptKeywordRatio>0){
+          qscore = qscore - scriptKeywordRatio * 33;
+        }
+
+        console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
       }
 
 
