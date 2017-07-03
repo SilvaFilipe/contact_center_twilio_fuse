@@ -67,7 +67,10 @@ var callSchema = mongoose.Schema({
   negativeWords: Array,
   queue: {type: mongoose.Schema.ObjectId, ref: 'Queue'},
   voicebaseResponse: Object,
-  qscore: Number
+  qscore: Number,
+  agentWordCount: Number,
+  callerWordCount: Number,
+  agentTalkRatio: Number
 });
 
 callSchema.methods.saveSync = function () {

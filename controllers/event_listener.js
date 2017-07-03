@@ -81,15 +81,46 @@ module.exports.voicemail_transcription_events= function (req, res) {
 module.exports.transcription_events = function (req, res) {
   console.log('logging transcription event for '  + req.query.callSid);
   var data = req.body;
-  var transcriptionText =req.body.media.transcripts.text;
+  var callSid = req.query.callSid;
+  var transcriptionText = req.body.media.transcripts.text;
   var voiceBaseMediaId = req.body.media.mediaId;
   console.log('mediaID: ' + voiceBaseMediaId);
+
+  var agentWordCount = 0
+  var callerWordCount = 0
+  var agentTalkRatio = 0
+  var qscore;
+
+  try {
+    if (req.body.media.transcripts.words){
+      var words = req.body.media.transcripts.words;
+      var agentWordCount=0;
+      var callerWordCount=0;
+      var currentSpeaker='agent';
+      //console.log('word count: ' + words.length)
+      words.forEach(function(word) {
+        //console.log(word);
+        if (word.m && word.m == "turn"){
+          currentSpeaker = word.w
+        } else {
+          currentSpeaker == "agent" ? agentWordCount++ : callerWordCount++;
+        }
+      });
+      console.log('agentWordCount : ' + agentWordCount)
+      console.log('callerWordCount : ' + callerWordCount)
+      agentWordCount = agentWordCount
+      callerWordCount = callerWordCount
+      if (callerWordCount>0)
+        agentTalkRatio = agentWordCount/callerWordCount
+    }
+  } catch (e) {
+    console.log('talk ratio error: ' + e.message)
+  }
+
   //console.log(transcriptionText);
-  var callSid = req.query.callSid;
   var sentiment = require('sentiment');
   var r1 = sentiment(transcriptionText);
-  console.log('sentiment:')
-  console.log(r1);
+  console.log('sentiment: ' + r1)
   try {
     var sentimentScore = r1.score
     var sentimentComparative= r1.comparative
@@ -102,6 +133,18 @@ module.exports.transcription_events = function (req, res) {
     var positiveWords = []
     var negativeWords = []
   }
+  if (sentimentScore || agentTalkRatio){
+    //set qscore
+    if (sentimentScore){
+      qscore = sentimentScore * sentimentComparative * 50;
+    }
+    if (agentTalkRatio){
+      qscore = qscore - agentTalkRatio
+    }
+
+    console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
+  }
+
   Call.findOne({'callSid': callSid}, function (err, call) {
     if (call == null){
       console.log ('Could not find call to update transcription: ' + callSid);
@@ -111,7 +154,7 @@ module.exports.transcription_events = function (req, res) {
       return res.send("<Response/>")
     } else {
       console.log ('updating transcription: ' + callSid);
-      Call.findOneAndUpdate({'callSid': callSid}, {$set:{voicebaseResponse: req.body, transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{qscore: qscore, agentWordCount: agentWordCount, callerWordCount: callerWordCount, agentTalkRatio: agentTalkRatio, voicebaseResponse: req.body, transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
         if(err) {
           console.log("Something wrong when updating call: " + err);
         } else {
