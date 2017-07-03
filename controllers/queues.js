@@ -36,6 +36,14 @@ module.exports = {
       });
 
     },
+
+    getFromSid: function (req, res) {
+      Queue.findOne({'taskQueueSid': req.params.taskSid}, function (err, queue) {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json(queue);
+      });
+    },
+
     update: function (req, res) {
       let triggerPromise;
 

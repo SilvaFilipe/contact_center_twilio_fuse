@@ -184,6 +184,9 @@ module.exports = function(app, acl, multer){
     router.route('/queues/:queue_id/contacts/:contact_id')
       .post(queues.addContact);
 
+    router.route('/queuesFromSid/:taskSid')
+      .get(queues.getFromSid);
+
     //Contacts api
     router.route('/contacts')
       .post(contacts.create)

@@ -23,6 +23,13 @@
             return response.data;
           });
       },
+      getQueueFromSid: function getQueueFromSid(id) {
+        return $http.get(apiUrl + '/queuesFromSid/' + id)
+          .then(function (response) {
+            return response.data;
+          });
+      },
+
       create: function create(queue) {
         return $http.post(apiUrl + '/queues', queue)
           .then(function (response) {

@@ -81,6 +81,20 @@
 
                     <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
+
+                    <div class="scriptCard" flex="20" ng-show="task.taskQueue">
+                      <md-card>
+                        <md-card-title>
+                          <md-card-title-text>
+                            <span class="md-title">Call Script</span>
+                          </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                          <p>{{task.taskQueue.script}}</p>
+                        </md-card-content>
+                      </md-card>
+                    </div>
+
                   </div>
 
                   <!-- conference -->
@@ -160,7 +174,6 @@
                 </div>
               </md-toolbar>
               <div layout="row" layout-align="space-between center" style="padding: 10px">
-                <div class="timer" ng-class='{"invisible": !task.duration}'>created {{ task.duration | counter }} ago</div>
                 <div layout="row" layout-align="space-between center">
                   <md-button class="md-raised md-accent" ng-click="acceptInboundCall(task)">Accept</md-button>
                   <md-button class="md-raised md-primary" ng-click="declineInboundCall(task)">Decline</md-button>

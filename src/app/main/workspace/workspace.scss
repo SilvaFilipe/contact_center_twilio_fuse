@@ -592,6 +592,11 @@
   background-color: rgb(29, 135, 187);
 }
 
+.scriptCard {
+  position: absolute;
+  right: 5%;
+}
+
 // RESPONSIVE
 @media screen and (max-width: $layout-breakpoint-xs) {
 

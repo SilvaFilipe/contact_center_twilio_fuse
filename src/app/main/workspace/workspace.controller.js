@@ -7,7 +7,7 @@
         .controller('WorkflowController', WorkflowController);
 
     /** @ngInject */
-    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall, EnvironmentConfig) {
+    function WorkflowController($scope, $rootScope, $http, $interval, $log, $timeout, $mdSidenav, $mdDialog, $document, $window, msNavigationService, CallService, UserService, QueueService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall, EnvironmentConfig) {
       var vm = this;
       var apiUrl = $rootScope.apiBaseUrl;
       var isStartRecording = EnvironmentConfig.CallRecordingDefault;
@@ -91,6 +91,13 @@
                 if ($rootScope.currentCall) {
                   $http.get(apiUrl + 'api/agents/agentToConference?caller_sid=' + ActiveConnSid + '&roomName=' + $rootScope.currentCall.conferenceName, {withCredentials: true});
                 }
+              });
+              QueueService.getQueueFromSid(reservation.task.taskQueueSid).then(function (taskQueue) {
+                if (angular.isDefined(taskQueue.script)) {
+                  $rootScope.currentCall.taskQueue = taskQueue;
+                }
+              }, function (err) {
+                console.log(err);
               });
             }
           );
