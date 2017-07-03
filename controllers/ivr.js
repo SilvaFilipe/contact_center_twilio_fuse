@@ -71,7 +71,7 @@ module.exports.welcome = function (req, res) {
   var twiml = new twilio.TwimlResponse()
   let keywords = []
 
-  var promise = Queue.find({}).exec();
+  var promise = Queue.find({}).sort([['name', 'ascending']]).exec();
   promise.then(function(queues) {
     for (var digit=1; digit<queues.length; digit++){
       var queue = queues[digit-1];
@@ -115,7 +115,7 @@ module.exports.welcome = function (req, res) {
 module.exports.selectTeam = function (req, res) {
   listener.log_twiml_event(req);
   var selectedQueue=null;
-  var promise = Queue.find({}).exec();
+  var promise = Queue.find({}).sort([['name', 'ascending']]).exec();
   if (req.query.SpeechResult) {
     console.log('speech ' + req.query.SpeechResult)
   }
