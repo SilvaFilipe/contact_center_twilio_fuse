@@ -71,13 +71,8 @@
               <div class="mt-5">
                 <span>Duration: {{ call.duration | secsToDuration }}</span>
               </div>
-              <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" ng-show="call.recordingUrl!=null"></md-icon>
-              <div ng-if="call.sentimentScore">
-                <img ng-src="{{call.sentimentScore < -1 && 'assets/images/sentiment/bad.png' || call.sentimentScore > 1 && 'assets/images/sentiment/good.png' ||  'assets/images/sentiment/neutral.png'}}" width="30"/>
-                  <md-tooltip md-direction="'right'">
-                      Sentiment: Score: {{call.sentimentScore }}, Weight: {{call.sentimentComparative | number : 2}}
-                  </md-tooltip>
-             </div>
+              <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" style="margin: 2px 2px 0 2px"></md-icon>
+              <span ng-show="call.qscore" class="badge white-fg" ng-style="call.qscore < 50 && {'background': 'red'} || call.qscore > 70 && {'background': 'green'}">{{call.qscore}}</span>
             </div>
           </div>
         </div>
