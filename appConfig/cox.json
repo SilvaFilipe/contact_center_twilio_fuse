@@ -1,0 +1,14 @@
+{
+  "production": {
+    "EnvironmentConfig": {
+      "API": "https://coxsd.herokuapp.com/",
+      "Auth": "https://coxsd.herokuapp.com/",
+      "LogoUrl": "assets/images/logos/cox/logo.png",
+      "LogoLetter": "C",
+      "MenuLogoText": "Cox Communications",
+      "MenuLogoImageUrl": "assets/images/logos/cox/logo.png",
+      "MenuLogoTextUrl": "assets/images/logos/cox/x.png",
+      "CallRecordingDefault": false
+    }
+  }
+}
