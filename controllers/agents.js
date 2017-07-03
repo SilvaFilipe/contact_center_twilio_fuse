@@ -485,11 +485,12 @@ module.exports.registeredSipOutboundCall= function (req, res) {
               callerId=did.number;
               console.log('set callerid as did: ' + callerId)
             }
+            if (userToDial.forwarding && userToDial.forwarding.length >= 10){
+              callerId=userToDial.forwarding
+              console.log('set callerid as forwarding: ' + callerId)
+            }
           }
-          if (userToDial.forwarding && userToDial.forwarding.length >= 10){
-            callerId=userToDial.forwarding
-            console.log('set callerid as forwarding: ' + callerId)
-          }
+
 
           var twiml = '<Response><Dial ringTone ="' + process.env.DEFAULT_COUNTY_CODE+ '" callerId="' + callerId + '" recordingStatusCallback="' + process.env.PUBLIC_HOST + '/listener/recording_events" recordingStatusCallbackMethod="GET" record="' + process.env.CALL_RECORDING_DEFAULT + '">' + numberToCall  + '</Dial></Response>';
           res.send(twiml)
