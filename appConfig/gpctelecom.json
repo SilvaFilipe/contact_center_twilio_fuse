@@ -6,7 +6,7 @@
       "LogoUrl": "assets/images/logos/gpctelecom/logo.png",
       "LogoLetter": "GPC",
       "MenuLogoText": "GPC Telecom",
-      "CallRecordingDefault": false
+      "CallRecordingDefault": true
     }
   }
 }

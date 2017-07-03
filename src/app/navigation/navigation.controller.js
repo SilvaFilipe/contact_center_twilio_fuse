@@ -12,11 +12,11 @@
         var vm = this;
         if (angular.isDefined(EnvironmentConfig.MenuLogoImageUrl))
           vm.MenuLogoImageUrl = EnvironmentConfig.MenuLogoImageUrl;
-        else vm.LogoLetter = EnvironmentConfig.LogoLetter;
+        else vm.MenuLogoText = EnvironmentConfig.MenuLogoText;
 
         if (angular.isDefined(EnvironmentConfig.MenuLogoTextUrl))
           vm.MenuLogoTextUrl = EnvironmentConfig.MenuLogoTextUrl;
-        else vm.MenuLogoText = EnvironmentConfig.MenuLogoText;
+        else vm.LogoLetter = EnvironmentConfig.LogoLetter;
 
 
         // Data
