@@ -70,7 +70,11 @@ var callSchema = mongoose.Schema({
   qscore: Number,
   agentWordCount: Number,
   callerWordCount: Number,
-  agentTalkRatio: Number
+  agentTalkRatio: Number,
+  scriptKeywords: Array,
+  positiveKeywords: Array,
+  negativeKeywords: Array,
+  scriptKeywordRatio: Number
 });
 
 callSchema.methods.saveSync = function () {
