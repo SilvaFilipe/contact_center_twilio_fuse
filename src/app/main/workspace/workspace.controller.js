@@ -93,7 +93,7 @@
                 }
               });
               QueueService.getQueueFromSid(reservation.task.taskQueueSid).then(function (taskQueue) {
-                if (angular.isDefined(taskQueue.script)) {
+                if (angular.isDefined(taskQueue.script) && taskQueue.script) {
                   $rootScope.currentCall.taskQueue = taskQueue;
                 }
               }, function (err) {
