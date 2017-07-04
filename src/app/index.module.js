@@ -41,7 +41,8 @@
             'datatables',
             'ngAvatar',
             'bc.AngularKeypad',
-            'angularRipple'
+            'angularRipple',
+            'gridshore.c3js.chart'
 
         ]);
 })();

@@ -1,0 +1,138 @@
+
+<md-dialog aria-label="Q Score">
+  <form id="history-report-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Q Score</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon md-svg-src="assets/angular-material-assets/img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-height:810px; ">
+      <md-tabs md-dynamic-height md-border-bottom >
+        <md-tab label="SCORE">
+          <md-content class="md-padding">
+            <div class="widget-group" layout="row" flex="100" layout-wrap style="width: 840px">
+
+              <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
+
+                <ms-widget-front class="white-bg">
+                  <div layout="column" layout-align="center center" style="padding-top: 60px">
+                    <div class="light-blue-fg font-size-72 line-height-72">
+                      {{call.qscore}}
+                    </div>
+                    <div class="h3 secondary-text font-weight-500">Q Score</div>
+                  </div>
+                </ms-widget-front>
+
+              </ms-widget>
+
+              <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
+
+                <ms-widget-front class="white-bg">
+                  <div layout="column" layout-align="center center">
+                    <span>Sentiment</span>
+                    <img ng-src="{{call.sentimentScore < -1 && 'assets/images/sentiment/bad.png' || call.sentimentScore > 1 && 'assets/images/sentiment/good.png' ||  'assets/images/sentiment/neutral.png'}}" width="120" style="padding-top: 30px; padding-bottom: 25px"/>
+                  </div>
+                  <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                    <span class="h4 secondary-text text-truncate">Score:</span>
+                    <span class="h4 ml-5">{{call.sentimentScore}}</span>
+                    <span class="h4 secondary-text text-truncate ml-10">Weight:</span>
+                    <span class="h4 ml-5">{{call.sentimentComparative}}</span>
+                  </div>
+                </ms-widget-front>
+
+              </ms-widget>
+
+              <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
+
+                <ms-widget-front class="white-bg">
+                  <div layout="column" layout-align="center center">
+                    <span>Talk Ratio</span>
+                    <div ng-if="isShowChart" class="pb-5">
+                      <c3chart bindto-id="gauge-plot1-chart">
+                        <chart-column column-id="Agent talk"
+                                      column-values="{{call.agentTalkRatio * 100 | number: 0}}"
+                                      column-type="gauge"/>
+                        <chart-gauge min="0"
+                                     max="100"
+                                     units=" hours"
+                                     width="40"/>
+                      </c3chart>
+                    </div>
+                  </div>
+                  <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                    <span class="h4 secondary-text text-truncate">Agent talk:</span>
+                    <span class="h4 ml-5">{{call.agentTalkRatio * 100 | number: 0}}%</span>
+                  </div>
+                </ms-widget-front>
+
+              </ms-widget>
+
+              <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
+
+                <ms-widget-front class="white-bg">
+                  <div layout="column" layout-align="center center">
+                    <span>Script Keywords</span>
+                    <div ng-if="isShowChart" class="pb-5">
+                      <c3chart bindto-id="gauge-plot2-chart">
+                        <chart-column column-id="Script Keywords"
+                                      column-values="{{call.scriptKeywordRatio * 100 | number: 0}}"
+                                      column-type="gauge"/>
+                        <chart-gauge min="0"
+                                     max="100"
+                                     units=" hours"
+                                     width="40"/>
+                      </c3chart>
+                    </div>
+                  </div>
+                  <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                    <span class="h4 secondary-text text-truncate">Script Keywords:</span>
+                    <span class="h4 ml-5">{{call.scriptKeywordRatio * 100 | number: 0}}%</span>
+                  </div>
+                </ms-widget-front>
+              </ms-widget>
+            </div>
+
+          </md-content>
+        </md-tab>
+        <md-tab label="KEYWORDS">
+          <md-content class="md-padding">
+            <div layout="row" layout-align="center center" style="width: 840px">
+              <md-list flex>
+                <md-subheader class="md-no-sticky">scriptKeywords</md-subheader>
+                <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
+                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                </md-list-item>
+              </md-list>
+              <md-list flex>
+                <md-subheader class="md-no-sticky">positiveKeywords</md-subheader>
+                <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
+                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                </md-list-item>
+              </md-list>
+              <md-list flex>
+                <md-subheader class="md-no-sticky">negativeKeywords</md-subheader>
+                <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
+                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                </md-list-item>
+              </md-list>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="TRANSCRIPTION">
+          <md-content class="md-padding" style="width: 840px">
+            <p>{{call.transcription}}</p>
+          </md-content>
+        </md-tab>
+      </md-tabs>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="cancel()">
+        Cancel
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

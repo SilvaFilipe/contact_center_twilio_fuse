@@ -74,3 +74,10 @@ history-call{
     margin-bottom: 20px;
   }
 }
+
+#history-report-dialog {
+  md-pagination-wrapper {
+    width: auto!important; // bug where the tabs arent rendered properly.
+  }
+}
+

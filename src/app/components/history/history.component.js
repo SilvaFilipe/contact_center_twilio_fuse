@@ -120,5 +120,30 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
     $ctrl.calls = [];
     $ctrl.historyPagination.currentPage = 1;
     $ctrl.loadCalls();
-  }
+  };
+
+  $ctrl.showReportDialog = function(ev, call) {
+    $mdDialog.show({
+      controller: function ReportDialogController($scope, $mdDialog) {
+        $scope.call = call;
+        setTimeout(function () {
+          $scope.isShowChart = true;
+        }, 500);
+        $scope.hide = function () {
+          $mdDialog.hide();
+        };
+        $scope.cancel = function () {
+          $mdDialog.cancel();
+        };
+      },
+      templateUrl: 'app/components/history/history.report.dialog.html',
+      parent: angular.element(document.body),
+      targetEvent: ev,
+      clickOutsideToClose:true
+    })
+      .then(function() {
+      }, function() {
+      });
+  };
+
 }
