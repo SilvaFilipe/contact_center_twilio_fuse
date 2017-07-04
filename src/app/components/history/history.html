@@ -73,7 +73,7 @@
               </div>
               <md-icon md-font-icon="icon-play-circle-outline" ng-show="call.recordingUrl!=null" ng-click="$ctrl.openRecordingDialog(call)" style="margin: 2px 0 0 2px" ></md-icon>
               <span ng-show="call.qscore" ng-click="$ctrl.showReportDialog($event, call)" class="badge white-fg" style="cursor: pointer; margin-left: 2px;" ng-style="call.qscore < 50 && {'background': 'red'} || call.qscore > 70 && {'background': 'green'}">
-                <!-- show raw data temporary -->
+                <!-- show raw data temporary
                  <md-tooltip>
                    Talk Ratio: {{call.agentTalkRatio}}
                    Disposition: {{call.disposition}}
@@ -82,7 +82,7 @@
                    positiveKeywords: {{call.positiveKeywords}}
                    negativeKeywords: {{call.negativeKeywords}}
                    sentimentScore: {{call.sentimentScore}}
-                 </md-tooltip>
+                 </md-tooltip>-->
                 {{call.qscore | number:0}}</span>
             </div>
           </div>
