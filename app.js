@@ -115,6 +115,8 @@ app.use(session({
     cookie: {expires: util.generateSessionExpirationDate(86400)}
 }));
 
+
+app.use(bodyParser({limit: '50mb'}));
 app.use(bodyParser.json({}));
 app.use(bodyParser.urlencoded({
     extended: true

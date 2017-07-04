@@ -115,7 +115,7 @@ module.exports.transcription_events = function (req, res) {
       agentWordCount = agentWordCount
       callerWordCount = callerWordCount
       if (callerWordCount>0)
-        agentTalkRatio = agentWordCount/callerWordCount
+        agentTalkRatio = agentWordCount/(agentWordCount+callerWordCount)
     }
   } catch (e) {
     console.log('talk ratio error: ' + e.message)
