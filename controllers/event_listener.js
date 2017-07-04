@@ -89,11 +89,11 @@ module.exports.transcription_events = function (req, res) {
   var agentWordCount = 0
   var callerWordCount = 0
   var agentTalkRatio = 0
-  var qscore;
+  var qscore=0;
   var scriptKeywords = [];
   var positiveKeywords = [];
   var negativeKeywords = [];
-  var scriptKeywordRatio;
+  var scriptKeywordRatio=0;
 
   try {
     if (req.body.media.transcripts.words){
