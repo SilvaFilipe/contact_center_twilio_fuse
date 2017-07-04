@@ -90,6 +90,10 @@ module.exports.transcription_events = function (req, res) {
   var callerWordCount = 0
   var agentTalkRatio = 0
   var qscore;
+  var scriptKeywords = [];
+  var positiveKeywords = [];
+  var negativeKeywords = [];
+  var scriptKeywordRatio;
 
   try {
     if (req.body.media.transcripts.words){
@@ -133,19 +137,8 @@ module.exports.transcription_events = function (req, res) {
     var positiveWords = []
     var negativeWords = []
   }
-  if (sentimentScore || agentTalkRatio){
-    //set qscore
-    if (sentimentScore){
-      qscore = sentimentScore * sentimentComparative * 50;
-    }
-    if (agentTalkRatio){
-      qscore = qscore - agentTalkRatio
-    }
 
-    console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
-  }
-
-  Call.findOne({'callSid': callSid}, function (err, call) {
+  Call.findOne({'callSid': callSid}).populate('queue').exec(function (err, call) {
     if (call == null){
       console.log ('Could not find call to update transcription: ' + callSid);
       res.status(404);
@@ -154,7 +147,67 @@ module.exports.transcription_events = function (req, res) {
       return res.send("<Response/>")
     } else {
       console.log ('updating transcription: ' + callSid);
-      Call.findOneAndUpdate({'callSid': callSid}, {$set:{qscore: qscore, agentWordCount: agentWordCount, callerWordCount: callerWordCount, agentTalkRatio: agentTalkRatio, voicebaseResponse: req.body, transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
+
+      try {
+        if (call.queue){
+
+          var scriptKWname = `queue-${call.queue.taskQueueFriendlyName}-script-keywords`;
+          var positiveKWname = `queue-${call.queue.taskQueueFriendlyName}-positive-keywords`;
+          var negativeKWname = `queue-${call.queue.taskQueueFriendlyName}-negative-keywords`;
+
+          if (req.body.media.keywords && req.body.media.keywords.groups){
+            var groups = req.body.media.keywords.groups
+
+            groups.forEach(function(group) {
+
+              if (group.name == scriptKWname){
+                group.keywords.forEach(function(word){
+                  scriptKeywords.push(word.name);
+                })
+              }
+
+              if (group.name == positiveKWname){
+                group.keywords.forEach(function(word){
+                  positiveKeywords.push(word.name);
+                })
+              }
+
+              if (group.name == negativeKWname){
+                group.keywords.forEach(function(word){
+                  negativeKeywords.push(word.name);
+                })
+              }
+
+            });
+          }
+          if (call.queue.scriptKeywords.length > 0){
+            scriptKeywordRatio = scriptKeywords.length/call.queue.scriptKeywords.length;
+          }
+
+        }
+      } catch (e) {
+        console.log('keyword groups: ' + e.message)
+      }
+
+      if (sentimentScore || agentTalkRatio){
+        //set qscore
+        if (sentimentScore){
+          qscore = sentimentScore * sentimentComparative * 30;
+        }
+        if (agentTalkRatio){
+          qscore = qscore - agentTalkRatio * 33
+        }
+
+        if (scriptKeywordRatio>0){
+          qscore = qscore - scriptKeywordRatio * 33;
+        }
+
+        console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
+      }
+
+
+
+      Call.findOneAndUpdate({'callSid': callSid}, {$set:{scriptKeywordRatio: scriptKeywordRatio, scriptKeywords: scriptKeywords , positiveKeywords: positiveKeywords, negativeKeywords: negativeKeywords, qscore: qscore, agentWordCount: agentWordCount, callerWordCount: callerWordCount, agentTalkRatio: agentTalkRatio, voicebaseResponse: req.body, transcription: transcriptionText, voiceBaseMediaId: voiceBaseMediaId, sentimentScore: sentimentScore, sentimentComparative: sentimentComparative, positiveWords: positiveWords, negativeWords: negativeWords }}, function(err, call2){
         if(err) {
           console.log("Something wrong when updating call: " + err);
         } else {
