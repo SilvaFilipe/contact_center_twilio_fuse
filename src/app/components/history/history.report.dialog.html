@@ -21,9 +21,13 @@
                 <ms-widget-front class="white-bg">
                   <div layout="column" layout-align="center center" style="padding-top: 60px">
                     <div class="light-blue-fg font-size-72 line-height-72">
-                      {{call.qscore}}
+                      {{call.qscore | number:0}}
                     </div>
                     <div class="h3 secondary-text font-weight-500">Q Score</div>
+                  </div>
+                  <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                    <span class="h4 secondary-text text-truncate">Disposition:</span>
+                    <span class="h4 ml-5">{{call.disposition || 'No data'}}</span>
                   </div>
                 </ms-widget-front>
 
@@ -40,7 +44,7 @@
                     <span class="h4 secondary-text text-truncate">Score:</span>
                     <span class="h4 ml-5">{{call.sentimentScore}}</span>
                     <span class="h4 secondary-text text-truncate ml-10">Weight:</span>
-                    <span class="h4 ml-5">{{call.sentimentComparative}}</span>
+                    <span class="h4 ml-5">{{call.sentimentComparative | number:2}}</span>
                   </div>
                 </ms-widget-front>
 
@@ -50,7 +54,7 @@
 
                 <ms-widget-front class="white-bg">
                   <div layout="column" layout-align="center center">
-                    <span>Talk Ratio</span>
+                    <span>Agent Talk Ratio</span>
                     <div ng-if="isShowChart" class="pb-5">
                       <c3chart bindto-id="gauge-plot1-chart">
                         <chart-column column-id="Agent talk"
@@ -58,13 +62,13 @@
                                       column-type="gauge"/>
                         <chart-gauge min="0"
                                      max="100"
-                                     units=" hours"
+                                     units="agent talk"
                                      width="40"/>
                       </c3chart>
                     </div>
                   </div>
                   <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
-                    <span class="h4 secondary-text text-truncate">Agent talk:</span>
+                    <span class="h4 secondary-text text-truncate">Agent Talk Ratio:</span>
                     <span class="h4 ml-5">{{call.agentTalkRatio * 100 | number: 0}}%</span>
                   </div>
                 </ms-widget-front>
@@ -75,7 +79,7 @@
 
                 <ms-widget-front class="white-bg">
                   <div layout="column" layout-align="center center">
-                    <span>Script Keywords</span>
+                    <span>Script Keyword Ratio</span>
                     <div ng-if="isShowChart" class="pb-5">
                       <c3chart bindto-id="gauge-plot2-chart">
                         <chart-column column-id="Script Keywords"
@@ -83,7 +87,7 @@
                                       column-type="gauge"/>
                         <chart-gauge min="0"
                                      max="100"
-                                     units=" hours"
+                                     units="script"
                                      width="40"/>
                       </c3chart>
                     </div>
@@ -102,19 +106,19 @@
           <md-content class="md-padding">
             <div layout="row" layout-align="center center" style="width: 840px">
               <md-list flex>
-                <md-subheader class="md-no-sticky">scriptKeywords</md-subheader>
+                <md-subheader class="md-no-sticky">Script Keywords</md-subheader>
                 <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
                   <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                 </md-list-item>
               </md-list>
               <md-list flex>
-                <md-subheader class="md-no-sticky">positiveKeywords</md-subheader>
+                <md-subheader class="md-no-sticky">Positive Keywords</md-subheader>
                 <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
                   <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                 </md-list-item>
               </md-list>
               <md-list flex>
-                <md-subheader class="md-no-sticky">negativeKeywords</md-subheader>
+                <md-subheader class="md-no-sticky">Negative Keywords</md-subheader>
                 <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
                   <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                 </md-list-item>
@@ -124,7 +128,8 @@
         </md-tab>
         <md-tab label="TRANSCRIPTION">
           <md-content class="md-padding" style="width: 840px">
-            <p>{{call.transcription}}</p>
+            <div ng-bind-html="call.transcription.toString().replace('Agent:', '<\br/><\br/>Agent:').replace('Caller:', '<\br/><\br/>Caller:') "></div>
+
           </md-content>
         </md-tab>
       </md-tabs>
