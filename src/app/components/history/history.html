@@ -71,7 +71,7 @@
               <div class="mt-5">
                 <span>Duration: {{ call.duration | secsToDuration }}</span>
               </div>
-              <md-icon md-font-icon="icon-play-circle-outline" ng-click="$ctrl.openRecordingDialog(call)" style="margin: 2px 2px 0 2px"></md-icon>
+              <md-icon md-font-icon="icon-play-circle-outline" ng-show="call.recordingUrl!=null" ng-click="$ctrl.openRecordingDialog(call)" style="margin: 2px 2px 0 2px" ></md-icon>
               <span ng-show="call.qscore" class="badge white-fg" ng-style="call.qscore < 50 && {'background': 'red'} || call.qscore > 70 && {'background': 'green'}">
                 <!-- show raw data temporary -->
                  <md-tooltip>
