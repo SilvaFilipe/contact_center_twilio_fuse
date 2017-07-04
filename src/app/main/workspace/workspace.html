@@ -1,11 +1,3 @@
-
-<!--<md-button class="md-fab md-primary" aria-label="transfer" ng-click="mockCalls(1);">-->
-  <!--<md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>-->
-<!--</md-button>-->
-<!--<md-button class="md-fab md-primary" aria-label="transfer" ng-click="transfer()">-->
-  <!--<md-icon md-font-icon="icon-phone-forward" aria-label="icon-phone-forward"></md-icon>-->
-<!--</md-button>-->
-
 <div class="page-layout simple fullwidth doc-page element-doc-page">
   <div class="header md-accent-bg" layout="row" layout-align="space-between">
     <md-button class="md-icon-button main-sidenav-toggle" ng-click="vm.toggleLeftSidenav('left-quick-panel')" aria-label="Toggle Left Sidenav">
@@ -37,7 +29,7 @@
                 <md-icon md-font-icon="icon-phone-outgoing" ng-show="task.showOutgoingIcon()"></md-icon>
                 <md-icon md-font-icon="icon-phone-incoming" ng-show="task.showIngoingIcon()"></md-icon>
                 <md-icon md-font-icon="icon-phone-forward" ng-show="task.showConferenceIcon()"></md-icon>
-                <md-icon ng-show="task.isCompleted()" md-font-icon="icon-close" ng-click="complete(false)"></md-icon>
+                <md-icon ng-show="task.isInGoingCall() && task.isCompleted()" md-font-icon="icon-close" ng-click="complete(task)"></md-icon>
                 <span ng-hide="task.isExtensionCall()">{{task.fromNumber}}</span>
                 <span ng-show="task.isExtensionCall()">{{task.callerName}}</span>
                 <span ng-show="task.isConferenceCall()">Conference</span>
@@ -82,7 +74,7 @@
                     <md-button class="md-fab md-warn hangup" aria-label="hangup" ng-click="hangup()">
                     </md-button>
 
-                    <div class="scriptCard" flex="20" ng-show="task.taskQueue">
+                    <div class="scriptCard" flex="20" ng-show="task.isInGoingCall() && task.taskQueue.script">
                       <md-card>
                         <md-card-title>
                           <md-card-title-text>
@@ -141,12 +133,14 @@
 
                   </div>
 
-
-                  <md-button ng-show="task.conferenceName=='chat'"  class="md-raised md-accent" ng-click="complete(true); complete(false);">Complete Task</md-button>
-                  <div class="mt-30" layout="row" layout-align="center center" ng-show="task.isCompleted()">
-                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete(false)">
-                      <span ng-show="task.isInGoingCall()">Complete task</span>
-                      <!--<span ng-show="task.isOutGoingCall() || task.isExtensionCall()">Close</span>-->
+                  <div class="mt-30" layout="column" layout-align="center center" ng-show="task.isInGoingCall() && task.isCompleted()">
+                    <md-select class="md-no-underline" ng-model="task.disposition" placeholder="Disposition" ng-if="task.taskQueue.disposition.length" style="background: white; font-size: 14px;">
+                      <md-option ng-repeat="disposition in task.taskQueue.disposition" value="{{disposition}}">
+                        {{disposition}}
+                      </md-option>
+                    </md-select>
+                    <md-button class="md-warn md-raised md-hue-2" ng-click="complete(task)">
+                      <span>Complete task</span>
                     </md-button>
                   </div>
 

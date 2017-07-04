@@ -14,6 +14,9 @@
 
     var CallService = {};
 
+    CallService.updateCall = function (call) {
+      return $http.put(apiUrl + 'api/calls/' + call.callSid, call, {withCredentials: true});
+    };
 
     CallService.recordOn = function (call_sid) {
       return $http.get(apiUrl + 'api/callControl/recordOn?callSid=' + call_sid, {withCredentials: true});

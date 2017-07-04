@@ -14,5 +14,17 @@ module.exports = {
 
             return res.status(200).json(user);
         })
+    },
+
+    update: function (req, res) {
+      Call.findOne({'callSid': req.params.callSid}, function (err, call) {
+        if(err) return res.status(500).json(err);
+        call.disposition = req.body.disposition;
+
+        call.save(function(err){
+          if(err) return res.status(500).json(err);
+          return res.status(200).json(call);
+        });
+      });
     }
 };

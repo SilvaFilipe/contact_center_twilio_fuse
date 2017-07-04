@@ -3,7 +3,7 @@ var router = express.Router()
 
 var setup = require('../controllers/setup.js')
 var tasks = require('../controllers/tasks.js')
-
+var calls = require('../controllers/calls.js')
 var validate = require('../controllers/validate.js')
 
 /* routes for agent interface and phone */
@@ -216,6 +216,9 @@ module.exports = function(app, acl, multer){
           dest: 'uploads/'
         }
       ).single('file'), contacts.uploadAvatarImage);
+
+    router.route('/calls/:callSid')
+      .put(calls.update)
 
 
     app.use('/api', router);

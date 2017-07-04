@@ -93,9 +93,8 @@
                 }
               });
               QueueService.getQueueFromSid(reservation.task.taskQueueSid).then(function (taskQueue) {
-                if (angular.isDefined(taskQueue.script) && taskQueue.script) {
-                  $rootScope.currentCall.taskQueue = taskQueue;
-                }
+                $rootScope.currentCall.taskQueue = taskQueue;
+
               }, function (err) {
                 console.log(err);
               });
@@ -253,7 +252,14 @@
       };
 
       $scope.complete = function (task) {
-        if ($rootScope.currentCall && !task) {
+        if (task.isInGoingCall()) {
+          if (angular.isDefined(task.disposition) && task.disposition) {
+            CallService.updateCall(task).then(function (res) {
+              console.log('call disposition updated!');
+            }, function (err) {
+              console.log(err);
+            });
+          }
           $rootScope.closeTab();
         }
 
