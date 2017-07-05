@@ -73,7 +73,7 @@ module.exports.welcome = function (req, res) {
 
   var promise = Queue.find({}).sort([['name', 'ascending']]).exec();
   promise.then(function(queues) {
-    for (var digit=1; digit<queues.length; digit++){
+    for (var digit=1; digit<queues.length+1; digit++){
       var queue = queues[digit-1];
       console.log('found queue %s', queue.name)
       sayText = sayText + 'Press ' + digit + ' for ' + queue.name + '. ';
@@ -120,7 +120,7 @@ module.exports.selectTeam = function (req, res) {
     console.log('speech ' + req.query.SpeechResult)
   }
   promise.then(function(queues) {
-    for (var digit=1; digit<queues.length; digit++){
+    for (var digit=1; digit<queues.length+1; digit++){
       var queue = queues[digit-1];
       if (req.query.Digits && parseInt(req.query.Digits) === digit) {
         selectedQueue = queue;
