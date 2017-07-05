@@ -129,6 +129,24 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
         setTimeout(function () {
           $scope.isShowChart = true;
         }, 300);
+
+        var customizeTrans = $scope.call.transcription.toString().split(' ');
+        $scope.sanitizeText = [];
+        for (var i in customizeTrans) {
+          if ($scope.call.scriptKeywords.indexOf(customizeTrans[i]) > -1) {
+            $scope.sanitizeText.push('<font color="yellow">' + customizeTrans[i] + '</font>');
+            continue
+          }
+          if ($scope.call.negativeKeywords.indexOf(customizeTrans[i]) > -1) {
+            $scope.sanitizeText.push('<font color="red">' + customizeTrans[i] + '</font>');
+            continue
+          }
+          if ($scope.call.positiveKeywords.indexOf(customizeTrans[i]) > -1) {
+            $scope.sanitizeText.push('<font color="green">' + customizeTrans[i] + '</font>');
+            continue
+          }
+          $scope.sanitizeText.push(customizeTrans[i]);
+        }
         $scope.hide = function () {
           $mdDialog.hide();
         };

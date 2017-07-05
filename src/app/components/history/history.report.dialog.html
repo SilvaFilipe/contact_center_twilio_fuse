@@ -153,7 +153,7 @@
         <md-tab label="TRANSCRIPTION">
           <md-content class="md-padding" style="width: 840px">
             <!-- <div ng-bind-html="call.transcription.toString().replace('Agent:', '<\br/><\br/>Agent:').replace('Caller:', '<\br/><\br/>Caller:') "></div> -->
-            <div ng-bind-html="call.transcription.toString().split('Agent:').join('<\br/><\br/>Agent:').split('Caller:').join('<\br/><\br/>Caller:')"></div>
+            <div ng-bind-html="sanitizeText.join(' ').toString().split('Agent:').join('<\br/><\br/><b>Agent:</b>').split('Caller:').join('<\br/><\br/><b>Caller:</b>')"></div>
           </md-content>
         </md-tab>
       </md-tabs>
