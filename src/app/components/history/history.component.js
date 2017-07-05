@@ -128,7 +128,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
         $scope.call = call;
         setTimeout(function () {
           $scope.isShowChart = true;
-        }, 500);
+        }, 300);
         $scope.hide = function () {
           $mdDialog.hide();
         };
