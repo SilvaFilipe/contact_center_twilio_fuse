@@ -191,15 +191,63 @@ module.exports.transcription_events = function (req, res) {
 
       if (sentimentScore || agentTalkRatio){
         //set qscore
+
+        if (call.disposition){
+          if (call.disposition=="Sale"){
+            qscore = 80;
+          }
+          if (call.disposition=="Appointment Set"){
+            qscore = 50;
+          }
+          if (call.disposition=="Follow Up"){
+            qscore = 20;
+          }
+          if (call.disposition=="Closed Lost"){
+            qscore = 0;
+          }
+        }
+
+
+
+
+
         if (sentimentScore){
-          qscore = sentimentScore * sentimentComparative * 30;
+          //sentimentScore * sentimentComparative * 30;
+          if (sentimentScore > 0) {
+            qscore = qscore + 15
+          }
+          if (sentimentScore < 0) {
+            qscore = qscore - 15
+          }
         }
         if (agentTalkRatio){
-          qscore = qscore - agentTalkRatio * 33
+          if (agentTalkRatio < .25) {
+            qscore = qscore + 10
+          }
+          if (sentimentScore > .75 ) {
+            qscore = qscore - 10
+          }
         }
 
         if (scriptKeywordRatio>0){
-          qscore = qscore - scriptKeywordRatio * 33;
+          if (scriptKeywordRatio < .25) {
+            qscore = qscore - 20
+          } else if (scriptKeywordRatio < .40) {
+            qscore = qscore - 10
+          } else if (scriptKeywordRatio < .60) {
+            qscore = qscore -0
+          } else if (scriptKeywordRatio < .75) {
+            qscore = qscore + 10
+          } else {
+            qscore = qscore + 20
+          }
+        }
+
+        if (qscore > 100 ){
+          qscore = 100
+        }
+        if (qscore < 0 ){
+          qscore = 0
         }
 
         console.log ('qscore %s sentimentScore %s sentimentComparative %s agentTalkRatio %s', qscore, sentimentScore, sentimentComparative , agentTalkRatio )
