@@ -132,20 +132,39 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
 
         var customizeTrans = $scope.call.transcription.toString().split(' ');
         $scope.sanitizeText = [];
+        var isKeyword = false;
         for (var i in customizeTrans) {
-          if ($scope.call.scriptKeywords.indexOf(customizeTrans[i]) > -1) {
-            $scope.sanitizeText.push('<font color="yellow">' + customizeTrans[i] + '</font>');
-            continue
+          $scope.call.scriptKeywords.some(function(element, index) {
+            if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
+              $scope.sanitizeText.push('<font color="#FF9800">' + customizeTrans[i] + '</font>');
+              isKeyword = true;
+              return true;
+            }
+          });
+
+          if (!isKeyword) {
+            $scope.call.negativeKeywords.some(function(element, index) {
+              if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
+                $scope.sanitizeText.push('<font color="red">' + customizeTrans[i] + '</font>');
+                isKeyword = true;
+                return true;
+              }
+            });
+
           }
-          if ($scope.call.negativeKeywords.indexOf(customizeTrans[i]) > -1) {
-            $scope.sanitizeText.push('<font color="red">' + customizeTrans[i] + '</font>');
-            continue
+
+          if (!isKeyword) {
+            $scope.call.positiveKeywords.some(function(element, index) {
+              if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
+                $scope.sanitizeText.push('<font color="green">' + customizeTrans[i] + '</font>');
+                isKeyword = true;
+                return true;
+              }
+            });
           }
-          if ($scope.call.positiveKeywords.indexOf(customizeTrans[i]) > -1) {
-            $scope.sanitizeText.push('<font color="green">' + customizeTrans[i] + '</font>');
-            continue
-          }
-          $scope.sanitizeText.push(customizeTrans[i]);
+          if (!isKeyword)
+            $scope.sanitizeText.push(customizeTrans[i]);
+          isKeyword = false;
         }
         $scope.hide = function () {
           $mdDialog.hide();

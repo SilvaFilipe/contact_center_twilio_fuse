@@ -124,7 +124,7 @@
             <div layout="row" layout-align="center center" style="width: 840px; height: 300px">
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky">Script Keywords</md-subheader>
+                  <md-subheader class="md-no-sticky"><font color="#FF9800">Script Keywords</font></md-subheader>
                   <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>
@@ -132,7 +132,7 @@
               </div>
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky">Positive Keywords</md-subheader>
+                  <md-subheader class="md-no-sticky"><font color="green">Positive Keywords</font></md-subheader>
                   <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>
@@ -140,7 +140,7 @@
               </div>
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky">Negative Keywords</md-subheader>
+                  <md-subheader class="md-no-sticky"><font color="red">Negative Keywords</font></md-subheader>
                   <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>
@@ -152,7 +152,6 @@
         </md-tab>
         <md-tab label="TRANSCRIPTION">
           <md-content class="md-padding" style="width: 840px">
-            <!-- <div ng-bind-html="call.transcription.toString().replace('Agent:', '<\br/><\br/>Agent:').replace('Caller:', '<\br/><\br/>Caller:') "></div> -->
             <div ng-bind-html="sanitizeText.join(' ').toString().split('Agent:').join('<\br/><\br/><b>Agent:</b>').split('Caller:').join('<\br/><\br/><b>Caller:</b>')"></div>
           </md-content>
         </md-tab>
