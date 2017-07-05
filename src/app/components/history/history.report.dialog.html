@@ -124,7 +124,7 @@
             <div layout="row" layout-align="center center" style="width: 840px; height: 300px">
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky"><font color="#FF9800">Script Keywords</font></md-subheader>
+                  <md-subheader class="md-no-sticky"><span style="color: #FF9800">Script Keywords</span></md-subheader>
                   <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>
@@ -132,7 +132,7 @@
               </div>
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky"><font color="green">Positive Keywords</font></md-subheader>
+                  <md-subheader class="md-no-sticky"><span style="color: green">Positive Keywords</span></md-subheader>
                   <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>
@@ -140,7 +140,7 @@
               </div>
               <div flex="33">
                 <md-list flex style="position: absolute; top: 0">
-                  <md-subheader class="md-no-sticky"><font color="red">Negative Keywords</font></md-subheader>
+                  <md-subheader class="md-no-sticky"><span style="color: red">Negative Keywords</span></md-subheader>
                   <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
                     <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
                   </md-list-item>

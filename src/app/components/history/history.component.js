@@ -136,7 +136,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
         for (var i in customizeTrans) {
           $scope.call.scriptKeywords.some(function(element, index) {
             if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
-              $scope.sanitizeText.push('<font color="#FF9800">' + customizeTrans[i] + '</font>');
+              $scope.sanitizeText.push('<span style="color: #FF9800">' + customizeTrans[i] + '</span>');
               isKeyword = true;
               return true;
             }
@@ -145,7 +145,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
           if (!isKeyword) {
             $scope.call.negativeKeywords.some(function(element, index) {
               if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
-                $scope.sanitizeText.push('<font color="red">' + customizeTrans[i] + '</font>');
+                $scope.sanitizeText.push('<span style="color: red">' + customizeTrans[i] + '</span>');
                 isKeyword = true;
                 return true;
               }
@@ -156,7 +156,7 @@ function HistoryController($rootScope, $scope, $mdDialog, UserService) {
           if (!isKeyword) {
             $scope.call.positiveKeywords.some(function(element, index) {
               if (customizeTrans[i].toLowerCase() === element.toLowerCase()) {
-                $scope.sanitizeText.push('<font color="green">' + customizeTrans[i] + '</font>');
+                $scope.sanitizeText.push('<span style="color: green">' + customizeTrans[i] + '</span>');
                 isKeyword = true;
                 return true;
               }
