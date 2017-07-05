@@ -63,7 +63,7 @@
                         <chart-gauge min="0"
                                      max="100"
                                      units="talk"
-                                     width="40"/>
+                                     width="39"/>
                       </c3chart>
                     </div>
                   </div>
@@ -88,7 +88,7 @@
                         <chart-gauge min="0"
                                      max="100"
                                      units="script"
-                                     width="40"/>
+                                     width="39"/>
                       </c3chart>
                     </div>
                   </div>
@@ -104,25 +104,32 @@
         </md-tab>
         <md-tab label="KEYWORDS">
           <md-content class="md-padding">
-            <div layout="row" layout-align="center center" style="width: 840px">
-              <md-list flex>
-                <md-subheader class="md-no-sticky">Script Keywords</md-subheader>
-                <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
-                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
-                </md-list-item>
-              </md-list>
-              <md-list flex>
-                <md-subheader class="md-no-sticky">Positive Keywords</md-subheader>
-                <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
-                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
-                </md-list-item>
-              </md-list>
-              <md-list flex>
-                <md-subheader class="md-no-sticky">Negative Keywords</md-subheader>
-                <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
-                  <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
-                </md-list-item>
-              </md-list>
+            <div layout="row" layout-align="center center" style="width: 840px; height: 300px">
+              <div flex="33">
+                <md-list flex style="position: absolute; top: 0">
+                  <md-subheader class="md-no-sticky">Script Keywords</md-subheader>
+                  <md-list-item ng-repeat="item in call.scriptKeywords" ng-click="null">
+                    <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                  </md-list-item>
+                </md-list>
+              </div>
+              <div flex="33">
+                <md-list flex style="position: absolute; top: 0">
+                  <md-subheader class="md-no-sticky">Positive Keywords</md-subheader>
+                  <md-list-item ng-repeat="item in call.positiveKeywords" ng-click="null">
+                    <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                  </md-list-item>
+                </md-list>
+              </div>
+              <div flex="33">
+                <md-list flex style="position: absolute; top: 0">
+                  <md-subheader class="md-no-sticky">Negative Keywords</md-subheader>
+                  <md-list-item ng-repeat="item in call.negativeKeywords" ng-click="null">
+                    <span style="z-index:10000;user-select:text;cursor:text"> {{item}} </span>
+                  </md-list-item>
+                </md-list>
+              </div>
+
             </div>
           </md-content>
         </md-tab>
