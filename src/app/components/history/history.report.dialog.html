@@ -54,31 +54,6 @@
 
                 <ms-widget-front class="white-bg">
                   <div layout="column" layout-align="center center">
-                    <span>Agent Talk Ratio</span>
-                    <div ng-if="isShowChart" class="pb-5">
-                      <c3chart bindto-id="gauge-plot1-chart">
-                        <chart-column column-id="Agent talk"
-                                      column-values="{{call.agentTalkRatio * 100 | number: 0}}"
-                                      column-type="gauge"/>
-                        <chart-gauge min="0"
-                                     max="100"
-                                     units="talk"
-                                     width="39"/>
-                      </c3chart>
-                    </div>
-                  </div>
-                  <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
-                    <span class="h4 secondary-text text-truncate">Agent Talk Ratio:</span>
-                    <span class="h4 ml-5">{{call.agentTalkRatio * 100 | number: 0}}%</span>
-                  </div>
-                </ms-widget-front>
-
-              </ms-widget>
-
-              <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
-
-                <ms-widget-front class="white-bg">
-                  <div layout="column" layout-align="center center">
                     <span>Script Keyword Ratio</span>
                     <div ng-if="isShowChart" class="pb-5">
                       <c3chart bindto-id="gauge-plot2-chart">
@@ -98,6 +73,48 @@
                   </div>
                 </ms-widget-front>
               </ms-widget>
+
+            <ms-widget flippable="true" layout="column" flex-sm="45" flex-gt-sm="35" flex-gt-md="25">
+
+              <ms-widget-front class="white-bg">
+                <div layout="column" layout-align="center center">
+                  <span>Agent Talk Ratio</span>
+                  <div ng-if="isShowChart" class="pb-5">
+                    <c3chart bindto-id="gauge-plot1-chart">
+                      <chart-column column-id="Agent talk"
+                                    column-values="{{call.agentTalkRatio * 100 | number: 0}}"
+                                    column-type="gauge"/>
+                      <chart-gauge min="0"
+                                   max="100"
+                                   units="talk"
+                                   width="39"/>
+                    </c3chart>
+                  </div>
+                </div>
+                <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                  <span class="h4 secondary-text text-truncate">Agent Talk Ratio:</span>
+                  <span class="h4 ml-5">{{call.agentTalkRatio * 100 | number: 0}}%</span>
+                </div>
+              </ms-widget-front>
+
+            </ms-widget>
+
+            <ms-widget flippable="true" layout="column" flex-sm="100" flex-gt-sm="100" flex-gt-md="100">
+
+              <ms-widget-front class="white-bg">
+                <div layout="column" layout-align="center center" style="padding-top: 60px; padding-bottom: 30px">
+                  <div class="light-blue-fg font-size-72 line-height-72">
+                    {{call.disposition || 'No data'}}
+                  </div>
+                  <div class="h3 secondary-text font-weight-500">Disposition</div>
+                </div>
+                <div class="p-16 grey-50-bg border-top" layout="row" layout-align="start center">
+                  <span class="h4 secondary-text text-truncate">Call Disposition:</span>
+                  <span class="h4 ml-5">{{call.disposition || 'No data'}}</span>
+                </div>
+              </ms-widget-front>
+
+            </ms-widget>
             </div>
 
           </md-content>
@@ -135,8 +152,8 @@
         </md-tab>
         <md-tab label="TRANSCRIPTION">
           <md-content class="md-padding" style="width: 840px">
-            <div ng-bind-html="call.transcription.toString().replace('Agent:', '<\br/><\br/>Agent:').replace('Caller:', '<\br/><\br/>Caller:') "></div>
-
+            <!-- <div ng-bind-html="call.transcription.toString().replace('Agent:', '<\br/><\br/>Agent:').replace('Caller:', '<\br/><\br/>Caller:') "></div> -->
+            <div ng-bind-html="call.transcription.toString().split('Agent:').join('<\br/><\br/>Agent:').split('Caller:').join('<\br/><\br/>Caller:')"></div>
           </md-content>
         </md-tab>
       </md-tabs>
