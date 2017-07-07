@@ -85,9 +85,16 @@ module.exports = {
       .then((did) => {
         var promises = [];
         //remove did from old user
-        promises.push(User.update({ _id: req.params.oldUserId }, { "$pull": { "dids": did._id } }, { safe: true, multi:true }).exec());
+        if(['undefined', 'null'].indexOf(req.params.oldUserId) < 0) {
+          promises.push(User.update({_id: req.params.oldUserId}, {"$pull": {"dids": did._id}}, {
+            safe: true,
+            multi: true
+          }).exec());
+        }
         //add did to the new user
-        promises.push(User.update({ _id: req.params.newUserId }, { "$push": { "dids": did._id } }, { safe: true, multi:true }).exec());
+        if(['undefined', 'null'].indexOf(req.params.newUserId) < 0){
+          promises.push(User.update({ _id: req.params.newUserId }, { "$push": { "dids": did._id } }, { safe: true, multi:true }).exec());
+        }
         return Promise.all(promises)
       })
       .then((user) => {

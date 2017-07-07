@@ -38,6 +38,10 @@
         promises.push(DidService.uploadAudio(vm.did._id, file));
       }
 
+      if(vm.did.flow != 'user'){
+        promises.push(vm.updateDidUser())
+      }
+
       $q.all(promises)
         .then(function (results) {
           console.log(results);
@@ -53,8 +57,7 @@
     };
 
     vm.updateDidUser = function(user){
-      if(!user || !user._id) return;
-      DidService.updateDidUser(vm.did._id, vm.did.user._id, user._id)
+      return DidService.updateDidUser(vm.did._id, vm.did.user ? vm.did.user._id : null, user ? user._id : null)
         .then(function (response) {
           vm.did.user = user;
           $mdToast.showSimple("Did user updated.");
