@@ -33,7 +33,7 @@ function AutocompleteContactController($log, $rootScope, UserService) {
       if (!angular.isDefined($ctrl.queue.users)) {
         $ctrl.queue.users = [];
       }
-      if(!UserService.isQueueInUser(instance, $ctrl.queue)){
+      if(!UserService.isUserInQueue(instance, $ctrl.queue)){
         $ctrl.queue.users.push(instance);
       }
       $ctrl.selectedItem = '';

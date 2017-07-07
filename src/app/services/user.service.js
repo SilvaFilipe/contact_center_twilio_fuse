@@ -85,9 +85,15 @@
           });
       },
 
-      isQueueInUser: function (user, queue) {
+      isUserInQueue: function (user, queue) {
         return queue.users.some(function (g) {
           return (g._id === user._id);
+        })
+      },
+
+      isQueueInUser: function (user, queue) {
+        return user.queues.some(function (q) {
+          return (q._id === queue._id);
         })
       },
 
