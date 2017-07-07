@@ -91,6 +91,7 @@ module.exports.didSearch = function (req, res) {
 module.exports.didPurchase = function (req, res) {
   var phoneNumber = req.body.phoneNumber;
   var userId = req.body.userId;
+  var flow = req.body.flow;
   console.log(phoneNumber);
   var inUseTest = Did.findByNumber(phoneNumber, function (err, existingDid) {
     if (existingDid){
@@ -123,6 +124,7 @@ module.exports.didPurchase = function (req, res) {
           var didModel = new Did();
           didModel.number = number.phoneNumber;
           didModel.sid = number.sid;
+          didModel.flow = flow;
           didModel.save(function (err, newDid) {
             if(err) {
               res.setHeader('Cache-Control', 'public, max-age=0')

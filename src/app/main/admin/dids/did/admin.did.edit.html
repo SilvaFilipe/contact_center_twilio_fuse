@@ -36,7 +36,7 @@
         <div flex="100" flex-gt-sm="55" flex-gt-md="55">
           <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
             <header class="md-accent-bg">
-              <div class="title">Did Information</div>
+              <div class="title">Did Information </div>
             </header>
 
             <div class="content">
@@ -49,6 +49,11 @@
                   <md-option value="conferenceCall">Conference Call</md-option>
                 </md-select>
               </div>
+              <md-input-container class="md-block" aria-label="assigned user" ng-if="vm.did.flow == 'user'">
+                <label>User</label>
+                <p>{{vm.did.user.firstName + ' ' + vm.did.user.lastName}}</p>
+                <autocomplete-user-generic user="vm.did.user" on-item-selected="vm.updateDidUser"></autocomplete-user-generic>
+              </md-input-container>
               <md-input-container class="md-block" aria-label="select did greeting text">
                 <label>Greeting Text</label>
                 <input type="text" ng-model="vm.did.greetingText">

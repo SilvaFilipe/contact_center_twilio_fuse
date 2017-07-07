@@ -21,13 +21,25 @@
       getDid: function getDid(id) {
         return $http.get(apiUrl + '/dids/' + id, {withCredentials: true})
           .then(function (response) {
-            return response.data;
+            console.log(response.data)
+            var did = response.data.did;
+            did.user = response.data.user;
+            return did;
           }, function (err) {
             console.log(err);
             return err.data;
           });
       },
 
+      updateDidUser: function(id, userId){
+        return $http.put(apiUrl + '/dids/' + id + '/updateDidUser/' + userId, {withCredentials: true})
+          .then(function (response) {
+            return response.data;
+          }, function (err) {
+            console.log(err);
+            return err.data;
+          });
+      },
       updateDid: function updateDid(did) {
         return $http.put(apiUrl + '/dids/' + did._id, did, {withCredentials: true})
           .then(function (response) {

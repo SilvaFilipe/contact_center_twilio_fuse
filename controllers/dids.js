@@ -52,7 +52,18 @@ module.exports = {
 
           if(!did) return res.status(404).send("No Did found");
 
-          return res.status(200).json(did);
+          User.findOne({dids: {"$in": [did._id]}}, '_id firstName lastName')
+            .then(function (_user) {
+              var user = { id: '', fullName: '' };
+              if (_user) {
+                user = _user;
+              }
+              //cannot add random properties to a mongoose instance
+              return res.status(200).json({did, user});
+            }, function (err) {
+              if (err) return res.status(500).json(err);
+              return res.status(200).json(did);
+            });
         })
     },
 
@@ -70,8 +81,24 @@ module.exports = {
         });
       })
     },
+    updateDidUser: function (req, res) {
+      User.update({ _id: req.params.userId }, { "$pull": { "dids": req.params.id }},
+        { safe: true, multi:true }).exec()
+        .then(() => {
+          return Did.findById(req.params.id).exec()
+        })
+        .then((did) => {
+          return User.update({ _id: req.params.userId }, { $push: { dids: did } }).exec();
+        })
+        .then((user) => {
+          return res.status(200).json(user);
+        })
+        .catch((err) => {
+          return res.status(500).json(err);
+        })
+    },
 
-  uploadGreetingAudio: async function uploadGreetingAudio(req, res) {
+    uploadGreetingAudio: async function uploadGreetingAudio(req, res) {
       console.log('upload greeting audio file to s3');
       let file = req.file;
       const didId = req.params.did_id;

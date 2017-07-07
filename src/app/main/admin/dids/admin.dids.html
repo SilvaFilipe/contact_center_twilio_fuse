@@ -29,7 +29,7 @@
         <md-button class="md-primary md-raised"  ng-click="vm.openDeleteDidDialog($event)" ng-disabled="!vm.removingDids.length">
           Delete Did
         </md-button>
-        <add-did user="vm.user"></add-did>
+        <add-did user="vm.user" flow="'companyDirectory'"></add-did>
       </div>
     </div>
     <!-- / CONTENT HEADER -->
@@ -58,6 +58,11 @@
                 <span class="column-title">Assigned User</span>
               </div>
             </th>
+            <th class="secondary-text">
+              <div class="table-header">
+                <span class="column-title">Flow</span>
+              </div>
+            </th>
             <th class="secondary-text center">
               <div class="table-header">
                 <span class="column-title">Remove?</span>
@@ -74,6 +79,7 @@
           <tr ng-repeat="did in ::vm.dids">
             <td>{{did.number}}</td>
             <td>{{did.user.name}}</td>
+            <td>{{did.flow}}</td>
             <td class="center">
               <md-checkbox class="md-secondary" ng-model="did.userFlag" aria-label="delete did"></md-checkbox>
             </td>

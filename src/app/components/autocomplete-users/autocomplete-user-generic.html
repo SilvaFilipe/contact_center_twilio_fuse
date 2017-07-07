@@ -1,0 +1,21 @@
+<md-autocomplete
+  ng-disabled="$ctrl.isDisabled"
+  md-no-cache="true"
+  md-input-minlength="0"
+  md-min-length="0"
+  md-delay="2000"
+  md-input-id="userQueueInput"
+  md-selected-item="$ctrl.selectedItem"
+  md-search-text-change="$ctrl.searchTextChange($ctrl.searchText)"
+  md-search-text="$ctrl.searchText"
+  md-selected-item-change="$ctrl.onItemSelected(item)"
+  md-items="item in $ctrl.queryModel($ctrl.searchText)"
+  md-item-text="item.firstName + ' ' + item.lastName"
+  placeholder="Pick a User"
+  md-menu-class="autocomplete-custom-template">
+  <md-item-template>
+          <span class="item-title" ng-click="$ctrl.assignUser(item)">
+              <strong>{{item.firstName + ' ' + item.lastName}}</strong>
+          </span>
+  </md-item-template>
+</md-autocomplete>
