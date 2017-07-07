@@ -10,21 +10,35 @@ angular.module('app.components')
 /** @ngInject */
 function AutocompleteContactController($log, $rootScope, UserService) {
   var $ctrl = this;
+  var items = [];
 
   $ctrl.queryModel = function () {
-    return UserService.queryExcludeQueueUsers($ctrl.queue._id, $ctrl.searchText)
+    return UserService.queryExcludeQueueUsers($ctrl.queue._id, $ctrl.searchText).then(function (res) {
+      items = res.filter(function(val) {
+        for( var i=0; i < $ctrl.queue.users.length; i++ ){
+          if( $ctrl.queue.users[i]._id === val._id ) {
+            return false;
+          }
+        }
+        return true;
+      });
+      return items;
+    }, function (err) {
+      console.log(err);
+    });
   };
 
   $ctrl.addToQueue = function (instance) {
-    if(!instance) return;
-    console.log($ctrl.queue, instance);
-    if(!UserService.isQueueInUser(instance, $ctrl.queue)){
-      instance.queues.push($ctrl.queue);
-      console.log(instance.queues)
-      UserService.update(instance._id, instance);
-      instance.queues = []; //avoid recursive reference
-      $ctrl.queue.users.push(instance);
-    }
+      if (!instance) return;
+      if (!angular.isDefined($ctrl.queue.users)) {
+        $ctrl.queue.users = [];
+      }
+      if(!UserService.isQueueInUser(instance, $ctrl.queue)){
+        $ctrl.queue.users.push(instance);
+      }
+      $ctrl.selectedItem = '';
+      $('#queueUserInput').trigger('blur');
+
   };
 
   $log.log('AutocompleteContactController load');

@@ -54,46 +54,32 @@
      * Save user
      */
     function saveQueue() {
-      var users = angular.copy(vm.queue.users);
-      vm.queue.users = users
-        .filter(function (user) {
-          return !user.queueFlag
-        });
-
-      var usersToRemoveFromQueue = users
-        .filter(function (user) {
-          return user.queueFlag
-        });
-      if (vm.queue._id) {
-        var queueUpdatePromise = QueueService.update(vm.queue._id, vm.queue);
-        var removeUsersPromise = UserService.removeMultipleUsersFromQueue(usersToRemoveFromQueue, vm.queue);
-
-        $q.all([queueUpdatePromise, removeUsersPromise])
-          .then(function (results) {
-          //var queue = results[0];
-          $mdToast.showSimple("Queue Information Saved.");
-          //vm.queue = queue;
-          flagUsers();
-          $state.go("app.admin.queues");
-
-        }, function (err) {
-          console.log(err);
-          $mdToast.showSimple("Something went wrong, Please try again");
-        });
-
-      } else {
-
-        QueueService.create(vm.queue).then(function (queue) {
-          vm.queue = queue;
-          vm.tabIndex = 1;
-
-          $mdToast.showSimple("Queue Information Saved.");
-        }, function (err) {
-          console.log(err);
-          $mdToast.showSimple("Something went wrong, Please try again");
-        });
-
+      if (angular.isDefined(vm.queue.users)) {
+        vm.queue.users = vm.queue.users
+          .filter(function (user) {
+            return !user.queueFlag
+          }).map(function (user) {
+            return user._id;
+          });
       }
+
+      var promise;
+      if (vm.queue._id) {
+        promise = QueueService.update(vm.queue._id, vm.queue);
+      } else {
+        promise = QueueService.create(vm.queue);
+      }
+
+      promise
+        .then(function (response) {
+          console.log(response);
+          $mdToast.showSimple("Queue Information Saved.");
+          $state.go("app.admin.queues");
+        })
+        .catch(function (err) {
+          console.log(err);
+          $mdToast.showSimple("Something went wrong, Please try again");
+        });
     }
 
     function flagUsers(){

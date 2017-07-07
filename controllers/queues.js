@@ -45,48 +45,31 @@ module.exports = {
     },
 
     update: function (req, res) {
-      let triggerPromise;
+      User.update({ }, {$pull: {queues: req.params.queue_id }}, {multi: true}).then(function () {
+        User.update({_id: {$in: req.body.users}}, {$push: {queues: req.params.queue_id}}, {multi: true}).then(function () {
+          Queue.findById(req.params.queue_id, function (err, queue) {
+            if (err) return res.status(500).json(err);
 
-      Queue.findById(req.params.queue_id, function (err, queue) {
-        if (err) return res.status(500).json(err);
+            queue.name = req.body.name;
+            queue.description = req.body.description;
+            queue.scriptKeywords = req.body.scriptKeywords;
+            queue.positiveKeywords = req.body.positiveKeywords;
+            queue.negativeKeywords = req.body.negativeKeywords;
+            queue.customVocabulary = req.body.customVocabulary;
+            queue.disposition = req.body.disposition;
+            queue.script = req.body.script;
 
-        queue.name = req.body.name;
-        queue.description = req.body.description;
-        queue.scriptKeywords = req.body.scriptKeywords;
-        queue.positiveKeywords = req.body.positiveKeywords;
-        queue.negativeKeywords = req.body.negativeKeywords;
-        queue.customVocabulary = req.body.customVocabulary;
-        queue.disposition = req.body.disposition;
-        queue.script = req.body.script;
+            queue.save(function(err){
+              if(err) return res.send(err);
 
-        if (Array.isArray(req.body.users) && req.body.users.length > 0) {
-          queue.users = req.body.users.map(function (user) {
-            return user._id;
+              return res.status(200).json(queue);
+            });
+
           });
 
-        triggerPromise = User.update({
-           _id: {
-             "$in": queue.users
-           }
-         }, {
-           $push: {
-             queues: {
-               $each: [queue._id]
-             }
-           }
-         },
-          {
-            multi: true
-          }).exec()
-        } else{
-          triggerPromise = Promise.resolve();
-        }
+        });
+      });
 
-        triggerPromise
-          .then(() => queue.save())
-          .then(queue => res.status(200).json(queue))
-          .catch(err => res.status(500).json(err));
-      })
     },
     delete: function (req, res) {
         Queue.remove({

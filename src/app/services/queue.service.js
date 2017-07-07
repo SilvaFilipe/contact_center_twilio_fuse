@@ -37,7 +37,6 @@
           })
       },
       update: function update(id, queue) {
-        console.log('am i passing', queue)
         return $http.put(apiUrl + '/queues/' + id, queue)
           .then(function (response) {
             return response.data;
