@@ -31,8 +31,8 @@
           });
       },
 
-      updateDidUser: function(id, userId){
-        return $http.put(apiUrl + '/dids/' + id + '/updateDidUser/' + userId, {withCredentials: true})
+      updateDidUser: function(id, userId, newUserId){
+        return $http.put(apiUrl + '/dids/' + id + '/updateDidUser/' + userId + '/' + newUserId, {withCredentials: true})
           .then(function (response) {
             return response.data;
           }, function (err) {

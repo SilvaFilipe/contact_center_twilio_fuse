@@ -8,7 +8,7 @@
     .factory('AdminDidEditService', AdminDidEditService);
 
   /** @ngInject */
-  function AdminDidEditController($scope, $rootScope, $state, $mdToast, $q, Did, DidService, AdminDidEditService)
+  function AdminDidEditController($scope, $document, $mdDialog, $state, $mdToast, $q, Did, DidService, AdminDidEditService)
   {
     var vm = this;
 
@@ -54,16 +54,43 @@
 
     vm.updateDidUser = function(user){
       if(!user || !user._id) return;
-      DidService.updateDidUser(vm.did._id, user._id)
+      DidService.updateDidUser(vm.did._id, vm.did.user._id, user._id)
         .then(function (response) {
           vm.did.user = user;
           $mdToast.showSimple("Did user updated.");
+          $mdDialog.hide();
         })
         .catch(function (err) {
           console.warn(err)
         })
     }
+
+    vm.showUserWidgetDialog = function showUserWidgetDialog(ev){
+      $mdDialog.show({
+        /** @ngInject */
+        controller: function showUserWidgetDialogController($mdDialog, did, updateDidUser){
+          var vm = this;
+          console.log(vm);
+          vm.did = did;
+          vm.updateDidUser = updateDidUser;
+          vm.closeDialog = function () {
+            $mdDialog.hide();
+          }
+        },
+        controllerAs: 'vm',
+        //scope: $scope,
+        locals: {
+          did: vm.did,
+          updateDidUser: vm.updateDidUser
+        },
+        template: '<autocomplete-user-generic user="vm.did.user" on-item-selected="vm.updateDidUser"></autocomplete-user-generic>',
+        parent: angular.element($document.body),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    }
   }
+
 
   /** @ngInject */
   function AdminDidEditService(){

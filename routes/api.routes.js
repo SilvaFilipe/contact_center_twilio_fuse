@@ -193,7 +193,7 @@ module.exports = function(app, acl, multer){
     router.route('/dids')
       .get(dids.all);
 
-    router.route('/dids/:id/updateDidUser/:userId')
+    router.route('/dids/:id/updateDidUser/:oldUserId/:newUserId')
       .put(dids.updateDidUser);
 
     router.route('/dids/:id')
