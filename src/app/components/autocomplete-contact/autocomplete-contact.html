@@ -4,6 +4,8 @@
     md-no-cache="true"
     md-input-minlength="0"
     md-min-length="0"
+    md-delay="2000"
+    md-input-id="groupUserInput"
     md-selected-item="$ctrl.selectedItem"
     md-search-text-change="$ctrl.searchTextChange($ctrl.searchText)"
     md-search-text="$ctrl.searchText"
@@ -13,7 +15,7 @@
     placeholder="Pick an User to Add"
     md-menu-class="autocomplete-custom-template">
     <md-item-template>
-          <span class="item-title" ng-click="$ctrl.addToGroup(item)">
+          <span class="item-title">
             <ng-avatar wrapper="false" string="{{item.firstName + ' ' + item.lastName}}" bind="true" width="32" round-shape="true"
                        bg-color="#3875d7" upper-case="true"></ng-avatar>
             <span>
