@@ -9,18 +9,17 @@ angular.module('app.components')
   });
 
 /** @ngInject */
-function AutocompleteUserGenericController($log, UserService, AdminDidEditService) {
+function AutocompleteUserGenericController($log, UserService, AdminDidEditService, orderByFilter) {
   var $ctrl = this;
   var items = [];
 
-  console.log($ctrl);
 
   $ctrl.queryModel = function () {
     return UserService.getAll().then(function (res) {
       items = res.filter(function (val) {
         return $ctrl.user._id !== val._id
       });
-      return items;
+      return orderByFilter(items, 'firstName');
     }, function (err) {
       console.log(err);
     });
