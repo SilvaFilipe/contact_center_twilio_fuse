@@ -46,13 +46,23 @@ module.exports = {
 
     get: function (req, res) {
 
-      Did.findById(req.params.id)
-        .exec(function (err, did) {
+      Did.findById(req.params.id).exec(function (err, did) {
           if(err) return res.status(500).json(err);
 
           if(!did) return res.status(404).send("No Did found");
 
-          return res.status(200).json(did);
+          User.findOne({dids: {"$in": [did._id]}}, '_id firstName lastName')
+            .then(function (_user) {
+              var user = { id: '', fullName: '' };
+              if (_user) {
+                user = _user;
+              }
+              //cannot add random properties to a mongoose instance
+              return res.status(200).json({did, user});
+            }, function (err) {
+              if (err) return res.status(500).json(err);
+              return res.status(200).json(did);
+            });
         })
     },
 
@@ -70,8 +80,32 @@ module.exports = {
         });
       })
     },
+    updateDidUser: function (req, res){
+      return Did.findById(req.params.id).exec()
+      .then((did) => {
+        var promises = [];
+        //remove did from old user
+        if(['undefined', 'null'].indexOf(req.params.oldUserId) < 0) {
+          promises.push(User.update({_id: req.params.oldUserId}, {"$pull": {"dids": did._id}}, {
+            safe: true,
+            multi: true
+          }).exec());
+        }
+        //add did to the new user
+        if(['undefined', 'null'].indexOf(req.params.newUserId) < 0){
+          promises.push(User.update({ _id: req.params.newUserId }, { "$push": { "dids": did._id } }, { safe: true, multi:true }).exec());
+        }
+        return Promise.all(promises)
+      })
+      .then((user) => {
+        return res.status(200).json(user);
+      })
+      .catch((err) => {
+        return res.status(500).json(err);
+      })
+    },
 
-  uploadGreetingAudio: async function uploadGreetingAudio(req, res) {
+    uploadGreetingAudio: async function uploadGreetingAudio(req, res) {
       console.log('upload greeting audio file to s3');
       let file = req.file;
       const didId = req.params.did_id;

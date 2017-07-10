@@ -3,7 +3,8 @@ angular.module('app.components')
     templateUrl: 'app/components/add-did/add-did.html',
     controller: AddDidController,
     bindings: {
-      user: '='
+      user: '=',
+      flow: '='
     }
   });
 
@@ -59,7 +60,7 @@ function AddDidController($scope, $rootScope, $mdDialog, AdminUserService) {
 
     $scope.purchaseDid = function () {
       $scope.loadingProgress = true;
-      var data = {phoneNumber: $scope.selectedDid, userId: userId};
+      var data = {phoneNumber: $scope.selectedDid, userId: userId, flow: $ctrl.flow || 'companyDirectory'};
       AdminUserService.didPurchase(data).then(function (res) {
         $scope.loadingProgress = false;
         $mdToast.showSimple("Did Purcharsed Successfully.");

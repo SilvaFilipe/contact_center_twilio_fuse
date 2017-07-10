@@ -105,3 +105,7 @@ md-dialog.contact-dialog md-dialog-actions {
   background-color: rgba(0,0,0,.03);
   border-top: 1px solid rgba(0,0,0,.12)
 }
+
+md-input-container .md-errors-spacer {
+  min-height: 0;
+}

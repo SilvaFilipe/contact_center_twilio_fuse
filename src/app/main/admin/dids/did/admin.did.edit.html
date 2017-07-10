@@ -36,7 +36,7 @@
         <div flex="100" flex-gt-sm="55" flex-gt-md="55">
           <div class="profile-box info-box general md-whiteframe-1dp" layout="column">
             <header class="md-accent-bg">
-              <div class="title">Did Information</div>
+              <div class="title">Did Information </div>
             </header>
 
             <div class="content">
@@ -56,6 +56,15 @@
               <div layout="column">
                 <span class="mt-35 mr-10">Upload greeting audio file:</span>
                 <media-preview model="vm.did.greetingAudioUrl" preview-class="audio"></media-preview>
+              </div>
+              <div layout-gt-xs="row" ng-if="vm.did.flow == 'user'" class="mt-35 mr-10">
+                <md-input-container class="md-block" aria-label="assigned user" style="margin-bottom: 0;">
+                  <label for="did-flow-user">User</label>
+                  <input id="did-flow-user" ng-value="vm.did.user.firstName + ' ' + vm.did.user.lastName" type="text" readonly>
+                </md-input-container>
+                <md-button ng-click="vm.showUserWidgetDialog($event)" class="md-raised md-accent submit-button md-button md-default-theme md-ink-ripple" aria-label="Choose did user">
+                  Select a user
+                </md-button>
               </div>
             </div>
           </div>
