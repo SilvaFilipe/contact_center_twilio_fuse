@@ -35,7 +35,8 @@ module.exports = function (app, passport, acl) {
         }
         req.logIn(user, function(err) {
           if (err) { return next(err); }
-          return res.status(200).end('successfully login!');
+          var data = {user: req.user, roles: req.session.roles};
+          return res.status(200).json(data);
         });
       })(req, res, next);
     });

@@ -75,7 +75,8 @@ var callSchema = mongoose.Schema({
   scriptKeywords: Array,
   positiveKeywords: Array,
   negativeKeywords: Array,
-  scriptKeywordRatio: Number
+  scriptKeywordRatio: Number,
+  listMember: {type: mongoose.Schema.ObjectId, ref: 'ListMember'}
 });
 
 callSchema.methods.saveSync = function () {

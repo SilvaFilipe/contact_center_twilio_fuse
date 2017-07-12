@@ -129,33 +129,27 @@
     function login(email, password) {
       var deferred = $q.defer();
       $http.post(authUrl + 'auth/sign-in', {email: email, password: password}, {withCredentials: true})
-        .then(function(res) {
-          $http.get(apiUrl + 'api/users/me', {withCredentials: true})
-            .then(function (response) {
-              console.log(response.data);
-              if (response.data.roles.indexOf('admin') > -1) {
-                  isAdmin = true;
-                  $window.sessionStorage.setItem('isAdmin', "true");
-                  console.log('set admin true');
-              } else {
-                $window.sessionStorage.setItem('isAdmin', "false"); //change to false
-                console.log('set admin false');
-              }
-              var worker =  {friendlyName: response.data.user.friendlyWorkerName};
-              var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
+        .then(function(response) {
+          if (response.data.roles.indexOf('admin') > -1) {
+              isAdmin = true;
+              $window.sessionStorage.setItem('isAdmin', "true");
+              console.log('set admin true');
+          } else {
+            $window.sessionStorage.setItem('isAdmin', "false"); //change to false
+            console.log('set admin false');
+          }
+          var worker =  {friendlyName: response.data.user.friendlyWorkerName};
+          var endpoint = navigator.userAgent.toLowerCase() + Math.floor((Math.random() * 1000) + 1);
 
-              $http.post(apiUrl + 'api/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
+          $rootScope.setCurrentUser(response.data.user);
+          $window.sessionStorage.setItem('currentUser', JSON.stringify(response.data.user));
 
-                .then(function onSuccess(response) {
-                  me.loggedInUser = response.data;
-                  $rootScope.setCurrentUser(me.loggedInUser);
-                  $window.sessionStorage.setItem('currentUser', JSON.stringify(me.loggedInUser));
-                  deferred.resolve(response);
-                }, function onError(response) {
-                  console.log(response);
-                  deferred.reject(response);
-
-              });
+          $http.post(apiUrl + 'api/agents/login', { worker: worker, endpoint: endpoint }, {withCredentials: true})
+            .then(function onSuccess(response) {
+              deferred.resolve(response);
+            }, function onError(response) {
+              console.log(response);
+              deferred.reject(response);
           });
 
         }, function(err) {

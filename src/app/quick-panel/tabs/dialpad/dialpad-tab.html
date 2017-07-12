@@ -1,7 +1,13 @@
 <section id="dialpad-layout" layout="row" flex>
   <div layout="column">
-    <div>
+    <div layout="row" layout-align="space-between center">
       <span class="status">Status: {{status}}</span>
+      <md-select class="md-no-underline m-0" ng-model="vm.selectedQueueId" placeholder="Select Outbound Queue" aria-label="select assigned queue" ng-if="user.queues.length">
+        <md-option value=""><em>None</em></md-option>
+        <md-option ng-repeat="queue in user.queues" ng-value="queue._id">
+          {{queue.name}}
+        </md-option>
+      </md-select>
     </div>
     <div class="dialpad-input">
       <input type="text" class="inputDialpad" data-ng-model="vm.phoneNumber" ng-keyup="$event.keyCode == 13 ? vm.call(vm.phoneNumber, $event) : vm.keyDowned($event)">

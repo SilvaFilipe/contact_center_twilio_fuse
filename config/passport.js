@@ -90,29 +90,30 @@ module.exports = function (passport, acl) {
         passwordField: 'password',
         passReqToCallback: true
     }, function (req, email, password, done) {
-        User.findOne({'email': email}, function (err, user) {
-            if (err) {
-                return done(err);
-            }
 
-            if (!user) {
-                return done(null, false, req.flash('message', 'No user found.'));
-            }
+      User.findOne({'email': email}).populate('queues').exec()
+        .then(function (user) {
+          if (!user) {
+            return done(null, false, req.flash('message', 'No user found.'));
+          }
 
-            if (!user.validPassword(password)) {
-                return done(null, false, req.flash('message', 'Wrong password.'))
-            }
+          if (!user.validPassword(password)) {
+            return done(null, false, req.flash('message', 'Wrong password.'))
+          }
 
           // TODO - remove after worker definitions are done.
           user.syncWorker();
           user.syncSipCredential();
 
-            acl.userRoles(user._id.toString(), function(err, roles){
-              req.session.roles = roles;
-              req.session.userId = user._id;
-              return done(null, user);
-            });
-        })
+          acl.userRoles(user._id.toString(), function(err, roles){
+            req.session.roles = roles;
+            req.session.userId = user._id;
+            return done(null, user);
+          });
+        }, function (err) {
+          if(err) return done(err);
+        });
+
     }));
 
     passport.use('google', new GoogleStrategy({

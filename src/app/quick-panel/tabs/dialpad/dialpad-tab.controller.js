@@ -10,8 +10,8 @@
     function PhoneController($scope, $state, $rootScope, $interval, $http, $timeout, $log, $mdSidenav, $mdDialog, $document, $mdToast, $window, msNavigationService, CallService, UserService, ExtensionCall, InboundCall, OutboundCall, ConferenceCall, EnvironmentConfig)
     {
       var vm = this;
-      var currentUser = JSON.parse($window.sessionStorage.getItem('currentUser'));
-      var workerName =  currentUser.friendlyWorkerName;
+      $scope.user = $rootScope.currentUser;
+      var workerName =  $scope.user.friendlyWorkerName;
       var apiUrl = $rootScope.apiBaseUrl;
       var isStartRecording = EnvironmentConfig.CallRecordingDefault;
 
@@ -25,8 +25,6 @@
             return v.toString(16);
           });
       };
-
-      $scope.currentUser = currentUser;
 
       if (!angular.isDefined($rootScope.callTasks)) {
         $rootScope.callTasks = [];
@@ -45,77 +43,73 @@
       }
 
 
-      $http.get(apiUrl + 'api/users/me', {withCredentials: true})
-        .then(function (response) {
-          $scope.user = response.data.user;
-          //Get an access token for the current user, passing a device ID
-          //In browser-based apps, every tab is like its own unique device
-          //synchronizing state -- so we'll use a random UUID to identify
-          //this tab.
-          $http.get(apiUrl + 'api/sync/token?identity=' + $scope.user.friendlyWorkerName + '&device=' + getDeviceId(), {withCredentials: true})
-            .then(function (res) {
-              $log.log(res);
-              $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
-              $log.log('Sync initialized!');
-              $rootScope.$broadcast('syncClientReady');
-              $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
-                list.on("itemAdded", function(item) {
-                  console.log("List item added!", item);
-                  if (item.value.type === 'call-end' || item.value.type === 'transcription-sent'){
-                    console.log('time to update history tab');
-                    $rootScope.$broadcast('history.reload');
+      //Get an access token for the current user, passing a device ID
+      //In browser-based apps, every tab is like its own unique device
+      //synchronizing state -- so we'll use a random UUID to identify
+      //this tab.
+      $http.get(apiUrl + 'api/sync/token?identity=' + $scope.user.friendlyWorkerName + '&device=' + getDeviceId(), {withCredentials: true})
+        .then(function (res) {
+          $log.log(res);
+          $rootScope.syncClient = new Twilio.Sync.Client(res.data.token);
+          $log.log('Sync initialized!');
+          $rootScope.$broadcast('syncClientReady');
+          $rootScope.syncClient.list('m' + $scope.user._id).then(function(list) {
+            list.on("itemAdded", function(item) {
+              console.log("List item added!", item);
+              if (item.value.type === 'call-end' || item.value.type === 'transcription-sent'){
+                console.log('time to update history tab');
+                $rootScope.$broadcast('history.reload');
+              }
+              if (item.value.type === 'call-end' || item.value.type === 'voicemail-transcription-sent'){
+                console.log('time to update voicemail tab');
+                $rootScope.$broadcast('voicemail.reload');
+              }
+              if (item.value.type === 'call-end'){
+                  // hide any unaccepted incoming call dialog
+                console.log('time to hide extension dialogs');
+                $rootScope.extensionCallTasks.filter(function (callItem) {
+                  if (callItem.callSid === item.value.data.callSid) {
+                    console.log('callItem ' + callItem);
+                    callItem.stopCallTimer();
+                    var index = $rootScope.extensionCallTasks.indexOf(callItem);
+                    $rootScope.extensionCallTasks.splice(index, 1);
+                    $log.log('call:' + item.value.data.callSid + ' hidden');
                   }
-                  if (item.value.type === 'call-end' || item.value.type === 'voicemail-transcription-sent'){
-                    console.log('time to update voicemail tab');
-                    $rootScope.$broadcast('voicemail.reload');
-                  }
-                  if (item.value.type === 'call-end'){
-                      // hide any unaccepted incoming call dialog
-                    console.log('time to hide extension dialogs');
-                    $rootScope.extensionCallTasks.filter(function (callItem) {
-                      if (callItem.callSid === item.value.data.callSid) {
-                        console.log('callItem ' + callItem);
-                        callItem.stopCallTimer();
-                        var index = $rootScope.extensionCallTasks.indexOf(callItem);
-                        $rootScope.extensionCallTasks.splice(index, 1);
-                        $log.log('call:' + item.value.data.callSid + ' hidden');
-                      }
-                    });
+                });
 
 
+              }
+              if (item.value.type === 'answeredBySip'){
+                console.log('sip phone answered call');
+                $rootScope.callTasks.filter(function (callItem) {
+                  if (callItem.callSid === item.value.data.callSid) {
+                      //callItem.callStatus = 'completed';
+                    console.log('callItem');
+                    console.log(callItem);
+                    callItem.sipAnswered = true;
+                    //$log.log('call:' + data.callSid + ' to sipAnswered' + callItem.sipAnswered);
+                    $log.log('call:' + item.value.data.callSid + ' to sipAnswered' + callItem.sipAnswered);
                   }
-                  if (item.value.type === 'answeredBySip'){
-                    console.log('sip phone answered call');
-                    $rootScope.callTasks.filter(function (callItem) {
-                      if (callItem.callSid === item.value.data.callSid) {
-                          //callItem.callStatus = 'completed';
-                        console.log('callItem');
-                        console.log(callItem);
-                        callItem.sipAnswered = true;
-                        //$log.log('call:' + data.callSid + ' to sipAnswered' + callItem.sipAnswered);
-                        $log.log('call:' + item.value.data.callSid + ' to sipAnswered' + callItem.sipAnswered);
-                      }
-                    });
-                  }
+                });
+              }
 
-                  if (item.value.type === 'inboundCall') {
-                    $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
-                      var audio = new Audio(res.data);
-                      audio.play();
-                      var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
-                        conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false, recording: isStartRecording};
-                      var task = new ExtensionCall(callParams);
-                      $rootScope.extensionCallTasks.push(task);
-                      if ($state.current.name !== 'app.workspace') {
-                        $rootScope.showCallNotification();
-                      }
-
-                    });
+              if (item.value.type === 'inboundCall') {
+                $http.post(apiUrl + 'api/callControl/inbound_ringing').then(function(res) {
+                  var audio = new Audio(res.data);
+                  audio.play();
+                  var callParams = {fromNumber: item.value.data.fromNumber, type: 'inbound', callSid: item.value.data.callSid, callerName: item.value.data.callerName,
+                    conferenceName: item.value.data.conferenceFriendlyName, sipAnswered: false, recording: isStartRecording};
+                  var task = new ExtensionCall(callParams);
+                  $rootScope.extensionCallTasks.push(task);
+                  if ($state.current.name !== 'app.workspace') {
+                    $rootScope.showCallNotification();
                   }
 
                 });
-              });
+              }
+
             });
+          });
         });
 
       /* request configuration data and tokens from the backend */
@@ -483,7 +477,13 @@
       });
 
       $scope.directCall = function () {
-        $http.get(apiUrl + 'api/agents/outboundCall?user_id=' + currentUser._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName, {withCredentials: true}).then(function (response) {
+        if (angular.isDefined(vm.selectedQueueId) && vm.selectedQueueId) {
+          var url = apiUrl + 'api/agents/outboundCall?user_id=' + $scope.user._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName + '&queue=' + vm.selectedQueueId;
+        }
+        else {
+          var url = apiUrl + 'api/agents/outboundCall?user_id=' + $scope.user._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName;
+        }
+        $http.get(url, {withCredentials: true}).then(function (response) {
           if(response.data !== "ERROR"){
             if (response.data.call.direction === 'extension') {
               $rootScope.syncClient.document('c'+ response.data.call.callSid)
@@ -562,7 +562,7 @@
         $scope.isOutboundCall = true;
         vm.phoneNumber = data.phoneNumber;
         if (!Twilio.Device.activeConnection()) {
-          Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': currentUser._id });
+          Twilio.Device.connect({'phone': '', 'workerName': workerName, 'user_id': $scope.user._id });
         }
         else {
           $scope.directCall();
