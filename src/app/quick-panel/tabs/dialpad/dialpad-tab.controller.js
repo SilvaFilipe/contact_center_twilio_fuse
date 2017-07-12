@@ -477,13 +477,11 @@
       });
 
       $scope.directCall = function () {
+        var callUrl = apiUrl + 'api/agents/outboundCall?user_id=' + $scope.user._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName;
         if (angular.isDefined(vm.selectedQueueId) && vm.selectedQueueId) {
-          var url = apiUrl + 'api/agents/outboundCall?user_id=' + $scope.user._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName + '&queue=' + vm.selectedQueueId;
+          callUrl = callUrl + '&queue=' + vm.selectedQueueId;
         }
-        else {
-          var url = apiUrl + 'api/agents/outboundCall?user_id=' + $scope.user._id + '&phone=' + vm.phoneNumber + '&workerName=' + workerName;
-        }
-        $http.get(url, {withCredentials: true}).then(function (response) {
+        $http.get(callUrl, {withCredentials: true}).then(function (response) {
           if(response.data !== "ERROR"){
             if (response.data.call.direction === 'extension') {
               $rootScope.syncClient.document('c'+ response.data.call.callSid)

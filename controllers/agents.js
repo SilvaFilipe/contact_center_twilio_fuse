@@ -368,7 +368,7 @@ module.exports.outboundCall = function (req, res) {
         } else {
           console.log('created outbound call ' + call.sid);
           // insert into db
-          var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date()};
+          var dbFields = { user_id: req.query.user_id, from: req.configuration.twilio.callerId, callSid: call.sid, to: req.query.phone, updated_at: new Date(), queue: req.query.queue};
           var newCall = new Call( Object.assign(dbFields) );
           console.log('using addUserIds'.underline.red);
           console.log('call to: ', req.query.phone);
